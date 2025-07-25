@@ -1,0 +1,78 @@
+{
+  "workspace": {
+    "title": "AI画像ワークスペース",
+    "subtitle": "GPT-4o Visionベースのインテリジェント画像生成・編集",
+    "uploadSection": {
+      "title": "画像アップロード",
+      "dragText": "ここに画像をドラッグまたはクリックして選択",
+      "supportText": "JPG、PNG、WebP形式対応、最大10MB",
+      "reselect": "クリックして画像を再選択",
+      "fileSelectLabel": "画像ファイルを選択",
+      "invalidFileType": "画像ファイルを選択してください",
+      "fileTooLarge": "画像サイズは10MBを超えることはできません"
+    },
+    "promptSection": {
+      "title": "プロンプト編集",
+      "placeholder": "画像に対して希望する修正や変換を記述してください。例：この写真をアニメ風に変換し、桜の背景を追加...",
+      "characterCount": "文字",
+      "generateButton": "生成開始",
+      "generating": "生成中...",
+      "uploadingImage": "画像をアップロード中...",
+      "imageUploaded": "画像アップロード完了、生成開始...",
+      "processingResult": "生成完了、結果を処理中...",
+      "missingData": "画像を選択してプロンプトを入力してください"
+    },
+    "resultsSection": {
+      "title": "生成結果",
+      "originalImage": "元画像",
+      "generatedImage": "生成結果",
+      "prompt": "プロンプト：",
+      "generatedTime": "生成時間：",
+      "downloadButton": "画像をダウンロード",
+      "copyLinkButton": "リンクをコピー",
+      "linkCopied": "画像リンクをクリップボードにコピーしました"
+    },
+    "progress": {
+      "title": "生成進行中",
+      "description": "AIが魔法をかけています...",
+      "processing": "処理中",
+      "upload": {
+        "title": "アップロード",
+        "description": "画像を送信中"
+      },
+      "process": {
+        "title": "AI処理",
+        "description": "画像を解析中"
+      },
+      "enhance": {
+        "title": "美化処理",
+        "description": "結果を最適化"
+      },
+      "complete": {
+        "title": "完了",
+        "description": "生成完了！"
+      }
+    },
+    "tour": {
+      "steps": {
+        "upload": "まず、変換したい画像をここにアップロードしてください。ドラッグ&ドロップまたはクリックして選択できます。",
+        "prompt": "次に、画像に対して希望する変更内容をここに入力してください。例：「アニメ風に変換」「桜の背景を追加」など。",
+        "generate": "準備ができたらこのボタンをクリックして画像生成を開始します。",
+        "progress": "生成中はこのプログレスバーで進行状況を確認できます。"
+      },
+      "buttons": {
+        "back": "戻る",
+        "close": "閉じる",
+        "finish": "完了",
+        "next": "次へ",
+        "skip": "スキップ"
+      }
+    },
+    "errors": {
+      "uploadFailed": "画像アップロードに失败しました",
+      "generateFailed": "生成に失敗しました",
+      "unknownError": "不明なエラー",
+      "networkError": "ネットワークエラー、再試行してください"
+    }
+  }
+} 

@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.kie.ai)",
+      "WebFetch(domain:docs.kie.ai)",
+      "WebFetch(domain:docs.kie.ai)",
+      "Bash(npm run build)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(grep:*)",
+      "Bash(npx eslint:*)",
+      "Bash(wc:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(tail:*)",
+      "Bash(awk:*)",
+      "Bash(ls:*)",
+      "Bash(powershell:*)",
+      "Bash(file:*)",
+      "Bash(head:*)",
+      "Bash(node:*)",
+      "Bash(tsc:*)",
+      "Bash(npm run lint)",
+      "Bash(od:*)",
+      "Bash(sed:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next build:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:pollo.ai)",
+      "WebFetch(domain:pollo.ai)",
+      "Bash(rg:*)"
+    ],
+    "deny": []
+  }
+}

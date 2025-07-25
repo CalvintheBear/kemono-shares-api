@@ -1,0 +1,16 @@
+{
+  "id": "90b25c60-5294-43ed-a0d8-760100f4ebc9",
+  "taskId": "f3eb2b03-4a82-47fa-be09-565af40aade6",
+  "userId": "anonymous-user",
+  "prompt": "??Kie.ai API??",
+  "inputImageUrl": "",
+  "styleType": "动漫风格",
+  "status": "completed",
+  "progress": 1,
+  "createdAt": "2025-07-16T17:11:01.876Z",
+  "completedAt": "2025-07-16T17:11:07.933Z",
+  "resultUrls": [
+    "https://picsum.photos/seed/f3eb2b03-4a82-47fa-be09-565af40aade6-1/512/512",
+    "https://picsum.photos/seed/f3eb2b03-4a82-47fa-be09-565af40aade6-2/512/512"
+  ]
+}
