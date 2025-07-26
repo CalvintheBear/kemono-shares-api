@@ -14,5 +14,8 @@
   "upload_source_maps": true,
   "env": {
     "NODE_ENV": "production"
+  },
+  "build": {
+    "command": "npm run build"
   }
 } 
