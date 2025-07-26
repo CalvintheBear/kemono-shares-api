@@ -1,22 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { processImageUrl } from '@/lib/image-download-to-r2'
-
-interface ShareData {
-  id: string
-  generatedUrl: string
-  originalUrl: string
-  prompt: string
-  style: string
-  timestamp: number
-  createdAt: string
-  isR2Stored?: boolean // 标记是否已存储到R2
-}
-
-// 简单的内存存储（在生产环境中应该使用数据库）
-const shareDataStore = new Map<string, ShareData>()
+import { shareDataStore, initializeSampleData, ShareData } from '@/lib/share-store'
 
 export async function POST(request: NextRequest) {
   try {
+    // 初始化示例数据
+    initializeSampleData()
+    
     const body = await request.json()
     const { generatedUrl, originalUrl, prompt, style, timestamp } = body
 
@@ -77,6 +67,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // 初始化示例数据
+    initializeSampleData()
+    
     const { searchParams } = new URL(request.url)
     const shareId = searchParams.get('id')
     
