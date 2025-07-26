@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# 主要ディレクトリを許可
+Allow: /workspace
+Allow: /guide
+Allow: /vtuber-creation
+Allow: /chibi
+Allow: /conversion
+Allow: /personification
+Allow: /icon
+
+# APIエンドポイントを許可（搜索引擎がクロール可能に）
+Allow: /api/generate-image
+Allow: /api/upload-image
+Allow: /api/image-details
+Allow: /api/download-url
+
+# 不要なディレクトリを禁止
+Disallow: /api/test-env
+Disallow: /api/temp-file
+Disallow: *.js
+Disallow: *.json
+
+# サイトマップの場所を指定
+Sitemap: https://kemono-mimi.com/sitemap.xml

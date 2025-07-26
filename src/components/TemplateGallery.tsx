@@ -130,11 +130,11 @@ const templates = [
   },
   {
     id: '14',
-    name: '厚涂',
+    name: '厚塗',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after',
     prompt: '滑らかな肌のレンダリング、アニメスタイルの厚塗り、Procreate、立体感、二次元イラスト、8K、透明感',
-    category: '厚涂'
+    category: '厚塗'
   },
   {
     id: '15',
@@ -170,11 +170,11 @@ const templates = [
   },
   {
     id: '22',
-    name: '証明写真 加工',
+    name: '証明写真加工',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after',
-    prompt: '証明写真風、アニメ風',
-    category: '証明写真 加工'
+    prompt: '証明写真スタイルのレタッチ：背景は真っ白で清潔感があり、人物は中央配置、柔らかく均一なライティング、ナチュラルな肌質感、軽いスキントーン補正とシミ除去を行いつつリアルさを保持、瞳はクリアに、顔立ちはシャープに、全体的にプロフェッショナルかつシンプルな仕上がり。',
+    category: '証明写真加工'
   },
 ]
 

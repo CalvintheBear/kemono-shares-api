@@ -1,0 +1,159 @@
+import type { Metadata } from 'next';
+import Link from "next/link"
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "LINEスタンプ作り方 - AIで写真を可愛いスタンプに無料変換",
+  description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！自分の写真からオリジナルスタンプが簡単に作成できます。登録不要・商用利用可能・LINEクリエイターズ登録対応。",
+  keywords: "LINEスタンプ作り方, LINEスタンプ作成 無料, AI LINEスタンプ, オリジナルスタンプ 作り方, LINEクリエイターズ スタンプ作成, 写真 LINEスタンプ, スタンプ作成 AI 無料",
+  alternates: {
+    canonical: "https://kemono-mimi.com/line-stamp",
+  },
+};
+
+export default function LineStickerCreationPage() {
+  return (
+    <div className="min-h-screen bg-[#fff7ea]">
+      <Header />
+      
+      <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <article className="prose prose-lg max-w-none">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-8 text-center">
+              LINEスタンプ作り方 - AIで写真を可愛いスタンプに無料変換
+            </h1>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="text-center">
+                <img 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85-after" 
+                  alt="LINEスタンプサンプル" 
+                  className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                />
+                <p className="text-sm text-amber-700 mt-2">LINEスタンプ</p>
+              </div>
+              
+              <div className="text-center">
+                <img 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-after" 
+                  alt="可愛いLINEアイコンサンプル" 
+                  className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                />
+                <p className="text-sm text-amber-700 mt-2">LINEアイコン</p>
+              </div>
+            </div>
+          
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">AIでLINEスタンプを作る方法</h2>
+            <p className="text-amber-700 leading-relaxed mb-4">
+              最新のAI画像生成技術を使えば、プロのイラストレーターに頼らずとも、自分だけのオリジナルLINEスタンプを簡単に作成できます。
+              写真をアップロードするだけで、かわいらしいアニメ風スタンプが生成され、LINEクリエイターズに登録して販売も可能です。
+            </p>
+          </section>
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプ作成の手順</h2>
+            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+              <li><strong>写真を準備する</strong>：正面を向いている明るい写真がおすすめ</li>
+              <li><strong>スタンプスタイルを選択する</strong>：chibi風、美少女風、かわいい系など</li>
+              <li><strong>AI画像生成を実行する</strong>：1-3分で8種類の表情スタンプが完成</li>
+              <li><strong>LINEクリエイターズに登録する</strong>：申請して販売開始</li>
+              <li><strong>スタンプを公開する</strong>：友達やフォロワーにシェア</li>
+            </ol>
+          </section>
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">人気のLINEスタンプスタイル</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-bold text-amber-800 mb-3">キャラクタータイプ</h3>
+                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                  <li>ケモノミミ - 可愛い動物の耳と尻尾</li>
+                  <li>人間化 - リアルな人間スタイル</li>
+                  <li>イラスト - アニメイラスト風</li>
+                  <li>萌え化 - 萌えキャラスタイル</li>
+                  <li>ジブリ風 - 優しく温かみのある雰囲気</li>
+                  <li>娘化 - 美少女キャラ化</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-bold text-amber-800 mb-3">表情バリエーション</h3>
+                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                  <li>笑顔 - 基本のハッピー表情</li>
+                  <li>驚き - 「えっ！」なリアクション</li>
+                  <li>泣き顔 - かわいい泣き虫スタンプ</li>
+                  <li>怒り - ツンデレ風怒り顔</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプ作成の特徴</h2>
+            <ul className="list-disc list-inside space-y-2 text-amber-700">
+              <li><strong>完全無料</strong>：登録不要・隠れた課金なし</li>
+              <li><strong>商用利用OK</strong>：LINEクリエイターズ販売可能</li>
+              <li><strong>高品質</strong>：1:1、2:3、3:2のサイズ比率で自動生成</li>
+              <li><strong>高速処理</strong>：1-3分で8種類の表情完成</li>
+              <li><strong>著作権クリア</strong>：オリジナル作品として安心利用</li>
+            </ul>
+          </section>
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプの活用シーン</h2>
+            <ul className="list-disc list-inside space-y-2 text-amber-700">
+              <li><strong>友達とのチャット</strong>：日常会話に使えるスタンプ</li>
+              <li><strong>ビジネス用</strong>：企業・ブランドのスタンプ制作</li>
+              <li><strong>SNSプロモーション</strong>：インフルエンサー用スタンプ</li>
+              <li><strong>プレゼント</strong>：友達や家族へのギフト</li>
+              <li><strong>イベント用</strong>：誕生日・結婚式など特別な日</li>
+            </ul>
+          </section>
+
+
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEクリエイターズ登録ガイド</h2>
+            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+              <li><strong>LINE Creators Marketにアクセス</strong>：creators.line.me</li>
+              <li><strong>アカウント登録</strong>：LINEアカウントで簡単登録</li>
+              <li><strong>スタンプセットを作成</strong>：8枚以上の画像をアップロード</li>
+              <li><strong>情報入力</strong>：タイトル・説明文・価格を設定</li>
+              <li><strong>審査申請</strong>：約1週間で審査結果通知</li>
+              <li><strong>販売開始</strong>：承認後すぐに販売可能</li>
+            </ol>
+          </section>
+
+          <section className="card-kawaii p-8 mb-8">
+            <h2 className="text-2xl font-bold text-amber-800 mb-4">よくある質問</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-bold text-amber-800">Q: LINEスタンプは本当に無料で作れますか？</h3>
+                <p className="text-amber-700 text-sm">A: はい、AI画像生成は完全無料です。LINEクリエイターズへの登録も無料です。</p>
+              </div>
+              <div>
+                <h3 className="font-bold text-amber-800">Q: 商用利用は可能ですか？</h3>
+                <p className="text-amber-700 text-sm">A: はい、作成したスタンプはLINEクリエイターズで販売可能です。</p>
+              </div>
+              <div>
+                <h3 className="font-bold text-amber-800">Q: どんな写真でも使えますか？</h3>
+                <p className="text-amber-700 text-sm">A: 自分の写真または著作権フリーの画像であれば利用可能です。</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="text-center mt-12">
+            <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
+              今すぐLINEスタンプを作る 🎨
+            </Link>
+          </section>
+        </article>
+      </div>
+      </main>
+      
+      <Footer />
+    </div>
+  )
+}

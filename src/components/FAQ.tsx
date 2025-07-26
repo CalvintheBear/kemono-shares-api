@@ -1,74 +1,72 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
+// import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
 const faqData = [
   {
     id: 1,
-    question: "アニメ変身ツールは本当に無料で使えるの？",
-    answer: "はい、完全に無料でご利用いただけます。登録も不要で、隠れた課金もありません。すべての機能を制限なくお使いいただけます。"
+    question: "AI画像変換は本当に無料で使えるの？",
+    answer: "はい、AI画像生成が完全に無料でご利用いただけます。登録不要・隠れた課金なし、商用利用も可能なAI画像変換ツールです。"
   },
   {
     id: 2,
-    question: "どのような画像ファイルに対応していますか？",
-    answer: "JPG、PNG、WebP形式の画像ファイルに対応しています。最大ファイルサイズは10MBまでで、推奨解像度は512x512以上です。"
+    question: "AI画像変換に対応している画像ファイルは？",
+    answer: "JPG、PNG、WebP形式の画像ファイルに対応しており、最大10MBまでのAI画像生成が可能です。1:1、2:3、3:2のサイズ比率で高画質なアニメ画像が作成できます。"
   },
   {
     id: 3,
-    question: "アップロードした画像は安全に処理されますか？",
-    answer: "お客様のプライバシーを最優先に考えています。アップロードされた画像は処理後すぐに自動削除され、第三者に共有されることはありません。"
+    question: "AI画像変換でアップロードした画像は安全？",
+    answer: "お客様のプライバシーを最優先に考えています。アップロードされた画像はAI画像変換処理後すぐに自動削除され、第三者に共有されることは一切ありません。"
   },
   {
     id: 4,
-    question: "変身処理にはどのくらい時間がかかりますか？",
-    answer: "通常、画像の変身処理は15〜60秒程度で完了します。画像のサイズや複雑さ、サーバーの混雑状況により多少前後する場合があります。"
+    question: "写真をアニメ風に変換するのにどれくらい時間がかかる？",
+    answer: "AI画像変換は通常1-3分程度で完了します。写真をアニメ風に変換する処理時間は画像サイズや複雑さにより異なりますが、写真加工アプリよりも高速です。"
   },
   {
     id: 5,
-    question: "生成された画像の商用利用は可能ですか？",
-    answer: "個人利用は自由にお使いいただけます。商用利用については、生成された画像の内容や用途により制限がある場合がありますので、詳細は利用規約をご確認ください。"
+    question: "AI画像生成したアニメ画像は商用利用可能？",
+    answer: "はい！AI画像生成したアニメ画像は商用利用可能です。SNSアイコン、プロフィール画像、VTuber立ち絵、擬人化キャラクター制作など、幅広くご利用ください。"
   },
   {
     id: 6,
-    question: "スマートフォンからでも利用できますか？",
-    answer: "はい、スマートフォン、タブレット、PCのどのデバイスからでもご利用いただけます。レスポンシブデザインで最適化されており、快適にお使いいただけます。"
+    question: "スマートフォンからでもAI画像変換は利用可能？",
+    answer: "はい、スマートフォン、タブレット、PCのどのデバイスからでもAI画像変換をご利用いただけます。レスポンシブデザインで最適化されており、chibiキャラクター作成も簡単です。"
   },
   {
     id: 7,
-    question: "人物以外の画像でも変身できますか？",
-    answer: "人物の画像で最高の結果が得られるよう設計されていますが、動物やキャラクターの画像でも興味深い結果が得られる場合があります。ぜひお試しください。"
+    question: "人物以外の画像でもアニメ風に変換できますか？",
+    answer: "人物の画像で最高の結果が得られるAI画像変換ですが、動物やキャラクターの擬人化、chibi化も可能です。ペットやオリジナルキャラクターをアニメ風に変換してみてください。"
   },
   {
     id: 8,
-    question: "変身結果が気に入らない場合はどうすればいいですか？",
-    answer: "別のスタイルを選択して再度お試しいただくか、異なる角度や明るさの画像を使用することで、より良い結果が得られる場合があります。"
+    question: "AI画像変換の結果が気に入らない場合は？",
+    answer: "別のアニメスタイルを選択して再度AI画像変換をお試しいただけます。ジブリ風、VTuber風、美少女、chibiなど20種類以上のスタイルから選択可能です。"
   },
   {
     id: 9,
-    question: "一度に複数の画像を処理できますか？",
-    answer: "現在のバージョンでは一度に1枚の画像の処理となります。複数の画像を変身させたい場合は、お手数ですが1枚ずつ処理をお願いします。"
+    question: "一度に複数の写真をAI画像変換できますか？",
+    answer: "現在のバージョンでは一度に1枚ずつのAI画像変換となります。複数の写真をアニメ風に変換したい場合は、1枚ずつ処理をお願いします。"
   },
   {
     id: 10,
-    question: "生成された画像の解像度はどのくらいですか？",
-    answer: "生成される画像の解像度は、アップロードされた元画像の解像度に依存します。高解像度の画像をアップロードすることで、より鮮明な結果が得られます。"
+    question: "AI画像生成したアニメ画像の解像度は？",
+    answer: "AI画像生成するアニメ画像は1:1、2:3、3:2のサイズ比率で作成され、元画像の解像度を保持します。高解像度の写真をアップロードすることで、より鮮明なアニメ画像が作成できます。"
   },
   {
     id: 11,
-    question: "インターネット接続が不安定な場合はどうなりますか？",
-    answer: "処理中にネットワークが切断された場合、処理は中断されます。安定したインターネット接続環境でのご利用をお勧めします。モバイルデータをご利用の場合はデータ使用量にご注意ください。"
+    question: "チャットGPT画像生成との違いは何ですか？",
+    answer: "当AI画像変換ツールは写真を直接アニメ風に変換するため、チャットGPT画像生成よりも簡単で速く、登録不要で即座にご利用いただけます。プロンプト入力も不要です。"
   },
   {
     id: 12,
-    question: "技術的な問題や不具合を発見した場合はどこに報告すればいいですか？",
-    answer: "技術的な問題や改善のご提案がございましたら、お問い合わせフォームからご連絡ください。皆様からのフィードバックをもとに、サービスの向上に努めています。"
+    question: "AI画像変換でエラーが発生した場合はどうすればいい？",
+    answer: "AI画像変換で技術的な問題が発生した場合は、画像サイズや形式を確認していただくか、お問い合わせフォームからご連絡ください。AI画像生成の改善に努めています。"
   }
 ]
 
 export default function FAQ() {
-  // 默认展开所有FAQ项目
-  const [openItems, setOpenItems] = useState<number[]>(faqData.map(item => item.id))
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -80,14 +78,6 @@ export default function FAQ() {
     return () => clearTimeout(timer)
   }, [])
 
-  const toggleItem = (id: number) => {
-    setOpenItems(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
-    )
-  }
-
   return (
     <section id="faq" className={`px-4 sm:px-6 lg:px-8 bg-[#fff7ea] transition-all duration-1000 ease-out ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -97,10 +87,10 @@ export default function FAQ() {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-amber-800 font-cute mb-6 lg:mb-8">
-            よくある質問
+            AI画像変換 よくある質問
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-amber-700 leading-relaxed">
-            アニメ変身ツールについてのよくある質問をまとめました
+            AI画像変換・写真アニメ化についてのよくある質問をまとめました
           </p>
         </div>
 
@@ -110,30 +100,14 @@ export default function FAQ() {
           {faqData.map((faq, index) => (
             <div 
               key={faq.id} 
-              className={`card-kawaii overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in-up ${
-                openItems.includes(faq.id) ? 'shadow-lg' : ''
-              }`}
+              className="card-kawaii overflow-hidden shadow-lg transition-all duration-300 animate-fade-in-up"
               style={{ animationDelay: `${0.7 + index * 0.1}s` }}
             >
-              <button
-                onClick={() => toggleItem(faq.id)}
-                className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left flex items-center justify-between hover:bg-amber-50 transition-colors duration-200"
-              >
-                <h3 className="font-semibold text-amber-800 font-cute pr-4 text-sm sm:text-base lg:text-lg leading-relaxed">
+              <div className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left hover:bg-amber-50 transition-colors duration-200">
+                <h3 className="font-semibold text-amber-800 font-cute pr-4 text-sm sm:text-base lg:text-lg leading-relaxed mb-3">
                   {faq.question}
                 </h3>
-                <ChevronDownIcon 
-                  className={`w-5 h-5 text-amber-600 transition-transform duration-300 ${
-                    openItems.includes(faq.id) ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-              <div 
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openItems.includes(faq.id) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div className="px-6 sm:px-8 pb-4 sm:pb-6">
+                <div className="px-0 sm:px-0 pb-2 sm:pb-2">
                   <p className="text-sm sm:text-base text-amber-700 leading-relaxed">
                     {faq.answer}
                   </p>
@@ -143,18 +117,7 @@ export default function FAQ() {
           ))}
         </div>
 
-        {/* 追加情報 */}
-        <div className="text-center mt-12 card-kawaii p-6">
-          <h3 className="text-xl font-bold text-amber-800 font-cute mb-3">
-            他にご質問がございますか？
-          </h3>
-          <p className="text-amber-700 mb-4">
-            上記以外のご質問やご不明な点がございましたら、お気軽にお問い合わせください。
-          </p>
-          <button className="btn-kawaii">
-            お問い合わせする
-          </button>
-        </div>
+
       </div>
     </section>
   );

@@ -1,11 +1,57 @@
-'use client'
-
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+
+// プライバシーポリシーSEOメタデータ
+export const metadata = {
+  title: "プライバシーポリシー - kemono-mimi AI画像生成サービス",
+  description: "kemono-mimi.comのプライバシーポリシー。AI画像生成サービスにおける個人情報の取り扱い、データ保護、Cookieの使用について詳しく説明します。",
+  keywords: "kemono-mimi プライバシーポリシー, AI画像生成 プライバシー, 個人情報保護, データセキュリティ, Cookieポリシー, 画像保存 ポリシー, 第三者提供 禁止, 無料 AIツール プライバシー",
+  openGraph: {
+    title: "プライバシーポリシー - kemono-mimi AI画像生成",
+    description: "kemono-mimi AI画像生成サービスのプライバシーポリシー詳細",
+    url: "https://kemono-mimi.com/privacy",
+    siteName: "kemono-mimi AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-privacy.jpg",
+        width: 1200,
+        height: 630,
+        alt: "kemono-mimi プライバシーポリシー",
+      }
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "プライバシーポリシー - kemono-mimi AI画像生成",
+    description: "AI画像生成サービスのプライバシーポリシー詳細",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-privacy.jpg"],
+  },
+  alternates: {
+    canonical: "https://kemono-mimi.com/privacy",
+  },
+}
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-[#fff7ea]">
+      {/* JSON-LD 構造化データ埋め込み */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'プライバシーポリシー - kemono-mimi AI画像生成',
+            description: 'kemono-mimi.comのプライバシーポリシー詳細説明',
+            url: 'https://kemono-mimi.com/privacy',
+            datePublished: '2024-07-26',
+            dateModified: '2024-07-26'
+          }),
+        }}
+      />
+      
       <Header />
       
       <main className="max-w-4xl mx-auto px-4 py-12">

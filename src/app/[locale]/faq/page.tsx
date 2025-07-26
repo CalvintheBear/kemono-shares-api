@@ -1,10 +1,38 @@
-'use client'
-
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
 import Link from 'next/link'
+
+// FAQページSEOメタデータ
+export const metadata = {
+  title: "よくある質問 - kemono-mimi AI画像生成についてのご質問にお答えします",
+  description: "kemono-mimi.comのAI画像生成サービスについてのよくある質問と回答をまとめました。無料AI画像変換・写真アニメ化・商用利用可能など、ユーザー様からのご質問に詳しくお答えします。",
+  keywords: "kemono-mimi FAQ, AI画像生成 使い方, 写真 アニメ風 変換 質問, 無料 AI画像変換 よくある質問, LINEスタンプ作り方 方法, chibiキャラクター作成 解説, 商用利用可能 AI画像, 1-3分 高速生成, プライバシー 保護, 登録不要 無料ツール",
+  openGraph: {
+    title: "よくある質問 - kemono-mimi AI画像生成",
+    description: "kemono-mimi AI画像生成サービスについてのよくある質問と回答まとめ",
+    url: "https://kemono-mimi.com/faq",
+    siteName: "kemono-mimi AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-faq.jpg",
+        width: 1200,
+        height: 630,
+        alt: "kemono-mimi AI画像生成 FAQ",
+      }
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "よくある質問 - kemono-mimi AI画像生成",
+    description: "AI画像生成サービスについてのよくある質問と回答まとめ",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-faq.jpg"],
+  },
+  alternates: {
+    canonical: "https://kemono-mimi.com/faq",
+  },
+}
 
 interface FAQItem {
   question: string
@@ -21,7 +49,7 @@ const faqData: FAQItem[] = [
   {
     category: "サービスについて",
     question: "どのようなスタイルがありますか？",
-    answer: "擬人化、ジブリ風、VTuber、ウマ娘、ちびキャラ、萌え化、LINEスタンプ風、異世界、病娇、厚塗り、3D CG、乙女ゲーム、クレヨンしんちゃん、証明写真加工など、22種類以上のスタイルをご用意しています。各スタイルは独特の特徴を持ち、様々な雰囲気に変換できます。"
+    answer: "擬人化、ジブリ風、可愛い壁紙、ウマ娘、ちびキャラ、萌え化、LINEスタンプ風、異世界、病娇、厚塗り、3D CG、乙女ゲーム、クレヨンしんちゃん、証明写真加工など、22種類以上のスタイルをご用意しています。各スタイルは独特の特徴を持ち、様々な雰囲気に変換できます。"
   },
   {
     category: "利用方法",
@@ -105,29 +133,35 @@ const faqData: FAQItem[] = [
   }
 ]
 
-const categories = [...new Set(faqData.map(item => item.category))]
+// const categories = [...new Set(faqData.map(item => item.category))]
 
 export default function FAQPage() {
-  // 默认展开所有FAQ项目
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set(faqData.map((_, index) => index)))
-  const [selectedCategory, setSelectedCategory] = useState<string>('すべて')
-
-  const toggleItem = (index: number) => {
-    const newOpenItems = new Set(openItems)
-    if (newOpenItems.has(index)) {
-      newOpenItems.delete(index)
-    } else {
-      newOpenItems.add(index)
-    }
-    setOpenItems(newOpenItems)
-  }
-
-  const filteredFAQs = selectedCategory === 'すべて' 
-    ? faqData 
-    : faqData.filter(item => item.category === selectedCategory)
+  // サーバーコンポーネントとして動作
 
   return (
     <div className="min-h-screen bg-[#fff7ea]">
+      {/* JSON-LD 構造化データ埋め込み */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            name: 'よくある質問 - kemono-mimi AI画像生成',
+            description: 'kemono-mimi.comのAI画像生成サービスについてのよくある質問と回答',
+            url: 'https://kemono-mimi.com/faq',
+            mainEntity: faqData.map(faq => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: faq.answer
+              }
+            }))
+          }),
+        }}
+      />
+      
       <Header />
       
       <main className="max-w-6xl mx-auto px-4 py-12">
@@ -141,69 +175,20 @@ export default function FAQPage() {
           </p>
         </div>
 
-        {/* カテゴリーフィルター */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          <button
-            onClick={() => setSelectedCategory('すべて')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              selectedCategory === 'すべて'
-                ? 'bg-gradient-to-r from-pink-400 to-orange-400 text-white shadow-lg scale-110'
-                : 'bg-white/80 text-amber-700 border border-amber-200 hover:bg-amber-50'
-            }`}
-          >
-            すべて
-          </button>
-          {categories.map(category => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-pink-400 to-orange-400 text-white shadow-lg scale-110'
-                  : 'bg-white/80 text-amber-700 border border-amber-200 hover:bg-amber-50'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
         <div className="space-y-4">
-          {filteredFAQs.map((faq) => {
-            const actualIndex = faqData.indexOf(faq)
-            const isOpen = openItems.has(actualIndex)
-            
-            return (
-              <div key={actualIndex} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 overflow-hidden">
-                <button
-                  onClick={() => toggleItem(actualIndex)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-white/50 transition-colors"
-                >
-                  <div className="flex-1 pr-4">
-                    <p className="font-semibold text-amber-800 font-cute">{faq.question}</p>
-                    <p className="text-xs text-amber-600 mt-1">{faq.category}</p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    {isOpen ? (
-                      <ChevronUpIcon className="w-6 h-6 text-amber-600" />
-                    ) : (
-                      <ChevronDownIcon className="w-6 h-6 text-amber-600" />
-                    )}
-                  </div>
-                </button>
-                
-                <div 
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
-                >
-                  <div className="px-6 py-4 border-t border-amber-100">
-                    <p className="text-gray-700 leading-relaxed font-cute">{faq.answer}</p>
-                  </div>
+          {faqData.map((faq, index) => (
+            <div key={index} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 overflow-hidden">
+              <div className="w-full px-6 py-4 text-left">
+                <div className="flex-1 pr-4 mb-4">
+                  <p className="font-semibold text-amber-800 font-cute">{faq.question}</p>
+                  <p className="text-xs text-amber-600 mt-1">{faq.category}</p>
+                </div>
+                <div className="px-0 py-4 border-t border-amber-100">
+                  <p className="text-gray-700 leading-relaxed font-cute">{faq.answer}</p>
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
 
         {/* 追加情報 */}

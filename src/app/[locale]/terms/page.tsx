@@ -1,11 +1,57 @@
-'use client'
-
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+
+// 利用規約SEOメタデータ
+export const metadata = {
+  title: "利用規約 - kemono-mimi AI画像生成サービス",
+  description: "kemono-mimi.comの利用規約。AI画像生成サービスの利用条件、著作権、免責事項、禁止事項について詳しく説明します。",
+  keywords: "kemono-mimi 利用規約, AI画像生成 利用条件, 著作権 ポリシー, 商用利用 規約, 禁止事項, 免責事項, AI生成画像 権利, サービス利用規約, 無料ツール 規約, ユーザー責任",
+  openGraph: {
+    title: "利用規約 - kemono-mimi AI画像生成",
+    description: "kemono-mimi AI画像生成サービスの利用規約詳細",
+    url: "https://furycode.vercel.app/terms",
+    siteName: "kemono-mimi AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-terms.jpg",
+        width: 1200,
+        height: 630,
+        alt: "kemono-mimi 利用規約",
+      }
+    ],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "利用規約 - kemono-mimi AI画像生成",
+    description: "AI画像生成サービスの利用規約詳細",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-terms.jpg"],
+  },
+  alternates: {
+    canonical: "https://furycode.vercel.app/terms",
+  },
+}
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#fff7ea]">
+      {/* JSON-LD 構造化データ埋め込み */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: '利用規約 - kemono-mimi AI画像生成',
+            description: 'kemono-mimi.comの利用規約詳細説明',
+            url: 'https://furycode.vercel.app/terms',
+            datePublished: '2024-07-26',
+            dateModified: '2024-07-26'
+          }),
+        }}
+      />
+      
       <Header />
       
       <main className="max-w-4xl mx-auto px-4 py-12">

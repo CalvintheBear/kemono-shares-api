@@ -151,11 +151,11 @@ const templates: Template[] = [
   },
   {
     id: '14',
-    name: '厚涂',
+    name: '厚塗',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after',
     prompt: '滑らかな肌のレンダリング、アニメスタイルの厚塗り、Procreate、立体感、二次元イラスト、8K、透明感',
-    category: '厚涂'
+    category: '厚塗'
   },
   {
     id: '15',
@@ -184,11 +184,11 @@ const templates: Template[] = [
   },
   {
     id: '22',
-    name: '証明写真 加工',
+    name: '証明写真加工',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after',
-    prompt: '証明写真風、アニメ風',
-    category: '証明写真 加工'
+    prompt: '証明写真スタイルのレタッチ：背景は真っ白で清潔感があり、人物は中央配置、柔らかく均一なライティング、ナチュラルな肌質感、軽いスキントーン補正とシミ除去を行いつつリアルさを保持、瞳はクリアに、顔立ちはシャープに、全体的にプロフェッショナルかつシンプルな仕上がり。',
+    category: '証明写真加工'
   },
 ]
 
@@ -711,7 +711,7 @@ export default function Workspace() {
                 <div className={`mb-4 transition-all duration-1000 delay-700 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}>
-
+                  
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handlePreviousPage}
@@ -737,7 +737,8 @@ export default function Workspace() {
                           >
                             <img
                               src={template.afterImage}
-                              alt={template.name}
+                              alt={`${template.name} - AI画像変換 無料 ${template.name === 'chibi' ? 'chibiキャラクター作成' : template.name === 'lineスタンプ' ? 'LINEスタンプ作り方' : template.name === '可愛line アイコン' ? 'LINEアイコン作成' : template.name === 'ジブリ風' ? 'ジブリ風アニメ変換' : 'AI画像変換'}`}
+                              title={`${template.name} - 写真を${template.name}風に変換 ${template.name === 'chibi' ? '可愛いchibiキャラクターに変換' : template.name === 'lineスタンプ' ? 'LINEスタンプ風に作成' : template.name === '可愛line アイコン' ? 'LINEアイコンに最適化' : template.name === 'ジブリ風' ? 'ジブリ風アニメに変換' : 'AI画像変換'}`}
                               className="w-full aspect-square object-cover rounded-[12px] mb-1 shadow-sm"
                             />
                             <p className="text-[10px] font-bold text-amber-800 font-cute leading-tight px-0.5 text-center">{template.name}</p>
@@ -898,9 +899,9 @@ export default function Workspace() {
                         <div className="grid grid-cols-1 gap-2">
                           {[
                             'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
-                            '美しい花の妖精、透明な羽、光る魔法、森の背景',
-                            '未来のロボット少女、サイバーパンク風、ネオンライト',
-                            '和風の巫女、神社の背景、桜の花びら、神秘的な雰囲気'
+                            'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
+                            '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
+                            'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン'
                           ].map((template, index) => (
                             <button
                               key={index}
@@ -1116,7 +1117,7 @@ export default function Workspace() {
                     <div className="text-center py-8">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
                       <p className="mt-4 text-purple-600 font-cute">
-                        魔法をかけているよ... ✨
+                        kemono-mimiのGPT-4o Image FluxMax版で画像生成中... 1-3分で完成！✨
                       </p>
                     </div>
                   )}
@@ -1132,14 +1133,24 @@ export default function Workspace() {
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}>
         <div className="max-w-7xl mx-auto">
-          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-12 lg:mb-16 transition-all duration-1000 delay-1500 ${
+          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-8 lg:mb-10 transition-all duration-1000 delay-1500 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            選べる変身スタイル
+            kemono-mimi AI画像生成 - GPT-4o Image FluxMax版で写真をアニメ風に即変換
           </h2>
+          <p className={`text-base sm:text-lg lg:text-xl text-amber-700 text-center mb-8 lg:mb-10 leading-relaxed transition-all duration-1000 delay-1600 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            登録不要・商用利用可能・完全無料で20種類以上のアニメスタイルから選択
+          </p>
+          <p className={`text-sm sm:text-base lg:text-lg text-amber-600 text-center mb-12 lg:mb-16 leading-relaxed transition-all duration-1000 delay-1700 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            最新のGPT-4o Image FluxMax技術により、ジブリ風・可愛い壁紙・美少女・chibiキャラクター作成・証明写真加工など、高品質なアニメ画像を1-3分で生成します
+          </p>
           
           {/* 分类选择按钮 */}
-          <div className={`flex flex-wrap justify-center gap-3 sm:gap-4 mb-10 lg:mb-12 transition-all duration-1000 delay-1700 ${
+          <div className={`flex flex-wrap justify-center gap-3 sm:gap-4 mb-10 lg:mb-12 transition-all duration-1000 delay-1800 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
             {[...Array.from(new Set(templates.map(t => t.category)))].map((category, index) => (
@@ -1162,7 +1173,7 @@ export default function Workspace() {
           {(() => {
             const selectedTemplate = templates.find(t => t.category === selectedCategory)
             return selectedTemplate && (
-              <div className={`card-kawaii p-6 sm:p-8 lg:p-10 max-w-5xl mx-auto transition-all duration-1000 delay-1900 ${
+              <div className={`card-kawaii p-6 sm:p-8 lg:p-10 max-w-5xl mx-auto transition-all duration-1000 delay-2000 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}>
                 <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-800 font-cute text-center mb-8 lg:mb-10">
@@ -1176,7 +1187,7 @@ export default function Workspace() {
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
                       <img
                         src={selectedTemplate.beforeImage}
-                        alt={`${selectedTemplate.name} 変身前`}
+                        alt={`${selectedTemplate.name} 変身前 - AI画像変換 無料 変身前の写真`}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -1198,7 +1209,7 @@ export default function Workspace() {
                     <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
                       <img
                         src={selectedTemplate.afterImage}
-                        alt={`${selectedTemplate.name} 変身後`}
+                        alt={`${selectedTemplate.name} 変身後 - AI画像変換 無料 変身後の${selectedTemplate.name === 'chibi' ? 'chibiキャラクター' : selectedTemplate.name === 'lineスタンプ' ? 'LINEスタンプ' : selectedTemplate.name === '可愛line アイコン' ? 'LINEアイコン' : 'アニメ画像'}`}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -1206,6 +1217,10 @@ export default function Workspace() {
                 </div>
                 
                 <div className="mt-8 lg:mt-10 text-center animate-fade-in-up" style={{animationDelay: '2.5s'}}>
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-800 font-cute text-center mb-8 lg:mb-10">
+                    {selectedTemplate.name} - AI画像変換 無料 変身前後の比較
+                  </h3>
+                  
                   <p className="text-sm sm:text-base text-gray-600 mb-4 lg:mb-6 leading-relaxed max-w-4xl mx-auto">
                     {selectedTemplate.prompt}
                   </p>
