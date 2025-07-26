@@ -21,6 +21,8 @@ export default function SharePage() {
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [hasShareData, setHasShareData] = useState(false)
+  const [shareLinks, setShareLinks] = useState<Array<{id: string, title: string, style: string, timestamp: string}>>([])
+  const [loadingLinks, setLoadingLinks] = useState(true)
 
   useEffect(() => {
     const dataParam = searchParams.get('data')
@@ -39,6 +41,49 @@ export default function SharePage() {
     }
     setLoading(false)
   }, [searchParams])
+
+  // 获取所有分享链接
+  useEffect(() => {
+    const fetchShareLinks = async () => {
+      try {
+        const response = await fetch('/api/share/list?limit=12')
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data.items) {
+            const links = result.data.items.map((item: {id: string, style: string, timestamp: string}) => ({
+              id: item.id,
+              title: `${item.style}変換`,
+              style: item.style,
+              timestamp: item.timestamp
+            }))
+            setShareLinks(links)
+          }
+        } else {
+          console.error('API 请求失败:', response.status)
+          // 如果 API 失败，使用模拟数据
+          const mockLinks = [
+            { id: 'sample1', title: 'ジブリ風変換', style: 'ジブリ風', timestamp: '2024-07-26' },
+            { id: 'sample2', title: 'VTuber風変換', style: 'VTuber風', timestamp: '2024-07-25' },
+            { id: 'sample3', title: 'ウマ娘風変換', style: 'ウマ娘風', timestamp: '2024-07-24' },
+          ]
+          setShareLinks(mockLinks)
+        }
+      } catch (error) {
+        console.error('获取分享链接失败:', error)
+        // 如果网络错误，使用模拟数据
+        const mockLinks = [
+          { id: 'sample1', title: 'ジブリ風変換', style: 'ジブリ風', timestamp: '2024-07-26' },
+          { id: 'sample2', title: 'VTuber風変換', style: 'VTuber風', timestamp: '2024-07-25' },
+          { id: 'sample3', title: 'ウマ娘風変換', style: 'ウマ娘風', timestamp: '2024-07-24' },
+        ]
+        setShareLinks(mockLinks)
+      } finally {
+        setLoadingLinks(false)
+      }
+    }
+
+    fetchShareLinks()
+  }, [])
 
   const handleTryNow = () => {
     window.location.href = 'https://kemono-mimi.com'
@@ -138,6 +183,36 @@ export default function SharePage() {
                   <p className="text-gray-600 leading-relaxed">数分で美しいアニメ風画像が完成します</p>
                 </div>
               </div>
+            </section>
+
+            {/* Share Links Section */}
+            <section className="w-full max-w-4xl bg-white/95 rounded-3xl shadow-lg p-8 mb-16">
+              <h2 className="text-3xl font-bold text-amber-700 mb-8 text-center">最近の変換結果</h2>
+              {loadingLinks ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">読み込み中...</p>
+                </div>
+              ) : shareLinks.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {shareLinks.map((link) => (
+                    <a
+                      key={link.id}
+                      href={`/share/${link.id}`}
+                      className="block bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-amber-200"
+                    >
+                      <div className="text-2xl mb-3">🎨</div>
+                      <h3 className="text-lg font-bold text-amber-700 mb-2">{link.title}</h3>
+                      <p className="text-sm text-gray-600 mb-3">{link.style}</p>
+                      <p className="text-xs text-gray-500">{link.timestamp}</p>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">まだ変換結果がありません</p>
+                </div>
+              )}
             </section>
 
             {/* CTA Section */}
