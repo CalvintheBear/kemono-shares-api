@@ -77,7 +77,7 @@ const templates = [
     name: '少女',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-after',
-    prompt: '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
+    prompt: 'eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
     category: '少女'
   },
   {

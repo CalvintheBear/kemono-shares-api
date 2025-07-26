@@ -101,7 +101,7 @@ const templates: Template[] = [
     name: '少女',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-after',
-    prompt: '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
+    prompt: 'eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
     category: '少女'
   },
   {
@@ -267,6 +267,7 @@ export default function Workspace() {
       try {
         setIsUploading(true)
         const url = await uploadImageToKie(file)
+        console.log('✅ 设置fileUrl状态:', url)
         setFileUrl(url)
       } catch (err) {
         console.error('文件上传失败:', err)
@@ -321,7 +322,17 @@ export default function Workspace() {
     }
 
     const data = await response.json()
-    return data.fileUrl
+    console.log('🔍 上传API返回数据:', data)
+    
+    // 支持多种返回格式：R2返回url，兼容其他可能的字段名
+    const imageUrl = data.url || data.fileUrl || data.imageUrl || data.uploadedUrl
+    console.log('🔍 解析后的图片URL:', imageUrl)
+    
+    if (!imageUrl) {
+      throw new Error('未获得有效的图片URL')
+    }
+    
+    return imageUrl
   }
 
   const generateImage = async () => {
@@ -417,6 +428,33 @@ export default function Workspace() {
         setCurrentResult(completedResult)
         setGenerationProgress(100)
         setGenerationStatusText(mode === 'text-to-image' ? '画像生成完了！' : '変身完了！')
+
+        // 自动处理分享：将KIE AI图片下载到R2
+        try {
+          console.log('🔄 开始自动处理分享图片...')
+          const response = await fetch('/api/share', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              generatedUrl: generatedUrl,
+              originalUrl: imagePreview!,
+              prompt: prompt,
+              style: selectedTemplate?.name || 'カスタム',
+              timestamp: Date.now()
+            })
+          })
+
+          if (response.ok) {
+            const shareData = await response.json()
+            console.log('✅ 分享图片自动处理完成:', shareData.shareUrl)
+          } else {
+            console.warn('⚠️ 分享图片自动处理失败，但不影响主要功能')
+          }
+        } catch (error) {
+          console.warn('⚠️ 分享图片自动处理出错，但不影响主要功能:', error)
+        }
 
         // 2秒后隐藏进度条
         setTimeout(() => {
@@ -560,6 +598,33 @@ export default function Workspace() {
             setGenerationProgress(100)
             setGenerationStatusText(mode === 'text-to-image' ? '画像生成完了！' : '変身完了！')
 
+            // 自动处理分享：将KIE AI图片下载到R2
+            try {
+              console.log('🔄 开始自动处理分享图片...')
+              const response = await fetch('/api/share', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  generatedUrl: finalImageUrl,
+                  originalUrl: imagePreview!,
+                  prompt: prompt,
+                  style: selectedTemplate?.name || 'カスタム',
+                  timestamp: Date.now()
+                })
+              })
+
+              if (response.ok) {
+                const shareData = await response.json()
+                console.log('✅ 分享图片自动处理完成:', shareData.shareUrl)
+              } else {
+                console.warn('⚠️ 分享图片自动处理失败，但不影响主要功能')
+              }
+            } catch (error) {
+              console.warn('⚠️ 分享图片自动处理出错，但不影响主要功能:', error)
+            }
+
             setTimeout(() => {
               setGenerationProgress(null)
               setGenerationStatusText('')
@@ -633,6 +698,19 @@ export default function Workspace() {
       consecutiveErrors: _consecutiveErrors
     })
   }, [pollCount, isGenerating, generationError, _consecutiveErrors])
+
+  // 添加用于调试的useEffect来监控fileUrl状态
+  useEffect(() => {
+    console.log('🔍 fileUrl状态变化:', {
+      fileUrl,
+      mode,
+      selectedTemplate: selectedTemplate?.name,
+      canGenerate: !isGenerating && 
+        (mode === 'template-mode' ? (!!fileUrl && !!selectedTemplate) : 
+         mode === 'image-to-image' ? (!!fileUrl && !!prompt.trim()) :
+         mode === 'text-to-image' ? !!prompt.trim() : false)
+    })
+  }, [fileUrl, mode, selectedTemplate, prompt, isGenerating])
 
   const handleTemplateSelect = (template: Template) => {
     setSelectedTemplate(template)

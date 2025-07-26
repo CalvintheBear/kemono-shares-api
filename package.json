@@ -6,9 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:r2-config": "node scripts/test-r2-config.js",
+    "test:upload": "node scripts/test-upload.js",
+    "test:share-r2": "node scripts/test-share-r2-integration.js",
+    "test:afterimage-config": "node scripts/test-afterimage-config.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.850.0",
+    "@aws-sdk/s3-request-presigner": "^3.850.0",
     "@heroicons/react": "^2.2.0",
     "autoprefixer": "^10.4.21",
     "axios": "^1.10.0",
