@@ -6,6 +6,9 @@ import { useTranslations } from 'next-intl'
 import { useAppStore } from '@/store/useAppStore'
 import { ImageSize } from '@/store/useAppStore'
 import BeforeAfterSlider from './BeforeAfterSlider'
+import ShareButton from './ShareButton'
+import Link from 'next/link'
+import Image from 'next/image'
 
 interface Template {
   id: string
@@ -213,7 +216,7 @@ export default function Workspace() {
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
   const templatesPerPage = 5
-  const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
+  const [_selectedCategory, _setSelectedCategory] = useState<string>('擬人化')
 
   // 使用Zustand store
   const { selectedSize, setSelectedSize } = useAppStore()
@@ -735,10 +738,12 @@ export default function Workspace() {
                                 : 'border-pink-200 bg-white/80 hover:border-pink-400 hover:shadow-md backdrop-blur-sm'
                             }`}
                           >
-                            <img
+                            <Image
                               src={template.afterImage}
                               alt={`${template.name} - AI画像変換 無料 ${template.name === 'chibi' ? 'chibiキャラクター作成' : template.name === 'lineスタンプ' ? 'LINEスタンプ作り方' : template.name === '可愛line アイコン' ? 'LINEアイコン作成' : template.name === 'ジブリ風' ? 'ジブリ風アニメ変換' : 'AI画像変換'}`}
                               title={`${template.name} - 写真を${template.name}風に変換 ${template.name === 'chibi' ? '可愛いchibiキャラクターに変換' : template.name === 'lineスタンプ' ? 'LINEスタンプ風に作成' : template.name === '可愛line アイコン' ? 'LINEアイコンに最適化' : template.name === 'ジブリ風' ? 'ジブリ風アニメに変換' : 'AI画像変換'}`}
+                              width={128}
+                              height={128}
                               className="w-full aspect-square object-cover rounded-[12px] mb-1 shadow-sm"
                             />
                             <p className="text-[10px] font-bold text-amber-800 font-cute leading-tight px-0.5 text-center">{template.name}</p>
@@ -784,9 +789,11 @@ export default function Workspace() {
 
                   {imagePreview ? (
                     <div className="space-y-6">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="アップロードされた画像のプレビュー"
+                        width={400}
+                        height={256}
                         className="max-w-full h-64 object-contain rounded-2xl mx-auto shadow-lg"
                       />
                       <button
@@ -1016,9 +1023,11 @@ export default function Workspace() {
                       </div>
                     ) : imagePreview ? (
                       <div className="text-center">
-                        <img
+                        <Image
                           src={imagePreview}
                           alt="変身待ち画像のプレビュー"
+                          width={400}
+                          height={192}
                           className="max-w-full max-h-48 object-contain rounded-xl mx-auto mb-3 shadow-md"
                         />
                         <p className="text-sm text-gray-700 font-cute">
@@ -1056,11 +1065,16 @@ export default function Workspace() {
                     <div className="space-y-6">
                       {mode === 'text-to-image' ? (
                         <div className="text-center">
-                          <img
-                            src={currentResult.generated_url}
-                            alt="生成された画像"
-                            className="max-w-full h-auto rounded-2xl mx-auto shadow-lg"
-                          />
+                          <a href={currentResult.generated_url} target="_blank" rel="noopener noreferrer">
+                            <Image
+                              src={currentResult.generated_url}
+                              alt="生成された画像"
+                              width={400}
+                              height={400}
+                              className="max-w-full h-auto rounded-2xl mx-auto shadow-lg hover:shadow-2xl hover:scale-105 transition-all"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </a>
                           <p className="text-sm text-blue-700 font-cute mt-3">
                             ✨ 生成された画像
                           </p>
@@ -1074,43 +1088,23 @@ export default function Workspace() {
                         />
                       )}
 
-                      <div className="flex justify-center">
-                        <button
-                          onClick={(event) => {
-                            // 阻止默认行为和事件冒泡
-                            event.preventDefault()
-                            event.stopPropagation()
-                            
-                            try {
-                              // 在新标签页打开图片
-                              window.open(currentResult.generated_url, '_blank', 'noopener,noreferrer')
-                              
-                              // 延迟触发下载，确保新窗口先打开
-                              setTimeout(() => {
-                                const link = document.createElement('a')
-                                link.href = currentResult.generated_url
-                                link.download = `anime-magic-${Date.now()}.png`
-                                link.style.display = 'none'
-                                document.body.appendChild(link)
-                                link.click()
-                                document.body.removeChild(link)
-                              }, 200)
-                            } catch (error) {
-                              console.error('下载操作失败:', error)
-                              // 如果新窗口打开失败，至少尝试下载
-                              const link = document.createElement('a')
-                              link.href = currentResult.generated_url
-                              link.download = `anime-magic-${Date.now()}.png`
-                              link.style.display = 'none'
-                              document.body.appendChild(link)
-                              link.click()
-                              document.body.removeChild(link)
-                            }
-                          }}
-                          className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a
+                          href={currentResult.generated_url}
+                          download={`anime-magic-${Date.now()}.png`}
+                          className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all transform inline-block"
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
                           📥 ダウンロード
-                        </button>
+                        </a>
+                        
+                        <ShareButton
+                          generatedImageUrl={currentResult.generated_url}
+                          originalImageUrl={currentResult.original_url}
+                          prompt={currentResult.prompt}
+                          style={selectedTemplate?.name || 'カスタム'}
+                        />
                       </div>
                     </div>
                   ) : (
@@ -1128,131 +1122,185 @@ export default function Workspace() {
         </div>
       </div>
 
-            {/* 選べる変身スタイル 模板展示部分 - 独立区域 */}
-      <div className={`bg-[#fff7ea] py-20 lg:py-24 px-4 sm:px-6 lg:px-8 mt-20 transition-all duration-1000 delay-1300 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-      }`}>
+      {/* AI画像変換の使い方 - 3ステップで簡単操作 */}
+      <section className="py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[#fff7ea]">
         <div className="max-w-7xl mx-auto">
-          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-8 lg:mb-10 transition-all duration-1000 delay-1500 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            kemono-mimi AI画像生成 - GPT-4o Image FluxMax版で写真をアニメ風に即変換
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-12 lg:mb-16 animate-fade-in-up">
+            AI画像変換の使い方 - 3ステップで簡単操作
           </h2>
-          <p className={`text-base sm:text-lg lg:text-xl text-amber-700 text-center mb-8 lg:mb-10 leading-relaxed transition-all duration-1000 delay-1600 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            登録不要・商用利用可能・完全無料で20種類以上のアニメスタイルから選択
-          </p>
-          <p className={`text-sm sm:text-base lg:text-lg text-amber-600 text-center mb-12 lg:mb-16 leading-relaxed transition-all duration-1000 delay-1700 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            最新のGPT-4o Image FluxMax技術により、ジブリ風・可愛い壁紙・美少女・chibiキャラクター作成・証明写真加工など、高品質なアニメ画像を1-3分で生成します
-          </p>
-          
-          {/* 分类选择按钮 */}
-          <div className={`flex flex-wrap justify-center gap-3 sm:gap-4 mb-10 lg:mb-12 transition-all duration-1000 delay-1800 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            {[...Array.from(new Set(templates.map(t => t.category)))].map((category, index) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? 'bg-gradient-to-r from-pink-400 to-orange-400 text-white shadow-lg scale-110'
-                    : 'bg-white/80 text-amber-700 border border-amber-200 hover:bg-amber-50'
-                }`}
-                style={{ animationDelay: `${1.8 + index * 0.1}s` }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {/* 分类展示内容 */}
-          {(() => {
-            const selectedTemplate = templates.find(t => t.category === selectedCategory)
-            return selectedTemplate && (
-              <div className={`card-kawaii p-6 sm:p-8 lg:p-10 max-w-5xl mx-auto transition-all duration-1000 delay-2000 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}>
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-800 font-cute text-center mb-8 lg:mb-10">
-                  {selectedTemplate.name} - 変身前後の比較
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-center">
-                  {/* 变身前 */}
-                  <div className="text-center animate-fade-in-left" style={{animationDelay: '2.1s'}}>
-                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 font-bold">変身前</p>
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
-                      <img
-                        src={selectedTemplate.beforeImage}
-                        alt={`${selectedTemplate.name} 変身前 - AI画像変換 無料 変身前の写真`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                  
-                  {/* 箭头 */}
-                  <div className="text-center animate-fade-in" style={{animationDelay: '2.3s'}}>
-                    <div className="text-3xl sm:text-4xl lg:text-5xl text-amber-600 font-bold animate-pulse">
-                      →
-                    </div>
-                    <p className="text-sm sm:text-base text-amber-700 mt-3 sm:mt-4 font-cute">
-                      AI変身
-                    </p>
-                  </div>
-                  
-                  {/* 变身后 */}
-                  <div className="text-center animate-fade-in-right" style={{animationDelay: '2.1s'}}>
-                    <p className="text-sm sm:text-base text-amber-700 mb-3 sm:mb-4 font-bold">変身後</p>
-                    <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
-                      <img
-                        src={selectedTemplate.afterImage}
-                        alt={`${selectedTemplate.name} 変身後 - AI画像変換 無料 変身後の${selectedTemplate.name === 'chibi' ? 'chibiキャラクター' : selectedTemplate.name === 'lineスタンプ' ? 'LINEスタンプ' : selectedTemplate.name === '可愛line アイコン' ? 'LINEアイコン' : 'アニメ画像'}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-8 lg:mt-10 text-center animate-fade-in-up" style={{animationDelay: '2.5s'}}>
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-800 font-cute text-center mb-8 lg:mb-10">
-                    {selectedTemplate.name} - AI画像変換 無料 変身前後の比較
-                  </h3>
-                  
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 lg:mb-6 leading-relaxed max-w-4xl mx-auto">
-                    {selectedTemplate.prompt}
-                  </p>
-                  
-                  {/* AI生成图片免责声明 */}
-                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4 mb-6 lg:mb-8 max-w-4xl mx-auto">
-                    <p className="text-xs sm:text-sm text-amber-700 leading-relaxed">
-                      <span className="font-semibold">※ 免責事項：</span>
-                      すべての画像はAI技術により生成されたものです。実在の人物や作品との類似性は偶然であり、意図的な模倣ではありません。ご利用の際は適切な用途でお楽しみください。
-                    </p>
-                  </div>
-                  
-                  <div className="flex gap-4 justify-center">
-                    <button
-                      className="btn-kawaii px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg"
-                      onClick={() => {
-                        setSelectedTemplate(selectedTemplate)
-                        setPrompt(selectedTemplate.prompt)
-                        setMode('template-mode')
-                        // 滚动到页面顶部
-                        window.scrollTo({ top: 0, behavior: 'smooth' })
-                      }}
-                    >
-                      このスタイルで変身
-                    </button>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+                <Image 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-uploadimage" 
+                  alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
+                  width={256}
+                  height={256}
+                  className="w-full h-full object-cover rounded-full shadow-lg"
+                  title="AI画像変換 写真アップロードガイド"
+                />
               </div>
-            )
-          })()}
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. 写真をアップロード</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
+            </div>
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+                <Image 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choosetem" 
+                  alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
+                  width={256}
+                  height={256}
+                  className="w-full h-full object-cover rounded-full shadow-lg"
+                  title="AI画像変換 アニメスタイル選択"
+                />
+              </div>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. アニメスタイルを選択</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
+            </div>
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.6s'}}>
+              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+                <Image 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-finalimage" 
+                  alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
+                  width={256}
+                  height={256}
+                  className="w-full h-full object-cover rounded-full shadow-lg"
+                  title="AI画像変換完了"
+                />
+              </div>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">3. AI画像生成完了</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">最新のAI技術で1-3分で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* AI画像変換ツールが選ばれる理由 */}
+      <section className="py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[#fff7ea]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-12 lg:mb-16 animate-fade-in-up">
+            AI画像変換ツールが選ばれる理由
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            <div className="card-kawaii p-6 sm:p-8 lg:p-10 hover:scale-105 transition-transform duration-300 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">✨ AI画像生成 完全無料</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">登録不要・隠れた課金なし。商用利用可能なAI画像変換ツールを完全無料でご利用いただけます。</p>
+            </div>
+            <div className="card-kawaii p-6 sm:p-8 lg:p-10 hover:scale-105 transition-transform duration-300 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">🚀 AI画像変換 高速処理</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">最新のAI技術により、1-3分で高品質なアニメ画像を生成。写真加工アプリよりも速くて簡単！</p>
+            </div>
+            <div className="card-kawaii p-6 sm:p-8 lg:p-10 hover:scale-105 transition-transform duration-300 animate-fade-in-up" style={{animationDelay: '0.6s'}}>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">🔒 プライバシー保護</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">アップロードした画像は処理後すぐに削除。安心してご利用ください。</p>
+            </div>
+            <div className="card-kawaii p-6 sm:p-8 lg:p-10 hover:scale-105 transition-transform duration-300 animate-fade-in-up" style={{animationDelay: '0.8s'}}>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">📱 AI画像変換 どこでも利用</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">PC・スマホ・タブレット、どのデバイスでも快適に利用可能。VTuberやアイコン作成にも最適！</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 無料AI画像変換サービス比較表 */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#fff7ea]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-8 lg:mb-12 animate-fade-in-up">
+            無料AI画像変換サービス比較表
+          </h2>
+          <div className="card-kawaii p-6 sm:p-8 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="border-b-2 border-amber-200">
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">サービス名</th>
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">無料利用</th>
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">登録必要</th>
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">商用利用</th>
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">使いやすさ</th>
+                    <th className="py-4 px-4 font-bold text-amber-800 text-sm sm:text-base">画質</th>
+                  </tr>
+                </thead>
+                <tbody className="text-amber-700">
+                  <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
+                    <td className="py-4 px-4 font-semibold text-sm sm:text-base">kemono-mimi</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">✅ 完全無料</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">❌ 不要</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">✅ 可能</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐ 超簡単</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
+                  </tr>
+                  <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
+                    <td className="py-4 px-4 text-sm sm:text-base">Canva</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">🆓 一部無料</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">📄 条件付き</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐ 簡単</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐</td>
+                  </tr>
+                  <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
+                    <td className="py-4 px-4 text-sm sm:text-base">Midjourney</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">🎁 25回無料</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">📄 条件付き</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐ 普通</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
+                  </tr>
+                  <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
+                    <td className="py-4 px-4 text-sm sm:text-base">Stable Diffusion</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">🆓 基本無料</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⚠️ 複雑</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐⭐ 困難</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 関連コンテンツ */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-amber-50 to-orange-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-12">
+            関連コンテンツ
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Link href="/ai-image-generation-guide" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">AI画像生成 初心者ガイド</h3>
+              <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+            </Link>
+            
+            <Link href="/line-sticker-creation" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">LINEスタンプ作り方</h3>
+              <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+            </Link>
+            
+            <Link href="/chibi-character-maker" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">Chibiキャラクター作成</h3>
+              <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+            </Link>
+            
+            <Link href="/ai-image-conversion-free" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">AI画像変換 無料比較</h3>
+              <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+            </Link>
+            
+            <Link href="/personification-ai" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">擬人化 AI 活用術</h3>
+              <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+            </Link>
+            
+            <Link href="/anime-icon-creation" className="card-kawaii p-6 hover:scale-105 transition-transform duration-300">
+              <h3 className="text-lg font-bold text-amber-800 mb-3">アイコン作成 無料</h3>
+              <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

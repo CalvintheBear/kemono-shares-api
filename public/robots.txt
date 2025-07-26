@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /api/
+Disallow: /_next/
+Disallow: /node_modules/
+Disallow: /scripts/
+Disallow: /src/
+Disallow: /*.json$
+Disallow: /*.md$
+Allow: /
+
+Sitemap: https://kemono-mimi.com/sitemap.xml 

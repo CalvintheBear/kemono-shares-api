@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "AI画像変換 無料比較 - 2025年最新版 人気サービス徹底比較",
@@ -9,6 +10,17 @@ export const metadata: Metadata = {
   keywords: "AI画像変換 無料比較, 無料AI画像生成 比較, AI画像変換 無料 おすすめ, 写真アニメ化 無料比較, AI画像生成 ツール 比較, 無料AI画像変換 ランキング",
   alternates: {
     canonical: "https://kemono-mimi.com/conversion",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 
@@ -28,37 +40,45 @@ export default function ComparisonPage() {
               <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">人気のアニメスタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after" 
                     alt="擬人化スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">擬人化</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
                     alt="ジブリ風スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">ジブリ風</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
                     alt="VTuberスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">VTuber</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%93%9D%E8%89%B2%E6%A1%A3%E6%A1%88-after" 
                     alt="ブルーアーカイブスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">ブルーアーカイブ</p>
                 </div>
@@ -67,37 +87,45 @@ export default function ComparisonPage() {
               <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">リアル系スタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after" 
                     alt="証明写真スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">証明写真</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after" 
                     alt="厚塗スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">厚塗</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/3DCG-after" 
                     alt="3D CGスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">3D CG</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E4%B9%99%E6%B8%B8-after" 
                     alt="乙女ゲームスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
                   />
                   <p className="text-xs text-amber-700 mt-2">乙女ゲーム</p>
                 </div>

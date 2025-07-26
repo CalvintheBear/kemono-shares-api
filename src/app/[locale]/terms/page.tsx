@@ -9,7 +9,7 @@ export const metadata = {
   openGraph: {
     title: "利用規約 - kemono-mimi AI画像生成",
     description: "kemono-mimi AI画像生成サービスの利用規約詳細",
-    url: "https://furycode.vercel.app/terms",
+    url: "https://kemono-mimi.com/terms",
     siteName: "kemono-mimi AI画像生成",
     images: [
       {
@@ -29,7 +29,18 @@ export const metadata = {
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-terms.jpg"],
   },
   alternates: {
-    canonical: "https://furycode.vercel.app/terms",
+    canonical: "https://kemono-mimi.com/terms",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 
@@ -45,7 +56,7 @@ export default function TermsPage() {
             '@type': 'WebPage',
             name: '利用規約 - kemono-mimi AI画像生成',
             description: 'kemono-mimi.comの利用規約詳細説明',
-            url: 'https://furycode.vercel.app/terms',
+            url: 'https://kemono-mimi.com/terms',
             datePublished: '2024-07-26',
             dateModified: '2024-07-26'
           }),
@@ -133,6 +144,13 @@ export default function TermsPage() {
                   </p>
                 </div>
               </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-amber-800 mb-4">第5条（画像の取扱い・利用権）</h2>
+              <p className="leading-relaxed">
+                当サイトは、ユーザーがアップロードした元画像を一切保存・収集しません。ただし、AI変換後の生成画像については、サービスの品質向上・プロモーション・事例紹介等の目的で、当サイトが無償で利用・公開できるものとします。
+              </p>
             </section>
 
             <section>

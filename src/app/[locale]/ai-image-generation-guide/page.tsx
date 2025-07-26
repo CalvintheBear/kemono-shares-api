@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getStyleImageUrl } from "@/config/images";
 
 export const metadata: Metadata = {
   title: "AI画像生成 初心者ガイド | 写真をアニメ風に変換する完全ガイド",
@@ -10,6 +9,17 @@ export const metadata: Metadata = {
   keywords: "AI画像生成 初心者, 写真 アニメ風に変換, AI画像変換 使い方, アニメ風画像作成 初心者, 写真加工 アニメ風, AI 画像生成 無料 初心者",
   alternates: {
     canonical: "https://kemono-mimi.com/guide",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

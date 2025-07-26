@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getStyleImageUrl } from "@/config/images";
 
 export const metadata: Metadata = {
   title: "Chibiキャラクター作成 - AIで可愛いchibiキャラを無料作成",
@@ -10,6 +9,17 @@ export const metadata: Metadata = {
   keywords: "chibiキャラクター作成, chibi化 AI, AIでchibiキャラ作成, chibiキャラ 作り方 無料, 写真をchibiに変換, 可愛いキャラクター作成 AI, chibiアイコン作成",
   alternates: {
     canonical: "https://kemono-mimi.com/chibi",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

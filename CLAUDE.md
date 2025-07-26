@@ -29,12 +29,14 @@ The app is organized around a single workspace interface (`src/components/Worksp
 - Download functionality with direct URL generation
 - Queue management with position tracking and ETA
 
-**Core Components:**
-- `Workspace.tsx:67` - Main orchestrator component managing all user interactions
-- `TemplateGallery.tsx` - Predefined style selection with 20+ anime styles
-- `StyleGallery.tsx` - Custom prompt interface for advanced users
-- `BeforeAfterSlider.tsx` - Interactive comparison component
-- `ProgressIndicator.tsx` - Real-time progress display with ETA
+**Core Components (exact file paths):**
+- `src/components/Workspace.tsx:67` - Main orchestrator component managing all user interactions
+- `src/components/TemplateGallery.tsx` - Predefined style selection with 20+ anime styles
+- `src/components/StyleGallery.tsx` - Custom prompt interface for advanced users
+- `src/components/BeforeAfterSlider.tsx` - Interactive comparison component
+- `src/components/ProgressIndicator.tsx` - Real-time progress display with ETA
+- `src/components/HomeHero.tsx` - Landing page hero section
+- `src/components/FAQ.tsx` - FAQ page component
 
 ### 2. State Management (`src/store/useAppStore.ts`)
 
@@ -107,6 +109,9 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000  # For development
 
 **Environment Validation:**
 Use `node test-env.js` to verify all required environment variables are set correctly.
+
+**Multiple API Keys Support:**
+The system supports automatic API key rotation via `src/lib/api-key-rotation.ts` for handling rate limits and failover.
 
 ## Key Features
 
@@ -192,6 +197,49 @@ node test-api-endpoints.js
 # Test with proxy configuration
 node test-proxy.js
 ```
+
+## Next.js 15 Specific Patterns
+
+### App Router Structure
+- Uses Next.js 15 App Router with `app/` directory
+- API routes use `route.ts` files with standard web APIs (Request/Response)
+- Middleware in `src/middleware.ts` handles locale routing
+- Metadata and SEO handled via `metadata` exports in page files
+
+### Server Components
+- Default server components for improved performance
+- Client components marked with 'use client' directive where needed
+- API routes in `src/app/api/**/*` use standard Request/Response objects
+
+## Common Debugging Scenarios
+
+### Environment Issues
+```bash
+# Quick environment check
+node test-env.js
+
+# Test specific API endpoint
+curl http://localhost:3000/api/test-env
+```
+
+### Image Generation Failures
+1. Check API key validity: `node test-kie-api-key.js`
+2. Test direct API call: `node test-txt2img.mjs`
+3. Verify polling mechanism: `node test-polling.js`
+
+### Network/Proxy Issues
+```bash
+# Test with proxy settings
+node test-proxy.js
+
+# Debug HTTPS/TLS issues
+node test-api-tls.js
+```
+
+### Queue Position Debugging
+- Check `/api/task-status` endpoint for real-time queue position
+- Monitor polling responses in browser dev tools Network tab
+- Use `console.log` in API routes for detailed request/response logging
 
 ## Deployment
 

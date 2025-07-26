@@ -53,7 +53,7 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'kemono-mimi AI画像生成',
-  description: 'GPT-4o Image FluxMax版で写真をアニメ風に即変換できる無料ツール',
+  description: 'GPT-4o Image で写真をアニメ風に即変換できる無料ツール',
   url: 'https://kemono-mimi.com',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',

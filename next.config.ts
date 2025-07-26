@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true, // 允许所有远程图片不受限制
     remotePatterns: [
       {
         protocol: 'https',
@@ -51,6 +52,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fury-template-1363880159.cos.ap-guangzhou.myqcloud.com',
         port: '',
         pathname: '/**',
       }

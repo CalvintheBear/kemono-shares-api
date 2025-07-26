@@ -51,7 +51,7 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'kemono-mimi AI画像生成',
-  description: 'GPT-4o Image FluxMax版で写真をアニメ風に即変換できる無料ツール',
+  description: 'GPT-4o Image で写真をアニメ風に即変換できる無料ツール',
   url: 'https://kemono-mimi.com/workspace',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
@@ -96,7 +96,7 @@ export default async function WorkspacePage() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-6 font-cute float">
               kemono-mimi AI画像生成
               <span className="block text-2xl sm:text-3xl lg:text-4xl mt-3 text-amber-700">
-                GPT-4o Image FluxMax版で1-3分で完成
+                GPT-4o Image で写真をアニメ風に即変換
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-amber-800 mb-4 font-cute">
@@ -104,7 +104,7 @@ export default async function WorkspacePage() {
             </p>
             <p className="text-base sm:text-lg text-amber-700 max-w-3xl mx-auto leading-relaxed">
               最新のGPT-4o Image FluxMax技術により、ジブリ風・VTuber風・美少女・chibiキャラクター作成・LINEスタンプ作り方など、20種類以上のスタイルから選択可能。
-              高品質なアニメ画像を1-3分で生成します。
+            
             </p>
           </div>
 
@@ -112,59 +112,6 @@ export default async function WorkspacePage() {
           <NextIntlClientProvider locale="ja" messages={messages}>
             <Workspace />
           </NextIntlClientProvider>
-
-          {/* SEO最適化された追加コンテンツ */}
-          <section className="mt-16">
-            <div className="max-w-4xl mx-auto">
-              {/* 機能紹介 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                <div className="card-kawaii p-6">
-                  <h2 className="text-xl font-bold text-amber-800 mb-4 font-cute">🎨 AI画像変換機能</h2>
-                  <ul className="text-amber-700 space-y-2 text-sm">
-                    <li>✨ 写真をアニメ風に即変換</li>
-                    <li>🎭 20+種類のアニメスタイル</li>
-                    <li>⚡ 1-3分で高速生成</li>
-                    <li>📱 スマホ対応・完全無料</li>
-                  </ul>
-                </div>
-                
-                <div className="card-kawaii p-6">
-                  <h2 className="text-xl font-bold text-amber-800 mb-4 font-cute">🎯 人気スタイル</h2>
-                  <ul className="text-amber-700 space-y-2 text-sm">
-                    <li>🌸 ジブリ風アニメ変換</li>
-                    <li>🎮 VTuber風キャラクター</li>
-                    <li>🎀 かわいいchibiキャラ</li>
-                    <li>💝 LINEスタンプ作成</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* 技術仕様 */}
-              <div className="bg-gradient-to-r from-pink-50 to-amber-50 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-amber-800 mb-4 font-cute text-center">
-                  技術仕様・対応環境
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  <div>
-                    <h3 className="font-bold text-amber-800 mb-2">対応技術</h3>
-                    <ul className="text-amber-700 space-y-1">
-                      <li>• GPT-4o Image FluxMax版</li>
-                      <li>• 4K高解像度出力</li>
-                      <li>• リアルタイム処理</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-amber-800 mb-2">対応環境</h3>
-                    <ul className="text-amber-700 space-y-1">
-                      <li>• PC・スマホ・タブレット</li>
-                      <li>• Chrome・Safari・Edge</li>
-                      <li>• インストール不要</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
