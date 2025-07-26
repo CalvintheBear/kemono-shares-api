@@ -15,7 +15,7 @@ export default {
 
     if (url.pathname === '/api/shares') {
       try {
-        const list = await env.KEMONO_AFTERIMAGE_BUCKET.list({ prefix: 'kie-downloads/' });
+           const list = await env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME.list({ prefix: 'kie-downloads/' });
         const data = list.objects
           .filter(obj => obj.key.includes('share-'))
           .map(obj => {
