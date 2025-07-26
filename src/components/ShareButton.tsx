@@ -15,8 +15,10 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
   const [shareUrl, setShareUrl] = useState('')
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isSharing, setIsSharing] = useState(false) // 防止重复分享
   const [menuPosition, setMenuPosition] = useState<'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top-left')
   const buttonRef = useRef<HTMLDivElement>(null)
+  const shareRequestRef = useRef<Promise<string> | null>(null) // 防止重复请求
 
   // 计算菜单位置
   const calculateMenuPosition = useCallback(() => {
@@ -72,35 +74,68 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
 
   // 生成分享链接
   const generateShareUrl = useCallback(async () => {
+    // 如果已经有分享URL，直接返回
     if (shareUrl) return shareUrl
     
+    // 如果正在请求中，等待现有请求完成
+    if (shareRequestRef.current) {
+      console.log('🔄 检测到重复请求，等待现有请求完成...')
+      return await shareRequestRef.current
+    }
+    
+    // 如果正在分享中，防止重复操作
+    if (isSharing) {
+      console.log('⚠️ 正在分享中，请稍候...')
+      return shareUrl
+    }
+    
+    setIsSharing(true)
     setIsLoading(true)
+    
     try {
-      const response = await fetch('/api/share', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          generatedUrl: generatedImageUrl,
-          originalUrl: originalImageUrl,
-          prompt: prompt,
-          style: style,
-          timestamp: Date.now()
+      // 创建新的请求Promise
+      const requestPromise = (async () => {
+        const response = await fetch('/api/share', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            generatedUrl: generatedImageUrl,
+            originalUrl: originalImageUrl,
+            prompt: prompt,
+            style: style,
+            timestamp: Date.now()
+          })
         })
-      })
 
-      const data = await response.json()
+        const data = await response.json()
+        
+        if (data.success) {
+          const newShareUrl = data.shareUrl
+          setShareUrl(newShareUrl)
+          console.log('✅ 分享链接生成成功:', newShareUrl)
+          return newShareUrl
+        } else {
+          throw new Error(data.error || '分享创建失败')
+        }
+      })()
       
-      if (data.success) {
-        const newShareUrl = data.shareUrl
-        setShareUrl(newShareUrl)
-        return newShareUrl
-      } else {
-        throw new Error(data.error || '分享创建失败')
-      }
+      // 保存请求引用
+      shareRequestRef.current = requestPromise
+      
+      // 等待请求完成
+      const result = await requestPromise
+      
+      // 清理请求引用
+      shareRequestRef.current = null
+      
+      return result
     } catch (error) {
       console.error('分享链接生成失败:', error)
+      // 清理请求引用
+      shareRequestRef.current = null
+      
       // 备用方案：使用URL参数
       const shareData = {
         generated: generatedImageUrl,
@@ -116,16 +151,24 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       return fallbackUrl
     } finally {
       setIsLoading(false)
+      setIsSharing(false)
     }
-  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style])
+  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing])
 
   // 复制分享链接
   const copyShareUrl = useCallback(async () => {
+    // 防止重复点击
+    if (isSharing || isLoading) {
+      console.log('⚠️ 正在处理中，请稍候...')
+      return
+    }
+    
     const url = await generateShareUrl()
     try {
       await navigator.clipboard.writeText(url)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+      console.log('✅ 链接已复制到剪贴板')
     } catch (error) {
       console.error('复制失败:', error)
       // 备用方案
@@ -137,11 +180,18 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       document.body.removeChild(textArea)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+      console.log('✅ 链接已复制到剪贴板（备用方案）')
     }
-  }, [generateShareUrl])
+  }, [generateShareUrl, isSharing, isLoading])
 
   // 处理分享到社交媒体
   const handleSocialShare = useCallback(async (platform: string) => {
+    // 防止重复点击
+    if (isSharing || isLoading) {
+      console.log('⚠️ 正在处理中，请稍候...')
+      return
+    }
+    
     const url = await generateShareUrl()
     let shareUrl = ''
     const text = `✨ kemono-mimiでAI画像変換を体験しました！${style}スタイルで変身完了！🎉`
@@ -166,8 +216,9 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     
     if (shareUrl) {
       window.open(shareUrl, '_blank', 'width=600,height=400')
+      console.log(`✅ 已打开${platform}分享页面`)
     }
-  }, [generateShareUrl, style, copyShareUrl])
+  }, [generateShareUrl, style, copyShareUrl, isSharing, isLoading])
 
   // 处理按钮点击
   const handleButtonClick = useCallback(() => {
@@ -201,10 +252,10 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
         tabIndex={0}
         aria-haspopup="true"
         aria-expanded={showShareMenu}
-        disabled={isLoading}
+        disabled={isLoading || isSharing}
       >
         <ShareIcon className="w-5 h-5" />
-        {isLoading ? '生成中...' : 'シェア'}
+        {isLoading || isSharing ? '生成中...' : 'シェア'}
       </button>
 
       {/* 分享菜单 */}

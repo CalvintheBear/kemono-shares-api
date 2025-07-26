@@ -20,7 +20,8 @@
     "test:upload": "node scripts/test-upload.js",
     "test:share-r2": "node scripts/test-share-r2-integration.js",
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
-    "test:optimizations": "node scripts/test-optimizations.js"
+    "test:optimizations": "node scripts/test-optimizations.js",
+    "test:duplicate-prevention": "node scripts/test-duplicate-prevention.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",

@@ -4,6 +4,10 @@ import { shareDataStore, initializeSampleData, ShareData } from '@/lib/share-sto
 import { clearShareCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
+// 用于检测重复请求的缓存
+const requestCache = new Map<string, { timestamp: number, shareId: string }>()
+const DUPLICATE_REQUEST_THRESHOLD = 5000 // 5秒内的重复请求阈值
+
 export async function POST(request: NextRequest) {
   try {
     // 初始化示例数据
@@ -13,6 +17,26 @@ export async function POST(request: NextRequest) {
     const { generatedUrl, originalUrl, prompt, style, timestamp } = body
 
     console.log('🔄 开始处理分享请求:', { generatedUrl, style })
+
+    // 检测重复请求
+    const requestKey = `${generatedUrl}-${style}-${timestamp}`
+    const now = Date.now()
+    const existingRequest = requestCache.get(requestKey)
+    
+    if (existingRequest && (now - existingRequest.timestamp) < DUPLICATE_REQUEST_THRESHOLD) {
+      console.log('⚠️ 检测到重复请求，返回现有分享ID:', existingRequest.shareId)
+      const existingShareData = shareDataStore.get(existingRequest.shareId)
+      if (existingShareData) {
+        const shareUrl = `https://kemono-mimi.com/share/${existingRequest.shareId}`
+        return NextResponse.json({
+          success: true,
+          shareId: existingRequest.shareId,
+          shareUrl,
+          data: existingShareData,
+          isDuplicate: true
+        })
+      }
+    }
 
     // 处理生成的图片URL：如果是KIE AI临时URL则下载到R2
     let processedGeneratedUrl = generatedUrl
@@ -46,6 +70,17 @@ export async function POST(request: NextRequest) {
     }
     
     shareDataStore.set(shareId, shareData)
+    
+    // 缓存请求信息，用于检测重复请求
+    requestCache.set(requestKey, { timestamp: now, shareId })
+    
+    // 清理过期的缓存（超过1小时的请求）
+    const oneHourAgo = now - (60 * 60 * 1000)
+    for (const [key, value] of requestCache.entries()) {
+      if (value.timestamp < oneHourAgo) {
+        requestCache.delete(key)
+      }
+    }
 
     // 清除相关缓存
     clearShareCache()
