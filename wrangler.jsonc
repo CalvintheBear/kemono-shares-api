@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kemono-shares-api",
+  "main": "src/index.js",
+  "compatibility_date": "2024-07-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".next/static"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "env": {
+    "NODE_ENV": "production"
+  }
+} 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import BeforeAfterSlider from '@/components/BeforeAfterSlider'
-import { ArrowLeftIcon, HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Head from 'next/head'
