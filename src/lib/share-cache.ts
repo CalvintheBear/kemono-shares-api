@@ -10,7 +10,7 @@ interface CacheItem<T> {
 }
 
 class ShareCache {
-  private cache = new Map<string, CacheItem<any>>()
+  private cache = new Map<string, CacheItem<unknown>>()
   private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5分钟默认缓存时间
 
   /**
@@ -37,7 +37,7 @@ class ShareCache {
       return null
     }
 
-    return item.data
+    return item.data as T
   }
 
   /**
@@ -103,7 +103,7 @@ export function getShareListCache(limit: number = 20, offset: number = 0) {
 /**
  * 设置分享列表缓存
  */
-export function setShareListCache(data: any, limit: number = 20, offset: number = 0) {
+export function setShareListCache(data: unknown, limit: number = 20, offset: number = 0) {
   const cacheKey = `${CACHE_KEYS.SHARE_LIST}-${limit}-${offset}`
   shareCache.set(cacheKey, data, 2 * 60 * 1000) // 2分钟缓存
 }
@@ -119,7 +119,7 @@ export function getShareDetailCache(shareId: string) {
 /**
  * 设置分享详情缓存
  */
-export function setShareDetailCache(shareId: string, data: any) {
+export function setShareDetailCache(shareId: string, data: unknown) {
   const cacheKey = `${CACHE_KEYS.SHARE_DETAIL}-${shareId}`
   shareCache.set(cacheKey, data, 10 * 60 * 1000) // 10分钟缓存
 }

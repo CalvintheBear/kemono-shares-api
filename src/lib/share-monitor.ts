@@ -16,7 +16,7 @@ interface ShareEvent {
   type: 'create' | 'view' | 'error' | 'cache_hit' | 'cache_miss'
   shareId?: string
   timestamp: number
-  details: any
+  details: unknown
 }
 
 class ShareMonitor {
@@ -30,7 +30,7 @@ class ShareMonitor {
   /**
    * 记录事件
    */
-  logEvent(type: ShareEvent['type'], details: any, shareId?: string) {
+  logEvent(type: ShareEvent['type'], details: unknown, shareId?: string) {
     const event: ShareEvent = {
       type,
       shareId,
@@ -78,7 +78,7 @@ class ShareMonitor {
   getStats(): ShareStats {
     const totalShares = this.events.filter(e => e.type === 'create').length
     const r2StoredCount = this.events.filter(e => 
-      e.type === 'create' && e.details?.isR2Stored
+      e.type === 'create' && (e.details as { isR2Stored?: boolean })?.isR2Stored
     ).length
     
     const cacheHitRate = this.cacheHits + this.cacheMisses > 0 
@@ -148,7 +148,7 @@ export const monitor = {
   /**
    * 监控分享创建
    */
-  shareCreated: (shareId: string, details: any) => {
+  shareCreated: (shareId: string, details: unknown) => {
     shareMonitor.logEvent('create', details, shareId)
   },
 
@@ -162,8 +162,9 @@ export const monitor = {
   /**
    * 监控错误
    */
-  error: (error: any, context?: string) => {
-    shareMonitor.logEvent('error', { error: error.message || error, context })
+  error: (error: unknown, context?: string) => {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    shareMonitor.logEvent('error', { error: errorMessage, context })
   },
 
   /**

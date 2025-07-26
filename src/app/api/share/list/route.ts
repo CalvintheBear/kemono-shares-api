@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { shareDataStore, initializeSampleData } from '@/lib/share-store'
-import { getShareListCache, setShareListCache, clearShareCache } from '@/lib/share-cache'
+import { getShareListCache, setShareListCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
 interface ShareListItem {
