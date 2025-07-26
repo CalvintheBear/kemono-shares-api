@@ -16,12 +16,12 @@ const faqData: FAQItem[] = [
   {
     category: "サービスについて",
     question: "kemono-mimi.comはどのようなサービスですか？",
-    answer: "kemono-mimi.comは、AI技術を使って写真や画像を可愛いアニメ調に変換するサービスです。20種類以上のスタイルから選んで、あなたの写真を魅力的なアニメキャラクターに変身させることができます。"
+    answer: "kemono-mimi.comは、AI技術を使って写真や画像を可愛いアニメ調に変換するサービスです。22種類以上のスタイルから選んで、あなたの写真を魅力的なアニメキャラクターに変身させることができます。"
   },
   {
     category: "サービスについて",
     question: "どのようなスタイルがありますか？",
-    answer: "擬人化、ジブリ風、VTuber、ウマ娘、ちびキャラ、萌え化、LINEスタンプ風、異世界、病娇、厚塗り、3D CG、乙女ゲームなど、20種類以上のスタイルをご用意しています。各スタイルは独特の特徴を持ち、様々な雰囲気に変換できます。"
+    answer: "擬人化、ジブリ風、VTuber、ウマ娘、ちびキャラ、萌え化、LINEスタンプ風、異世界、病娇、厚塗り、3D CG、乙女ゲーム、クレヨンしんちゃん、証明写真加工など、22種類以上のスタイルをご用意しています。各スタイルは独特の特徴を持ち、様々な雰囲気に変換できます。"
   },
   {
     category: "利用方法",
@@ -79,6 +79,11 @@ const faqData: FAQItem[] = [
     answer: "有名人の写真を使用する際は、肖像権に十分ご注意ください。個人のSNS等での使用は問題ありませんが、商業目的での使用や公の場での配布は肖像権侵害となる可能性があります。"
   },
   {
+    category: "著作権",
+    question: "AI生成画像と実在の人物や作品との類似性について",
+    answer: "当サイトで生成されるすべての画像はAI技術により作成されたものです。実在の人物や作品との類似性は偶然であり、意図的な模倣ではありません。生成画像の使用により第三者との間で紛争が生じた場合、当サイトは一切の責任を負いません。詳細は利用規約の第6条の2をご確認ください。"
+  },
+  {
     category: "技術仕様",
     question: "対応している画像サイズは？",
     answer: "1:1（正方形）、3:2（横長）、2:3（縦長）の3種類から選択可能です。元画像のアスペクト比に応じて最適なサイズをお選びください。"
@@ -103,7 +108,8 @@ const faqData: FAQItem[] = [
 const categories = [...new Set(faqData.map(item => item.category))]
 
 export default function FAQPage() {
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set())
+  // 默认展开所有FAQ项目
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set(faqData.map((_, index) => index)))
   const [selectedCategory, setSelectedCategory] = useState<string>('すべて')
 
   const toggleItem = (index: number) => {
@@ -186,12 +192,15 @@ export default function FAQPage() {
                   </div>
                 </button>
                 
-                {isOpen && (
-                  <div className="px-6 py-4 border-t border-amber-100"
-                  >
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="px-6 py-4 border-t border-amber-100">
                     <p className="text-gray-700 leading-relaxed font-cute">{faq.answer}</p>
                   </div>
-                )}
+                </div>
               </div>
             )
           })}

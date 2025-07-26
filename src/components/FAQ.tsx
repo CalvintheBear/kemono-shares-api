@@ -110,12 +110,14 @@ export default function FAQ() {
           {faqData.map((faq, index) => (
             <div 
               key={faq.id} 
-              className="card-kawaii overflow-hidden hover:shadow-lg transition-shadow duration-300 animate-fade-in-up"
+              className={`card-kawaii overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in-up ${
+                openItems.includes(faq.id) ? 'shadow-lg' : ''
+              }`}
               style={{ animationDelay: `${0.7 + index * 0.1}s` }}
             >
               <button
                 onClick={() => toggleItem(faq.id)}
-                className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left flex items-center justify-between hover:bg-amber-50 transition-colors"
+                className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left flex items-center justify-between hover:bg-amber-50 transition-colors duration-200"
               >
                 <h3 className="font-semibold text-amber-800 font-cute pr-4 text-sm sm:text-base lg:text-lg leading-relaxed">
                   {faq.question}
@@ -126,13 +128,17 @@ export default function FAQ() {
                   }`}
                 />
               </button>
-              {openItems.includes(faq.id) && (
-                <div className="px-6 sm:px-8 pb-4 sm:pb-6 animate-fade-in">
+              <div 
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  openItems.includes(faq.id) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="px-6 sm:px-8 pb-4 sm:pb-6">
                   <p className="text-sm sm:text-base text-amber-700 leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

@@ -99,6 +99,28 @@ export default function TermsPage() {
             </section>
 
             <section>
+              <h2 className="text-2xl font-bold text-amber-800 mb-4">第6条の2（AI生成画像に関する免責事項）</h2>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-amber-700 leading-relaxed">
+                  <span className="font-semibold">※ 重要なお知らせ：</span>
+                  当サイトで生成されるすべての画像はAI技術により作成されたものです。実在の人物や作品との類似性は偶然であり、意図的な模倣ではありません。
+                </p>
+              </div>
+              <div className="space-y-4">
+                <p className="leading-relaxed">
+                  当サイトのAI画像生成サービスにより作成される画像（以下「生成画像」といいます）に関して、以下の免責事項を定めます：
+                </p>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>生成画像はAI技術により自動的に作成されるものであり、実在の人物、キャラクター、作品との類似性は偶然によるもので、意図的な模倣ではありません。</li>
+                  <li>生成画像の内容、品質、特定の目的への適合性について、当サイトは一切の保証を行いません。</li>
+                  <li>生成画像の使用により第三者との間で紛争が生じた場合、当サイトは一切の責任を負いません。</li>
+                  <li>ユーザーは生成画像を使用する際、適切な用途で利用し、第三者の権利を侵害しないよう十分ご注意ください。</li>
+                  <li>商用利用や公的機関での使用については、事前に当サイトまでご相談ください。</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
               <h2 className="text-2xl font-bold text-amber-800 mb-4">第7条（免責事項）</h2>
               <div className="space-y-4">
                 <p className="leading-relaxed">

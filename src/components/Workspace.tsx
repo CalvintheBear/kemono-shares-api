@@ -51,6 +51,15 @@ const templates: Template[] = [
     prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、4コマ漫画（怒り、驚き、軽蔑、陰険）',
     category: 'lineスタンプ'
   },
+
+  {
+    id: '20',
+    name: '可愛い壁紙',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-after',
+    prompt: 'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
+    category: '可愛い壁紙'
+  },
   {
     id: '17',
     name: 'irasutoya',
@@ -59,14 +68,7 @@ const templates: Template[] = [
     prompt: 'イラストはエレガントなスタイルで、穏やかで愛らしい、商用フリー素材スタイルで、シンプルで親しみやすく、柔らかな触感、可愛いキャラクター、癒し系、フラットデザイン、親しみやすい雰囲気、清潔な背景です。',
     category: 'irasutoya'
   },
-  {
-    id: '9',
-    name: 'chibi',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
-    prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
-    category: 'chibi'
-  },
+
   {
     id: '2',
     name: 'BlueArchive&ブルーアーカイブ',
@@ -108,11 +110,19 @@ const templates: Template[] = [
     category: '萌え化'
   },
   {
+    id: '9',
+    name: 'chibi',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
+    prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
+    category: 'chibi'
+  },
+  {
     id: '10',
     name: 'ジブリ風',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B-after',
-    prompt: 'ジブリ風アニメ',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after',
+    prompt: '柔らかな手描きタッチ、温かみのある色調、細かい背景描写、自然で幻想的な風景、絵本のような雰囲気、シンプルで生き生きしたキャラクターデザイン、空気感と光の表現に重点を置き、豊かなディテールと伝統的アニメーションの質感を持つ、ジブリ風、2Dフラット塗り技法。',
     category: 'ジブリ風'
   },
   {
@@ -144,7 +154,7 @@ const templates: Template[] = [
     name: '厚涂',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after',
-    prompt: 'アニメスタイルの厚塗り、Procreate、立体感、二次元イラスト、8K、透明感',
+    prompt: '滑らかな肌のレンダリング、アニメスタイルの厚塗り、Procreate、立体感、二次元イラスト、8K、透明感',
     category: '厚涂'
   },
   {
@@ -152,7 +162,7 @@ const templates: Template[] = [
     name: '3D CG',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/3DCG-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/3DCG-after',
-    prompt: '3D 美しいBJDキャラクター、テクノロジー感、テクノロジー感、スタイルデザイン、スタジオライト、スタイルデザイン、CGアニメーション、8K解像度、ハイビジョン、写真、撮影、ソフトライティング、最高画質、高画質、高細部、ハイビジョン、狂った詳細、超高画質、超リアル、極上のライティング、水光肌、リアルな毛穴、自然で生き生きとした目、ハーフボディクローズアップ',
+    prompt: '3D美しいBJDキャラクター、テクノロジー感、テクノロジー感、スタイルデザイン、スタジオライト、スタイルデザイン、CGアニメーション、8K解像度、ハイビジョン、写真、撮影、ソフトライティング、最高画質、高画質、高細部、ハイビジョン、狂った詳細、超高画質、超リアル、極上のライティング、水光肌、リアルな毛穴、自然で生き生きとした目、ゲームCGレンダリング',
     category: '3D CG'
   },
   {
@@ -163,13 +173,22 @@ const templates: Template[] = [
     prompt: '乙女ゲームスタイル、美しい男性キャラクター、ロマンティックな雰囲気、優雅で洗練されたデザイン、恋愛要素、ファンタジー世界観、美形キャラクター、耽美な表現、乙女向けアート',
     category: '乙女ゲーム'
   },
+  
   {
-    id: '20',
-    name: '可愛い壁紙',
-    beforeImage: 'https://via.placeholder.com/400x400/FFE4E1/FF69B4?text=Before+Wallpaper',
-    afterImage: 'https://via.placeholder.com/400x400/FFFACD/FFD700?text=After+Wallpaper',
-    prompt: '可愛い壁紙スタイル、高解像度、美しい背景、アニメ風デザイン、明るく楽しい雰囲気、デスクトップ壁紙用、美しい色彩、魅力的な構図、高品質なアートワーク',
-    category: '可愛い壁紙'
+    id: '21',
+    name: 'クレヨンしんちゃん',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%9C%A1%E7%AC%94%E5%B0%8F%E6%96%B0-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%9C%A1%E7%AC%94%E5%B0%8F%E6%96%B0-after',
+    prompt: 'クレヨンしんちゃん風、アニメ風',
+    category: 'クレヨンしんちゃん'
+  },
+  {
+    id: '22',
+    name: '証明写真 加工',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after',
+    prompt: '証明写真風、アニメ風',
+    category: '証明写真 加工'
   },
 ]
 
@@ -878,7 +897,7 @@ export default function Workspace() {
                         <p className="text-sm text-blue-600 font-cute mb-2">💡 おすすめの呪文:</p>
                         <div className="grid grid-cols-1 gap-2">
                           {[
-                            '可愛い猫耳少女、ピンクの髪、笑顔、桜の背景、アニメ風',
+                            'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
                             '美しい花の妖精、透明な羽、光る魔法、森の背景',
                             '未来のロボット少女、サイバーパンク風、ネオンライト',
                             '和風の巫女、神社の背景、桜の花びら、神秘的な雰囲気'
@@ -1187,9 +1206,17 @@ export default function Workspace() {
                 </div>
                 
                 <div className="mt-8 lg:mt-10 text-center animate-fade-in-up" style={{animationDelay: '2.5s'}}>
-                  <p className="text-sm sm:text-base text-gray-600 mb-6 lg:mb-8 leading-relaxed max-w-4xl mx-auto">
+                  <p className="text-sm sm:text-base text-gray-600 mb-4 lg:mb-6 leading-relaxed max-w-4xl mx-auto">
                     {selectedTemplate.prompt}
                   </p>
+                  
+                  {/* AI生成图片免责声明 */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4 mb-6 lg:mb-8 max-w-4xl mx-auto">
+                    <p className="text-xs sm:text-sm text-amber-700 leading-relaxed">
+                      <span className="font-semibold">※ 免責事項：</span>
+                      すべての画像はAI技術により生成されたものです。実在の人物や作品との類似性は偶然であり、意図的な模倣ではありません。ご利用の際は適切な用途でお楽しみください。
+                    </p>
+                  </div>
                   
                   <div className="flex gap-4 justify-center">
                     <button

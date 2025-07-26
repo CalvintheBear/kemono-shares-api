@@ -100,7 +100,28 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-amber-800 mb-4">8. プライバシーポリシーの変更</h2>
+              <h2 className="text-2xl font-bold text-amber-800 mb-4">8. AI生成画像に関する注意事項</h2>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-amber-700 leading-relaxed">
+                  <span className="font-semibold">※ 重要なお知らせ：</span>
+                  当サイトで生成されるすべての画像はAI技術により作成されたものです。実在の人物や作品との類似性は偶然であり、意図的な模倣ではありません。
+                </p>
+              </div>
+              <div className="space-y-4">
+                <p className="leading-relaxed">
+                  当サイトのAI画像生成サービスに関して、以下の点にご注意ください：
+                </p>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>生成される画像はAI技術により自動的に作成されるものであり、実在の人物や作品との類似性は偶然によるものです。</li>
+                  <li>生成画像の使用により第三者との間で紛争が生じた場合、当サイトは一切の責任を負いません。</li>
+                  <li>ユーザーは生成画像を使用する際、適切な用途で利用し、第三者の権利を侵害しないよう十分ご注意ください。</li>
+                  <li>商用利用や公的機関での使用については、事前に当サイトまでご相談ください。</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-amber-800 mb-4">9. プライバシーポリシーの変更</h2>
               <p className="leading-relaxed">
                 当サイトは、必要に応じて本プライバシーポリシーの内容を変更することがあります。
                 変更後のプライバシーポリシーは、当サイトに掲載したときから効力を生じるものとします。
@@ -108,7 +129,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-amber-800 mb-4">9. お問い合わせ</h2>
+              <h2 className="text-2xl font-bold text-amber-800 mb-4">10. お問い合わせ</h2>
               <p className="leading-relaxed">
                 本プライバシーポリシーに関するお問い合わせは、以下のメールアドレスまでお願いいたします。
               </p>

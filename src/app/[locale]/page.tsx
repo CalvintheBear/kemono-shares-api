@@ -23,8 +23,8 @@ export default function Home() {
     <div className="min-h-screen bg-[#fff7ea]">
       <Header />
 
-      {/* 英雄区域 - 增加上下间距和响应式优化 */}
-      <section className={`pt-24 pb-20 px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out ${
+      {/* 英雄区域 - 减少底部间距 */}
+      <section className={`pt-24 pb-12 px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}>
         <div className="max-w-6xl mx-auto text-center">
@@ -51,8 +51,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 12个模板样式展示 - 增加间距 */}
-      <div className="py-20 lg:py-24">
+      {/* 12个模板样式展示 - 减少顶部间距 */}
+      <div className="pt-8 pb-20 lg:pt-12 lg:pb-24">
         <TemplateGallery />
       </div>
 
