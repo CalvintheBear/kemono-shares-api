@@ -60,23 +60,13 @@ export default function SharePage() {
           }
         } else {
           console.error('API 请求失败:', response.status)
-          // 如果 API 失败，使用模拟数据
-          const mockLinks = [
-            { id: 'sample1', title: 'ジブリ風変換', style: 'ジブリ風', timestamp: '2024-07-26' },
-            { id: 'sample2', title: 'VTuber風変換', style: 'VTuber風', timestamp: '2024-07-25' },
-            { id: 'sample3', title: 'ウマ娘風変換', style: 'ウマ娘風', timestamp: '2024-07-24' },
-          ]
-          setShareLinks(mockLinks)
+          // API 失败时显示空状态，完全依赖动态数据
+          setShareLinks([])
         }
       } catch (error) {
         console.error('获取分享链接失败:', error)
-        // 如果网络错误，使用模拟数据
-        const mockLinks = [
-          { id: 'sample1', title: 'ジブリ風変換', style: 'ジブリ風', timestamp: '2024-07-26' },
-          { id: 'sample2', title: 'VTuber風変換', style: 'VTuber風', timestamp: '2024-07-25' },
-          { id: 'sample3', title: 'ウマ娘風変換', style: 'ウマ娘風', timestamp: '2024-07-24' },
-        ]
-        setShareLinks(mockLinks)
+        // 网络错误时显示空状态，完全依赖动态数据
+        setShareLinks([])
       } finally {
         setLoadingLinks(false)
       }

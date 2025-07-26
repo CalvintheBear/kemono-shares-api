@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { shareDataStore, initializeSampleData } from '@/lib/share-store'
+import { getShareListCache, setShareListCache, clearShareCache } from '@/lib/share-cache'
+import { monitor } from '@/lib/share-monitor'
 
 interface ShareListItem {
   id: string
@@ -15,7 +17,19 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
     
-    // 初始化示例数据
+    const startTime = Date.now()
+    
+    // 检查缓存
+    const cachedData = getShareListCache(limit, offset)
+    if (cachedData) {
+      monitor.cacheHit(`share-list-${limit}-${offset}`)
+      console.log('📦 从缓存返回分享列表数据')
+      return NextResponse.json(cachedData)
+    }
+    
+    monitor.cacheMiss(`share-list-${limit}-${offset}`)
+    
+    // 初始化存储
     initializeSampleData()
     
     // 从存储中获取所有数据
@@ -38,7 +52,7 @@ export async function GET(request: NextRequest) {
     // 分页处理
     const paginatedList = shareList.slice(offset, offset + limit)
     
-    return NextResponse.json({
+    const responseData = {
       success: true,
       data: {
         items: paginatedList,
@@ -47,9 +61,20 @@ export async function GET(request: NextRequest) {
         offset,
         hasMore: offset + limit < shareList.length
       }
-    })
+    }
+    
+    // 设置缓存
+    setShareListCache(responseData, limit, offset)
+    console.log('💾 分享列表数据已缓存')
+    
+    // 记录处理时间
+    const processingTime = Date.now() - startTime
+    monitor.processingTime(processingTime)
+    
+    return NextResponse.json(responseData)
   } catch (error) {
     console.error('分享列表获取失败:', error)
+    monitor.error(error, 'share-list-api')
     return NextResponse.json(
       { success: false, error: 'シェアリストの取得に失敗しました' },
       { status: 500 }

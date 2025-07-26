@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { processImageUrl } from '@/lib/image-download-to-r2'
 import { shareDataStore, initializeSampleData, ShareData } from '@/lib/share-store'
+import { clearShareCache } from '@/lib/share-cache'
+import { monitor } from '@/lib/share-monitor'
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,6 +47,12 @@ export async function POST(request: NextRequest) {
     
     shareDataStore.set(shareId, shareData)
 
+    // 清除相关缓存
+    clearShareCache()
+    
+    // 监控分享创建
+    monitor.shareCreated(shareId, { style, isR2Stored, timestamp })
+    
     // 返回分享链接
     const shareUrl = `https://kemono-mimi.com/share/${shareId}`
     
@@ -58,6 +66,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('分享创建失败:', error)
+    monitor.error(error, 'share-create-api')
     return NextResponse.json(
       { success: false, error: '分享の作成に失敗しました' },
       { status: 500 }
