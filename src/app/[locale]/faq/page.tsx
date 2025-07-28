@@ -4,20 +4,20 @@ import Link from 'next/link'
 
 // FAQページSEOメタデータ
 export const metadata = {
-  title: "よくある質問 - kemono-mimi AI画像生成についてのご質問にお答えします",
-  description: "kemono-mimi.comのAI画像生成サービスについてのよくある質問と回答をまとめました。無料AI画像変換・写真アニメ化・商用利用可能など、ユーザー様からのご質問に詳しくお答えします。",
-  keywords: "kemono-mimi FAQ, AI画像生成 使い方, 写真 アニメ風 変換 質問, 無料 AI画像変換 よくある質問, LINEスタンプ作り方 方法, chibiキャラクター作成 解説, 商用利用可能 AI画像, 1-3分 高速生成, プライバシー 保護, 登録不要 無料ツール",
-  openGraph: {
-    title: "よくある質問 - kemono-mimi AI画像生成",
-    description: "kemono-mimi AI画像生成サービスについてのよくある質問と回答まとめ",
-    url: "https://kemono-mimi.com/faq",
-    siteName: "kemono-mimi AI画像生成",
+  title: "よくある質問 - 2kawaii AI画像生成についてのご質問にお答えします",
+      description: "2kawaii.comのAI画像生成サービスについてのよくある質問と回答をまとめました。無料AI画像変換・写真アニメ化・商用利用可能など、ユーザー様からのご質問に詳しくお答えします。",
+      keywords: "2kawaii FAQ, AI画像生成 使い方, 写真 アニメ風 変換 質問, 無料 AI画像変換 よくある質問, LINEスタンプ作り方 方法, chibiキャラクター作成 解説, 商用利用可能 AI画像, 1-3分 高速生成, プライバシー 保護, 登録不要 無料ツール",
+      openGraph: {
+    title: "よくある質問 - 2kawaii AI画像生成",
+    description: "2kawaii AI画像生成サービスについてのよくある質問と回答まとめ",
+    url: "https://2kawaii.com/faq",
+    siteName: "2kawaii AI画像生成",
     images: [
       {
         url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-faq.jpg",
         width: 1200,
         height: 630,
-        alt: "kemono-mimi AI画像生成 FAQ",
+        alt: "2kawaii AI画像生成 FAQ",
       }
     ],
     locale: "ja_JP",
@@ -25,12 +25,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "よくある質問 - kemono-mimi AI画像生成",
+    title: "よくある質問 - 2kawaii AI画像生成",
     description: "AI画像生成サービスについてのよくある質問と回答まとめ",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-faq.jpg"],
   },
   alternates: {
-    canonical: "https://kemono-mimi.com/faq",
+    canonical: "https://2kawaii.com/faq",
   },
   robots: {
     index: true,
@@ -54,8 +54,8 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     category: "サービスについて",
-    question: "kemono-mimi.comはどのようなサービスですか？",
-    answer: "kemono-mimi.comは、AI技術を使って写真や画像を可愛いアニメ調に変換するサービスです。22種類以上のスタイルから選んで、あなたの写真を魅力的なアニメキャラクターに変身させることができます。"
+    question: "2kawaii.comはどのようなサービスですか？",
+    answer: "2kawaii.comは、AI技術を使って写真や画像を可愛いアニメ調に変換するサービスです。22種類以上のスタイルから選んで、あなたの写真を魅力的なアニメキャラクターに変身させることができます。"
   },
   {
     category: "サービスについて",
@@ -158,9 +158,9 @@ export default function FAQPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
-            name: 'よくある質問 - kemono-mimi AI画像生成',
-            description: 'kemono-mimi.comのAI画像生成サービスについてのよくある質問と回答',
-            url: 'https://kemono-mimi.com/faq',
+            name: 'よくある質問 - 2kawaii AI画像生成',
+                description: '2kawaii.comのAI画像生成サービスについてのよくある質問と回答',
+    url: 'https://2kawaii.com/faq',
             mainEntity: faqData.map(faq => ({
               '@type': 'Question',
               name: faq.question,
@@ -181,7 +181,7 @@ export default function FAQPage() {
             よくある質問
           </h1>
           <p className="text-lg text-amber-700 font-cute max-w-2xl mx-auto">
-            kemono-mimi.comのサービスについて、よくいただくご質問にお答えします。
+            2kawaii.comのサービスについて、よくいただくご質問にお答えします。
             お困りごとがあれば、まずこちらをご確認ください。
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function FAQPage() {
           <div className="space-y-4"
           >
             <a
-              href="mailto:support@kemono-mimi.com"
+                              href="mailto:support@2kawaii.com"
               className="inline-block bg-gradient-to-r from-pink-500 to-amber-600 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
             >
               📧 メールでお問い合わせ

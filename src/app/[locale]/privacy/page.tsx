@@ -1,22 +1,23 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 
 // プライバシーポリシーSEOメタデータ
 export const metadata = {
-  title: "プライバシーポリシー - kemono-mimi AI画像生成サービス",
-  description: "kemono-mimi.comのプライバシーポリシー。AI画像生成サービスにおける個人情報の取り扱い、データ保護、Cookieの使用について詳しく説明します。",
-  keywords: "kemono-mimi プライバシーポリシー, AI画像生成 プライバシー, 個人情報保護, データセキュリティ, Cookieポリシー, 画像保存 ポリシー, 第三者提供 禁止, 無料 AIツール プライバシー",
-  openGraph: {
-    title: "プライバシーポリシー - kemono-mimi AI画像生成",
-    description: "kemono-mimi AI画像生成サービスのプライバシーポリシー詳細",
-    url: "https://kemono-mimi.com/privacy",
-    siteName: "kemono-mimi AI画像生成",
+  title: "プライバシーポリシー - 2kawaii AI画像生成サービス",
+      description: "2kawaii.comのプライバシーポリシー。AI画像生成サービスにおける個人情報の取り扱い、データ保護、Cookieの使用について詳しく説明します。",
+      keywords: "2kawaii プライバシーポリシー, AI画像生成 プライバシー, 個人情報保護, データセキュリティ, Cookieポリシー, 画像保存 ポリシー, 第三者提供 禁止, 無料 AIツール プライバシー",
+      openGraph: {
+    title: "プライバシーポリシー - 2kawaii AI画像生成",
+    description: "2kawaii AI画像生成サービスのプライバシーポリシー詳細",
+    url: "https://2kawaii.com/privacy",
+    siteName: "2kawaii AI画像生成",
     images: [
       {
         url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-privacy.jpg",
         width: 1200,
         height: 630,
-        alt: "kemono-mimi プライバシーポリシー",
+        alt: "2kawaii プライバシーポリシー",
       }
     ],
     locale: "ja_JP",
@@ -24,12 +25,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "プライバシーポリシー - kemono-mimi AI画像生成",
+    title: "プライバシーポリシー - 2kawaii AI画像生成",
     description: "AI画像生成サービスのプライバシーポリシー詳細",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-privacy.jpg"],
   },
   alternates: {
-    canonical: "https://kemono-mimi.com/privacy",
+    canonical: "https://2kawaii.com/privacy",
   },
   robots: {
     index: true,
@@ -54,9 +55,9 @@ export default function PrivacyPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'プライバシーポリシー - kemono-mimi AI画像生成',
-            description: 'kemono-mimi.comのプライバシーポリシー詳細説明',
-            url: 'https://kemono-mimi.com/privacy',
+            name: 'プライバシーポリシー - 2kawaii AI画像生成',
+                description: '2kawaii.comのプライバシーポリシー詳細説明',
+    url: 'https://2kawaii.com/privacy',
             datePublished: '2024-07-26',
             dateModified: '2024-07-26'
           }),
@@ -72,7 +73,7 @@ export default function PrivacyPage() {
               プライバシーポリシー
             </h1>
             <p className="text-lg text-amber-700 font-cute">
-              kemono-mimi.com の個人情報保護方針
+              2kawaii.com の個人情報保護方針
             </p>
           </div>
 
@@ -80,7 +81,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-bold text-amber-800 mb-4">1. 基本方針</h2>
               <p className="leading-relaxed">
-                kemono-mimi.com（以下「当サイト」といいます）は、ユーザーの皆様の個人情報の重要性を深く認識し、
+                2kawaii.com（以下「当サイト」といいます）は、ユーザーの皆様の個人情報の重要性を深く認識し、
                 個人情報保護に関する法律およびその他の関連法令を遵守し、適切な取り扱いと保護に努めます。
               </p>
             </section>
@@ -191,7 +192,7 @@ export default function PrivacyPage() {
                 本プライバシーポリシーに関するお問い合わせは、以下のメールアドレスまでお願いいたします。
               </p>
               <p className="mt-2 font-semibold text-amber-700">
-                メール: privacy@kemono-mimi.com
+                メール: privacy@2kawaii.com
               </p>
             </section>
 
@@ -205,12 +206,12 @@ export default function PrivacyPage() {
                 <h3 className="text-xl font-bold text-amber-800 mb-4">🚀 今すぐAI画像変換を体験</h3>
                 <p className="text-amber-700 mb-6">プライバシーを保護しながら、美しいアニメ画像を生成できます</p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a href="/workspace" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <Link href="/workspace" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
                     今すぐ始める
-                  </a>
-                  <a href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  </Link>
+                  <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
                     ギャラリーを見る
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

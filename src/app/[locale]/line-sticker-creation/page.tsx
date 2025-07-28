@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "LINEスタンプ作り方 - AIで写真を可愛いスタンプに無料変換",
   description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！自分の写真からオリジナルスタンプが簡単に作成できます。登録不要・商用利用可能・LINEクリエイターズ登録対応。",
   keywords: "LINEスタンプ作り方, LINEスタンプ作成 無料, AI LINEスタンプ, オリジナルスタンプ 作り方, LINEクリエイターズ スタンプ作成, 写真 LINEスタンプ, スタンプ作成 AI 無料",
   alternates: {
-    canonical: "https://kemono-mimi.com/line-stamp",
+    canonical: "https://2kawaii.com/line-stamp",
   },
   robots: {
     index: true,
@@ -37,19 +38,25 @@ export default function LineStickerCreationPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="text-center">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85-after" 
                   alt="LINEスタンプサンプル" 
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                  width={192}
+                  height={192}
+                  unoptimized
                 />
                 <p className="text-sm text-amber-700 mt-2">LINEスタンプ</p>
               </div>
               
               <div className="text-center">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-after" 
                   alt="可愛いLINEアイコンサンプル" 
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                  width={192}
+                  height={192}
+                  unoptimized
                 />
                 <p className="text-sm text-amber-700 mt-2">LINEアイコン</p>
               </div>

@@ -68,7 +68,7 @@ async function testShareImagesProduction() {
     }
 
     console.log('\n🏁 生产环境分享页面图片展示功能测试完成！');
-    console.log('📝 现在可以访问 https://kemono-mimi.com/share 查看图片展示效果！');
+    console.log('📝 现在可以访问 https://2kawaii.com/share 查看图片展示效果！');
 
   } catch (error) {
     console.error('❌ 测试失败:', error.message);

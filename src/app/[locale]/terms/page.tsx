@@ -1,22 +1,23 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 
 // 利用規約SEOメタデータ
 export const metadata = {
-  title: "利用規約 - kemono-mimi AI画像生成サービス",
-  description: "kemono-mimi.comの利用規約。AI画像生成サービスの利用条件、著作権、免責事項、禁止事項について詳しく説明します。",
-  keywords: "kemono-mimi 利用規約, AI画像生成 利用条件, 著作権 ポリシー, 商用利用 規約, 禁止事項, 免責事項, AI生成画像 権利, サービス利用規約, 無料ツール 規約, ユーザー責任",
-  openGraph: {
-    title: "利用規約 - kemono-mimi AI画像生成",
-    description: "kemono-mimi AI画像生成サービスの利用規約詳細",
-    url: "https://kemono-mimi.com/terms",
-    siteName: "kemono-mimi AI画像生成",
+  title: "利用規約 - 2kawaii AI画像生成サービス",
+      description: "2kawaii.comの利用規約。AI画像生成サービスの利用条件、著作権、免責事項、禁止事項について詳しく説明します。",
+      keywords: "2kawaii 利用規約, AI画像生成 利用条件, 著作権 ポリシー, 商用利用 規約, 禁止事項, 免責事項, AI生成画像 権利, サービス利用規約, 無料ツール 規約, ユーザー責任",
+      openGraph: {
+    title: "利用規約 - 2kawaii AI画像生成",
+    description: "2kawaii AI画像生成サービスの利用規約詳細",
+    url: "https://2kawaii.com/terms",
+    siteName: "2kawaii AI画像生成",
     images: [
       {
         url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-terms.jpg",
         width: 1200,
         height: 630,
-        alt: "kemono-mimi 利用規約",
+        alt: "2kawaii 利用規約",
       }
     ],
     locale: "ja_JP",
@@ -24,12 +25,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "利用規約 - kemono-mimi AI画像生成",
+    title: "利用規約 - 2kawaii AI画像生成",
     description: "AI画像生成サービスの利用規約詳細",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-terms.jpg"],
   },
   alternates: {
-    canonical: "https://kemono-mimi.com/terms",
+    canonical: "https://2kawaii.com/terms",
   },
   robots: {
     index: true,
@@ -54,9 +55,9 @@ export default function TermsPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: '利用規約 - kemono-mimi AI画像生成',
-            description: 'kemono-mimi.comの利用規約詳細説明',
-            url: 'https://kemono-mimi.com/terms',
+            name: '利用規約 - 2kawaii AI画像生成',
+                description: '2kawaii.comの利用規約詳細説明',
+    url: 'https://2kawaii.com/terms',
             datePublished: '2024-07-26',
             dateModified: '2024-07-26'
           }),
@@ -72,7 +73,7 @@ export default function TermsPage() {
               利用規約
             </h1>
             <p className="text-lg text-amber-700 font-cute">
-              kemono-mimi.com のご利用条件
+              2kawaii.com のご利用条件
             </p>
           </div>
 
@@ -80,7 +81,7 @@ export default function TermsPage() {
             <section>
               <h2 className="text-2xl font-bold text-amber-800 mb-4">第1条（適用）</h2>
               <p className="leading-relaxed">
-                本利用規約（以下「本規約」といいます）は、kemono-mimi.com（以下「当サイト」といいます）
+                本利用規約（以下「本規約」といいます）は、2kawaii.com（以下「当サイト」といいます）
                 が提供するAI画像生成サービスの利用条件を定めるものです。
                 ユーザーは、本規約に同意のうえ、当サイトのサービスをご利用ください。
               </p>
@@ -232,7 +233,7 @@ export default function TermsPage() {
                 本利用規約に関するお問い合わせは、以下のメールアドレスまでお願いいたします。
               </p>
               <p className="mt-2 font-semibold text-amber-700">
-                メール: support@kemono-mimi.com
+                メール: support@2kawaii.com
               </p>
             </section>
 
@@ -246,12 +247,12 @@ export default function TermsPage() {
                 <h3 className="text-xl font-bold text-amber-800 mb-4">🚀 利用規約に同意して今すぐ開始</h3>
                 <p className="text-amber-700 mb-6">安全で安心なAI画像変換サービスをお楽しみください</p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a href="/workspace" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  <Link href="/workspace" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
                     今すぐ始める
-                  </a>
-                  <a href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                  </Link>
+                  <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
                     ギャラリーを見る
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

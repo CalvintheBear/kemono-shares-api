@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "擬人化 AI 活用術 - ペットやキャラクターを可愛いアニメキャラに変換",
   description: "【最新技術】AIでペットやキャラクターを可愛いアニメキャラに擬人化！写真をアップロードするだけで愛犬・愛猫を美少女キャラに。無料で使える擬人化AIの完全ガイド。",
   keywords: "擬人化 AI, ペット 擬人化, AI 擬人化, キャラクター 擬人化, モノ 擬人化, 写真 擬人化 AI 無料, 擬人化 キャラクター 作成",
   alternates: {
-    canonical: "https://kemono-mimi.com/personification",
+    canonical: "https://2kawaii.com/personification",
   },
   robots: {
     index: true,
@@ -42,10 +43,12 @@ export default function PersonificationPage() {
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-3 font-bold">変身前</p>
                   <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
-                    <img
+                    <Image
                       src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before"
                       alt="擬人化 変身前"
-                      className="w-full h-full object-cover"
+                      width={200}
+                      height={200}
+                      unoptimized
                     />
                   </div>
                 </div>
@@ -64,10 +67,12 @@ export default function PersonificationPage() {
                 <div className="text-center">
                   <p className="text-sm text-amber-700 mb-3 font-bold">変身後</p>
                   <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
-                    <img
+                    <Image
                       src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after"
                       alt="擬人化 変身後"
-                      className="w-full h-full object-cover"
+                      width={200}
+                      height={200}
+                      unoptimized
                     />
                   </div>
                 </div>

@@ -2,14 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- 主要ページ -->
   <url>
-    <loc>https://kemono-mimi.com</loc>
+    <loc>https://2kawaii.com</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/workspace</loc>
+    <loc>https://2kawaii.com/workspace</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -17,42 +17,42 @@
   
   <!-- 長尾キーワードページ -->
   <url>
-    <loc>https://kemono-mimi.com/guide</loc>
+    <loc>https://2kawaii.com/guide</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/line-stamp</loc>
+    <loc>https://2kawaii.com/line-stamp</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/chibi</loc>
+    <loc>https://2kawaii.com/chibi</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/conversion</loc>
+    <loc>https://2kawaii.com/conversion</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/personification</loc>
+    <loc>https://2kawaii.com/personification</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/icon</loc>
+    <loc>https://2kawaii.com/icon</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -60,21 +60,21 @@
   
   <!-- 静的ページ -->
   <url>
-    <loc>https://kemono-mimi.com/privacy</loc>
+    <loc>https://2kawaii.com/privacy</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/terms</loc>
+    <loc>https://2kawaii.com/terms</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://kemono-mimi.com/faq</loc>
+    <loc>https://2kawaii.com/faq</loc>
     <lastmod>2025-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

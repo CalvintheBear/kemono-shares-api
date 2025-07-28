@@ -15,22 +15,67 @@ export class ShareKVStore {
   private kv: any = null // KVNamespace 类型在 Cloudflare Workers 环境中可用
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存
+  private isInitialized = false
 
   constructor() {
-    // 在 Cloudflare Workers 环境中，KV 会自动注入
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof globalThis !== 'undefined' && (globalThis as any).SHARE_DATA_KV) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.kv = (globalThis as any).SHARE_DATA_KV
+    this.initializeKV()
+  }
+
+  // 初始化KV存储
+  private initializeKV() {
+    try {
+      // 检查是否在 Cloudflare Workers 环境
+      if (typeof globalThis !== 'undefined') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const globalAny = globalThis as any
+        
+        // 检查多种可能的KV绑定名称
+        if (globalAny.SHARE_DATA_KV) {
+          this.kv = globalAny.SHARE_DATA_KV
+          console.log('✅ Cloudflare KV 存储已初始化 (SHARE_DATA_KV)')
+        } else if (globalAny.KV) {
+          this.kv = globalAny.KV
+          console.log('✅ Cloudflare KV 存储已初始化 (KV)')
+        } else if (globalAny.__KV__) {
+          this.kv = globalAny.__KV__
+          console.log('✅ Cloudflare KV 存储已初始化 (__KV__)')
+        } else {
+          // 只在非生产环境下显示警告
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('⚠️ 未检测到 Cloudflare KV 绑定，将使用内存存储')
+          }
+        }
+      }
+      
+      this.isInitialized = true
+    } catch (error) {
+      console.error('❌ KV 初始化失败:', error)
+      this.isInitialized = false
     }
   }
 
   // 检查是否在 Cloudflare Workers 环境
   private isCloudflareWorkers(): boolean {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return typeof globalThis !== 'undefined' && 
-           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-           (globalThis as any).SHARE_DATA_KV !== undefined
+    if (!this.isInitialized) {
+      this.initializeKV()
+    }
+    
+    // 检查多种环境标识
+    const isWorkers = typeof globalThis !== 'undefined' && (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).SHARE_DATA_KV !== undefined ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).KV !== undefined ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).__KV__ !== undefined ||
+      // 检查环境变量
+      process.env.NODE_ENV === 'production' ||
+      process.env.CF_WORKER === 'true' ||
+      // 检查用户代理
+      (typeof navigator !== 'undefined' && navigator.userAgent.includes('Cloudflare'))
+    )
+    
+    return isWorkers && this.kv !== null
   }
 
   // 生成 KV 键名
@@ -61,9 +106,24 @@ export class ShareKVStore {
         console.log('✅ 数据已存储到 Cloudflare KV:', shareId)
       } else {
         console.log('⚠️ 不在 Cloudflare Workers 环境，仅使用内存存储:', shareId)
+        // 在开发环境中，也尝试保存到本地存储作为备份
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            const key = `share_backup_${shareId}`
+            window.localStorage.setItem(key, JSON.stringify({
+              data,
+              timestamp: Date.now()
+            }))
+            console.log('💾 数据已备份到本地存储:', shareId)
+          } catch (e) {
+            console.warn('⚠️ 本地存储备份失败:', e)
+          }
+        }
       }
     } catch (error) {
       console.error('❌ 存储数据失败:', error)
+      // 即使KV存储失败，也要保持内存缓存
+      console.log('🔄 回退到内存存储:', shareId)
       throw error
     }
   }
@@ -87,6 +147,31 @@ export class ShareKVStore {
           this.memoryCache.set(shareId, shareData)
           console.log('📦 从 KV 获取数据:', shareId)
           return shareData
+        }
+      }
+
+      // 如果KV中没有数据，尝试从本地存储恢复
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const key = `share_backup_${shareId}`
+          const backupData = window.localStorage.getItem(key)
+          if (backupData) {
+            const parsed = JSON.parse(backupData)
+            if (parsed.data && parsed.timestamp) {
+              // 检查备份数据是否过期（7天）
+              const isExpired = Date.now() - parsed.timestamp > 7 * 24 * 60 * 60 * 1000
+              if (!isExpired) {
+                console.log('🔄 从本地存储恢复数据:', shareId)
+                this.memoryCache.set(shareId, parsed.data)
+                return parsed.data
+              } else {
+                // 删除过期的备份数据
+                window.localStorage.removeItem(key)
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('⚠️ 本地存储恢复失败:', e)
         }
       }
 
@@ -141,6 +226,16 @@ export class ShareKVStore {
         
         console.log('✅ 数据已从 KV 删除:', shareId)
         return true
+      }
+
+      // 删除本地存储备份
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const key = `share_backup_${shareId}`
+          window.localStorage.removeItem(key)
+        } catch (e) {
+          console.warn('⚠️ 删除本地存储备份失败:', e)
+        }
       }
 
       return true
@@ -234,6 +329,17 @@ export class ShareKVStore {
       console.error('❌ 清理数据失败:', error)
     }
   }
+
+  // 获取存储状态信息
+  getStorageInfo() {
+    return {
+      isWorkers: this.isCloudflareWorkers(),
+      isInitialized: this.isInitialized,
+      hasKV: this.kv !== null,
+      memoryCacheSize: this.memoryCache.size,
+      environment: process.env.NODE_ENV || 'unknown'
+    }
+  }
 }
 
 // 创建全局实例
@@ -248,8 +354,18 @@ export const shareDataStore = {
   clear: () => shareKVStore.cleanup()
 }
 
-// 初始化函数
+// 初始化函数 - 移除模拟数据，完全依赖真实数据
 export const initializeSampleData = async () => {
   const size = await shareKVStore.size()
-  console.log('📊 分享存储初始化完成，当前存储大小:', size)
+  const storageInfo = shareKVStore.getStorageInfo()
+  
+  console.log('📊 分享存储初始化完成:', {
+    storageSize: size,
+    ...storageInfo
+  })
+  
+  // 在开发环境中，可以添加一些测试数据（可选）
+  if (process.env.NODE_ENV === 'development' && size === 0) {
+    console.log('🔧 开发环境：存储为空，可以添加测试数据')
+  }
 } 

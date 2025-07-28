@@ -15,7 +15,7 @@ export default function Footer() {
                 height={32} 
                 className="w-8 h-8"
               />
-              <span>kemono-mimi.com</span>
+                              <span>2kawaii.com</span>
             </Link>
             <p className="text-amber-700 mb-4 max-w-md">
               無料で使える画像変身ツール。あなたの画像を可愛いアニメキャラクターに変身させましょう！
@@ -40,7 +40,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-amber-300 mt-8 pt-8 text-center text-amber-600">
-          <p>&copy; 2025 kemono-mimi.com. All rights reserved.</p>
+          <p>&copy; 2025 2kawaii.com. All rights reserved.</p>
         </div>
       </div>
     </footer>

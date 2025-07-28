@@ -146,7 +146,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       }
       
       const encodedData = btoa(JSON.stringify(shareData))
-      const fallbackUrl = `https://kemono-mimi.com/share?data=${encodedData}`
+      const fallbackUrl = `https://2kawaii.com/share?data=${encodedData}`
       setShareUrl(fallbackUrl)
       return fallbackUrl
     } finally {
@@ -194,7 +194,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     
     const url = await generateShareUrl()
     let shareUrl = ''
-    const text = `✨ kemono-mimiでAI画像変換を体験しました！${style}スタイルで変身完了！🎉`
+    const text = `✨ 2kawaiiでAI画像変換を体験しました！${style}スタイルで変身完了！🎉`
     
     switch (platform) {
       case 'twitter':

@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
 interface LazyImageProps {
   src: string
   alt: string
   className?: string
   loading?: 'lazy' | 'eager'
-  decoding?: 'async' | 'sync' | 'auto'
-  sizes?: string
   fallback?: React.ReactNode
 }
 
@@ -17,8 +16,6 @@ export default function LazyImage({
   alt,
   className = '',
   loading = 'lazy',
-  decoding = 'async',
-  sizes,
   fallback
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -73,16 +70,15 @@ export default function LazyImage({
       )}
       
       {isInView && (
-        <img
-          ref={imgRef}
+        <Image
           src={src}
           alt={alt}
+          width={0}
+          height={0}
+          unoptimized
           className={`w-full h-auto object-cover transition-opacity duration-500 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${className}`}
-          loading={loading}
-          decoding={decoding}
-          sizes={sizes}
           onLoad={handleLoad}
           onError={handleError}
         />

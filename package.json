@@ -22,7 +22,10 @@
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
     "test:optimizations": "node scripts/test-optimizations.js",
     "test:duplicate-prevention": "node scripts/test-duplicate-prevention.js",
-    "test:kv-storage": "node scripts/test-kv-storage.js"
+    "test:kv-storage": "node scripts/test-kv-storage.js",
+    "check:production": "node scripts/check-production-config.js",
+    "monitor:status": "curl -s https://kemono-shares-api.y2983236233.workers.dev/api/share/monitor | jq .",
+    "deploy:safe": "npm run check:production && npm run deploy"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",

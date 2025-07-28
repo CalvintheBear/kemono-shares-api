@@ -1189,7 +1189,7 @@ export default function Workspace() {
                     <div className="text-center py-8">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
                       <p className="mt-4 text-purple-600 font-cute">
-                        kemono-mimiのGPT-4o Image FluxMax版で画像生成中... 1-3分で完成！✨
+                        2kawaiiのGPT-4o Image FluxMax版で画像生成中... 1-3分で完成！✨
                       </p>
                     </div>
                   )}
@@ -1301,7 +1301,7 @@ export default function Workspace() {
                 </thead>
                 <tbody className="text-amber-700">
                   <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
-                    <td className="py-4 px-4 font-semibold text-sm sm:text-base">kemono-mimi</td>
+                    <td className="py-4 px-4 font-semibold text-sm sm:text-base">2kawaii</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 完全無料</td>
                     <td className="py-4 px-4 text-sm sm:text-base">❌ 不要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 可能</td>

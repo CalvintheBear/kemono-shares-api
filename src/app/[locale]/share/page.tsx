@@ -85,14 +85,14 @@ export default function SharePage() {
   }, [])
 
   const handleTryNow = () => {
-    window.location.href = 'https://kemono-mimi.com'
+            window.location.href = 'https://2kawaii.com'
   }
 
   const handleDownload = () => {
     if (shareData) {
       const link = document.createElement('a')
       link.href = shareData.generated
-      link.download = `kemono-mimi-${shareData.style}-${Date.now()}.png`
+              link.download = `2kawaii-${shareData.style}-${Date.now()}.png`
       link.click()
     }
   }
@@ -113,30 +113,30 @@ export default function SharePage() {
     return (
       <>
         <Head>
-          <title>AI画像変換ギャラリー | 美しいアニメ風変換作品集 | kemono-mimi</title>
-          <meta name="description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。無料で写真をアニメ風に変換できます。" />
-          <meta name="keywords" content="AI画像変換,アニメ風変換,ジブリ風,VTuber,ウマ娘,写真変換,無料AI,画像ギャラリー" />
+          <title>AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集 | 2kawaii</title>
+          <meta name="description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。無料で写真をアニメ風に変換できます。" />
+          <meta name="keywords" content="AI画像変換,プロンプト生成,アニメ風変換,ジブリ風,VTuber,ウマ娘,写真変換,無料AI,画像ギャラリー,AIプロンプト" />
           <meta name="robots" content="index, follow, max-image-preview:large" />
-          <meta name="author" content="kemono-mimi" />
+                      <meta name="author" content="2kawaii" />
           
           {/* Open Graph */}
-          <meta property="og:title" content="AI画像変換ギャラリー | 美しいアニメ風変換作品集 | kemono-mimi" />
-          <meta property="og:description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
-          <meta property="og:image" content="https://kemono-mimi.com/og-share-gallery.jpg" />
+                      <meta property="og:title" content="AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集 | 2kawaii" />
+          <meta property="og:description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
+          <meta property="og:image" content="https://2kawaii.com/og-share-gallery.jpg" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
-          <meta property="og:url" content="https://kemono-mimi.com/share" />
+          <meta property="og:url" content="https://2kawaii.com/share" />
           <meta property="og:type" content="website" />
-          <meta property="og:site_name" content="kemono-mimi" />
+                      <meta property="og:site_name" content="2kawaii" />
           
           {/* Twitter Card */}
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="AI画像変換ギャラリー | 美しいアニメ風変換作品集" />
-          <meta name="twitter:description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
-          <meta name="twitter:image" content="https://kemono-mimi.com/og-share-gallery.jpg" />
+          <meta name="twitter:title" content="AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集" />
+          <meta name="twitter:description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
+          <meta name="twitter:image" content="https://2kawaii.com/og-share-gallery.jpg" />
           
           {/* Canonical */}
-          <link rel="canonical" href="https://kemono-mimi.com/share" />
+          <link rel="canonical" href="https://2kawaii.com/share" />
           
           {/* Preload critical resources */}
           <link rel="preload" href="/api/share/list?limit=12" as="fetch" crossOrigin="anonymous" />
@@ -149,13 +149,13 @@ export default function SharePage() {
               "@context": "https://schema.org",
               "@type": "ImageGallery",
               "name": "AI画像変換ギャラリー",
-              "description": "AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。",
-              "url": "https://kemono-mimi.com/share",
-              "image": "https://kemono-mimi.com/og-share-gallery.jpg",
+              "description": "AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。",
+                      "url": "https://2kawaii.com/share",
+        "image": "https://2kawaii.com/og-share-gallery.jpg",
               "publisher": {
                 "@type": "Organization",
-                "name": "kemono-mimi",
-                "url": "https://kemono-mimi.com"
+                "name": "2kawaii",
+                "url": "https://2kawaii.com"
               }
             })}
           </script>
@@ -173,7 +173,7 @@ export default function SharePage() {
                   </span>
                 </h1>
                 <p className="text-lg md:text-xl text-amber-600 max-w-3xl mx-auto leading-relaxed">
-                  美しいアニメ風変換作品のコレクション
+                  プロンプト自動生成による美しいアニメ風変換作品のコレクション
                 </p>
               </div>
               
@@ -221,7 +221,7 @@ export default function SharePage() {
                   AI画像変換ギャラリー
                 </h2>
                 <p className="text-xl text-amber-600 max-w-3xl mx-auto">
-                  美しいアニメ風変換作品をお楽しみください
+                  プロンプト技術で生成された美しいアニメ風変換作品をお楽しみください
                 </p>
               </div>
               
@@ -249,8 +249,6 @@ export default function SharePage() {
                               alt={`${link.style}変換結果 - ${link.title}`}
                               className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
                               loading={index < 8 ? "eager" : "lazy"}
-                              decoding="async"
-                              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                               fallback={
                                 <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
                                   <div className="text-6xl text-amber-400">🎨</div>

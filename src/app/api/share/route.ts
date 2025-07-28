@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       console.log('⚠️ 检测到重复请求，返回现有分享ID:', existingRequest.shareId)
       const existingShareData = await shareKVStore.get(existingRequest.shareId)
       if (existingShareData) {
-        const shareUrl = `https://kemono-mimi.com/share/${existingRequest.shareId}`
+        const shareUrl = `https://2kawaii.com/share/${existingRequest.shareId}`
         return NextResponse.json({
           success: true,
           shareId: existingRequest.shareId,
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     monitor.shareCreated(shareId, { style, isR2Stored, timestamp })
     
     // 返回分享链接
-    const shareUrl = `https://kemono-mimi.com/share/${shareId}`
+    const shareUrl = `https://2kawaii.com/share/${shareId}`
     
     console.log('✅ 分享创建成功:', { shareId, shareUrl, isR2Stored })
     

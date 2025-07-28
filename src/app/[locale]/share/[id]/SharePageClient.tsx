@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 interface ShareData {
   id: string
@@ -53,14 +54,14 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
   }, [shareId])
 
   const handleTryNow = () => {
-    window.location.href = 'https://kemono-mimi.com'
+            window.location.href = 'https://2kawaii.com'
   }
 
   const handleDownload = () => {
     if (shareData) {
       const link = document.createElement('a')
       link.href = shareData.generatedUrl
-      link.download = `kemono-mimi-${shareData.style}-${Date.now()}.png`
+      link.download = `2kawaii-${shareData.style}-${Date.now()}.png`
       link.click()
     }
   }
@@ -90,7 +91,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
                 onClick={handleTryNow}
                 className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
               >
-                kemono-mimiを試す
+                2kawaiiを試す
               </button>
             </div>
           </div>
@@ -111,7 +112,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
-              <h1 className="text-3xl font-bold">AI画像変換結果</h1>
+              <h1 className="text-3xl font-bold">AI画像変換結果・プロンプト生成</h1>
               <SparklesIcon className="w-6 h-6" />
             </div>
             <p className="text-lg opacity-90">
@@ -129,18 +130,20 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
                 変身後の画像
               </h2>
               <div className="flex justify-center">
-                <img
+                <Image
                   src={shareData.generatedUrl}
                   alt="変身後のAI画像"
+                  width={600}
+                  height={400}
+                  unoptimized
                   className="rounded-2xl shadow-lg max-w-full h-auto"
-                  style={{ maxHeight: 400 }}
                 />
               </div>
             </div>
 
             {/* Style Information */}
             <div className="bg-gray-50 rounded-xl p-6 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-3">変換スタイル</h3>
+              <h3 className="text-lg font-bold text-gray-800 mb-3">変換スタイル・プロンプト情報</h3>
               <div className="flex items-center space-x-2 mb-4">
                 <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
                   {shareData.style}

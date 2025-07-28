@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface _Template {
   id: string
@@ -246,10 +247,12 @@ export default function TemplateGallery() {
                 <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 font-bold">変身前</p>
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
                   {isClient && (
-                    <img
+                    <Image
                       src={selectedTemplate.beforeImage}
                       alt={`${selectedTemplate.name} 変身前`}
-                      className="w-full h-full object-cover"
+                      width={500}
+                      height={500}
+                      unoptimized
                     />
                   )}
                 </div>
@@ -270,10 +273,12 @@ export default function TemplateGallery() {
                 <p className="text-sm sm:text-base text-amber-700 mb-3 sm:mb-4 font-bold">変身後</p>
                 <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
                   {isClient && (
-                    <img
+                    <Image
                       src={selectedTemplate.afterImage}
                       alt={`${selectedTemplate.name} 変身後`}
-                      className="w-full h-full object-cover"
+                      width={500}
+                      height={500}
+                      unoptimized
                     />
                   )}
                 </div>

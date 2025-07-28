@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "アイコン作成 無料 - AIで可愛いアニメアイコンを即作成【SNS対応】",
   description: "【完全無料】AIで写真を可愛いアニメアイコンに即変換！Twitter、Instagram、LINE、DiscordなどSNSプロフィール画像に最適。商用利用可能・登録不要・高画質ダウンロード。",
   keywords: "アイコン作成 無料, アニメアイコン作成, AIアイコン作成, SNSアイコン作成 無料, プロフィール画像作成 AI, アイコン作成 AI 無料, アニメアイコン 作り方",
   alternates: {
-    canonical: "https://kemono-mimi.com/icon",
+    canonical: "https://2kawaii.com/icon",
   },
   robots: {
     index: true,
@@ -36,10 +37,13 @@ export default function IconCreationPage() {
             </h1>
             
             <div className="text-center mb-8">
-              <img 
+              <Image 
                 src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-after" 
                 alt="アニメアイコンサンプル" 
                 className="mx-auto rounded-lg shadow-lg w-64 h-64 object-cover"
+                width={256}
+                height={256}
+                unoptimized
               />
             </div>
           

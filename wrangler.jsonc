@@ -33,5 +33,14 @@
   },
   "build": {
     "command": "npm run build"
+  },
+  "env": {
+    "development": {
+      "name": "kemono-shares-api-dev",
+      "vars": {
+        "NODE_ENV": "development",
+        "NEXT_PUBLIC_APP_URL": "https://kemono-shares-api-dev.y2983236233.workers.dev"
+      }
+    }
   }
 } 

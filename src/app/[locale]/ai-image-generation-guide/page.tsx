@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "AI画像生成 初心者ガイド | 写真をアニメ風に変換する完全ガイド",
   description: "【初心者向け】AI画像生成で写真をアニメ風に変換する完全ガイド。登録不要・無料で使えるAI画像変換の使い方を詳しく解説。ジブリ風、VTuber風、美少女、chibiなど人気スタイルの選び方も紹介。",
   keywords: "AI画像生成 初心者, 写真 アニメ風に変換, AI画像変換 使い方, アニメ風画像作成 初心者, 写真加工 アニメ風, AI 画像生成 無料 初心者",
   alternates: {
-    canonical: "https://kemono-mimi.com/guide",
+    canonical: "https://2kawaii.com/guide",
   },
   robots: {
     index: true,
@@ -39,37 +40,49 @@ export default function AIGuidePage() {
               <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">人気のアニメスタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-after" 
                     alt="萌え化スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">萌え化</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
                     alt="ジブリ風スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">ジブリ風</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
                     alt="VTuberスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">VTuber</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%93%9D%E8%89%B2%E6%A1%A3%E6%A1%88-after" 
                     alt="ブルーアーカイブスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">ブルーアーカイブ</p>
                 </div>
@@ -78,37 +91,49 @@ export default function AIGuidePage() {
               <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">リアル系スタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after" 
                     alt="証明写真スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">証明写真</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after" 
                     alt="厚塗スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">厚塗</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/3DCG-after" 
                     alt="3D CGスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">3D CG</p>
                 </div>
                 
                 <div className="text-center">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E4%B9%99%E6%B8%B8-after" 
                     alt="乙女ゲームスタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
+                    width={128}
+                    height={128}
+                    unoptimized
                   />
                   <p className="text-xs text-amber-700 mt-2">乙女ゲーム</p>
                 </div>
@@ -129,10 +154,13 @@ export default function AIGuidePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-uploadimage" 
                     alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
+                    width={192}
+                    height={192}
+                    unoptimized
                     title="AI画像変換 写真アップロードガイド"
                   />
                 </div>
@@ -141,10 +169,13 @@ export default function AIGuidePage() {
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choosetem" 
                     alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
+                    width={192}
+                    height={192}
+                    unoptimized
                     title="AI画像変換 アニメスタイル選択"
                   />
                 </div>
@@ -153,10 +184,13 @@ export default function AIGuidePage() {
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
-                  <img 
+                  <Image 
                     src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-finalimage" 
                     alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
+                    width={192}
+                    height={192}
+                    unoptimized
                     title="AI画像変換完了"
                   />
                 </div>

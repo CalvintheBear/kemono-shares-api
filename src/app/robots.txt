@@ -23,4 +23,4 @@ Disallow: *.js
 Disallow: *.json
 
 # サイトマップの場所を指定
-Sitemap: https://kemono-mimi.com/sitemap.xml
+Sitemap: https://2kawaii.com/sitemap.xml

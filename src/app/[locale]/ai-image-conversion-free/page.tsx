@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "【2025年最新】無料AI画像変換ツールを徹底比較！FuryCode、Canva、Midjourney、Stable Diffusionなど人気サービスの機能、料金、使いやすさを詳しく解説。あなたに最適な無料AI画像変換ツールを見つけましょう。",
   keywords: "AI画像変換 無料比較, 無料AI画像生成 比較, AI画像変換 無料 おすすめ, 写真アニメ化 無料比較, AI画像生成 ツール 比較, 無料AI画像変換 ランキング",
   alternates: {
-    canonical: "https://kemono-mimi.com/conversion",
+    canonical: "https://2kawaii.com/conversion",
   },
   robots: {
     index: true,
@@ -156,7 +156,7 @@ export default function ComparisonPage() {
                 </thead>
                 <tbody className="text-amber-700">
                   <tr className="border-b border-amber-100">
-                    <td className="py-3 px-4 font-semibold">kemono-mimi</td>
+                    <td className="py-3 px-4 font-semibold">2kawaii</td>
                     <td className="py-3 px-4">✅ 完全無料</td>
                     <td className="py-3 px-4">❌ 不要</td>
                     <td className="py-3 px-4">✅ 可能</td>
@@ -195,18 +195,18 @@ export default function ComparisonPage() {
           <section className="card-kawaii p-8 mb-8">
             <h2 className="text-2xl font-bold text-amber-800 mb-4">無料AI画像変換の選び方</h2>
             <ul className="list-disc list-inside space-y-2 text-amber-700">
-              <li><strong>完全無料を求めるなら</strong>：kemono-mimi - 登録不要で即利用可能</li>
+                              <li><strong>完全無料を求めるなら</strong>：2kawaii - 登録不要で即利用可能</li>
               <li><strong>高画質を重視するなら</strong>：Stable Diffusion - 細部まで美麗な変換</li>
-              <li><strong>商用利用を前提なら</strong>：kemono-mimi - 商用利用完全OK</li>
-              <li><strong>スピードを重視するなら</strong>：kemono-mimi - 1-3分で完了</li>
-              <li><strong>日本語対応が必要なら</strong>：kemono-mimi - 完全日本語対応</li>
+                              <li><strong>商用利用を前提なら</strong>：2kawaii - 商用利用完全OK</li>
+                              <li><strong>スピードを重視するなら</strong>：2kawaii - 1-3分で完了</li>
+                              <li><strong>日本語対応が必要なら</strong>：2kawaii - 完全日本語対応</li>
             </ul>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
             <h2 className="text-2xl font-bold text-amber-800 mb-4">おすすめの無料AI画像変換順位</h2>
             <ol className="list-decimal list-inside space-y-3 text-amber-700">
-              <li><strong>🏆 kemono-mimi</strong> - 完全無料・登録不要・商用利用可能・高速処理</li>
+                              <li><strong>🏆 2kawaii</strong> - 完全無料・登録不要・商用利用可能・高速処理</li>
               <li><strong>🥈 Stable Diffusion</strong> - 高画質・カスタマイズ性高い・技術者向け</li>
               <li><strong>🥉 Midjourney</strong> - 芸術的・高品質・制限あり</li>
               <li><strong>4位 Canva</strong> - 簡単操作・デザイン統合・機能制限</li>

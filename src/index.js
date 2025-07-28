@@ -1,4 +1,6 @@
 // Cloudflare Workers entry point
+import { ShareStoreWorkers } from './lib/share-store-workers.js';
+
 const worker = {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -14,7 +16,7 @@ const worker = {
     }
     
     // 默认响应
-    return new Response('Kemono Shares API is running!', {
+    return new Response('2kawaii Shares API is running!', {
       headers: { 
         'Content-Type': 'text/plain',
         'Access-Control-Allow-Origin': '*',
@@ -69,40 +71,56 @@ async function handleApiRequest(request, env, _ctx) {
 }
 
 // 处理分享创建
-async function handleShareCreate(request, _env) {
+async function handleShareCreate(request, env) {
   try {
     const body = await request.json();
     const { generatedUrl, originalUrl, prompt, style, timestamp } = body;
     
-    // 这里应该调用我们的KV存储逻辑
-    // 暂时返回成功响应
-    const shareId = `share_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const shareUrl = `https://kemono-mimi.com/share/${shareId}`;
+    // 验证必需字段
+    if (!generatedUrl || !style) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: '缺少必需字段: generatedUrl, style'
+      }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        },
+      });
+    }
+    
+    // 初始化KV存储
+    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    
+    // 创建分享
+    const shareData = await shareStore.createShare({
+      generatedUrl,
+      originalUrl: originalUrl || '',
+      prompt: prompt || '',
+      style,
+      timestamp: timestamp || Date.now(),
+      isR2Stored: false
+    });
+    
+    const shareUrl = `https://2kawaii.com/share/${shareData.id}`;
     
     return new Response(JSON.stringify({
       success: true,
-      shareId,
+      shareId: shareData.id,
       shareUrl,
-      data: {
-        id: shareId,
-        generatedUrl,
-        originalUrl,
-        prompt,
-        style,
-        timestamp,
-        createdAt: new Date().toISOString(),
-        isR2Stored: false
-      }
+      data: shareData
     }), {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
       },
     });
-  } catch (_error) {
+  } catch (error) {
+    console.error('❌ 分享创建失败:', error);
     return new Response(JSON.stringify({
       success: false,
-      error: '分享创建失败'
+      error: '分享创建失败: ' + error.message
     }), {
       status: 500,
       headers: {

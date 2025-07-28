@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "Chibiキャラクター作成 - AIで可愛いchibiキャラを無料作成",
   description: "【完全無料】AIで写真を可愛いchibiキャラクターに変換！頭が大きくて体が小さいデフォルメ表現が特徴的なchibiキャラが簡単に作成できます。LINEスタンプやSNSアイコンに最適。",
   keywords: "chibiキャラクター作成, chibi化 AI, AIでchibiキャラ作成, chibiキャラ 作り方 無料, 写真をchibiに変換, 可愛いキャラクター作成 AI, chibiアイコン作成",
   alternates: {
-    canonical: "https://kemono-mimi.com/chibi",
+    canonical: "https://2kawaii.com/chibi",
   },
   robots: {
     index: true,
@@ -37,19 +38,25 @@ export default function ChibiMakerPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="text-center">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after" 
                   alt="Chibiキャラクターサンプル" 
+                  width={192}
+                  height={192}
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                  unoptimized
                 />
                 <p className="text-sm text-amber-700 mt-2">Chibiキャラクター</p>
               </div>
               
               <div className="text-center">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD-after" 
                   alt="SDキャラクターサンプル" 
+                  width={192}
+                  height={192}
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
+                  unoptimized
                 />
                 <p className="text-sm text-amber-700 mt-2">SDキャラクター</p>
               </div>

@@ -23,7 +23,7 @@ export default function Header() {
                   height={32} 
                   className="w-8 h-8"
                 />
-                <span>kemono-mimi.com</span>
+                                 <span>2kawaii.com</span>
               </Link>
             </div>
           </div>

@@ -4,23 +4,24 @@ import TemplateGallery from "@/components/TemplateGallery";
 import FAQ from "@/components/FAQ";
 import Link from "next/link";
 import HomeHero from "@/components/HomeHero";
+import Image from 'next/image'
 
 // ホームページSEOメタデータ
 export const metadata = {
-  title: "kemono-mimi｜無料AI画像生成ツール - 写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-  description: "【完全無料・登録不要】kemono-mimiは最新AIで写真をジブリ風・可愛い壁紙・chibi・美少女・証明写真加工など20種類以上のアニメイラストに自動変換！商用利用OK・高画質・スマホ対応。SNSアイコンやLINEスタンプも簡単作成。1-3分で高品質なアニメ画像を生成します。",
-      keywords: "kemono-mimi, AI画像生成 無料, AIイラスト, アニメ化, 写真 変換, ジブリ風, 可愛い壁紙, 証明写真加工, chibi, 美少女, LINEスタンプ, SNSアイコン, 商用利用, 登録不要, 高画質, AI自動化",
-  openGraph: {
-    title: "kemono-mimi｜無料AI画像生成ツール - 写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-    description: "写真をアニメ・イラスト・可愛い壁紙・証明写真加工に即変換！kemono-mimiのAIで1-3分で高画質画像を無料生成。登録不要・商用利用OK。",
-    url: "https://kemono-mimi.com",
-    siteName: "kemono-mimi AI画像生成",
+  title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
+  description: "【完全無料・登録不要】2kawaiiは最新AIでプロンプト自動生成により写真をジブリ風・可愛い壁紙・chibi・美少女・証明写真加工など20種類以上のアニメイラストに自動変換！商用利用OK・高画質・スマホ対応。SNSアイコンやLINEスタンプも簡単作成。1-3分で高品質なアニメ画像を生成します。",
+      keywords: "2kawaii, AI画像生成 無料, プロンプト生成, AIイラスト, アニメ化, 写真 変換, ジブリ風, 可愛い壁紙, 証明写真加工, chibi, 美少女, LINEスタンプ, SNSアイコン, 商用利用, 登録不要, 高画質, AI自動化, AIプロンプト",
+      openGraph: {
+          title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
+    description: "プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙・証明写真加工に即変換！2kawaiiのAIで1-3分で高画質画像を無料生成。登録不要・商用利用OK。",
+    url: "https://2kawaii.com",
+    siteName: "2kawaii AI画像生成",
     images: [
       {
         url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-homepage.jpg",
         width: 1200,
         height: 630,
-        alt: "kemono-mimi AI画像生成 ホームページ",
+        alt: "2kawaii AI画像生成 ホームページ",
       }
     ],
     locale: "ja_JP",
@@ -28,12 +29,12 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "kemono-mimi｜無料AI画像生成ツール - 写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-    description: "AIで写真をアニメ・イラスト・可愛い壁紙・証明写真加工に自動変換！20+スタイル・1-3分で完成・完全無料・登録不要",
+    title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
+    description: "プロンプト自動生成でAI写真をアニメ・イラスト・可愛い壁紙・証明写真加工に自動変換！20+スタイル・1-3分で完成・完全無料・登録不要",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
-    canonical: "https://kemono-mimi.com",
+    canonical: "https://2kawaii.com",
   },
   robots: {
     index: true,
@@ -52,9 +53,9 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'kemono-mimi AI画像生成',
-  description: 'GPT-4o Image で写真をアニメ風に即変換できる無料ツール',
-  url: 'https://kemono-mimi.com',
+  name: '2kawaii AI画像生成',
+  description: 'GPT-4o Image でプロンプト自動生成により写真をアニメ風に即変換できる無料ツール',
+      url: 'https://2kawaii.com',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
   offers: {
@@ -64,6 +65,7 @@ const structuredData = {
     availability: 'https://schema.org/InStock',
   },
   featureList: [
+    'プロンプト自動生成',
     '写真をアニメ風に変換',
     '20種類以上のスタイル選択',
     '1-3分で高速生成',
@@ -103,9 +105,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.2s'}}>
               <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-uploadimage" 
                   alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
+                  width={200}
+                  height={200}
+                  unoptimized
                   className="w-full h-full object-cover rounded-full shadow-lg"
                   title="AI画像変換 写真アップロードガイド"
                 />
@@ -115,9 +120,12 @@ export default function Home() {
             </div>
             <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.4s'}}>
               <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choosetem" 
                   alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
+                  width={200}
+                  height={200}
+                  unoptimized
                   className="w-full h-full object-cover rounded-full shadow-lg"
                   title="AI画像変換 アニメスタイル選択"
                 />
@@ -127,9 +135,12 @@ export default function Home() {
             </div>
             <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.6s'}}>
               <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
-                <img 
+                <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-finalimage" 
                   alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
+                  width={200}
+                  height={200}
+                  unoptimized
                   className="w-full h-full object-cover rounded-full shadow-lg"
                   title="AI画像変換完了"
                 />
@@ -189,7 +200,7 @@ export default function Home() {
                 </thead>
                 <tbody className="text-amber-700">
                   <tr className="border-b border-amber-100 hover:bg-amber-50 transition-colors">
-                    <td className="py-4 px-4 font-semibold text-sm sm:text-base">kemono-mimi</td>
+                    <td className="py-4 px-4 font-semibold text-sm sm:text-base">2kawaii</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 完全無料</td>
                     <td className="py-4 px-4 text-sm sm:text-base">❌ 不要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 可能</td>

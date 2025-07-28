@@ -18,7 +18,7 @@ export default function HomeHero() {
         <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gradient font-cute mb-6 lg:mb-8 float transition-all duration-1000 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <span className="block">AI画像変換 完全無料</span>
+          <span className="block">AI画像変換・プロンプト自動生成 完全無料</span>
           <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl mt-2">写真をアニメ・イラスト・可愛い壁紙に即変換</span>
         </h1>
         <p className={`text-lg sm:text-xl md:text-2xl text-amber-800 mb-4 lg:mb-6 font-cute leading-relaxed transition-all duration-1000 delay-500 ${
