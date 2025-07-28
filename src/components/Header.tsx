@@ -12,7 +12,8 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          {/* Logo and Domain - Now on the left */}
+          <div className="flex items-center order-1">
             <div className="flex-shrink-0">
               <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-amber-800 font-cute hover:text-amber-900 transition-colors">
                 <Image 
@@ -27,17 +28,19 @@ export default function Header() {
             </div>
           </div>
           
-          {/* Desktop Navigation */}
-          <nav className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden md:block order-2 flex-1">
+            <div className="flex items-baseline justify-center space-x-8">
               <Link href="/workspace" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">サービスを始める</Link>
-              <Link href="/faq" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">よくある質問</Link>
+              <Link href="/share" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">ギャラリー</Link>
+              <Link href="/faq" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">利用規約</Link>
             </div>
           </nav>
           
-          <div className="flex items-center space-x-4">
+          {/* CTA Button and Mobile Menu - Now on the right */}
+          <div className="flex items-center space-x-4 order-3">
             <Link href="/workspace" className="btn-kawaii text-sm font-medium transition-colors">
               今すぐ体験
             </Link>
@@ -61,7 +64,8 @@ export default function Header() {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
               <Link href="/workspace" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">サービスを始める</Link>
-              <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">よくある質問</Link>
+              <Link href="/share" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">ギャラリー</Link>
+              <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">利用規約</Link>
             </div>

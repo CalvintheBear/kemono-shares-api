@@ -102,10 +102,15 @@ export default async function WorkspacePage() {
             <p className="text-lg sm:text-xl text-amber-800 mb-4 font-cute">
               写真をアニメ風に即変換！登録不要・商用利用可能・完全無料
             </p>
-            <p className="text-base sm:text-lg text-amber-700 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-amber-700 max-w-3xl mx-auto leading-relaxed mb-6">
               最新のGPT-4o Image FluxMax技術により、ジブリ風・VTuber風・美少女・chibiキャラクター作成・LINEスタンプ作り方など、20種類以上のスタイルから選択可能。
-            
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center">
+                <span className="mr-2">🖼️</span>
+                ギャラリーを見る
+              </a>
+            </div>
           </div>
 
           {/* Workspaceコンポーネント */}

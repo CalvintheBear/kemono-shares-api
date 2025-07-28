@@ -7,6 +7,7 @@ import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Head from 'next/head'
+import LazyImage from '@/components/LazyImage'
 
 interface ShareData {
   generated: string
@@ -59,15 +60,21 @@ export default function SharePage() {
               originalUrl: item.originalUrl
             }))
             setShareLinks(links)
+            
+            // 预加载前8张图片
+            links.slice(0, 8).forEach((link: {generatedUrl: string}) => {
+              if (link.generatedUrl) {
+                const img = new Image()
+                img.src = link.generatedUrl
+              }
+            })
           }
         } else {
           console.error('API 请求失败:', response.status)
-          // API 失败时显示空状态，完全依赖动态数据
           setShareLinks([])
         }
       } catch (error) {
         console.error('获取分享链接失败:', error)
-        // 网络错误时显示空状态，完全依赖动态数据
         setShareLinks([])
       } finally {
         setLoadingLinks(false)
@@ -106,147 +113,231 @@ export default function SharePage() {
     return (
       <>
         <Head>
-          <title>AI画像変換 | 無料アニメ風変換 | kemono-mimi - 写真を可愛いキャラクターに</title>
-          <meta name="description" content="AIで写真をアニメ風に無料変換！ジブリ風、VTuber、ウマ娘など20+スタイル。商用利用可、登録不要、1-3分で完成。kemono-mimiで今すぐ体験！" />
-          <meta name="robots" content="index, follow" />
-          <meta property="og:title" content="AI画像変換 | 無料アニメ風変換 | kemono-mimi" />
-          <meta property="og:description" content="AIで写真をアニメ風に無料変換！ジブリ風、VTuber、ウマ娘など20+スタイル。商用利用可、登録不要、1-3分で完成。kemono-mimiで今すぐ体験！" />
-          <meta property="og:image" content="/logo.png" />
+          <title>AI画像変換ギャラリー | 美しいアニメ風変換作品集 | kemono-mimi</title>
+          <meta name="description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。無料で写真をアニメ風に変換できます。" />
+          <meta name="keywords" content="AI画像変換,アニメ風変換,ジブリ風,VTuber,ウマ娘,写真変換,無料AI,画像ギャラリー" />
+          <meta name="robots" content="index, follow, max-image-preview:large" />
+          <meta name="author" content="kemono-mimi" />
+          
+          {/* Open Graph */}
+          <meta property="og:title" content="AI画像変換ギャラリー | 美しいアニメ風変換作品集 | kemono-mimi" />
+          <meta property="og:description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
+          <meta property="og:image" content="https://kemono-mimi.com/og-share-gallery.jpg" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
           <meta property="og:url" content="https://kemono-mimi.com/share" />
           <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="kemono-mimi" />
+          
+          {/* Twitter Card */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="AI画像変換ギャラリー | 美しいアニメ風変換作品集" />
+          <meta name="twitter:description" content="AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
+          <meta name="twitter:image" content="https://kemono-mimi.com/og-share-gallery.jpg" />
+          
+          {/* Canonical */}
           <link rel="canonical" href="https://kemono-mimi.com/share" />
+          
+          {/* Preload critical resources */}
+          <link rel="preload" href="/api/share/list?limit=12" as="fetch" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="//tempfile.aiquickdraw.com" />
+          <link rel="dns-prefetch" href="//pub-d00e7b41917848d1a8403c984cb62880.r2.dev" />
+          
+          {/* Structured Data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ImageGallery",
+              "name": "AI画像変換ギャラリー",
+              "description": "AI画像変換の美しい作品ギャラリー。ジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。",
+              "url": "https://kemono-mimi.com/share",
+              "image": "https://kemono-mimi.com/og-share-gallery.jpg",
+              "publisher": {
+                "@type": "Organization",
+                "name": "kemono-mimi",
+                "url": "https://kemono-mimi.com"
+              }
+            })}
+          </script>
         </Head>
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex flex-col">
           <Header />
           <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 pt-24">
             {/* Hero Section */}
-            <section className="w-full max-w-4xl mx-auto text-center py-20 mb-16">
-              <h1 className="text-5xl md:text-6xl font-extrabold text-amber-700 mb-8 tracking-tight drop-shadow">
-                AI画像変換の世界へようこそ
-              </h1>
-              <p className="text-2xl md:text-3xl text-amber-800 mb-10 leading-relaxed font-semibold">
-                最新AI技術で、あなたの写真を美しいアニメ風に無料変換！<br />
-                <span className="text-orange-500">20+スタイル・商用利用可・登録不要</span>
-              </p>
-              <button
-                onClick={handleTryNow}
-                className="bg-gradient-to-r from-orange-400 to-amber-500 text-white py-5 px-16 rounded-full font-bold text-2xl shadow-lg hover:scale-105 transition-all duration-300 hover:shadow-xl"
-              >
-                今すぐ体験する
-              </button>
+            <section className="w-full max-w-5xl mx-auto text-center py-16 mb-12">
+              <div className="mb-8">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-amber-700 mb-6 tracking-tight">
+                  AI画像変換
+                  <span className="block text-3xl md:text-4xl lg:text-5xl text-orange-500 font-medium mt-2">
+                    ギャラリー
+                  </span>
+                </h1>
+                <p className="text-lg md:text-xl text-amber-600 max-w-3xl mx-auto leading-relaxed">
+                  美しいアニメ風変換作品のコレクション
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button
+                  onClick={handleTryNow}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-8 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center"
+                >
+                  <span className="mr-2">✨</span>
+                  今すぐ体験する
+                </button>
+                <div className="text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-full">
+                  <span className="font-medium">20+スタイル</span> • <span className="font-medium">完全無料</span> • <span className="font-medium">商用利用可</span>
+                </div>
+              </div>
             </section>
 
             {/* Features Section */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-5xl mb-20">
-              <div className="bg-white/95 rounded-3xl shadow-lg p-8 text-center border border-amber-200 hover:shadow-xl transition-all duration-300">
-                <div className="text-5xl mb-4">🎨</div>
-                <h2 className="text-2xl font-bold text-amber-700 mb-4">20+ スタイル</h2>
-                <p className="text-gray-600 leading-relaxed">ジブリ風、VTuber、ウマ娘など豊富なスタイルから選択</p>
-              </div>
-              <div className="bg-white/95 rounded-3xl shadow-lg p-8 text-center border border-amber-200 hover:shadow-xl transition-all duration-300">
-                <div className="text-5xl mb-4">⚡</div>
-                <h2 className="text-2xl font-bold text-amber-700 mb-4">高速処理</h2>
-                <p className="text-gray-600 leading-relaxed">GPT-4o Image技術で1-3分で完成</p>
-              </div>
-              <div className="bg-white/95 rounded-3xl shadow-lg p-8 text-center border border-amber-200 hover:shadow-xl transition-all duration-300">
-                <div className="text-5xl mb-4">💝</div>
-                <h2 className="text-2xl font-bold text-amber-700 mb-4">完全無料</h2>
-                <p className="text-gray-600 leading-relaxed">登録不要、商用利用可能</p>
-              </div>
-            </section>
-
-            {/* How it works Section */}
-            <section className="w-full max-w-4xl bg-gradient-to-r from-amber-100 via-orange-100 to-yellow-100 rounded-3xl shadow-lg p-12 mb-16">
-              <h2 className="text-3xl font-bold text-amber-700 mb-10 text-center">使い方はとても簡単！</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="text-4xl mb-4">📸</div>
-                  <h3 className="text-xl font-bold text-amber-700 mb-3">1. 写真をアップロード</h3>
-                  <p className="text-gray-600 leading-relaxed">あなたの写真をアップロードしてください</p>
+            <section className="w-full max-w-4xl mx-auto mb-16">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
+                  <div className="text-4xl mb-3">🎨</div>
+                  <h3 className="text-lg font-semibold text-amber-700 mb-2">20+ スタイル</h3>
+                  <p className="text-sm text-gray-600">ジブリ風、VTuber、ウマ娘など</p>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-4">🎯</div>
-                  <h3 className="text-xl font-bold text-amber-700 mb-3">2. スタイルを選択</h3>
-                  <p className="text-gray-600 leading-relaxed">お好みのアニメスタイルを選択してください</p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
+                  <div className="text-4xl mb-3">⚡</div>
+                  <h3 className="text-lg font-semibold text-amber-700 mb-2">高速処理</h3>
+                  <p className="text-sm text-gray-600">GPT-4o Image技術で1-3分</p>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-4">✨</div>
-                  <h3 className="text-xl font-bold text-amber-700 mb-3">3. AI変換完了</h3>
-                  <p className="text-gray-600 leading-relaxed">数分で美しいアニメ風画像が完成します</p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
+                  <div className="text-4xl mb-3">💝</div>
+                  <h3 className="text-lg font-semibold text-amber-700 mb-2">完全無料</h3>
+                  <p className="text-sm text-gray-600">登録不要、商用利用可能</p>
                 </div>
               </div>
             </section>
 
-            {/* Share Links Section */}
-            <section className="w-full max-w-4xl bg-white/95 rounded-3xl shadow-lg p-8 mb-16">
-              <h2 className="text-3xl font-bold text-amber-700 mb-8 text-center">最近の変換結果</h2>
+
+
+            {/* Gallery Section - Pinterest Style */}
+            <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold text-amber-700 mb-4">
+                  AI画像変換ギャラリー
+                </h2>
+                <p className="text-xl text-amber-600 max-w-3xl mx-auto">
+                  美しいアニメ風変換作品をお楽しみください
+                </p>
+              </div>
+              
               {loadingLinks ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
-                  <p className="mt-4 text-gray-600">読み込み中...</p>
+                <div className="flex justify-center items-center py-20">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600 text-lg">ギャラリーを読み込み中...</p>
+                  </div>
                 </div>
               ) : shareLinks.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {shareLinks.map((link) => (
-                    <a
+                <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
+                  {shareLinks.map((link, index) => (
+                    <div
                       key={link.id}
-                      href={`/share/${link.id}`}
-                      className="block bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-amber-200 group"
+                      className="break-inside-avoid group cursor-pointer"
+                      onClick={() => window.location.href = `/share/${link.id}`}
                     >
-                      {/* 图片展示区域 */}
-                      <div className="relative mb-4 overflow-hidden rounded-xl">
-                        <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:scale-[1.02] hover:-translate-y-1">
+                        {/* 图片容器 */}
+                        <div className="relative overflow-hidden">
                           {link.generatedUrl ? (
-                            <img
+                            <LazyImage
                               src={link.generatedUrl}
-                              alt={`${link.style}変換結果`}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              loading="lazy"
+                              alt={`${link.style}変換結果 - ${link.title}`}
+                              className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+                              loading={index < 8 ? "eager" : "lazy"}
+                              decoding="async"
+                              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                              fallback={
+                                <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                                  <div className="text-6xl text-amber-400">🎨</div>
+                                </div>
+                              }
                             />
                           ) : (
-                            <div className="text-4xl text-amber-400">🎨</div>
+                            <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                              <div className="text-6xl text-amber-400">🎨</div>
+                            </div>
                           )}
-                        </div>
-                        {/* 悬停时显示原图对比 */}
-                        {link.originalUrl && (
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                            <div className="text-white text-sm font-medium bg-black bg-opacity-70 px-3 py-1 rounded-full">
-                              原图を見る
+                          
+                          {/* 悬停覆盖层 */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h3 className="font-bold text-lg mb-1">{link.title}</h3>
+                                  <p className="text-sm opacity-90">{link.style}</p>
+                                </div>
+                                <div className="text-right">
+                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs">
+                                    詳細を見る
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        )}
+                          
+                          {/* 原图对比提示 */}
+                          {link.originalUrl && (
+                            <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <span className="flex items-center">
+                                <span className="mr-1">🔄</span>
+                                原图あり
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* 底部信息 */}
+                        <div className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">
+                                {link.title}
+                              </h3>
+                              <p className="text-xs text-gray-500">{link.style}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-gray-400">{link.timestamp}</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      
-                      {/* 信息区域 */}
-                      <div className="text-center">
-                        <h3 className="text-lg font-bold text-amber-700 mb-2 group-hover:text-orange-600 transition-colors">
-                          {link.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-2">{link.style}</p>
-                        <p className="text-xs text-gray-500">{link.timestamp}</p>
-                      </div>
-                    </a>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">まだ変換結果がありません</p>
+                <div className="text-center py-20">
+                  <div className="text-8xl mb-6">🎨</div>
+                  <h3 className="text-2xl font-bold text-gray-700 mb-4">まだ変換結果がありません</h3>
+                  <p className="text-gray-600 mb-8">最初のAI画像変換を体験してみませんか？</p>
+                  <button
+                    onClick={handleTryNow}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  >
+                    今すぐ始める
+                  </button>
                 </div>
               )}
             </section>
 
             {/* CTA Section */}
-            <section className="w-full max-w-3xl bg-gradient-to-r from-orange-400 to-amber-500 rounded-3xl shadow-xl p-12 text-center text-white">
-              <h2 className="text-3xl font-bold mb-6">あなたもAI画像変換を体験しませんか？</h2>
-              <p className="text-xl opacity-95 mb-8 leading-relaxed">
-                最新のAI技術で、あなたの写真を美しいアニメ風に変換します
-              </p>
-              <button
-                onClick={handleTryNow}
-                className="bg-white text-orange-500 py-4 px-12 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-all duration-300 hover:shadow-xl"
-              >
-                今すぐ始める
-              </button>
+            <section className="w-full max-w-4xl mx-auto text-center py-12">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-3xl p-8 md:p-12 text-white shadow-xl">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">あなたもAI画像変換を体験しませんか？</h2>
+                <p className="text-lg opacity-95 mb-6 max-w-2xl mx-auto">
+                  最新のAI技術で、あなたの写真を美しいアニメ風に変換します
+                </p>
+                <button
+                  onClick={handleTryNow}
+                  className="bg-white text-amber-600 py-3 px-8 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                >
+                  ✨ 今すぐ始める
+                </button>
+              </div>
             </section>
           </main>
           <Footer />

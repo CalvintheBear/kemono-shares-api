@@ -196,9 +196,23 @@ export default function PrivacyPage() {
             </section>
 
             <div className="mt-12 pt-8 border-t border-amber-200 text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 mb-6">
                 最終更新日: 2025年7月24日
               </p>
+              
+              {/* CTA Section */}
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 mt-8">
+                <h3 className="text-xl font-bold text-amber-800 mb-4">🚀 今すぐAI画像変換を体験</h3>
+                <p className="text-amber-700 mb-6">プライバシーを保護しながら、美しいアニメ画像を生成できます</p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a href="/workspace" className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    今すぐ始める
+                  </a>
+                  <a href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    ギャラリーを見る
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

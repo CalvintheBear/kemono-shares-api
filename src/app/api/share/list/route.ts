@@ -40,8 +40,13 @@ export async function GET(request: NextRequest) {
     // 数据已经按时间排序，直接使用
     const sortedShares = allShares
     
+    // 过滤：只显示文生图生成的图片（没有originalUrl的）
+    const textToImageShares = sortedShares.filter(share => !share.originalUrl || share.originalUrl === '')
+    
+    console.log(`📊 过滤结果: 总共${sortedShares.length}个分享，文生图${textToImageShares.length}个`)
+    
     // 转换为列表项格式
-    const shareList: ShareListItem[] = sortedShares.map(share => ({
+    const shareList: ShareListItem[] = textToImageShares.map(share => ({
       id: share.id,
       title: `${share.style}変換`,
       style: share.style,

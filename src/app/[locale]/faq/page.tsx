@@ -247,12 +247,20 @@ export default function FAQPage() {
             >
               まずは無料でお試しください！簡単3ステップであなたの写真をアニメに。
             </p>
-            <Link
-              href="/workspace"
-              className="inline-block bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
-            >
-              今すぐ変換する
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/workspace"
+                className="inline-block bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
+              >
+                今すぐ変換する
+              </Link>
+              <Link
+                href="/share"
+                className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
+              >
+                ギャラリーを見る
+              </Link>
+            </div>
           </div>
         </div>
       </main>

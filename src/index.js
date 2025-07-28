@@ -160,8 +160,8 @@ async function handleShareList(request, _env) {
   const offset = parseInt(url.searchParams.get('offset') || '0');
   
   // 这里应该从KV存储获取列表
-  // 暂时返回模拟数据，包含图片URL
-  const mockItems = [
+  // 暂时返回模拟数据，只包含文生图生成的图片（没有originalUrl的）
+  const allMockItems = [
     {
       id: 'share_1234567890_test1',
       title: '测试风格変換',
@@ -169,7 +169,7 @@ async function handleShareList(request, _env) {
       timestamp: '2025-07-28',
       createdAt: new Date().toISOString(),
       generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_1.png',
-      originalUrl: 'https://example.com/original1.jpg'
+      originalUrl: 'https://example.com/original1.jpg' // 图生图，会被过滤
     },
     {
       id: 'share_1753679601402_bsyqfo9xe',
@@ -178,7 +178,7 @@ async function handleShareList(request, _env) {
       timestamp: '2025-07-28',
       createdAt: new Date().toISOString(),
       generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_2.png',
-      originalUrl: 'https://example.com/original2.jpg'
+      originalUrl: '' // 文生图，会被显示
     },
     {
       id: 'share_1753679601717_1ffr1ccxh',
@@ -187,9 +187,23 @@ async function handleShareList(request, _env) {
       timestamp: '2025-07-28',
       createdAt: new Date().toISOString(),
       generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_3.png',
-      originalUrl: 'https://example.com/original3.jpg'
+      originalUrl: null // 文生图，会被显示
+    },
+    {
+      id: 'share_1753679602000_text2img',
+      title: '文生图测试',
+      style: 'カスタム',
+      timestamp: '2025-07-28',
+      createdAt: new Date().toISOString(),
+      generatedUrl: 'https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-カスタム-1753681057215.png',
+      originalUrl: '' // 文生图，会被显示
     }
   ];
+  
+  // 过滤：只显示文生图生成的图片（没有originalUrl的）
+  const mockItems = allMockItems.filter(item => !item.originalUrl || item.originalUrl === '');
+  
+  console.log(`📊 Workers过滤结果: 总共${allMockItems.length}个分享，文生图${mockItems.length}个`);
   
   return new Response(JSON.stringify({
     success: true,

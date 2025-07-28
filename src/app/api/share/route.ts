@@ -17,6 +17,9 @@ export async function POST(request: NextRequest) {
     const { generatedUrl, originalUrl, prompt, style, timestamp } = body
 
     console.log('🔄 开始处理分享请求:', { generatedUrl, style })
+    
+    // 注意：文生图时originalUrl应该为空或null，图生图时应该有值
+    // 这个字段用于在share父页面过滤，只显示文生图生成的图片
 
     // 检测重复请求
     const requestKey = `${generatedUrl}-${style}-${timestamp}`

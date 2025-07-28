@@ -282,9 +282,14 @@ export default function Home() {
           <p className="text-base sm:text-lg lg:text-xl text-amber-700 mb-10 lg:mb-12 leading-relaxed max-w-3xl mx-auto animate-fade-in-up" style={{animationDelay: '0.2s'}}>
             あなたの写真が可愛いアニメキャラクターに生まれ変わります
           </p>
-          <Link href="/workspace" className="btn-kawaii text-lg sm:text-xl lg:text-2xl px-8 sm:px-10 lg:px-12 py-4 lg:py-5 animate-glow-pulse animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-            無料で始める 🎀
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+            <Link href="/workspace" className="btn-kawaii text-lg sm:text-xl lg:text-2xl px-8 sm:px-10 lg:px-12 py-4 lg:py-5 animate-glow-pulse">
+              無料で始める 🎀
+            </Link>
+            <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              ギャラリーを見る 🖼️
+            </Link>
+          </div>
         </div>
       </section>
 
