@@ -42,7 +42,11 @@ export async function GET(request: NextRequest) {
     
     // 过滤：只显示文生图生成的图片（没有originalUrl的）在画廊中
     // 图生图的详情页仍然可以通过 /share/[id] 访问
-    const textToImageShares = sortedShares.filter(share => !share.originalUrl || share.originalUrl === '')
+    const textToImageShares = sortedShares.filter(share => {
+      const isTextToImage = !share.originalUrl || share.originalUrl === '' || share.originalUrl === null
+      console.log(`🔍 分享 ${share.id}: originalUrl="${share.originalUrl}", 是否文生图: ${isTextToImage}`)
+      return isTextToImage
+    })
     
     console.log(`📊 过滤结果: 总共${sortedShares.length}个分享，文生图${textToImageShares.length}个（画廊显示）`)
     

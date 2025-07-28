@@ -13,8 +13,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     // 尝试获取分享数据来生成动态元数据
-    // 使用相对路径，在开发和生产环境都能正常工作
-    const response = await fetch(`/api/share?id=${shareId}`, {
+    // 使用绝对路径确保在服务器端渲染时能正确访问API
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/share?id=${shareId}`, {
       next: { revalidate: 3600 } // 缓存1小时
     })
     
