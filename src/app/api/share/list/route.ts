@@ -18,12 +18,22 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
+    const clearCache = searchParams.get('clearCache') === 'true'
+    const debug = searchParams.get('debug') === 'cache'
     
     const startTime = Date.now()
     
+    // 清除缓存
+    if (clearCache) {
+      const { clearShareCache } = await import('@/lib/share-cache')
+      clearShareCache()
+      console.log('🧹 缓存已清除')
+      return NextResponse.json({ success: true, message: '缓存已清除' })
+    }
+    
     // 检查缓存
     const cachedData = getShareListCache(limit, offset)
-    if (cachedData) {
+    if (cachedData && !debug) {
       monitor.cacheHit(`share-list-${limit}-${offset}`)
       console.log('📦 从缓存返回分享列表数据')
       return NextResponse.json(cachedData)
@@ -42,20 +52,26 @@ export async function GET(request: NextRequest) {
     
     // 过滤：只显示文生图生成的图片在画廊中
     // 文生图：originalUrl为null、undefined、空字符串、base64数据或占位符
-    // 图生图：有有效的originalUrl，不在画廊显示
+    // 图生图和模板模式：有有效的originalUrl，不在画廊显示
     const textToImageShares = sortedShares.filter(share => {
-      // 判断是否为文生图（没有有效原图）
-      const isTextToImage = !share.originalUrl ||
-        share.originalUrl === null ||
-        share.originalUrl === undefined ||
-        (typeof share.originalUrl === 'string' && (
-          share.originalUrl.trim() === '' ||
-          share.originalUrl.startsWith('data:image/') ||
-          share.originalUrl.includes('placeholder.com') ||
-          share.originalUrl.includes('Text+to+Image') ||
-          share.originalUrl.includes('base64') ||
-          share.originalUrl.length > 1000
-        ))
+      // 更严格的筛选：任何有originalUrl的都应该被排除
+      const hasValidOriginalUrl = share.originalUrl && 
+        typeof share.originalUrl === 'string' && 
+        share.originalUrl.trim() !== '' &&
+        !share.originalUrl.startsWith('data:image/') &&
+        !share.originalUrl.includes('placeholder.com') &&
+        !share.originalUrl.includes('Text+to+Image') &&
+        !share.originalUrl.includes('base64') &&
+        share.originalUrl.length <= 1000
+      
+      // 只有完全没有originalUrl或originalUrl无效的才显示在画廊中
+      const isTextToImage = !hasValidOriginalUrl
+      
+      // 添加调试日志
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 筛选检查 - ID: ${share.id}, Style: ${share.style}, OriginalUrl: ${share.originalUrl}, IsTextToImage: ${isTextToImage}`)
+      }
+      
       return isTextToImage
     })
     

@@ -1,30 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { validateAfterimageR2Config, getAfterimageR2ConfigInfo } from '@/lib/r2-afterimage-client'
+import { validateAfterimageR2Config, getAfterimageR2ConfigInfo } from '@/lib/r2-afterimage-client';
 
-export async function GET(_request: NextRequest) {
+export async function GET(_request: Request) {
   try {
-    const isConfigured = validateAfterimageR2Config()
-    const configInfo = getAfterimageR2ConfigInfo()
-
-    if (!isConfigured) {
-      return NextResponse.json({
-        success: false,
-        error: '生成图片R2配置不完整',
-        configInfo
-      }, { status: 400 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: '生成图片R2配置正确',
-      configInfo
+    // 检查afterimage R2配置
+    const info = await getAfterimageR2ConfigInfo()
+    const valid = await validateAfterimageR2Config()
+    return new Response(JSON.stringify({ valid, info }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    console.error('检查生成图片R2配置失败:', error)
-    return NextResponse.json({
-      success: false,
-      error: '配置检查失败',
-      details: error instanceof Error ? error.message : '未知错误'
-    }, { status: 500 })
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : '未知错误' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 } 

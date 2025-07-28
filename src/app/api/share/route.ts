@@ -84,7 +84,8 @@ export async function POST(request: NextRequest) {
       style,
       timestamp,
       createdAt: new Date().toISOString(),
-      isR2Stored
+      isR2Stored,
+      isTextToImage: !normalizedOriginalUrl
     }
     
     console.log('💾 存储分享数据:', { 

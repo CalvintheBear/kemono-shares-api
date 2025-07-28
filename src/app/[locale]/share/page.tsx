@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import BeforeAfterSlider from '@/components/BeforeAfterSlider'
 import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
@@ -17,13 +17,40 @@ interface ShareData {
   timestamp: number
 }
 
+interface ShareItem {
+  id: string
+  title: string
+  style: string
+  timestamp: string
+  generatedUrl: string
+  originalUrl: string
+}
+
+interface ApiShareItem {
+  id: string
+  style: string
+  timestamp: string
+  generatedUrl: string
+  originalUrl: string
+}
+
 export default function SharePage() {
   const searchParams = useSearchParams()
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [hasShareData, setHasShareData] = useState(false)
-  const [shareLinks, setShareLinks] = useState<Array<{id: string, title: string, style: string, timestamp: string, generatedUrl: string, originalUrl: string}>>([])
+  const [shareLinks, setShareLinks] = useState<ShareItem[]>([])
   const [loadingLinks, setLoadingLinks] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [currentOffset, setCurrentOffset] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+  
+  // 无限滚动相关
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const loadingRef = useRef<HTMLDivElement>(null)
+  
+  const ITEMS_PER_PAGE = 20 // 每页加载20张图片
 
   useEffect(() => {
     const dataParam = searchParams.get('data')
@@ -43,56 +70,106 @@ export default function SharePage() {
     setLoading(false)
   }, [searchParams])
 
-  // 获取所有分享链接
-  useEffect(() => {
-    const fetchShareLinks = async () => {
-      try {
-        const response = await fetch('/api/share/list?limit=12')
-        if (response.ok) {
-          const result = await response.json()
-          if (result.success && result.data.items) {
-            const links = result.data.items.map((item: {id: string, style: string, timestamp: string, generatedUrl: string, originalUrl: string}) => ({
-              id: item.id,
-              title: `${item.style}変換`,
-              style: item.style,
-              timestamp: item.timestamp,
-              generatedUrl: item.generatedUrl,
-              originalUrl: item.originalUrl
-            }))
+  // 获取分享链接的函数
+  const fetchShareLinks = useCallback(async (offset: number = 0, append: boolean = false) => {
+    try {
+      const response = await fetch(`/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}`)
+      if (response.ok) {
+        const result = await response.json()
+        if (result.success && result.data.items) {
+          const links = result.data.items.map((item: ApiShareItem) => ({
+            id: item.id,
+            title: `${item.style}変換`,
+            style: item.style,
+            timestamp: item.timestamp,
+            generatedUrl: item.generatedUrl,
+            originalUrl: item.originalUrl
+          }))
+          
+          if (append) {
+            setShareLinks(prev => [...prev, ...links])
+          } else {
             setShareLinks(links)
-            
-            // 预加载前8张图片
-            links.slice(0, 8).forEach((link: {generatedUrl: string}) => {
+          }
+          
+          setTotalCount(result.data.total)
+          setHasMore(result.data.hasMore)
+          setCurrentOffset(offset + ITEMS_PER_PAGE)
+          
+          // 预加载前8张图片（仅首次加载时）
+          if (!append && links.length > 0) {
+            links.slice(0, 8).forEach((link: ShareItem) => {
               if (link.generatedUrl) {
                 const img = new Image()
                 img.src = link.generatedUrl
               }
             })
           }
-        } else {
-          console.error('API 请求失败:', response.status)
+        }
+      } else {
+        console.error('API 请求失败:', response.status)
+        if (!append) {
           setShareLinks([])
         }
-      } catch (error) {
-        console.error('获取分享链接失败:', error)
-        setShareLinks([])
-      } finally {
-        setLoadingLinks(false)
       }
+    } catch (error) {
+      console.error('获取分享链接失败:', error)
+      if (!append) {
+        setShareLinks([])
+      }
+    } finally {
+      setLoadingLinks(false)
+      setLoadingMore(false)
     }
-
-    fetchShareLinks()
   }, [])
 
+  // 初始加载
+  useEffect(() => {
+    if (!hasShareData) {
+      fetchShareLinks(0, false)
+    }
+  }, [hasShareData, fetchShareLinks])
+
+  // 无限滚动观察器
+  useEffect(() => {
+    if (hasShareData) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0]
+        if (target.isIntersecting && hasMore && !loadingMore) {
+          setLoadingMore(true)
+          fetchShareLinks(currentOffset, true)
+        }
+      },
+      {
+        rootMargin: '100px 0px',
+        threshold: 0.1
+      }
+    )
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current)
+    }
+
+    observerRef.current = observer
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+    }
+  }, [hasMore, loadingMore, currentOffset, fetchShareLinks, hasShareData])
+
   const handleTryNow = () => {
-            window.location.href = 'https://2kawaii.com'
+    window.location.href = 'https://2kawaii.com'
   }
 
   const handleDownload = () => {
     if (shareData) {
       const link = document.createElement('a')
       link.href = shareData.generated
-              link.download = `2kawaii-${shareData.style}-${Date.now()}.png`
+      link.download = `2kawaii-${shareData.style}-${Date.now()}.png`
       link.click()
     }
   }
@@ -117,17 +194,17 @@ export default function SharePage() {
           <meta name="description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。無料で写真をアニメ風に変換できます。" />
           <meta name="keywords" content="AI画像変換,プロンプト生成,アニメ風変換,ジブリ風,VTuber,ウマ娘,写真変換,無料AI,画像ギャラリー,AIプロンプト" />
           <meta name="robots" content="index, follow, max-image-preview:large" />
-                      <meta name="author" content="2kawaii" />
+          <meta name="author" content="2kawaii" />
           
           {/* Open Graph */}
-                      <meta property="og:title" content="AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集 | 2kawaii" />
+          <meta property="og:title" content="AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集 | 2kawaii" />
           <meta property="og:description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。" />
           <meta property="og:image" content="https://2kawaii.com/og-share-gallery.jpg" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="630" />
           <meta property="og:url" content="https://2kawaii.com/share" />
           <meta property="og:type" content="website" />
-                      <meta property="og:site_name" content="2kawaii" />
+          <meta property="og:site_name" content="2kawaii" />
           
           {/* Twitter Card */}
           <meta name="twitter:card" content="summary_large_image" />
@@ -139,7 +216,7 @@ export default function SharePage() {
           <link rel="canonical" href="https://2kawaii.com/share" />
           
           {/* Preload critical resources */}
-          <link rel="preload" href="/api/share/list?limit=12" as="fetch" crossOrigin="anonymous" />
+          <link rel="preload" href="/api/share/list?limit=20" as="fetch" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="//tempfile.aiquickdraw.com" />
           <link rel="dns-prefetch" href="//pub-d00e7b41917848d1a8403c984cb62880.r2.dev" />
           
@@ -150,8 +227,8 @@ export default function SharePage() {
               "@type": "ImageGallery",
               "name": "AI画像変換ギャラリー",
               "description": "AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。",
-                      "url": "https://2kawaii.com/share",
-        "image": "https://2kawaii.com/og-share-gallery.jpg",
+              "url": "https://2kawaii.com/share",
+              "image": "https://2kawaii.com/og-share-gallery.jpg",
               "publisher": {
                 "@type": "Organization",
                 "name": "2kawaii",
@@ -212,9 +289,7 @@ export default function SharePage() {
               </div>
             </section>
 
-
-
-            {/* Gallery Section - Pinterest Style */}
+            {/* Gallery Section - Pinterest Style with Infinite Scroll */}
             <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-bold text-amber-700 mb-4">
@@ -223,9 +298,14 @@ export default function SharePage() {
                 <p className="text-xl text-amber-600 max-w-3xl mx-auto">
                   プロンプト技術で生成された美しいアニメ風変換作品をお楽しみください
                 </p>
+                {totalCount > 0 && (
+                  <p className="text-sm text-amber-500 mt-2">
+                    現在 {shareLinks.length} / {totalCount} 件表示中
+                  </p>
+                )}
               </div>
               
-              {loadingLinks ? (
+              {loadingLinks && shareLinks.length === 0 ? (
                 <div className="flex justify-center items-center py-20">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
@@ -233,80 +313,112 @@ export default function SharePage() {
                   </div>
                 </div>
               ) : shareLinks.length > 0 ? (
-                <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
-                  {shareLinks.map((link, index) => (
-                    <div
-                      key={link.id}
-                      className="break-inside-avoid group cursor-pointer"
-                      onClick={() => window.location.href = `/share/${link.id}`}
-                    >
-                      <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:scale-[1.02] hover:-translate-y-1">
-                        {/* 图片容器 */}
-                        <div className="relative overflow-hidden">
-                          {link.generatedUrl ? (
-                            <LazyImage
-                              src={link.generatedUrl}
-                              alt={`${link.style}変換結果 - ${link.title}`}
-                              className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
-                              loading={index < 8 ? "eager" : "lazy"}
-                              fallback={
-                                <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
-                                  <div className="text-6xl text-amber-400">🎨</div>
-                                </div>
-                              }
-                            />
-                          ) : (
-                            <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
-                              <div className="text-6xl text-amber-400">🎨</div>
-                            </div>
-                          )}
-                          
-                          {/* 悬停覆盖层 */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h3 className="font-bold text-lg mb-1">{link.title}</h3>
-                                  <p className="text-sm opacity-90">{link.style}</p>
-                                </div>
-                                <div className="text-right">
-                                  <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs">
-                                    詳細を見る
+                <>
+                  <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
+                    {shareLinks.map((link, index) => (
+                      <div
+                        key={link.id}
+                        className="break-inside-avoid group cursor-pointer"
+                        onClick={() => window.location.href = `/share/${link.id}`}
+                      >
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:scale-[1.02] hover:-translate-y-1">
+                          {/* 图片容器 */}
+                          <div className="relative overflow-hidden">
+                            {link.generatedUrl ? (
+                              <LazyImage
+                                src={link.generatedUrl}
+                                alt={`${link.style}変換結果 - ${link.title}`}
+                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+                                loading={index < 8 ? "eager" : "lazy"}
+                                fallback={
+                                  <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                                    <div className="text-6xl text-amber-400">🎨</div>
+                                  </div>
+                                }
+                              />
+                            ) : (
+                              <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                                <div className="text-6xl text-amber-400">🎨</div>
+                              </div>
+                            )}
+                            
+                            {/* 悬停覆盖层 */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <h3 className="font-bold text-lg mb-1">{link.title}</h3>
+                                    <p className="text-sm opacity-90">{link.style}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs">
+                                      詳細を見る
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
+                            
+                            {/* 原图对比提示 */}
+                            {link.originalUrl && (
+                              <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <span className="flex items-center">
+                                  <span className="mr-1">🔄</span>
+                                  原图あり
+                                </span>
+                              </div>
+                            )}
                           </div>
                           
-                          {/* 原图对比提示 */}
-                          {link.originalUrl && (
-                            <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <span className="flex items-center">
-                                <span className="mr-1">🔄</span>
-                                原图あり
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* 底部信息 */}
-                        <div className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">
-                                {link.title}
-                              </h3>
-                              <p className="text-xs text-gray-500">{link.style}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-xs text-gray-400">{link.timestamp}</p>
+                          {/* 底部信息 */}
+                          <div className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1">
+                                <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">
+                                  {link.title}
+                                </h3>
+                                <p className="text-xs text-gray-500">{link.style}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-xs text-gray-400">{link.timestamp}</p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                  
+                  {/* 无限滚动加载指示器 */}
+                  {hasMore && (
+                    <div 
+                      ref={loadingRef}
+                      className="flex justify-center items-center py-8 mt-8"
+                    >
+                      {loadingMore ? (
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-2"></div>
+                          <p className="text-sm text-gray-600">さらに読み込み中...</p>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">スクロールしてさらに読み込む</p>
+                        </div>
+                      )}
                     </div>
-                  ))}
-                </div>
+                  )}
+                  
+                  {/* 已加载完所有图片的提示 */}
+                  {!hasMore && shareLinks.length > 0 && (
+                    <div className="text-center py-8 mt-8">
+                      <div className="bg-amber-50 rounded-full px-6 py-3 inline-block">
+                        <p className="text-sm text-amber-600">
+                          🎉 すべての画像を表示しました ({totalCount}件)
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-20">
                   <div className="text-8xl mb-6">🎨</div>

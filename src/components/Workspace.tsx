@@ -226,6 +226,18 @@ export default function Workspace() {
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const isMountedRef = useRef(true)
 
+  // 初始化时恢复保存的状态
+  useEffect(() => {
+    const savedFileUrl = localStorage.getItem('savedFileUrl')
+    const savedMode = localStorage.getItem('savedMode')
+    
+    if (savedFileUrl && savedMode === 'image-to-image') {
+      console.log('🔄 恢复保存的状态:', { fileUrl: savedFileUrl, mode: savedMode })
+      setFileUrl(savedFileUrl)
+      setMode(savedMode as 'text-to-image' | 'image-to-image' | 'template-mode')
+    }
+  }, [])
+
   useEffect(() => {
     const savedTemplateId = localStorage.getItem('selectedTemplateId')
     if (savedTemplateId) {
@@ -270,6 +282,9 @@ export default function Workspace() {
         const url = await uploadImageToKie(file)
         console.log('✅ 设置fileUrl状态:', url)
         setFileUrl(url)
+        // 保存到localStorage防止状态丢失
+        localStorage.setItem('savedFileUrl', url)
+        localStorage.setItem('savedMode', mode)
       } catch (err) {
         console.error('文件上传失败:', err)
         alert(t('uploadSection.uploadFailed'))
@@ -279,7 +294,7 @@ export default function Workspace() {
       }
     }
     uploadFile()
-  }, [t])
+  }, [t, mode])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -433,6 +448,45 @@ export default function Workspace() {
         // 自动处理分享：将KIE AI图片下载到R2
         try {
           console.log('🔄 开始自动处理分享图片...')
+          
+          // 根据模式确定originalUrl
+          let originalUrl = null
+          if (mode === 'image-to-image' && fileUrl) {
+            // 图生图模式：有原图，使用上传后的URL
+            originalUrl = fileUrl
+            console.log('📸 图生图模式 - 使用fileUrl作为originalUrl:', fileUrl)
+          } else if (mode === 'template-mode' && fileUrl) {
+            // 模板模式：使用用户上传的图片作为原图
+            originalUrl = fileUrl
+            console.log('🎨 模板模式 - 使用用户上传的图片作为originalUrl:', fileUrl)
+          } else if (mode === 'image-to-image' && !fileUrl) {
+            // 图生图模式但没有fileUrl，可能是状态丢失，尝试从localStorage恢复
+            const savedFileUrl = localStorage.getItem('savedFileUrl')
+            if (savedFileUrl) {
+              originalUrl = savedFileUrl
+              console.log('🔄 从localStorage恢复fileUrl:', savedFileUrl)
+            } else {
+              console.warn('⚠️ 图生图模式但没有fileUrl，且无法从localStorage恢复')
+            }
+          } else if (mode === 'template-mode' && !fileUrl) {
+            // 模板模式但没有fileUrl，可能是状态丢失，尝试从localStorage恢复
+            const savedFileUrl = localStorage.getItem('savedFileUrl')
+            if (savedFileUrl) {
+              originalUrl = savedFileUrl
+              console.log('🔄 模板模式从localStorage恢复fileUrl:', savedFileUrl)
+            } else {
+              console.warn('⚠️ 模板模式但没有fileUrl，且无法从localStorage恢复')
+            }
+          }
+          // 文生图模式：originalUrl保持为null
+          
+          console.log('📊 分享参数:', {
+            mode,
+            originalUrl: originalUrl ? '有原图' : '无原图',
+            fileUrl: fileUrl ? '有fileUrl' : '无fileUrl',
+            isTextToImage: !originalUrl
+          })
+          
           const response = await fetch('/api/share', {
             method: 'POST',
             headers: {
@@ -440,7 +494,7 @@ export default function Workspace() {
             },
             body: JSON.stringify({
               generatedUrl: generatedUrl,
-              originalUrl: imagePreview!,
+              originalUrl: originalUrl,
               prompt: prompt,
               style: selectedTemplate?.name || 'カスタム',
               timestamp: Date.now()
@@ -603,6 +657,24 @@ export default function Workspace() {
             // 自动处理分享：将KIE AI图片下载到R2
             try {
               console.log('🔄 开始自动处理分享图片...')
+              
+              // 根据模式确定originalUrl
+              let originalUrl = null
+              if (mode === 'image-to-image' && imagePreview) {
+                // 图生图模式：有原图
+                originalUrl = imagePreview
+              } else if (mode === 'template-mode') {
+                // 模板模式：使用模板的beforeImage作为原图
+                originalUrl = selectedTemplate?.beforeImage || null
+              }
+              // 文生图模式：originalUrl保持为null
+              
+              console.log('📊 分享参数:', {
+                mode,
+                originalUrl: originalUrl ? '有原图' : '无原图',
+                isTextToImage: !originalUrl
+              })
+              
               const response = await fetch('/api/share', {
                 method: 'POST',
                 headers: {
@@ -610,7 +682,7 @@ export default function Workspace() {
                 },
                 body: JSON.stringify({
                   generatedUrl: finalImageUrl,
-                  originalUrl: imagePreview!,
+                  originalUrl: originalUrl,
                   prompt: prompt,
                   style: selectedTemplate?.name || 'カスタム',
                   timestamp: Date.now()
@@ -778,6 +850,8 @@ export default function Workspace() {
                       setFileUrl(null)
                       setImagePreview(null)
                       localStorage.removeItem('selectedTemplateId')
+                      localStorage.removeItem('savedFileUrl')
+                      localStorage.removeItem('savedMode')
                     }}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
                       mode === 'text-to-image'
@@ -881,6 +955,8 @@ export default function Workspace() {
                           e.stopPropagation()
                           setImagePreview(null)
                           setFileUrl(null)
+                          localStorage.removeItem('savedFileUrl')
+                          localStorage.removeItem('savedMode')
                         }}
                         className="text-pink-600 hover:text-pink-800 text-sm bg-white px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all"
                       >

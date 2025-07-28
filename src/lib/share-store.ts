@@ -7,6 +7,7 @@ export interface ShareData {
   timestamp: number
   createdAt: string
   isR2Stored?: boolean
+  isTextToImage?: boolean
 }
 
 // 创建一个共享的存储（在实际应用中应该使用数据库）

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画廊筛选调试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .button.danger {
+            background: #dc3545;
+        }
+        .button.danger:hover {
+            background: #c82333;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>画廊筛选调试工具</h1>
+        <p>这个工具可以帮助你调试画廊筛选逻辑，确保图生图和模板模式的图片不会显示在画廊中。</p>
+        
+        <div>
+            <button class="button" onclick="debugGalleryFilter()">🔍 调试画廊筛选</button>
+            <button class="button danger" onclick="clearCacheAndTest()">🧹 清除缓存并测试</button>
+            <button class="button" onclick="testFilterLogic()">🧪 测试筛选逻辑</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // 调试画廊筛选问题
+        const debugGalleryFilter = async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = '🔍 开始调试画廊筛选问题...\n';
+            
+            try {
+                // 1. 直接调用API获取原始数据
+                resultDiv.textContent += '📡 获取原始分享列表数据...\n';
+                const response = await fetch('/api/share/list?limit=50&offset=0');
+                const result = await response.json();
+                
+                if (!result.success) {
+                    resultDiv.textContent += `❌ API请求失败: ${result.error}\n`;
+                    resultDiv.className = 'result error';
+                    return;
+                }
+                
+                resultDiv.textContent += `📊 API返回数据: 总数=${result.data.total}, 当前页=${result.data.items.length}\n\n`;
+                
+                // 2. 分析每个分享项
+                resultDiv.textContent += '🔍 分析分享项:\n';
+                result.data.items.forEach((item, index) => {
+                    const hasOriginalUrl = item.originalUrl && 
+                        typeof item.originalUrl === 'string' && 
+                        item.originalUrl.trim() !== '' &&
+                        !item.originalUrl.startsWith('data:image/') &&
+                        !item.originalUrl.includes('placeholder.com') &&
+                        !item.originalUrl.includes('Text+to+Image') &&
+                        !item.originalUrl.includes('base64') &&
+                        item.originalUrl.length <= 1000;
+                    
+                    resultDiv.textContent += `${index + 1}. ID: ${item.id}\n`;
+                    resultDiv.textContent += `   Style: ${item.style}\n`;
+                    resultDiv.textContent += `   OriginalUrl: ${item.originalUrl || 'null'}\n`;
+                    resultDiv.textContent += `   HasValidOriginalUrl: ${hasOriginalUrl}\n`;
+                    resultDiv.textContent += `   ShouldShowInGallery: ${!hasOriginalUrl}\n\n`;
+                });
+                
+                // 3. 统计结果
+                const textToImageCount = result.data.items.filter(item => {
+                    const hasOriginalUrl = item.originalUrl && 
+                        typeof item.originalUrl === 'string' && 
+                        item.originalUrl.trim() !== '' &&
+                        !item.originalUrl.startsWith('data:image/') &&
+                        !item.originalUrl.includes('placeholder.com') &&
+                        !item.originalUrl.includes('Text+to+Image') &&
+                        !item.originalUrl.includes('base64') &&
+                        item.originalUrl.length <= 1000;
+                    return !hasOriginalUrl;
+                }).length;
+                
+                const imageToImageCount = result.data.items.length - textToImageCount;
+                
+                resultDiv.textContent += '📈 统计结果:\n';
+                resultDiv.textContent += `总分享数: ${result.data.items.length}\n`;
+                resultDiv.textContent += `文生图(画廊显示): ${textToImageCount}\n`;
+                resultDiv.textContent += `图生图(画廊隐藏): ${imageToImageCount}\n\n`;
+                
+                // 4. 检查是否有图生图显示在画廊中
+                const imageToImageItems = result.data.items.filter(item => {
+                    const hasOriginalUrl = item.originalUrl && 
+                        typeof item.originalUrl === 'string' && 
+                        item.originalUrl.trim() !== '' &&
+                        !item.originalUrl.startsWith('data:image/') &&
+                        !item.originalUrl.includes('placeholder.com') &&
+                        !item.originalUrl.includes('Text+to+Image') &&
+                        !item.originalUrl.includes('base64') &&
+                        item.originalUrl.length <= 1000;
+                    return hasOriginalUrl;
+                });
+                
+                if (imageToImageItems.length > 0) {
+                    resultDiv.textContent += '⚠️ 发现问题：以下图生图项目仍然显示在画廊中:\n';
+                    imageToImageItems.forEach(item => {
+                        resultDiv.textContent += `  - ${item.id}: ${item.style} (OriginalUrl: ${item.originalUrl})\n`;
+                    });
+                    resultDiv.className = 'result error';
+                } else {
+                    resultDiv.textContent += '✅ 筛选逻辑工作正常，没有图生图显示在画廊中\n';
+                    resultDiv.className = 'result success';
+                }
+                
+            } catch (error) {
+                resultDiv.textContent += `❌ 调试过程中发生错误: ${error.message}\n`;
+                resultDiv.className = 'result error';
+            }
+        };
+
+        // 清除缓存并重新测试
+        const clearCacheAndTest = async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = '🧹 清除缓存并重新测试...\n';
+            
+            try {
+                // 清除缓存
+                await fetch('/api/share/list?clearCache=true');
+                resultDiv.textContent += '✅ 缓存已清除\n';
+                
+                // 等待一秒
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 重新测试
+                await debugGalleryFilter();
+            } catch (error) {
+                resultDiv.textContent += `❌ 清除缓存失败: ${error.message}\n`;
+                resultDiv.className = 'result error';
+            }
+        };
+
+        // 测试筛选逻辑
+        const testFilterLogic = () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            
+            // 模拟不同类型的分享数据
+            const testShares = [
+                // 文生图 - 应该显示在画廊中
+                { id: 'share_1', style: 'ジブリ風', originalUrl: null },
+                { id: 'share_2', style: 'VTuber', originalUrl: '' },
+                { id: 'share_3', style: 'ウマ娘', originalUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...' },
+                { id: 'share_4', style: 'カスタム', originalUrl: 'https://placeholder.com/image.jpg' },
+                
+                // 图生图 - 不应该显示在画廊中
+                { id: 'share_5', style: 'ジブリ風', originalUrl: 'https://example.com/original1.jpg' },
+                { id: 'share_6', style: 'VTuber', originalUrl: 'https://tempfile.aiquickdraw.com/image.jpg' },
+                
+                // 模板模式 - 不应该显示在画廊中
+                { id: 'share_7', style: 'ジブリ風', originalUrl: 'https://example.com/template-before.jpg' }
+            ];
+            
+            // 应用筛选逻辑
+            const textToImageShares = testShares.filter(share => {
+                const hasValidOriginalUrl = share.originalUrl && 
+                    typeof share.originalUrl === 'string' && 
+                    share.originalUrl.trim() !== '' &&
+                    !share.originalUrl.startsWith('data:image/') &&
+                    !share.originalUrl.includes('placeholder.com') &&
+                    !share.originalUrl.includes('Text+to+Image') &&
+                    !share.originalUrl.includes('base64') &&
+                    share.originalUrl.length <= 1000;
+                
+                return !hasValidOriginalUrl;
+            });
+            
+            resultDiv.textContent = '🧪 测试筛选逻辑结果:\n\n';
+            resultDiv.textContent += `总共 ${testShares.length} 个测试分享\n`;
+            resultDiv.textContent += `文生图 ${textToImageShares.length} 个（画廊显示）\n`;
+            resultDiv.textContent += `图生图/模板 ${testShares.length - textToImageShares.length} 个（画廊隐藏）\n\n`;
+            
+            resultDiv.textContent += '✅ 画廊中显示的分享:\n';
+            textToImageShares.forEach(share => {
+                resultDiv.textContent += `  - ${share.id}: ${share.style}\n`;
+            });
+            
+            resultDiv.textContent += '\n❌ 画廊中隐藏的分享:\n';
+            testShares.filter(share => !textToImageShares.includes(share)).forEach(share => {
+                resultDiv.textContent += `  - ${share.id}: ${share.style} (原因: 有originalUrl)\n`;
+            });
+            
+            // 验证结果
+            const expectedTextToImage = ['share_1', 'share_2', 'share_3', 'share_4'];
+            const actualTextToImage = textToImageShares.map(s => s.id);
+            
+            resultDiv.textContent += '\n🎯 验证结果:\n';
+            resultDiv.textContent += `期望的文生图: ${expectedTextToImage.join(', ')}\n`;
+            resultDiv.textContent += `实际的文生图: ${actualTextToImage.join(', ')}\n`;
+            
+            const isCorrect = expectedTextToImage.every(id => actualTextToImage.includes(id)) &&
+                             actualTextToImage.every(id => expectedTextToImage.includes(id));
+            
+            resultDiv.textContent += `\n${isCorrect ? '✅ 筛选逻辑正确' : '❌ 筛选逻辑有问题'}\n`;
+            
+            resultDiv.className = isCorrect ? 'result success' : 'result error';
+        };
+    </script>
+</body>
+</html> 

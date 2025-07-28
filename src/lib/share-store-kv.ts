@@ -10,6 +10,7 @@ export interface ShareData {
   timestamp: number
   createdAt: string
   isR2Stored?: boolean
+  isTextToImage?: boolean
 }
 
 // Cloudflare KV 存储类
