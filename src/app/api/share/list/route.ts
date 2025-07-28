@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
     
     const startTime = Date.now()
     
-    // 检查缓存（暂时禁用缓存以便测试）
-    // const cachedData = getShareListCache(limit, offset)
-    // if (cachedData) {
-    //   monitor.cacheHit(`share-list-${limit}-${offset}`)
-    //   console.log('📦 从缓存返回分享列表数据')
-    //   return NextResponse.json(cachedData)
-    // }
+    // 检查缓存
+    const cachedData = getShareListCache(limit, offset)
+    if (cachedData) {
+      monitor.cacheHit(`share-list-${limit}-${offset}`)
+      console.log('📦 从缓存返回分享列表数据')
+      return NextResponse.json(cachedData)
+    }
     
     monitor.cacheMiss(`share-list-${limit}-${offset}`)
     
