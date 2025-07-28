@@ -212,6 +212,7 @@ export default function Workspace() {
   const [generationError, setGenerationError] = useState<string>('')
   const [_consecutiveErrors, setConsecutiveErrors] = useState<number>(0)
   const [pollCount, setPollCount] = useState<number>(0)
+  const [generatedShareUrl, setGeneratedShareUrl] = useState<string>('') // 新增：保存生成的分享链接
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
@@ -449,6 +450,7 @@ export default function Workspace() {
           if (response.ok) {
             const shareData = await response.json()
             console.log('✅ 分享图片自动处理完成:', shareData.shareUrl)
+            setGeneratedShareUrl(shareData.shareUrl) // 保存生成的分享链接
           } else {
             console.warn('⚠️ 分享图片自动处理失败，但不影响主要功能')
           }
@@ -1182,6 +1184,7 @@ export default function Workspace() {
                           originalImageUrl={currentResult.original_url}
                           prompt={currentResult.prompt}
                           style={selectedTemplate?.name || 'カスタム'}
+                          existingShareUrl={generatedShareUrl} // 传递已生成的分享链接
                         />
                       </div>
                     </div>

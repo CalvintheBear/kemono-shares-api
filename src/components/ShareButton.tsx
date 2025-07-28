@@ -8,11 +8,12 @@ interface ShareButtonProps {
   originalImageUrl: string
   prompt: string
   style: string
+  existingShareUrl?: string // 新增：已存在的分享链接
 }
 
-export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style }: ShareButtonProps) {
+export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style, existingShareUrl }: ShareButtonProps) {
   const [showShareMenu, setShowShareMenu] = useState(false)
-  const [shareUrl, setShareUrl] = useState('')
+  const [shareUrl, setShareUrl] = useState(existingShareUrl || '') // 初始化时使用已存在的分享链接
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享
@@ -76,6 +77,12 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
   const generateShareUrl = useCallback(async () => {
     // 如果已经有分享URL，直接返回
     if (shareUrl) return shareUrl
+    
+    // 如果有已存在的分享链接，直接使用
+    if (existingShareUrl) {
+      setShareUrl(existingShareUrl)
+      return existingShareUrl
+    }
     
     // 如果正在请求中，等待现有请求完成
     if (shareRequestRef.current) {
@@ -153,7 +160,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       setIsLoading(false)
       setIsSharing(false)
     }
-  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing])
+  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing, existingShareUrl])
 
   // 复制分享链接
   const copyShareUrl = useCallback(async () => {

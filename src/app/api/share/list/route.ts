@@ -40,9 +40,11 @@ export async function GET(request: NextRequest) {
     // 数据已经按时间排序，直接使用
     const sortedShares = allShares
     
-    // 过滤：只显示文生图生成的图片（originalUrl为null、undefined、空字符串、全空格、base64数据或占位符）在画廊中
+    // 过滤：只显示文生图生成的图片在画廊中
+    // 文生图：originalUrl为null、undefined、空字符串、base64数据或占位符
+    // 图生图：有有效的originalUrl，不在画廊显示
     const textToImageShares = sortedShares.filter(share => {
-      // 更严格的文生图判断逻辑
+      // 判断是否为文生图（没有有效原图）
       const isTextToImage = !share.originalUrl ||
         share.originalUrl === null ||
         share.originalUrl === undefined ||
@@ -51,8 +53,8 @@ export async function GET(request: NextRequest) {
           share.originalUrl.startsWith('data:image/') ||
           share.originalUrl.includes('placeholder.com') ||
           share.originalUrl.includes('Text+to+Image') ||
-          share.originalUrl.includes('base64') || // 排除所有base64数据
-          share.originalUrl.length > 1000 // 排除很长的base64数据
+          share.originalUrl.includes('base64') ||
+          share.originalUrl.length > 1000
         ))
       return isTextToImage
     })
