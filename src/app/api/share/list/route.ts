@@ -40,17 +40,12 @@ export async function GET(request: NextRequest) {
     // 数据已经按时间排序，直接使用
     const sortedShares = allShares
     
-    // 过滤：只显示文生图生成的图片（originalUrl为null或空）在画廊中
-    // 图生图的详情页仍然可以通过 /share/[id] 访问
+    // 过滤：只显示文生图生成的图片（originalUrl为null、undefined、空字符串或全空格）在画廊中
     const textToImageShares = sortedShares.filter(share => {
-      // 文生图：originalUrl为null、undefined、空字符串或只包含空白字符
-      const isTextToImage = !share.originalUrl || 
-                           share.originalUrl === '' || 
-                           share.originalUrl === null || 
-                           share.originalUrl === undefined ||
-                           share.originalUrl.trim() === ''
-      
-      console.log(`🔍 分享 ${share.id}: originalUrl="${share.originalUrl}", 是否文生图: ${isTextToImage}`)
+      const isTextToImage = !share.originalUrl ||
+        share.originalUrl === null ||
+        share.originalUrl === undefined ||
+        (typeof share.originalUrl === 'string' && share.originalUrl.trim() === '')
       return isTextToImage
     })
     

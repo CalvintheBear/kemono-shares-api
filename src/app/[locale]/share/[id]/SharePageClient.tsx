@@ -113,118 +113,111 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
               <h1 className="text-3xl font-bold">
-                {shareData.originalUrl && shareData.originalUrl.trim() !== '' 
-                  ? 'AI画像変換結果・プロンプト生成' 
-                  : 'AI画像生成結果・プロンプト生成'
-                }
+                {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== ''
+                  ? 'AI画像変換結果・プロンプト生成'
+                  : 'AI画像生成結果・プロンプト生成'}
               </h1>
               <SparklesIcon className="w-6 h-6" />
             </div>
             <p className="text-lg opacity-90">
               {shareData.style}スタイルで
-              {shareData.originalUrl && shareData.originalUrl.trim() !== '' ? '変換' : '生成'}完了！
+              {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? '変換' : '生成'}完了！
             </p>
             <p className="text-sm opacity-75 mt-2">
               シェアID: {shareData.id}
             </p>
           </div>
 
-                      {/* Image Display */}
-            <div className="p-8">
-              {/* 图生图：显示原始图片和生成图片的对比 */}
-              {shareData.originalUrl && shareData.originalUrl.trim() !== '' ? (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-                    画像変換結果
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* 原始图片 */}
-                    <div className="text-center">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-3">元の画像</h3>
-                      <Image
-                        src={shareData.originalUrl}
-                        alt="元の画像"
-                        width={400}
-                        height={400}
-                        unoptimized
-                        className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
-                      />
-                    </div>
-                    {/* 生成图片 */}
-                    <div className="text-center">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-3">変換後の画像</h3>
-                      <Image
-                        src={shareData.generatedUrl}
-                        alt="変換後のAI画像"
-                        width={400}
-                        height={400}
-                        unoptimized
-                        className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* 文生图：只显示生成图片 */
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-                    生成された画像
-                  </h2>
-                  <div className="flex justify-center">
+          {/* Image Display */}
+          <div className="p-8">
+            {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? (
+              // 图生图：显示原始图片和生成图片的对比
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">画像変換結果</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* 原始图片 */}
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-3">元の画像</h3>
                     <Image
-                      src={shareData.generatedUrl}
-                      alt="生成されたAI画像"
-                      width={600}
+                      src={shareData.originalUrl}
+                      alt="元の画像"
+                      width={400}
                       height={400}
                       unoptimized
-                      className="rounded-2xl shadow-lg max-w-full h-auto"
+                      className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
+                    />
+                  </div>
+                  {/* 生成图片 */}
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-3">変換後の画像</h3>
+                    <Image
+                      src={shareData.generatedUrl}
+                      alt="変換後のAI画像"
+                      width={400}
+                      height={400}
+                      unoptimized
+                      className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
                     />
                   </div>
                 </div>
-              )}
-
-            {/* Style Information */}
-            <div className="bg-gray-50 rounded-xl p-6 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-3">
-                {shareData.originalUrl && shareData.originalUrl.trim() !== '' 
-                  ? '画像変換スタイル・プロンプト情報' 
-                  : '生成スタイル・プロンプト情報'
-                }
-              </h3>
-              <div className="flex items-center space-x-2 mb-4">
-                <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
-                  {shareData.style}
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  {shareData.originalUrl && shareData.originalUrl.trim() !== '' ? '画像変換' : '文生図'}
-                </span>
-                <span className="text-gray-500 text-sm">
-                  {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}
-                </span>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">
-                {shareData.prompt}
-              </p>
-            </div>
+            ) : (
+              // 文生图：只显示生成图片
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">生成された画像</h2>
+                <div className="flex justify-center">
+                  <Image
+                    src={shareData.generatedUrl}
+                    alt="生成されたAI画像"
+                    width={600}
+                    height={400}
+                    unoptimized
+                    className="rounded-2xl shadow-lg max-w-full h-auto"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={handleDownload}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
-              >
-                <span>📥</span>
-                <span>ダウンロード</span>
-              </button>
-              
-              <button
-                onClick={handleTryNow}
-                className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
-              >
-                <span>✨</span>
-                <span>自分も試してみる</span>
-              </button>
+          {/* Style Information */}
+          <div className="bg-gray-50 rounded-xl p-6 mb-8">
+            <h3 className="text-lg font-bold text-gray-800 mb-3">
+              {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== ''
+                ? '画像変換スタイル・プロンプト情報'
+                : '生成スタイル・プロンプト情報'}
+            </h3>
+            <div className="flex items-center space-x-2 mb-4">
+              <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
+                {shareData.style}
+              </span>
+              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? '画像変換' : '文生図'}
+              </span>
+              <span className="text-gray-500 text-sm">
+                {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}
+              </span>
             </div>
+            <p className="text-gray-700 text-sm leading-relaxed">
+              {shareData.prompt}
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={handleDownload}
+              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+            >
+              <span>📥</span>
+              <span>ダウンロード</span>
+            </button>
+            <button
+              onClick={handleTryNow}
+              className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+            >
+              <span>✨</span>
+              <span>自分も試してみる</span>
+            </button>
           </div>
         </div>
 
@@ -233,34 +226,24 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           <div className="bg-white rounded-xl p-6 shadow-lg text-center">
             <div className="text-4xl mb-4">🎨</div>
             <h3 className="text-lg font-bold text-gray-800 mb-2">20+ スタイル</h3>
-            <p className="text-gray-600 text-sm">
-              ジブリ風、VTuber、ウマ娘など豊富なスタイルから選択
-            </p>
+            <p className="text-gray-600 text-sm">ジブリ風、VTuber、ウマ娘など豊富なスタイルから選択</p>
           </div>
-          
           <div className="bg-white rounded-xl p-6 shadow-lg text-center">
             <div className="text-4xl mb-4">⚡</div>
             <h3 className="text-lg font-bold text-gray-800 mb-2">高速処理</h3>
-            <p className="text-gray-600 text-sm">
-              GPT-4o Image技術で1-3分で完成
-            </p>
+            <p className="text-gray-600 text-sm">GPT-4o Image技術で1-3分で完成</p>
           </div>
-          
           <div className="bg-white rounded-xl p-6 shadow-lg text-center">
             <div className="text-4xl mb-4">💝</div>
             <h3 className="text-lg font-bold text-gray-800 mb-2">完全無料</h3>
-            <p className="text-gray-600 text-sm">
-              登録不要、商用利用可能
-            </p>
+            <p className="text-gray-600 text-sm">登録不要、商用利用可能</p>
           </div>
         </div>
 
         {/* CTA Section */}
         <div className="mt-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">あなたもAI画像変換を体験しませんか？</h2>
-          <p className="text-lg opacity-90 mb-6">
-            最新のAI技術で、あなたの写真を美しいアニメ風に変換します
-          </p>
+          <p className="text-lg opacity-90 mb-6">最新のAI技術で、あなたの写真を美しいアニメ風に変換します</p>
           <button
             onClick={handleTryNow}
             className="bg-white text-pink-600 py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto"
@@ -270,7 +253,6 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           </button>
         </div>
       </main>
-
       <Footer />
     </div>
   )
