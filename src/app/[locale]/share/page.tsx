@@ -8,6 +8,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Head from 'next/head'
 import LazyImage from '@/components/LazyImage'
+import { generateImageSizes, ImageSizes, preloadImage } from '@/lib/image-utils'
 
 interface ShareData {
   generated: string
@@ -24,6 +25,7 @@ interface ShareItem {
   timestamp: string
   generatedUrl: string
   originalUrl: string
+  imageSizes: ImageSizes
 }
 
 interface ApiShareItem {
@@ -44,13 +46,41 @@ export default function SharePage() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [currentOffset, setCurrentOffset] = useState(0)
-  const [totalCount, setTotalCount] = useState(0)
+  const [_totalCount, setTotalCount] = useState(0)
+  
+  // 响应式图片加载策略
+  const [imageQuality, setImageQuality] = useState<'thumbnail' | 'small' | 'medium' | 'large'>('medium')
   
   // 无限滚动相关
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   
   const ITEMS_PER_PAGE = 20 // 每页加载20张图片
+
+  // 根据屏幕尺寸和设备像素比选择合适的图片质量
+  useEffect(() => {
+    const updateImageQuality = () => {
+      const width = window.innerWidth
+      const pixelRatio = window.devicePixelRatio || 1
+      const effectiveWidth = width * pixelRatio
+      
+      if (effectiveWidth <= 400) {
+        setImageQuality('small')
+      } else if (effectiveWidth <= 800) {
+        setImageQuality('medium')
+      } else if (effectiveWidth <= 1200) {
+        setImageQuality('large')
+      } else {
+        setImageQuality('large')
+      }
+    }
+    
+    updateImageQuality()
+    window.addEventListener('resize', updateImageQuality)
+    
+    return () => window.removeEventListener('resize', updateImageQuality)
+  }, [])
 
   useEffect(() => {
     const dataParam = searchParams.get('data')
@@ -77,14 +107,20 @@ export default function SharePage() {
       if (response.ok) {
         const result = await response.json()
         if (result.success && result.data.items) {
-          const links = result.data.items.map((item: ApiShareItem) => ({
-            id: item.id,
-            title: `${item.style}変換`,
-            style: item.style,
-            timestamp: item.timestamp,
-            generatedUrl: item.generatedUrl,
-            originalUrl: item.originalUrl
-          }))
+          const links = result.data.items.map((item: ApiShareItem) => {
+            // 生成多级图片尺寸
+            const imageSizes = generateImageSizes(item.generatedUrl)
+            
+            return {
+              id: item.id,
+              title: `${item.style}変換`,
+              style: item.style,
+              timestamp: item.timestamp,
+              generatedUrl: item.generatedUrl,
+              originalUrl: item.originalUrl,
+              imageSizes // 添加多级图片尺寸
+            }
+          })
           
           if (append) {
             setShareLinks(prev => [...prev, ...links])
@@ -96,13 +132,49 @@ export default function SharePage() {
           setHasMore(result.data.hasMore)
           setCurrentOffset(offset + ITEMS_PER_PAGE)
           
-          // 预加载前8张图片（仅首次加载时）
+          // 添加调试信息
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`📊 获取分享链接 - offset: ${offset}, append: ${append}`)
+            console.log(`📊 API返回: ${result.data.items.length} 个项目，总数: ${result.data.total}`)
+            console.log(`📊 当前状态: hasMore=${result.data.hasMore}, offset=${offset}`)
+            console.log(`📊 实际设置: shareLinks.length=${append ? 'prev.length + ' + links.length : links.length}`)
+            
+            // 检查前几个项目的图片URL
+            result.data.items.slice(0, 3).forEach((item: ApiShareItem, index: number) => {
+              console.log(`📊 项目 ${index + 1}: ID=${item.id}, Style=${item.style}, GeneratedUrl=${item.generatedUrl}`)
+            })
+          }
+          
+          // 智能预加载：根据是否是首次加载和当前图片数量决定预加载数量
           if (!append && links.length > 0) {
-            links.slice(0, 8).forEach((link: ShareItem) => {
+            const preloadCount = Math.min(links.length, 12) // 增加到12张
+            const preloadPromises = links.slice(0, preloadCount).map((link: ShareItem) => {
               if (link.generatedUrl) {
-                const img = new Image()
-                img.src = link.generatedUrl
+                // 根据当前图片质量预加载
+                const preloadUrls = [
+                  link.imageSizes.thumbnail, // 总是预加载缩略图
+                  link.imageSizes[imageQuality] // 预加载当前质量的图片
+                ]
+                
+                // 如果当前质量不是最高，也预加载下一级质量
+                if (imageQuality === 'small' && link.imageSizes.medium) {
+                  preloadUrls.push(link.imageSizes.medium)
+                } else if (imageQuality === 'medium' && link.imageSizes.large) {
+                  preloadUrls.push(link.imageSizes.large)
+                }
+                
+                return Promise.all(
+                  preloadUrls.map(url => preloadImage(url))
+                ).catch(() => {
+                  // 预加载失败不影响主流程
+                })
               }
+              return Promise.resolve()
+            })
+            
+            // 并行预加载，但不阻塞UI
+            Promise.all(preloadPromises).catch(() => {
+              // 预加载失败不影响主流程
             })
           }
         }
@@ -121,7 +193,7 @@ export default function SharePage() {
       setLoadingLinks(false)
       setLoadingMore(false)
     }
-  }, [])
+  }, [ITEMS_PER_PAGE, imageQuality])
 
   // 初始加载
   useEffect(() => {
@@ -134,12 +206,25 @@ export default function SharePage() {
   useEffect(() => {
     if (hasShareData) return
 
+    // 清理之前的observer
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0]
         if (target.isIntersecting && hasMore && !loadingMore) {
-          setLoadingMore(true)
-          fetchShareLinks(currentOffset, true)
+          // 清除之前的超时
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current)
+          }
+          
+          // 添加防抖延迟，避免快速滚动时的重复请求
+          loadingTimeoutRef.current = setTimeout(() => {
+            setLoadingMore(true)
+            fetchShareLinks(currentOffset, true)
+          }, 300) // 300ms防抖延迟
         }
       },
       {
@@ -157,6 +242,11 @@ export default function SharePage() {
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect()
+        observerRef.current = null
+      }
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current)
+        loadingTimeoutRef.current = null
       }
     }
   }, [hasMore, loadingMore, currentOffset, fetchShareLinks, hasShareData])
@@ -239,72 +329,18 @@ export default function SharePage() {
         </Head>
         <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex flex-col">
           <Header />
-          <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 pt-24">
+          <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 pt-24">
             {/* Hero Section */}
-            <section className="w-full max-w-5xl mx-auto text-center py-16 mb-12">
-              <div className="mb-8">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-amber-700 mb-6 tracking-tight">
-                  AI画像変換
-                  <span className="block text-3xl md:text-4xl lg:text-5xl text-orange-500 font-medium mt-2">
-                    ギャラリー
-                  </span>
+            <section className="w-full max-w-5xl mx-auto text-center py-8 mb-8">
+              <div className="mb-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-amber-700 mb-4 tracking-tight">
+                  AI画像変換ギャラリー
                 </h1>
-                <p className="text-lg md:text-xl text-amber-600 max-w-3xl mx-auto leading-relaxed">
-                  プロンプト自動生成による美しいアニメ風変換作品のコレクション
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button
-                  onClick={handleTryNow}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-8 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center"
-                >
-                  <span className="mr-2">✨</span>
-                  今すぐ体験する
-                </button>
-                <div className="text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-full">
-                  <span className="font-medium">20+スタイル</span> • <span className="font-medium">完全無料</span> • <span className="font-medium">商用利用可</span>
-                </div>
-              </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="w-full max-w-4xl mx-auto mb-16">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
-                  <div className="text-4xl mb-3">🎨</div>
-                  <h3 className="text-lg font-semibold text-amber-700 mb-2">20+ スタイル</h3>
-                  <p className="text-sm text-gray-600">ジブリ風、VTuber、ウマ娘など</p>
-                </div>
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
-                  <div className="text-4xl mb-3">⚡</div>
-                  <h3 className="text-lg font-semibold text-amber-700 mb-2">高速処理</h3>
-                  <p className="text-sm text-gray-600">GPT-4o Image技術で1-3分</p>
-                </div>
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-100 hover:shadow-lg transition-all duration-300">
-                  <div className="text-4xl mb-3">💝</div>
-                  <h3 className="text-lg font-semibold text-amber-700 mb-2">完全無料</h3>
-                  <p className="text-sm text-gray-600">登録不要、商用利用可能</p>
-                </div>
               </div>
             </section>
 
             {/* Gallery Section - Pinterest Style with Infinite Scroll */}
-            <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold text-amber-700 mb-4">
-                  AI画像変換ギャラリー
-                </h2>
-                <p className="text-xl text-amber-600 max-w-3xl mx-auto">
-                  プロンプト技術で生成された美しいアニメ風変換作品をお楽しみください
-                </p>
-                {totalCount > 0 && (
-                  <p className="text-sm text-amber-500 mt-2">
-                    現在 {shareLinks.length} / {totalCount} 件表示中
-                  </p>
-                )}
-              </div>
-              
+            <section className="w-full px-4 sm:px-6 lg:px-8 mb-8">
               {loadingLinks && shareLinks.length === 0 ? (
                 <div className="flex justify-center items-center py-20">
                   <div className="text-center">
@@ -314,72 +350,73 @@ export default function SharePage() {
                 </div>
               ) : shareLinks.length > 0 ? (
                 <>
-                  <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
-                    {shareLinks.map((link, index) => (
+                  <div className="pinterest-gallery">
+                    {shareLinks.map((link, _index) => (
                       <div
                         key={link.id}
-                        className="break-inside-avoid group cursor-pointer"
+                        className="pinterest-item group cursor-pointer"
                         onClick={() => window.location.href = `/share/${link.id}`}
                       >
-                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:scale-[1.02] hover:-translate-y-1">
-                          {/* 图片容器 */}
+                        <div className="image-container">
+                          {/* 图片容器 - 自适应高度 */}
                           <div className="relative overflow-hidden">
                             {link.generatedUrl ? (
                               <LazyImage
-                                src={link.generatedUrl}
+                                src={link.imageSizes[imageQuality]} // 使用中等质量的图片
                                 alt={`${link.style}変換結果 - ${link.title}`}
-                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
-                                loading={index < 8 ? "eager" : "lazy"}
+                                className="adaptive-image transition-transform duration-700 group-hover:scale-110"
+                                loading="lazy"
+                                placeholder={link.imageSizes.thumbnail} // 使用缩略图作为占位
                                 fallback={
-                                  <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                                  <div className="bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center" style={{ minHeight: '200px' }}>
                                     <div className="text-6xl text-amber-400">🎨</div>
                                   </div>
                                 }
                               />
                             ) : (
-                              <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                              <div className="bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center" style={{ minHeight: '200px' }}>
                                 <div className="text-6xl text-amber-400">🎨</div>
                               </div>
                             )}
                             
-                            {/* 悬停覆盖层 */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                            {/* 悬停覆盖层 - Pinterest风格 */}
+                            <div className="hover-overlay">
+                              <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
                                 <div className="flex items-center justify-between">
-                                  <div>
-                                    <h3 className="font-bold text-lg mb-1">{link.title}</h3>
-                                    <p className="text-sm opacity-90">{link.style}</p>
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-sm mb-1 truncate">{link.title}</h3>
+                                    <p className="text-xs opacity-90 truncate">{link.style}</p>
                                   </div>
-                                  <div className="text-right">
-                                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs">
-                                      詳細を見る
+                                  <div className="text-right ml-2 flex-shrink-0">
+                                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 text-xs">
+                                      詳細
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             
-                            {/* 原图对比提示 */}
+                            {/* 原图对比提示 - 优化位置 */}
                             {link.originalUrl && (
-                              <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm rounded-full px-2 py-1 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <span className="flex items-center">
                                   <span className="mr-1">🔄</span>
-                                  原图あり
+                                  原图
                                 </span>
                               </div>
                             )}
                           </div>
                           
-                          {/* 底部信息 */}
-                          <div className="p-4">
+                          {/* 底部信息 - 紧凑设计 */}
+                          <div className="p-3">
                             <div className="flex items-center justify-between">
-                              <div className="flex-1">
+                              <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold text-gray-800 text-sm mb-1 truncate">
                                   {link.title}
                                 </h3>
-                                <p className="text-xs text-gray-500">{link.style}</p>
+                                <p className="text-xs text-gray-500 truncate">{link.style}</p>
                               </div>
-                              <div className="text-right">
+                              <div className="text-right ml-2 flex-shrink-0">
                                 <p className="text-xs text-gray-400">{link.timestamp}</p>
                               </div>
                             </div>
@@ -407,17 +444,6 @@ export default function SharePage() {
                       )}
                     </div>
                   )}
-                  
-                  {/* 已加载完所有图片的提示 */}
-                  {!hasMore && shareLinks.length > 0 && (
-                    <div className="text-center py-8 mt-8">
-                      <div className="bg-amber-50 rounded-full px-6 py-3 inline-block">
-                        <p className="text-sm text-amber-600">
-                          🎉 すべての画像を表示しました ({totalCount}件)
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </>
               ) : (
                 <div className="text-center py-20">
@@ -432,22 +458,6 @@ export default function SharePage() {
                   </button>
                 </div>
               )}
-            </section>
-
-            {/* CTA Section */}
-            <section className="w-full max-w-4xl mx-auto text-center py-12">
-              <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-3xl p-8 md:p-12 text-white shadow-xl">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4">あなたもAI画像変換を体験しませんか？</h2>
-                <p className="text-lg opacity-95 mb-6 max-w-2xl mx-auto">
-                  最新のAI技術で、あなたの写真を美しいアニメ風に変換します
-                </p>
-                <button
-                  onClick={handleTryNow}
-                  className="bg-white text-amber-600 py-3 px-8 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                >
-                  ✨ 今すぐ始める
-                </button>
-              </div>
             </section>
           </main>
           <Footer />

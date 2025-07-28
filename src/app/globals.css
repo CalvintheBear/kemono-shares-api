@@ -301,3 +301,157 @@ body {
 .animate-delay-800 { animation-delay: 0.8s; }
 .animate-delay-900 { animation-delay: 0.9s; }
 .animate-delay-1000 { animation-delay: 1s; }
+
+/* Pinterest风格瀑布流优化 */
+.pinterest-gallery {
+  columns: 1;
+  column-gap: 8px;
+  column-fill: balance;
+  width: 100%;
+  min-height: 100vh;
+  contain: layout style paint;
+}
+
+@media (min-width: 640px) {
+  .pinterest-gallery {
+    columns: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .pinterest-gallery {
+    columns: 3;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pinterest-gallery {
+    columns: 4;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pinterest-gallery {
+    columns: 5;
+  }
+}
+
+@media (min-width: 1536px) {
+  .pinterest-gallery {
+    columns: 6;
+  }
+}
+
+@media (min-width: 1920px) {
+  .pinterest-gallery {
+    columns: 7;
+  }
+}
+
+.pinterest-item {
+  break-inside: avoid;
+  margin-bottom: 8px;
+  display: block;
+  page-break-inside: avoid;
+  width: 100%;
+  contain: layout style paint;
+  transform: translateZ(0); /* 强制硬件加速 */
+}
+
+/* 图片容器优化 */
+.image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  min-height: 200px;
+  contain: layout style paint;
+  transform: translateZ(0); /* 强制硬件加速 */
+  will-change: transform; /* 提示浏览器优化 */
+}
+
+.image-container:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 图片自适应 */
+.adaptive-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  min-height: 200px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Blur-up 效果 */
+.blur-up {
+  filter: blur(10px);
+  transform: scale(1.1);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.blur-up.loaded {
+  filter: blur(0);
+  transform: scale(1);
+}
+
+/* 渐进式图片加载 */
+.progressive-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.progressive-image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.progressive-image-main {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.progressive-image-main.loaded {
+  opacity: 1;
+}
+
+/* 悬停覆盖层优化 */
+.hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-container:hover .hover-overlay {
+  opacity: 1;
+}
+
+/* 加载动画优化 */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -13,7 +13,7 @@ interface CacheItem<T> {
 
 class ShareCache {
   private cache = new Map<string, CacheItem<unknown>>()
-  private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5分钟默认缓存时间
+  private readonly DEFAULT_TTL = 10 * 60 * 1000 // 10分钟默认缓存时间（从5分钟增加到10分钟）
   private readonly MAX_CACHE_SIZE = 1000 // 最大缓存条目数
   private readonly CLEANUP_INTERVAL = 60 * 1000 // 清理间隔（1分钟）
 
