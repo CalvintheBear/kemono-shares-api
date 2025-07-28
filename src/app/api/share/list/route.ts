@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
     
     const startTime = Date.now()
     
-    // 检查缓存
-    const cachedData = getShareListCache(limit, offset)
-    if (cachedData) {
-      monitor.cacheHit(`share-list-${limit}-${offset}`)
-      console.log('📦 从缓存返回分享列表数据')
-      return NextResponse.json(cachedData)
-    }
+    // 检查缓存（暂时禁用缓存以便测试）
+    // const cachedData = getShareListCache(limit, offset)
+    // if (cachedData) {
+    //   monitor.cacheHit(`share-list-${limit}-${offset}`)
+    //   console.log('📦 从缓存返回分享列表数据')
+    //   return NextResponse.json(cachedData)
+    // }
     
     monitor.cacheMiss(`share-list-${limit}-${offset}`)
     
@@ -40,10 +40,16 @@ export async function GET(request: NextRequest) {
     // 数据已经按时间排序，直接使用
     const sortedShares = allShares
     
-    // 过滤：只显示文生图生成的图片（没有originalUrl的）在画廊中
+    // 过滤：只显示文生图生成的图片（originalUrl为null或空）在画廊中
     // 图生图的详情页仍然可以通过 /share/[id] 访问
     const textToImageShares = sortedShares.filter(share => {
-      const isTextToImage = !share.originalUrl || share.originalUrl === '' || share.originalUrl === null
+      // 文生图：originalUrl为null、undefined、空字符串或只包含空白字符
+      const isTextToImage = !share.originalUrl || 
+                           share.originalUrl === '' || 
+                           share.originalUrl === null || 
+                           share.originalUrl === undefined ||
+                           share.originalUrl.trim() === ''
+      
       console.log(`🔍 分享 ${share.id}: originalUrl="${share.originalUrl}", 是否文生图: ${isTextToImage}`)
       return isTextToImage
     })

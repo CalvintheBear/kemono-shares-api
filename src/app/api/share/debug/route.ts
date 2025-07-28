@@ -15,17 +15,33 @@ export async function GET(request: NextRequest) {
         // 分析数据
         const analysis = {
           total: allShares.length,
-          textToImage: allShares.filter(share => !share.originalUrl || share.originalUrl === '' || share.originalUrl === null).length,
-          imageToImage: allShares.filter(share => share.originalUrl && share.originalUrl !== '' && share.originalUrl !== null).length,
+          textToImage: allShares.filter(share => {
+            return !share.originalUrl || 
+                   share.originalUrl === '' || 
+                   share.originalUrl === null || 
+                   share.originalUrl === undefined ||
+                   share.originalUrl.trim() === ''
+          }).length,
+          imageToImage: allShares.filter(share => {
+            return share.originalUrl && 
+                   share.originalUrl !== '' && 
+                   share.originalUrl !== null && 
+                   share.originalUrl !== undefined &&
+                   share.originalUrl.trim() !== ''
+          }).length,
           storageInfo,
-          shares: allShares.map(share => ({
-            id: share.id,
-            style: share.style,
-            originalUrl: share.originalUrl,
-            isTextToImage: !share.originalUrl || share.originalUrl === '' || share.originalUrl === null,
-            timestamp: share.timestamp,
-            createdAt: share.createdAt
-          }))
+                      shares: allShares.map(share => ({
+              id: share.id,
+              style: share.style,
+              originalUrl: share.originalUrl,
+              isTextToImage: !share.originalUrl || 
+                             share.originalUrl === '' || 
+                             share.originalUrl === null || 
+                             share.originalUrl === undefined ||
+                             share.originalUrl.trim() === '',
+              timestamp: share.timestamp,
+              createdAt: share.createdAt
+            }))
         }
         
         return NextResponse.json({

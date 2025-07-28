@@ -16,10 +16,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { generatedUrl, originalUrl, prompt, style, timestamp } = body
 
-    console.log('🔄 开始处理分享请求:', { generatedUrl, style })
+    console.log('🔄 开始处理分享请求:', { generatedUrl, style, originalUrl })
     
     // 注意：文生图时originalUrl应该为空或null，图生图时应该有值
     // 这个字段用于在share父页面过滤，只显示文生图生成的图片
+    // 确保文生图时originalUrl为null，图生图时为有效URL
 
     // 检测重复请求
     const requestKey = `${generatedUrl}-${style}-${timestamp}`
@@ -61,16 +62,26 @@ export async function POST(request: NextRequest) {
     const shareId = `share_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     // 存储分享数据
+    // 确保文生图时originalUrl为null，图生图时为有效URL
+    const normalizedOriginalUrl = originalUrl && originalUrl.trim() !== '' ? originalUrl : null
+    
     const shareData: ShareData = {
       id: shareId,
       generatedUrl: processedGeneratedUrl,
-      originalUrl,
+      originalUrl: normalizedOriginalUrl,
       prompt,
       style,
       timestamp,
       createdAt: new Date().toISOString(),
       isR2Stored
     }
+    
+    console.log('💾 存储分享数据:', { 
+      shareId, 
+      style, 
+      originalUrl: normalizedOriginalUrl, 
+      isTextToImage: !normalizedOriginalUrl 
+    })
     
     await shareKVStore.set(shareId, shareData)
     
