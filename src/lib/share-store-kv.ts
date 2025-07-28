@@ -93,6 +93,7 @@ export class ShareKVStore {
     try {
       // 更新内存缓存
       this.memoryCache.set(shareId, data)
+      console.log('💾 数据已保存到内存缓存:', shareId, '当前缓存大小:', this.memoryCache.size)
 
       if (this.isCloudflareWorkers() && this.kv) {
         // 存储到 KV
@@ -203,8 +204,11 @@ export class ShareKVStore {
       }
 
       // 回退到内存缓存
-      return Array.from(this.memoryCache.values())
+      const memoryData = Array.from(this.memoryCache.values())
         .sort((a, b) => b.timestamp - a.timestamp)
+      
+      console.log('📦 从内存缓存获取所有数据:', memoryData.length, '个分享')
+      return memoryData
     } catch (error) {
       console.error('❌ 获取所有数据失败:', error)
       return []
