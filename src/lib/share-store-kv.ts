@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 export interface ShareData {
   id: string
   generatedUrl: string
@@ -88,7 +91,6 @@ export class ShareKVStore {
     return 'share:list'
   }
 
-  // 存储分享数据
   async set(shareId: string, data: ShareData): Promise<void> {
     try {
       // 更新内存缓存
@@ -120,6 +122,12 @@ export class ShareKVStore {
             console.warn('⚠️ 本地存储备份失败:', e)
           }
         }
+      }
+      if (isDev()) {
+        // 本地持久化
+        const all = readDevJson()
+        all[shareId] = data
+        writeDevJson(all)
       }
     } catch (error) {
       console.error('❌ 存储数据失败:', error)
@@ -174,6 +182,10 @@ export class ShareKVStore {
         } catch (e) {
           console.warn('⚠️ 本地存储恢复失败:', e)
         }
+      }
+      if (isDev()) {
+        const all = readDevJson()
+        return all[shareId] || null
       }
 
       return null
@@ -240,6 +252,12 @@ export class ShareKVStore {
         } catch (e) {
           console.warn('⚠️ 删除本地存储备份失败:', e)
         }
+      }
+      if (isDev()) {
+        const all = readDevJson()
+        delete all[shareId]
+        writeDevJson(all)
+        return true
       }
 
       return true
@@ -343,6 +361,33 @@ export class ShareKVStore {
       memoryCacheSize: this.memoryCache.size,
       environment: process.env.NODE_ENV || 'unknown'
     }
+  }
+}
+
+const DEV_JSON_PATH = path.resolve(process.cwd(), 'local-storage/shares-dev.json')
+
+function isDev() {
+  return process.env.NODE_ENV === 'development'
+}
+
+function readDevJson(): Record<string, ShareData> {
+  try {
+    if (fs.existsSync(DEV_JSON_PATH)) {
+      const raw = fs.readFileSync(DEV_JSON_PATH, 'utf-8')
+      return JSON.parse(raw)
+    }
+  } catch (e) {
+    console.warn('⚠️ 读取本地持久化分享数据失败:', e)
+  }
+  return {}
+}
+
+function writeDevJson(data: Record<string, ShareData>) {
+  try {
+    fs.writeFileSync(DEV_JSON_PATH, JSON.stringify(data, null, 2), 'utf-8')
+    console.log('💾 已写入本地持久化分享数据:', DEV_JSON_PATH)
+  } catch (e) {
+    console.warn('⚠️ 写入本地持久化分享数据失败:', e)
   }
 }
 
