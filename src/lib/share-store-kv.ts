@@ -11,20 +11,25 @@ export interface ShareData {
 
 // Cloudflare KV 存储类
 export class ShareKVStore {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private kv: any = null // KVNamespace 类型在 Cloudflare Workers 环境中可用
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存
 
   constructor() {
     // 在 Cloudflare Workers 环境中，KV 会自动注入
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (typeof globalThis !== 'undefined' && (globalThis as any).SHARE_DATA_KV) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.kv = (globalThis as any).SHARE_DATA_KV
     }
   }
 
   // 检查是否在 Cloudflare Workers 环境
   private isCloudflareWorkers(): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return typeof globalThis !== 'undefined' && 
+           // eslint-disable-next-line @typescript-eslint/no-explicit-any
            (globalThis as any).SHARE_DATA_KV !== undefined
   }
 
@@ -100,7 +105,6 @@ export class ShareKVStore {
         const listData = await this.kv.get(this.getListKey())
         if (listData) {
           const shareIds = JSON.parse(listData) as string[]
-          const results: ShareData[] = []
           
           // 并行获取所有分享数据
           const promises = shareIds.map(id => this.get(id))
@@ -147,7 +151,7 @@ export class ShareKVStore {
   }
 
   // 更新分享列表
-  private async updateShareList(shareId: string, data: ShareData): Promise<void> {
+  private async updateShareList(shareId: string, _data: ShareData): Promise<void> {
     if (!this.kv) return
 
     try {

@@ -15,8 +15,8 @@
   "kv_namespaces": [
     {
       "binding": "SHARE_DATA_KV",
-      "id": "your-kv-namespace-id",
-      "preview_id": "your-preview-kv-namespace-id"
+      "id": "77b81f5b787b449e931fa6a51263b38c",
+      "preview_id": "2d7d8b533f3049b89d808fbb569bb09c"
     }
   ],
   "env": {

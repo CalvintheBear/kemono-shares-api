@@ -40,5 +40,5 @@ Write-Host "📋 配置信息:" -ForegroundColor Cyan
 Write-Host "   - 生产环境 KV ID: $productionKvId" -ForegroundColor White
 Write-Host "   - 预览环境 KV ID: $previewKvId" -ForegroundColor White
 Write-Host ""
-Write-Host "🚀 现在可以部署到 Cloudflare Workers 了！" -ForegroundColor Green
-Write-Host "   运行: wrangler deploy" -ForegroundColor Yellow 
+Write-Host "Now you can deploy to Cloudflare Workers!" -ForegroundColor Green
+Write-Host "   Run: wrangler deploy" -ForegroundColor Yellow 
