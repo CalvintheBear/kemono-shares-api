@@ -9,7 +9,7 @@ import Image from 'next/image'
 interface ShareData {
   id: string
   generatedUrl: string
-  originalUrl: string
+  originalUrl: string | null
   prompt: string
   style: string
   timestamp: number
@@ -24,6 +24,18 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // 辅助函数：判断是否为有效的图生图（有原图）
+  const isValidImageToImage = (originalUrl: string | null): boolean => {
+    return !!(originalUrl && 
+      typeof originalUrl === 'string' && 
+      originalUrl.trim() !== '' &&
+      !originalUrl.startsWith('data:image/') &&
+      !originalUrl.includes('placeholder.com') &&
+      !originalUrl.includes('Text+to+Image') &&
+      !originalUrl.includes('base64') && // 排除所有base64数据
+      originalUrl.length <= 1000) // 排除很长的base64数据
+  }
 
   useEffect(() => {
     const fetchShareData = async () => {
@@ -113,7 +125,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
               <h1 className="text-3xl font-bold">
-                {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== ''
+                {isValidImageToImage(shareData.originalUrl)
                   ? 'AI画像変換結果・プロンプト生成'
                   : 'AI画像生成結果・プロンプト生成'}
               </h1>
@@ -121,7 +133,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
             </div>
             <p className="text-lg opacity-90">
               {shareData.style}スタイルで
-              {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? '変換' : '生成'}完了！
+              {isValidImageToImage(shareData.originalUrl) ? '変換' : '生成'}完了！
             </p>
             <p className="text-sm opacity-75 mt-2">
               シェアID: {shareData.id}
@@ -130,7 +142,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
 
           {/* Image Display */}
           <div className="p-8">
-            {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? (
+            {isValidImageToImage(shareData.originalUrl) ? (
               // 图生图：显示原始图片和生成图片的对比
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">画像変換結果</h2>
@@ -139,7 +151,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
                   <div className="text-center">
                     <h3 className="text-lg font-semibold text-gray-700 mb-3">元の画像</h3>
                     <Image
-                      src={shareData.originalUrl}
+                      src={shareData.originalUrl!}
                       alt="元の画像"
                       width={400}
                       height={400}
@@ -182,7 +194,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           {/* Style Information */}
           <div className="bg-gray-50 rounded-xl p-6 mb-8">
             <h3 className="text-lg font-bold text-gray-800 mb-3">
-              {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== ''
+              {isValidImageToImage(shareData.originalUrl)
                 ? '画像変換スタイル・プロンプト情報'
                 : '生成スタイル・プロンプト情報'}
             </h3>
@@ -191,7 +203,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
                 {shareData.style}
               </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                {shareData.originalUrl && typeof shareData.originalUrl === 'string' && shareData.originalUrl.trim() !== '' ? '画像変換' : '文生図'}
+                {isValidImageToImage(shareData.originalUrl) ? '画像変換' : '文生図'}
               </span>
               <span className="text-gray-500 text-sm">
                 {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}

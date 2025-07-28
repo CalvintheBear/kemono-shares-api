@@ -63,7 +63,18 @@ export async function POST(request: NextRequest) {
     
     // 存储分享数据
     // 确保文生图时originalUrl为null，图生图时为有效URL
-    const normalizedOriginalUrl = originalUrl && originalUrl.trim() !== '' ? originalUrl : null
+    // 修复：更严格的originalUrl规范化
+    let normalizedOriginalUrl = null
+    if (originalUrl && 
+        typeof originalUrl === 'string' && 
+        originalUrl.trim() !== '' && 
+        !originalUrl.startsWith('data:image/') && 
+        !originalUrl.includes('placeholder.com') &&
+        !originalUrl.includes('Text+to+Image') &&
+        originalUrl.length <= 1000 && // 排除很长的base64数据
+        !originalUrl.includes('base64')) { // 排除所有base64数据
+      normalizedOriginalUrl = originalUrl
+    }
     
     const shareData: ShareData = {
       id: shareId,

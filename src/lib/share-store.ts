@@ -1,7 +1,7 @@
 export interface ShareData {
   id: string
   generatedUrl: string
-  originalUrl: string
+  originalUrl: string | null
   prompt: string
   style: string
   timestamp: number

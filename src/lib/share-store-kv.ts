@@ -4,7 +4,7 @@ import path from 'path'
 export interface ShareData {
   id: string
   generatedUrl: string
-  originalUrl: string
+  originalUrl: string | null
   prompt: string
   style: string
   timestamp: number
@@ -213,6 +213,16 @@ export class ShareKVStore {
             .filter((data): data is ShareData => data !== null)
             .sort((a, b) => b.timestamp - a.timestamp)
         }
+      }
+
+      // 在开发环境中，从本地JSON文件加载数据
+      if (isDev()) {
+        const devData = readDevJson()
+        const devDataArray = Object.values(devData)
+          .sort((a, b) => b.timestamp - a.timestamp)
+        
+        console.log('📦 从本地JSON文件获取所有数据:', devDataArray.length, '个分享')
+        return devDataArray
       }
 
       // 回退到内存缓存
