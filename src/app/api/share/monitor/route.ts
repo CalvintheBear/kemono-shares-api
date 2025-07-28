@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { monitor, printMonitoringStats } from '@/lib/share-monitor'
 import { shareCache } from '@/lib/share-cache'
-import { shareDataStore } from '@/lib/share-store'
+import { shareKVStore } from '@/lib/share-store-kv'
 
 export async function GET(request: NextRequest) {
   try {
@@ -87,11 +87,12 @@ function getCacheInfo() {
 /**
  * 获取存储信息
  */
-function getStorageInfo() {
+async function getStorageInfo() {
+  const allShares = await shareKVStore.getAll()
   const storageStats = {
-    totalShares: shareDataStore.size,
-    r2StoredCount: Array.from(shareDataStore.values()).filter(s => s.isR2Stored).length,
-    storageSize: shareDataStore.size,
+    totalShares: allShares.length,
+    r2StoredCount: allShares.filter(s => s.isR2Stored).length,
+    storageSize: allShares.length,
     lastUpdated: new Date().toISOString()
   }
   
@@ -104,12 +105,13 @@ function getStorageInfo() {
 /**
  * 获取所有信息
  */
-function getAllInfo() {
+async function getAllInfo() {
   const stats = monitor.getStats()
   const cacheStats = shareCache.getStats()
+  const allShares = await shareKVStore.getAll()
   const storageStats = {
-    totalShares: shareDataStore.size,
-    r2StoredCount: Array.from(shareDataStore.values()).filter(s => s.isR2Stored).length
+    totalShares: allShares.length,
+    r2StoredCount: allShares.filter(s => s.isR2Stored).length
   }
   
   return NextResponse.json({

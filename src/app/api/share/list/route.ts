@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { shareDataStore, initializeSampleData } from '@/lib/share-store'
+import { shareKVStore, initializeSampleData } from '@/lib/share-store-kv'
 import { getShareListCache, setShareListCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
@@ -33,12 +33,10 @@ export async function GET(request: NextRequest) {
     initializeSampleData()
     
     // 从存储中获取所有数据
-    const allShares = Array.from(shareDataStore.values())
+    const allShares = await shareKVStore.getAll()
     
-    // 按创建时间排序（最新的在前）
-    const sortedShares = allShares.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
+    // 数据已经按时间排序，直接使用
+    const sortedShares = allShares
     
     // 转换为列表项格式
     const shareList: ShareListItem[] = sortedShares.map(share => ({

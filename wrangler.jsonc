@@ -12,6 +12,13 @@
     "enabled": true
   },
   "upload_source_maps": true,
+  "kv_namespaces": [
+    {
+      "binding": "SHARE_DATA_KV",
+      "id": "your-kv-namespace-id",
+      "preview_id": "your-preview-kv-namespace-id"
+    }
+  ],
   "env": {
     "NODE_ENV": "production",
     "NEXT_PUBLIC_APP_URL": "https://kemono-shares-api.y2983236233.workers.dev",

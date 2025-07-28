@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { processImageUrl } from '@/lib/image-download-to-r2'
-import { shareDataStore, initializeSampleData, ShareData } from '@/lib/share-store'
+import { shareKVStore, initializeSampleData, ShareData } from '@/lib/share-store-kv'
 import { clearShareCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     
     if (existingRequest && (now - existingRequest.timestamp) < DUPLICATE_REQUEST_THRESHOLD) {
       console.log('⚠️ 检测到重复请求，返回现有分享ID:', existingRequest.shareId)
-      const existingShareData = shareDataStore.get(existingRequest.shareId)
+      const existingShareData = await shareKVStore.get(existingRequest.shareId)
       if (existingShareData) {
         const shareUrl = `https://kemono-mimi.com/share/${existingRequest.shareId}`
         return NextResponse.json({
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       isR2Stored
     }
     
-    shareDataStore.set(shareId, shareData)
+    await shareKVStore.set(shareId, shareData)
     
     // 缓存请求信息，用于检测重复请求
     requestCache.set(requestKey, { timestamp: now, shareId })
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const shareData = shareDataStore.get(shareId)
+    const shareData = await shareKVStore.get(shareId)
     
     if (!shareData) {
       return NextResponse.json(
