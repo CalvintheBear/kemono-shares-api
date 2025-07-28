@@ -21,7 +21,7 @@ export default function SharePage() {
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [hasShareData, setHasShareData] = useState(false)
-  const [shareLinks, setShareLinks] = useState<Array<{id: string, title: string, style: string, timestamp: string}>>([])
+  const [shareLinks, setShareLinks] = useState<Array<{id: string, title: string, style: string, timestamp: string, generatedUrl: string, originalUrl: string}>>([])
   const [loadingLinks, setLoadingLinks] = useState(true)
 
   useEffect(() => {
@@ -50,11 +50,13 @@ export default function SharePage() {
         if (response.ok) {
           const result = await response.json()
           if (result.success && result.data.items) {
-            const links = result.data.items.map((item: {id: string, style: string, timestamp: string}) => ({
+            const links = result.data.items.map((item: {id: string, style: string, timestamp: string, generatedUrl: string, originalUrl: string}) => ({
               id: item.id,
               title: `${item.style}変換`,
               style: item.style,
-              timestamp: item.timestamp
+              timestamp: item.timestamp,
+              generatedUrl: item.generatedUrl,
+              originalUrl: item.originalUrl
             }))
             setShareLinks(links)
           }
@@ -189,12 +191,40 @@ export default function SharePage() {
                     <a
                       key={link.id}
                       href={`/share/${link.id}`}
-                      className="block bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-amber-200"
+                      className="block bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-amber-200 group"
                     >
-                      <div className="text-2xl mb-3">🎨</div>
-                      <h3 className="text-lg font-bold text-amber-700 mb-2">{link.title}</h3>
-                      <p className="text-sm text-gray-600 mb-3">{link.style}</p>
-                      <p className="text-xs text-gray-500">{link.timestamp}</p>
+                      {/* 图片展示区域 */}
+                      <div className="relative mb-4 overflow-hidden rounded-xl">
+                        <div className="aspect-square bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+                          {link.generatedUrl ? (
+                            <img
+                              src={link.generatedUrl}
+                              alt={`${link.style}変換結果`}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="text-4xl text-amber-400">🎨</div>
+                          )}
+                        </div>
+                        {/* 悬停时显示原图对比 */}
+                        {link.originalUrl && (
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <div className="text-white text-sm font-medium bg-black bg-opacity-70 px-3 py-1 rounded-full">
+                              原图を見る
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* 信息区域 */}
+                      <div className="text-center">
+                        <h3 className="text-lg font-bold text-amber-700 mb-2 group-hover:text-orange-600 transition-colors">
+                          {link.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2">{link.style}</p>
+                        <p className="text-xs text-gray-500">{link.timestamp}</p>
+                      </div>
                     </a>
                   ))}
                 </div>

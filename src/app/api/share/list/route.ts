@@ -9,6 +9,8 @@ interface ShareListItem {
   style: string
   timestamp: string
   createdAt: string
+  generatedUrl: string
+  originalUrl: string
 }
 
 export async function GET(request: NextRequest) {
@@ -44,7 +46,9 @@ export async function GET(request: NextRequest) {
       title: `${share.style}変換`,
       style: share.style,
       timestamp: new Date(share.timestamp).toLocaleDateString('ja-JP'),
-      createdAt: share.createdAt
+      createdAt: share.createdAt,
+      generatedUrl: share.generatedUrl,
+      originalUrl: share.originalUrl
     }))
     
     // 分页处理

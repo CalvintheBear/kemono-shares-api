@@ -160,14 +160,34 @@ async function handleShareList(request, _env) {
   const offset = parseInt(url.searchParams.get('offset') || '0');
   
   // 这里应该从KV存储获取列表
-  // 暂时返回模拟数据
+  // 暂时返回模拟数据，包含图片URL
   const mockItems = [
     {
       id: 'share_1234567890_test1',
       title: '测试风格変換',
       style: '测试风格',
       timestamp: '2025-07-28',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_1.png',
+      originalUrl: 'https://example.com/original1.jpg'
+    },
+    {
+      id: 'share_1753679601402_bsyqfo9xe',
+      title: 'ジブリ風変換',
+      style: 'ジブリ風',
+      timestamp: '2025-07-28',
+      createdAt: new Date().toISOString(),
+      generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_2.png',
+      originalUrl: 'https://example.com/original2.jpg'
+    },
+    {
+      id: 'share_1753679601717_1ffr1ccxh',
+      title: 'VTuber風変換',
+      style: 'VTuber風',
+      timestamp: '2025-07-28',
+      createdAt: new Date().toISOString(),
+      generatedUrl: 'https://tempfile.aiquickdraw.com/s/test_share_3.png',
+      originalUrl: 'https://example.com/original3.jpg'
     }
   ];
   
@@ -175,7 +195,7 @@ async function handleShareList(request, _env) {
     success: true,
     data: {
       items: mockItems,
-      total: 1,
+      total: mockItems.length,
       limit,
       offset,
       hasMore: false
