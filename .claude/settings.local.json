@@ -28,7 +28,8 @@
       "Bash(npm install:*)",
       "WebFetch(domain:pollo.ai)",
       "WebFetch(domain:pollo.ai)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(npm run dev)"
     ],
     "deny": []
   }
