@@ -6,6 +6,10 @@ import Link from 'next/link'
 import { HomeIcon, SparklesIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import { HomeIcon as HomeSolidIcon, SparklesIcon as SparklesSolidIcon, PhotoIcon as PhotoSolidIcon } from '@heroicons/react/24/solid'
 
+interface MobileBottomNavProps {
+  isMobile: boolean;
+}
+
 export default function MobileBottomNav() {
   const pathname = usePathname()
   const [currentPath, setCurrentPath] = useState('')

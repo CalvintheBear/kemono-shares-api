@@ -192,6 +192,142 @@ const templates: Template[] = [
   },
 ]
 
+// 添加尺寸按钮组件
+const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
+  size: ImageSize
+  isSelected: boolean
+  onClick: () => void
+  isMobile?: boolean
+}) => {
+  const getSizeIcon = (size: ImageSize, isMobile: boolean = false) => {
+    if (isMobile) {
+      switch (size) {
+        case '1:1':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-3 h-3 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        case '3:2':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-4 h-2.5 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        case '2:3':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-2.5 h-4 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        default:
+          return null
+      }
+    } else {
+      // 桌面端使用更精美的图标
+      switch (size) {
+        case '1:1':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-4 h-4 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        case '3:2':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-5 h-3 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        case '2:3':
+          return (
+            <div className="flex items-center justify-center">
+              <div className="relative">
+                <div className="w-3 h-5 border-2 border-current rounded-sm bg-current opacity-20"></div>
+                <div className="absolute -top-1 -right-1 text-xs"></div>
+              </div>
+            </div>
+          )
+        default:
+          return null
+      }
+    }
+  }
+
+  const getSizeLabel = (size: ImageSize) => {
+    switch (size) {
+      case '1:1':
+        return '正方形'
+      case '3:2':
+        return '横長'
+      case '2:3':
+        return '縦長'
+      default:
+        return size
+    }
+  }
+
+  if (isMobile) {
+    return (
+      <button
+        onClick={onClick}
+        className={`px-2 py-1.5 rounded-lg text-xs font-medium transition-all transform hover:scale-105 flex items-center gap-1.5 relative ${
+          isSelected
+            ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-md'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        }`}
+      >
+        {getSizeIcon(size, true)}
+        <span className="font-medium">{size}</span>
+        
+        {/* 选中状态的指示器 */}
+        {isSelected && (
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border border-pink-500"></div>
+        )}
+      </button>
+    )
+  }
+
+  return (
+    <button
+      onClick={onClick}
+      className={`p-3 rounded-xl border-2 font-cute transition-all transform hover:scale-105 flex flex-col items-center justify-center gap-2 relative overflow-hidden ${
+        isSelected
+          ? 'border-pink-500 bg-gradient-to-r from-pink-100 to-orange-100 text-pink-700 shadow-md'
+          : 'border-pink-200 bg-white text-amber-700 hover:border-pink-400 hover:shadow-sm'
+      }`}
+    >
+      {/* 选中状态的装饰效果 */}
+      {isSelected && (
+        <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-pink-500"></div>
+      )}
+      
+      <div className="w-8 h-8 flex items-center justify-center">
+        {getSizeIcon(size, false)}
+      </div>
+      <div className="text-xs font-medium">{size}</div>
+      <div className="text-xs text-gray-500">{getSizeLabel(size)}</div>
+      
+      {/* 悬停时的光效 */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full transition-transform duration-700 group-hover:translate-x-full"></div>
+    </button>
+  )
+}
+
 export default function WorkspaceRefactored() {
   const t = useTranslations('workspace')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -591,68 +727,114 @@ export default function WorkspaceRefactored() {
   const MobileLayout = () => {
     return (
       <div className="min-h-screen bg-[#fff7ea] flex flex-col">
+        {/* 背景装饰层 */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-4 w-32 h-32 bg-gradient-to-br from-pink-200/30 to-purple-200/30 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute top-20 right-8 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full blur-xl animate-bounce"></div>
+          <div className="absolute bottom-32 left-8 w-20 h-20 bg-gradient-to-br from-blue-200/30 to-teal-200/30 rounded-full blur-xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/3 right-16 w-16 h-16 bg-gradient-to-br from-green-200/30 to-emerald-200/30 rounded-full blur-xl animate-bounce delay-500"></div>
+          
+          {/* 浮动装饰图案 */}
+          <div className="absolute top-1/4 left-1/4 text-2xl animate-float">🌸</div>
+          <div className="absolute top-1/2 right-1/3 text-xl animate-float-delayed">✨</div>
+          <div className="absolute bottom-1/4 left-1/3 text-2xl animate-float">🎀</div>
+          <div className="absolute top-3/4 right-1/4 text-xl animate-float-delayed">💫</div>
+        </div>
+
         {/* 中间结果展示区 */}
-        <div className="flex-1 mb-16 overflow-y-auto">
-          <div className="p-4">
-            {!currentResult ? (
-              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
-                {imagePreview ? (
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-amber-200 via-orange-200 to-yellow-200 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
-                  <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-4 border border-white/50">
-                    <Image
-                      src={imagePreview}
-                      alt="アップロード画像"
-                      width={300}
-                      height={300}
-                      className="max-w-full h-auto rounded-2xl shadow-lg"
-                    />
-                    <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded-full shadow-lg">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="mt-4 text-center">
-                      <h3 className="text-lg font-bold text-gray-800 mb-1">✨ 画像準備完了！</h3>
-                      <p className="text-sm text-gray-600">綺麗な写真がアップロードされました</p>
-                      <p className="text-xs text-pink-500 mt-1">魔法の変身を開始できますよ！</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
-                  <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
-                    <div className="text-6xl sm:text-7xl mb-6 animate-bounce">📸✨</div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-                      {mode === 'text-to-image' 
-                        ? '🎨 魔法の画像生成' 
-                        : '📱 可愛い写真をアップロード'}
-                    </h3>
-                    <p className="text-gray-600 mb-6 font-cute text-base sm:text-lg">
-                      {mode === 'text-to-image' 
-                        ? 'テキストだけで、可愛い画像を作れるよ！' 
-                        : 'あなたの写真を、可愛いアニメ風に変身させましょう！'}
-                    </p>
-                    <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 mb-6 border border-pink-100">
-                      <p className="text-sm sm:text-base text-gray-700 mb-2">📌 コツ：</p>
-                      <ul className="text-sm text-gray-600 space-y-1 text-left">
-                        <li>• 明るくて顔がはっきりしている写真がおすすめ</li>
-                        <li>• 背景がシンプルだと綺麗に変身できるよ</li>
-                        <li>• 10MBまでのアップロードOK！</li>
-                      </ul>
-                    </div>
-                    {/* 移除原有上传按钮，提示语保留 */}
-                    <div className="mt-6 flex justify-center space-x-4">
-                      <span className="text-2xl sm:text-3xl">🌸</span>
-                      <span className="text-2xl sm:text-3xl">✨</span>
-                      <span className="text-2xl sm:text-3xl">🎀</span>
-                    </div>
-                    <div className="mt-4 text-lg text-pink-500 font-bold">タップして画像をアップロード</div>
-                  </div>
-                </div>
-              )}
+        <div className="flex-1 mb-16 overflow-y-auto relative z-10">
+          <div className="p-4 space-y-4">
+            
+            {/* 顶部装饰标题 */}
+            <div className="text-center mb-4">
+              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+                <span className="text-lg">🎨</span>
+                <span className="text-sm font-bold text-gray-700">魔法の変身スタジオ</span>
+                <span className="text-lg">✨</span>
+              </div>
             </div>
+
+            {!currentResult ? (
+              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-280px)]">
+                {mode === 'text-to-image' ? (
+                  <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-blue-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
+                      <div className="text-6xl sm:text-7xl mb-6 animate-bounce">✍️✨</div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3">
+                        🎨 文生图モード開始！
+                      </h3>
+                      <p className="text-blue-700 mb-6 font-cute text-base sm:text-lg">
+                        テキストだけで、可愛い画像を作れるよ！
+                      </p>
+                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 sm:p-6 mb-6 border border-blue-100">
+                        <p className="text-sm sm:text-base text-blue-700 mb-2">💡 コツ：</p>
+                        <ul className="text-sm text-blue-600 space-y-1 text-left">
+                          <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
+                          <li>• 背景や服装の色も指定できる</li>
+                          <li>• 日本語でも英語でもOK！</li>
+                        </ul>
+                      </div>
+                      <div className="mt-6 flex justify-center space-x-4">
+                        <span className="text-2xl sm:text-3xl">🌈</span>
+                        <span className="text-2xl sm:text-3xl">🎨</span>
+                        <span className="text-2xl sm:text-3xl">✨</span>
+                      </div>
+                      <div className="mt-4 text-lg text-blue-500 font-bold">テキストを入力して画像を生成！</div>
+                    </div>
+                  </div>
+                ) : imagePreview ? (
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-200 via-orange-200 to-yellow-200 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
+                    <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-4 border border-white/50">
+                      <Image
+                        src={imagePreview}
+                        alt="アップロード画像"
+                        width={300}
+                        height={300}
+                        className="max-w-full h-auto rounded-2xl shadow-lg"
+                      />
+                      <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded-full shadow-lg">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="mt-4 text-center">
+                        <h3 className="text-lg font-bold text-gray-800 mb-1">✨ 画像準備完了！</h3>
+                        <p className="text-sm text-gray-600">綺麗な写真がアップロードされました</p>
+                        <p className="text-xs text-pink-500 mt-1">魔法の変身を開始できますよ！</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
+                      <div className="text-6xl sm:text-7xl mb-6 animate-bounce">📸✨</div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
+                        📱 可愛い写真をアップロード
+                      </h3>
+                      <p className="text-gray-600 mb-6 font-cute text-base sm:text-lg">
+                        あなたの写真を、可愛いアニメ風に変身させましょう！
+                      </p>
+                      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 mb-6 border border-pink-100">
+                        <p className="text-sm sm:text-base text-gray-700 mb-2">📌 コツ：</p>
+                        <ul className="text-sm text-gray-600 space-y-1 text-left">
+                          <li>• 明るくて顔がはっきりしている写真がおすすめ</li>
+                          <li>• 背景がシンプルだと綺麗に変身できるよ</li>
+                          <li>• 10MBまでのアップロードOK！</li>
+                        </ul>
+                      </div>
+                      <div className="mt-6 flex justify-center space-x-4">
+                        <span className="text-2xl sm:text-3xl">🌸</span>
+                        <span className="text-2xl sm:text-3xl">✨</span>
+                        <span className="text-2xl sm:text-3xl">🎀</span>
+                      </div>
+                      <div className="mt-4 text-lg text-pink-500 font-bold">タップして画像をアップロード</div>
+                    </div>
+                  </div>
+                )}
+              </div>
           ) : (
             <div className="space-y-4">
               {currentResult.generated_url ? (
@@ -851,17 +1033,13 @@ export default function WorkspaceRefactored() {
         <div className="flex items-center justify-between p-3 border-t border-gray-100">
           <div className="flex gap-2">
             {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
-              <button
+              <SizeButton
                 key={size}
+                size={size}
+                isSelected={selectedSize === size}
                 onClick={() => setSelectedSize(size)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium ${
-                  selectedSize === size
-                    ? 'bg-pink-500 text-white'
-                    : 'bg-gray-200 text-gray-700'
-                }`}
-              >
-                {size}
-              </button>
+                isMobile={true}
+              />
             ))}
           </div>
 
@@ -901,11 +1079,28 @@ export default function WorkspaceRefactored() {
   const DesktopLayout = () => {
     return (
       <div className={`max-w-7xl mx-auto bg-white rounded-[40px] shadow-2xl border border-white/50 p-6 lg:p-8 transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="flex flex-col lg:flex-row gap-8">
+        {/* 背景装饰层 */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-20 left-20 w-48 h-48 bg-gradient-to-br from-pink-200/20 to-purple-200/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-36 h-36 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl animate-bounce"></div>
+          <div className="absolute bottom-40 left-32 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-teal-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-br from-green-200/20 to-emerald-200/20 rounded-full blur-3xl animate-bounce delay-500"></div>
+          
+          {/* 浮动装饰图案 */}
+          <div className="absolute top-1/4 left-1/4 text-3xl animate-float">🌸</div>
+          <div className="absolute top-1/3 right-1/3 text-2xl animate-float-delayed">✨</div>
+          <div className="absolute bottom-1/3 left-1/3 text-3xl animate-float">🎀</div>
+          <div className="absolute bottom-1/4 right-1/4 text-2xl animate-float-delayed">💫</div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-8 relative z-10">
           <div className={`lg:w-1/2 space-y-8 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="bg-white/80 backdrop-blur-xl rounded-[36px] shadow-2xl p-5 card-kawaii border border-white/40 overflow-hidden">
               <div className={`mb-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="flex justify-center space-x-3 mb-3">
+              <div className="flex justify-center space-x-3 mb-3 relative">
+                {/* 装饰性小图标 */}
+                <div className="absolute -top-3 -left-3 text-2xl animate-bounce">🌟</div>
+                <div className="absolute -top-2 -right-3 text-xl animate-pulse">💫</div>
                 <button
                   onClick={() => setMode('template-mode')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
@@ -1095,22 +1290,13 @@ export default function WorkspaceRefactored() {
                 <label className="block text-lg font-bold text-amber-800 mb-3 font-cute">📐 画像サイズを選んでね ✨</label>
                 <div className="grid grid-cols-3 gap-5">
                   {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
-                    <button
+                    <SizeButton
                       key={size}
+                      size={size}
+                      isSelected={selectedSize === size}
                       onClick={() => setSelectedSize(size)}
-                      className={`p-3 rounded-xl border-2 font-cute transition-all transform hover:scale-105 flex flex-col items-center justify-center gap-1 ${
-                        selectedSize === size
-                          ? 'border-pink-500 bg-gradient-to-r from-pink-100 to-orange-100 text-pink-700 shadow-md'
-                          : 'border-pink-200 bg-white text-amber-700 hover:border-pink-400 hover:shadow-sm'
-                      }`}
-                    >
-                      <div className="w-6 h-6 flex items-center justify-center text-sm">
-                        {size === '1:1' && <div className="w-4 h-4 border-2 border-current rounded-sm"></div>}
-                        {size === '3:2' && <div className="w-6 h-4 border-2 border-current rounded-sm"></div>}
-                        {size === '2:3' && <div className="w-4 h-6 border-2 border-current rounded-sm"></div>}
-                      </div>
-                      <div className="text-xs font-medium">{size}</div>
-                    </button>
+                      isMobile={false}
+                    />
                   ))}
                 </div>
               </div>

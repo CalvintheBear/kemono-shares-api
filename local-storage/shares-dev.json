@@ -903,5 +903,27 @@
     "createdAt": "2025-07-31T11:16:18.045Z",
     "isR2Stored": true,
     "isTextToImage": true
+  },
+  "share_1753967509074_m6lwmjvw8": {
+    "id": "share_1753967509074_m6lwmjvw8",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-lineスタンプ-1753967503735.png",
+    "originalUrl": "https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev/uploads/1753967237178-zne3apgbaw.jpg",
+    "prompt": "LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、4コマ漫画（怒り、驚き、軽蔑、陰険）",
+    "style": "lineスタンプ",
+    "timestamp": 1753967503735,
+    "createdAt": "2025-07-31T13:11:49.075Z",
+    "isR2Stored": true,
+    "isTextToImage": false
+  },
+  "share_1753967515739_fwu6v243h": {
+    "id": "share_1753967515739_fwu6v243h",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-lineスタンプ-1753967510736.png",
+    "originalUrl": "https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev/uploads/1753967237178-zne3apgbaw.jpg",
+    "prompt": "LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、4コマ漫画（怒り、驚き、軽蔑、陰険）",
+    "style": "lineスタンプ",
+    "timestamp": 1753967510736,
+    "createdAt": "2025-07-31T13:11:55.739Z",
+    "isR2Stored": true,
+    "isTextToImage": false
   }
 }
