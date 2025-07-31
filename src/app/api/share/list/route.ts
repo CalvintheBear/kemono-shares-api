@@ -20,6 +20,8 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
     const clearCache = searchParams.get('clearCache') === 'true'
     const debug = searchParams.get('debug') === 'cache'
+    const sort = searchParams.get('sort') || 'createdAt'
+    const order = searchParams.get('order') || 'desc'
     
     const startTime = Date.now()
     
@@ -47,8 +49,21 @@ export async function GET(request: NextRequest) {
     // 从存储中获取所有数据
     const allShares = await shareKVStore.getAll()
     
-    // 数据已经按时间排序，直接使用
-    const sortedShares = allShares
+    // 按指定字段和顺序排序
+    const sortedShares = [...allShares].sort((a, b) => {
+      const aValue = a[sort as keyof typeof a]
+      const bValue = b[sort as keyof typeof b]
+      
+      // 处理可能的null/undefined值
+      const aVal = aValue ?? ''
+      const bVal = bValue ?? ''
+      
+      if (order === 'asc') {
+        return aVal > bVal ? 1 : -1
+      } else {
+        return aVal < bVal ? 1 : -1
+      }
+    })
     
     // 过滤：只显示文生图生成的图片在画廊中
     // 文生图：originalUrl为null、undefined、空字符串、base64数据或占位符

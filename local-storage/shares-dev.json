@@ -892,5 +892,16 @@
     "createdAt": "2025-07-31T08:39:51.744Z",
     "isR2Stored": true,
     "isTextToImage": false
+  },
+  "share_1753960578045_bt8s6ff2d": {
+    "id": "share_1753960578045_bt8s6ff2d",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-可愛い壁紙-1753960574395.png",
+    "originalUrl": null,
+    "prompt": "かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果",
+    "style": "可愛い壁紙",
+    "timestamp": 1753960574395,
+    "createdAt": "2025-07-31T11:16:18.045Z",
+    "isR2Stored": true,
+    "isTextToImage": true
   }
 }

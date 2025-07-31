@@ -188,7 +188,7 @@ export default function LazyImage({
   }
 
   return (
-    <div className={`relative overflow-hidden ${className}`} style={{ minHeight: '200px' }}>
+    <div className={`relative overflow-hidden ${className}`}>
       {/* 加载状态 */}
       {isLoading && !placeholderLoaded && (
         <div className="absolute inset-0 bg-gradient-to-br from-amber-100 to-orange-100 animate-pulse flex items-center justify-center z-10">
@@ -209,7 +209,7 @@ export default function LazyImage({
             width={0}
             height={0}
             unoptimized
-            className="w-full h-full object-cover blur-sm scale-110"
+            className="w-full h-auto object-cover blur-sm"
             style={{ display: 'block' }}
           />
         </div>
@@ -226,12 +226,12 @@ export default function LazyImage({
           unoptimized
           priority={priority}
           className={`w-full h-auto object-cover transition-all duration-700 z-10 ${
-            isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={handleLoad}
           onError={handleError}
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-          style={{ display: 'block', position: 'relative' }}
+          style={{ display: 'block' }}
         />
       )}
     </div>

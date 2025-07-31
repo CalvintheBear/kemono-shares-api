@@ -37,6 +37,7 @@ The app is organized around a single workspace interface (`src/components/Worksp
 - `src/components/ProgressIndicator.tsx` - Real-time progress display with ETA
 - `src/components/HomeHero.tsx` - Landing page hero section
 - `src/components/FAQ.tsx` - FAQ page component
+- `src/components/MobileBottomNav.tsx` - Mobile-specific navigation component
 
 ### 2. State Management (`src/store/useAppStore.ts`)
 
@@ -116,11 +117,14 @@ The system supports automatic API key rotation via `src/lib/api-key-rotation.ts`
 ## Key Features
 
 - **Dual Mode Interface**: Template-based (simple) vs custom prompt (advanced)
+- **Triple Mode Support**: Text-to-image, image-to-image, and template modes
 - **Real-time Progress**: WebSocket-style polling for generation status
 - **Multiple Styles**: 20+ predefined anime styles (Ghibli, VTuber, Blue Archive, etc.)
 - **Image Comparison**: Before/after slider for results
+- **Mobile Navigation**: Dedicated mobile bottom navigation (`src/components/MobileBottomNav.tsx`)
 - **Responsive Design**: Mobile-first with Tailwind CSS
 - **Error Handling**: Comprehensive error states and retry mechanisms
+- **SEO Optimization**: Sitemap, robots.txt, and metadata optimization
 
 ## File Structure
 
@@ -135,7 +139,8 @@ src/
 ├── components/        # Reusable UI components
 │   ├── Workspace.tsx  # Main orchestrator
 │   ├── TemplateGallery.tsx  # Style templates
-│   └── BeforeAfterSlider.tsx  # Image comparison
+│   ├── BeforeAfterSlider.tsx  # Image comparison
+│   └── MobileBottomNav.tsx  # Mobile navigation
 ├── store/            # Zustand state management
 │   └── useAppStore.ts  # Centralized state
 ├── lib/              # Utility functions and API clients

@@ -82,7 +82,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
     return (
       <div className="min-h-screen bg-[#fff7ea] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto"></div>
           <p className="mt-4 text-amber-700">読み込み中...</p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
               <p className="text-gray-600 mb-6">{error || 'シェアデータが見つかりません'}</p>
               <button
                 onClick={handleTryNow}
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
               >
                 2kawaiiを試す
               </button>
@@ -121,89 +121,52 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Hero Section */}
-          <div className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-8 text-center">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
               <h1 className="text-3xl font-bold">
-                {isValidImageToImage(shareData.originalUrl)
-                  ? 'AI画像変換結果・プロンプト生成'
-                  : 'AI画像生成結果・プロンプト生成'}
+                AI画像変換結果・プロンプト生成
               </h1>
               <SparklesIcon className="w-6 h-6" />
             </div>
             <p className="text-lg opacity-90">
-              {shareData.style}スタイルで
-              {isValidImageToImage(shareData.originalUrl) ? '変換' : '生成'}完了！
+              {shareData.style}スタイルでAI変換完了！
             </p>
             <p className="text-sm opacity-75 mt-2">
               シェアID: {shareData.id}
             </p>
           </div>
 
-          {/* Image Display */}
+          {/* Image Display - 隐私保护：所有模式只显示生成图，不显示原图 */}
           <div className="p-8">
-            {isValidImageToImage(shareData.originalUrl) ? (
-              // 图生图：显示原始图片和生成图片的对比
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">画像変換結果</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* 原始图片 */}
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-3">元の画像</h3>
-                    <Image
-                      src={shareData.originalUrl!}
-                      alt="元の画像"
-                      width={400}
-                      height={400}
-                      unoptimized
-                      className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
-                    />
-                  </div>
-                  {/* 生成图片 */}
-                  <div className="text-center">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-3">変換後の画像</h3>
-                    <Image
-                      src={shareData.generatedUrl}
-                      alt="変換後のAI画像"
-                      width={400}
-                      height={400}
-                      unoptimized
-                      className="rounded-2xl shadow-lg max-w-full h-auto mx-auto"
-                    />
-                  </div>
-                </div>
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+                {isValidImageToImage(shareData.originalUrl) ? 'AI画像変換結果' : 'AI画像生成結果'}
+              </h2>
+              <div className="flex justify-center">
+                <Image
+                  src={shareData.generatedUrl}
+                  alt="AI生成画像"
+                  width={600}
+                  height={400}
+                  unoptimized
+                  className="rounded-2xl shadow-lg max-w-full h-auto"
+                />
               </div>
-            ) : (
-              // 文生图：只显示生成图片
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">生成された画像</h2>
-                <div className="flex justify-center">
-                  <Image
-                    src={shareData.generatedUrl}
-                    alt="生成されたAI画像"
-                    width={600}
-                    height={400}
-                    unoptimized
-                    className="rounded-2xl shadow-lg max-w-full h-auto"
-                  />
-                </div>
-              </div>
-            )}
+            </div>
           </div>
 
           {/* Style Information */}
           <div className="bg-gray-50 rounded-xl p-6 mb-8">
             <h3 className="text-lg font-bold text-gray-800 mb-3">
-              {isValidImageToImage(shareData.originalUrl)
-                ? '画像変換スタイル・プロンプト情報'
-                : '生成スタイル・プロンプト情報'}
+              AI画像スタイル・プロンプト情報
             </h3>
             <div className="flex items-center space-x-2 mb-4">
-              <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
                 {shareData.style}
               </span>
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                {isValidImageToImage(shareData.originalUrl) ? '画像変換' : '文生図'}
+                AI画像
               </span>
               <span className="text-gray-500 text-sm">
                 {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}
@@ -218,14 +181,14 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={handleDownload}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+              className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
             >
               <span>📥</span>
               <span>ダウンロード</span>
             </button>
             <button
               onClick={handleTryNow}
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+              className="bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
             >
               <span>✨</span>
               <span>自分も試してみる</span>
@@ -253,12 +216,12 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-8 text-center text-white">
+        <div className="mt-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-8 text-center text-white">
           <h2 className="text-2xl font-bold mb-4">あなたもAI画像変換を体験しませんか？</h2>
           <p className="text-lg opacity-90 mb-6">最新のAI技術で、あなたの写真を美しいアニメ風に変換します</p>
           <button
             onClick={handleTryNow}
-            className="bg-white text-pink-600 py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto"
+            className="bg-white text-amber-600 py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto"
           >
             <HeartIcon className="w-5 h-5" />
             <span>今すぐ始める</span>

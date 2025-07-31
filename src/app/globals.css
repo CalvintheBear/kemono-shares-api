@@ -142,6 +142,88 @@ body {
   50% { transform: translateY(-10px); }
 }
 
+/* Pinterest风格瀑布流布局 */
+.pinterest-gallery {
+  columns: 1;
+  column-gap: 1rem;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pinterest-gallery {
+    columns: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .pinterest-gallery {
+    columns: 3;
+    column-gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pinterest-gallery {
+    columns: 4;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pinterest-gallery {
+    columns: 5;
+  }
+}
+
+.pinterest-item {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.pinterest-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+/* 移动端优化 */
+@media (max-width: 767px) {
+  .pinterest-gallery {
+    columns: 2;
+    column-gap: 0.75rem;
+    padding: 0.75rem;
+  }
+  
+  .pinterest-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .pinterest-item:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .pinterest-gallery {
+    columns: 1;
+    column-gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .pinterest-item {
+    margin-bottom: 0.5rem;
+  }
+}
+
 /* 可爱的边框效果 */
 .border-kawaii {
   border: 3px solid;
@@ -302,25 +384,36 @@ body {
 .animate-delay-900 { animation-delay: 0.9s; }
 .animate-delay-1000 { animation-delay: 1s; }
 
-/* Pinterest风格瀑布流优化 */
+/* Pinterest风格瀑布流优化 - 移动端强制3列 */
 .pinterest-gallery {
-  columns: 1;
-  column-gap: 8px;
+  columns: 3;
+  column-gap: 4px;
   column-fill: balance;
   width: 100%;
   min-height: 100vh;
   contain: layout style paint;
+  padding: 4px;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 375px) {
   .pinterest-gallery {
-    columns: 2;
+    columns: 3;
+    column-gap: 3px;
+    padding: 3px;
   }
 }
 
 @media (min-width: 768px) {
   .pinterest-gallery {
     columns: 3;
+    column-gap: 8px;
+    padding: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pinterest-gallery {
+    columns: 4;
   }
 }
 
@@ -350,7 +443,7 @@ body {
 
 .pinterest-item {
   break-inside: avoid;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: block;
   page-break-inside: avoid;
   width: 100%;
@@ -362,16 +455,24 @@ body {
 .image-container {
   position: relative;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 12px;
   background: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   width: 100%;
   max-width: 100%;
-  min-height: 200px;
+  min-height: 120px;
   contain: layout style paint;
   transform: translateZ(0); /* 强制硬件加速 */
   will-change: transform; /* 提示浏览器优化 */
+}
+
+@media (max-width: 768px) {
+  .image-container {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-height: 100px;
+  }
 }
 
 .image-container:hover {
@@ -379,15 +480,6 @@ body {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-/* 图片自适应 */
-.adaptive-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  min-height: 200px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
 
 /* Blur-up 效果 */
 .blur-up {

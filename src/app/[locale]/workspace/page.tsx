@@ -2,7 +2,6 @@ import Workspace from "@/components/Workspace";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { NextIntlClientProvider } from "next-intl";
-import Link from "next/link";
 
 // 追加SEOメタデータ
 export const metadata = {
@@ -91,10 +90,10 @@ export default async function WorkspacePage() {
       <Header />
 
       {/* 页面主体，顶部预留导航栏高度 */}
-      <main className="pt-24 pb-16 px-4">
+      <main className="pt-20 pb-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* ヒーローセクション with SEO keywords */}
-          <div className="text-center mb-12 animate-scale-in">
+          <div className="text-center mb-8 sm:mb-12 animate-scale-in">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-6 font-cute float">
               2kawaii AI画像生成
               <span className="block text-2xl sm:text-3xl lg:text-4xl mt-3 text-amber-700">
@@ -108,10 +107,10 @@ export default async function WorkspacePage() {
               最新のGPT-4o Image FluxMax技術により、ジブリ風・VTuber風・美少女・chibiキャラクター作成・LINEスタンプ作り方など、20種類以上のスタイルから選択可能。
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center">
+              {/* <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center">
                 <span className="mr-2">🖼️</span>
                 ギャラリーを見る
-              </Link>
+              </Link> */}
             </div>
           </div>
 

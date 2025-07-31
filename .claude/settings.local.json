@@ -29,7 +29,8 @@
       "WebFetch(domain:pollo.ai)",
       "WebFetch(domain:pollo.ai)",
       "Bash(rg:*)",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }
