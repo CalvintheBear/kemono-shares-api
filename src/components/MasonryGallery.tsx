@@ -18,6 +18,7 @@ interface MasonryGalleryProps {
   onLoadMore: () => Promise<void>;
   hasMore: boolean;
   loading?: boolean;
+  onImageClick?: (image: MasonryImage) => void;
 }
 
 interface ColumnData {
@@ -40,6 +41,7 @@ export default function MasonryGallery({
   onLoadMore,
   hasMore,
   loading = false,
+  onImageClick,
 }: MasonryGalleryProps) {
   const [columns, setColumns] = useState<ColumnData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -157,6 +159,7 @@ export default function MasonryGallery({
                 key={image.id}
                 image={image}
                 columnWidth={columnWidth}
+                onClick={onImageClick}
               />
             ))}
           </div>
@@ -179,9 +182,10 @@ export default function MasonryGallery({
 interface MasonryImageCardProps {
   image: MasonryImage;
   columnWidth: number;
+  onClick?: (image: MasonryImage) => void;
 }
 
-function MasonryImageCard({ image, columnWidth }: MasonryImageCardProps) {
+function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
   const [actualHeight, setActualHeight] = useState(0);
@@ -218,6 +222,7 @@ function MasonryImageCard({ image, columnWidth }: MasonryImageCardProps) {
         width: `${columnWidth}px`,
         height: `${displayHeight}px`,
       }}
+      onClick={() => onClick?.(image)}
     >
       {/* Loading placeholder */}
       {!isLoaded && !isError && (

@@ -357,17 +357,18 @@ export default function WorkspaceRefactored() {
   const [prompt, setPrompt] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible] = useState(true)
 
   const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
   const [enhancePrompt, setEnhancePrompt] = useState(false)
   const [generationError, setGenerationError] = useState<string>('')
-  const [generatedShareUrl, setGeneratedShareUrl] = useState<string>('')
+  const [autoShareUrl, setAutoShareUrl] = useState<string>('')
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
   const templatesPerPage = 5
   // const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
+
 
   const { selectedSize, setSelectedSize } = useAppStore()
 
@@ -375,6 +376,17 @@ export default function WorkspaceRefactored() {
   const pollIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isMountedRef = useRef(true)
   const [isMobile, setIsMobile] = useState(false)
+  const templateScrollRef = useRef<HTMLDivElement>(null)
+  const hasInitializedRef = useRef(false)
+  
+  // 修复输入框光标重置问题 - 为不同类型的输入框创建独立的ref
+  const promptMobileInputRef = useRef<HTMLInputElement>(null)
+  const promptDesktopTextareaRef = useRef<HTMLTextAreaElement>(null)
+  
+  const handlePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newValue = e.target.value
+    setPrompt(newValue)
+  }, [])
 
   // 响应式检测
   useEffect(() => {
@@ -388,6 +400,23 @@ export default function WorkspaceRefactored() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // 保持输入框焦点（仅在真正失焦时重新聚焦，避免干扰输入法）
+  useEffect(() => {
+    if (mode === 'image-to-image' || mode === 'text-to-image') {
+      if (isMobile) {
+        const inputEl = promptMobileInputRef.current
+        if (inputEl && document.activeElement !== inputEl) {
+          inputEl.focus()
+        }
+      } else {
+        const textareaEl = promptDesktopTextareaRef.current
+        if (textareaEl && document.activeElement !== textareaEl) {
+          textareaEl.focus()
+        }
+      }
+    }
+  }, [isMobile, mode])
+
   // 初始化状态恢复
   useEffect(() => {
     const savedFileUrl = localStorage.getItem('savedFileUrl')
@@ -400,6 +429,9 @@ export default function WorkspaceRefactored() {
   }, [])
 
   useEffect(() => {
+    // 只在组件真正初始化时运行一次
+    if (hasInitializedRef.current) return
+    
     const savedTemplateId = localStorage.getItem('selectedTemplateId')
     if (savedTemplateId) {
       const foundTemplate = templates.find(t => t.id === savedTemplateId)
@@ -410,11 +442,7 @@ export default function WorkspaceRefactored() {
       }
     }
 
-    const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 100)
-
-    return () => clearTimeout(timer)
+    hasInitializedRef.current = true
   }, [])
 
   // 清理定时器
@@ -430,6 +458,8 @@ export default function WorkspaceRefactored() {
       }
     }
   }, [])
+
+  // 移除滚动位置恢复，保持原生滚动状态
 
   // 图片上传
   const handleImageSelect = useCallback(async (file: File) => {
@@ -559,17 +589,15 @@ export default function WorkspaceRefactored() {
     }
   }
 
+
   const handleShare = async (result: GenerationResult) => {
     try {
       let originalUrl = null
       
       // 根据模式正确处理originalUrl
       if (mode === 'text-to-image') {
-        // 文生图模式：originalUrl应为null，确保父页面只显示文生图
         originalUrl = null
       } else if ((mode === 'image-to-image' || mode === 'template-mode') && fileUrl) {
-        // 图生图和模板模式：使用上传的原始图片URL
-        // 排除占位符URL
         if (fileUrl && 
             !fileUrl.includes('placeholder.com') && 
             !fileUrl.includes('Text+to+Image') &&
@@ -592,13 +620,13 @@ export default function WorkspaceRefactored() {
 
       if (response.ok) {
         const shareData = await response.json()
-        setGeneratedShareUrl(shareData.shareUrl)
-        console.log('分享创建成功:', shareData.shareUrl)
+        setAutoShareUrl(shareData.shareUrl)
+        console.log('自动分享创建成功:', shareData.shareUrl)
       } else {
-        console.error('分享创建失败:', response.statusText)
+        console.error('自动分享创建失败:', response.statusText)
       }
     } catch (error) {
-      console.warn('分享处理失败:', error)
+      console.warn('自动分享处理失败:', error)
     }
   }
 
@@ -655,6 +683,7 @@ export default function WorkspaceRefactored() {
 
           setCurrentResult(completedResult)
           
+          // 自动分享处理
           try {
             await handleShare(completedResult)
           } catch (shareError) {
@@ -705,9 +734,20 @@ export default function WorkspaceRefactored() {
   }
 
   const handleTemplateSelect = (template: Template) => {
+    // 桌面端：完全保持滑块位置，不重置
     setSelectedTemplate(template)
     setPrompt(template.prompt)
     localStorage.setItem('selectedTemplateId', template.id)
+    // 不保存或设置任何滚动位置，保持原生滚动状态
+  }
+
+  // 移动端模板选择处理函数
+  const handleMobileTemplateSelect = (template: Template) => {
+    // 移动端：完全保持滑块位置，不做任何滚动操作
+    setSelectedTemplate(template)
+    setPrompt(template.prompt)
+    localStorage.setItem('selectedTemplateId', template.id)
+    // 不调用任何scrollTo方法，保持原生滚动状态
   }
 
   const handlePreviousPage = () => {
@@ -952,7 +992,7 @@ export default function WorkspaceRefactored() {
                         originalImageUrl={currentResult.original_url}
                         prompt={currentResult.prompt}
                         style={selectedTemplate?.name || 'カスタム'}
-                        existingShareUrl={generatedShareUrl}
+                        existingShareUrl={autoShareUrl}
                       />
                     </div>
                   </div>
@@ -970,12 +1010,12 @@ export default function WorkspaceRefactored() {
                         </div>
                       </div>
                       
-                      <h3 className="text-lg font-bold text-purple-800 mb-2">🎨 魔法の変身中...</h3>
-                      <p className="text-sm text-purple-600 mb-4">AIが一生懸命画像を作っています！</p>
+                      <h3 className="text-lg font-bold text-amber-800 mb-2">🎨 魔法の変身中...</h3>
+                      <p className="text-sm text-amber-600 mb-4">AIが一生懸命画像を作っています！</p>
                       
                       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
-                        <p className="text-sm text-purple-700">💡 ヒント: 1-3分程度で完成します</p>
-                        <p className="text-xs text-purple-600 mt-2">🌸 少しお待ちくださいね...</p>
+                        <p className="text-sm text-amber-700">💡 ヒント: 1-3分程度で完成します</p>
+                        <p className="text-xs text-amber-600 mt-2">🌸 少しお待ちくださいね...</p>
                       </div>
                     </div>
                   </div>
@@ -1006,19 +1046,23 @@ export default function WorkspaceRefactored() {
           </div>
 
           <div className="flex-1 mx-3">
-            {mode === 'template-mode' ? (
-              <div className="text-sm font-medium text-gray-700 truncate">
-                {selectedTemplate ? selectedTemplate.name : 'テンプレートを選択'}
-              </div>
-            ) : (
-              <input
-                type="text"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder={mode === 'text-to-image' ? "テキストから画像生成..." : "プロンプトを入力..."}
-                className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500"
-              />
-            )}
+            {/* 始终渲染输入框，避免条件渲染导致的卸载重建 */}
+            <input
+              ref={promptMobileInputRef}
+              type="text"
+              value={prompt}
+              onChange={handlePromptChange}
+              className={`w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none ${
+                mode === 'template-mode' ? 'hidden' : ''
+              }`}
+              placeholder="プロンプトを入力..."
+            />
+            {/* 模板模式的显示文本 */}
+            <div className={`text-sm font-medium text-gray-700 truncate ${
+              mode === 'template-mode' ? '' : 'hidden'
+            }`}>
+              {selectedTemplate ? selectedTemplate.name : 'テンプレートを選択'}
+            </div>
           </div>
 
           <div className="flex-shrink-0">
@@ -1042,11 +1086,14 @@ export default function WorkspaceRefactored() {
 
         {mode === 'template-mode' && (
           <div className="px-3 pb-3">
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div 
+              ref={templateScrollRef}
+              className="flex gap-2 overflow-x-auto pb-2 touch-pan-x"
+            >
               {templates.map((template) => (
                 <button
                   key={template.id}
-                  onClick={() => handleTemplateSelect(template)}
+                  onClick={() => handleMobileTemplateSelect(template)}
                   className={`flex-shrink-0 w-20 p-1 rounded-lg transition-all ${
                     selectedTemplate?.id === template.id
                       ? 'border-2 border-pink-500 bg-pink-50'
@@ -1139,7 +1186,10 @@ export default function WorkspaceRefactored() {
                 <div className="absolute -top-3 -left-3 text-2xl animate-bounce">🌟</div>
                 <div className="absolute -top-2 -right-3 text-xl animate-pulse">💫</div>
                 <button
-                  onClick={() => setMode('template-mode')}
+                  onClick={() => {
+                  setMode('template-mode')
+                  if (!selectedTemplate) setPrompt('')
+                }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
                     mode === 'template-mode'
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
@@ -1355,40 +1405,42 @@ export default function WorkspaceRefactored() {
                 </div>
               </div>
 
-              {(mode === 'image-to-image' || mode === 'text-to-image') && (
-                <div>
-                  <label className="block text-lg font-bold text-amber-800 mb-3 font-cute">魔法の呪文を書いてね ✨</label>
-                  <textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder={mode === 'text-to-image' ? "例：可愛い猫耳少女、ピンクの髪、笑顔、背景に桜、アニメ風..." : "例：可愛い猫耳少女、ピンクの髪、笑顔、背景に桜..."}
-                    className="w-full p-4 border-2 border-pink-300 rounded-2xl focus:ring-2 focus:ring-pink-500 focus:border-transparent font-cute text-amber-800"
-                    rows={4}
-                  />
-                  
-                  {mode === 'text-to-image' && (
-                    <div className="mt-3">
-                      <p className="text-sm text-blue-600 font-cute mb-2">💡 おすすめの呪文:</p>
-                      <div className="grid grid-cols-1 gap-2">
-                        {[
-                          'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
-                          'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
-                          '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
-                          'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン'
-                        ].map((template, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setPrompt(template)}
-                            className="text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors font-cute text-blue-700"
-                          >
-                            {template}
-                          </button>
-                        ))}
-                      </div>
+              {/* 始终渲染输入区域，避免条件渲染导致的卸载重建 */}
+              <div className={`${
+                (mode === 'image-to-image' || mode === 'text-to-image') ? '' : 'hidden'
+              }`}>
+                <label className="block text-lg font-bold text-amber-800 mb-3 font-cute">魔法の呪文を書いてね ✨</label>
+                <textarea
+                  ref={promptDesktopTextareaRef}
+                  value={prompt}
+                  onChange={handlePromptChange}
+                  className="w-full p-4 border-2 border-pink-300 rounded-2xl focus:ring-2 focus:ring-pink-500 focus:border-transparent focus:outline-none font-cute text-amber-800"
+                  placeholder="プロンプトを入力..."
+                  rows={4}
+                />
+                
+                {mode === 'text-to-image' && (
+                  <div className="mt-3">
+                    <p className="text-sm text-blue-600 font-cute mb-2">💡 おすすめの呪文:</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {[
+                        'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
+                        'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
+                        '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
+                        'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン'
+                      ].map((template, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setPrompt(template)}
+                          className="text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors font-cute text-blue-700"
+                        >
+                          {template}
+                        </button>
+                      ))}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
 
               {mode === 'template-mode' && selectedTemplate && (
                 <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-4 rounded-2xl shadow-lg">
@@ -1605,7 +1657,7 @@ export default function WorkspaceRefactored() {
                           originalImageUrl={(currentResult as GenerationResult).original_url}
                           prompt={(currentResult as GenerationResult).prompt}
                           style={selectedTemplate?.name || 'カスタム'}
-                          existingShareUrl={generatedShareUrl}
+                          existingShareUrl={autoShareUrl}
                         />
                       </div>
                     </div>
@@ -1613,7 +1665,7 @@ export default function WorkspaceRefactored() {
                 ) : (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
-                    <p className="mt-4 text-purple-600 font-cute">
+                    <p className="mt-4 text-amber-600 font-cute">
                       2kawaiiのGPT-4o Image FluxMax版で画像生成中... 1-3分で完成！✨
                     </p>
                   </div>
@@ -1629,7 +1681,7 @@ export default function WorkspaceRefactored() {
 
   return (
     <div className="min-h-screen bg-[#fff7ea]">
-      {isMobile ? <MobileLayout /> : <DesktopLayout />}
+      {isMobile ? MobileLayout() : DesktopLayout()}
       <MobileBottomNav />
       
       {/* 選べる変身スタイル セクション */}

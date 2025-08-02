@@ -11,6 +11,7 @@ interface ShareListItem {
   createdAt: string
   generatedUrl: string
   originalUrl: string | null
+  generationType: 'text2img' | 'img2img' | 'template'
 }
 
 export async function GET(request: NextRequest) {
@@ -66,10 +67,13 @@ export async function GET(request: NextRequest) {
     })
     
     // 过滤：只显示文生图生成的图片在画廊中
-    // 文生图：originalUrl为null、undefined、空字符串、base64数据或占位符
-    // 图生图和模板模式：有有效的originalUrl，不在画廊显示
     const textToImageShares = sortedShares.filter(share => {
-      // 更严格的筛选：任何有originalUrl的都应该被排除
+      // 优先使用 isTextToImage 字段
+      if (typeof share.isTextToImage === 'boolean') {
+        return share.isTextToImage
+      }
+      
+      // 回退到原始URL检测
       const hasValidOriginalUrl = share.originalUrl && 
         typeof share.originalUrl === 'string' && 
         share.originalUrl.trim() !== '' &&
@@ -79,7 +83,6 @@ export async function GET(request: NextRequest) {
         !share.originalUrl.includes('base64') &&
         share.originalUrl.length <= 1000
       
-      // 只有完全没有originalUrl或originalUrl无效的才显示在画廊中
       const isTextToImage = !hasValidOriginalUrl
       
       // 添加调试日志
@@ -100,7 +103,10 @@ export async function GET(request: NextRequest) {
       timestamp: new Date(share.timestamp).toLocaleDateString('ja-JP'),
       createdAt: share.createdAt,
       generatedUrl: share.generatedUrl,
-      originalUrl: share.originalUrl
+      originalUrl: share.originalUrl,
+      generationType: share.isTextToImage ? 'text2img' : 
+                     (share.originalUrl && share.originalUrl !== 'null' && share.originalUrl.trim() !== '') ? 
+                     'img2img' : 'template'
     }))
     
     // 分页处理

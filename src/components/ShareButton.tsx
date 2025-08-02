@@ -14,6 +14,13 @@ interface ShareButtonProps {
 export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style, existingShareUrl }: ShareButtonProps) {
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [shareUrl, setShareUrl] = useState(existingShareUrl || '') // 初始化时使用已存在的分享链接
+  
+  // 当existingShareUrl更新时，同步更新shareUrl
+  useEffect(() => {
+    if (existingShareUrl) {
+      setShareUrl(existingShareUrl)
+    }
+  }, [existingShareUrl])
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享
@@ -75,13 +82,17 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
 
   // 生成分享链接
   const generateShareUrl = useCallback(async () => {
-    // 如果已经有分享URL，直接返回
-    if (shareUrl) return shareUrl
-    
-    // 如果有已存在的分享链接，直接使用
+    // 如果有已存在的分享链接，直接返回（优先级最高）
     if (existingShareUrl) {
-      setShareUrl(existingShareUrl)
+      console.log('🔄 使用已存在的分享链接:', existingShareUrl)
+      setShareUrl(existingShareUrl) // 确保状态也同步更新
       return existingShareUrl
+    }
+    
+    // 如果本地已有分享URL，直接返回
+    if (shareUrl) {
+      console.log('🔄 使用已有的分享链接:', shareUrl)
+      return shareUrl
     }
     
     // 如果正在请求中，等待现有请求完成

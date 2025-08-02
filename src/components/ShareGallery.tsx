@@ -13,6 +13,7 @@ interface ShareItem {
   originalUrl: string;
   width: number;
   height: number;
+  generationType: 'text2img' | 'img2img' | 'template';
 }
 
 interface MasonryImage {
@@ -116,7 +117,7 @@ export default function ShareGallery() {
   }, [hasMore, loading, isFetching, currentOffset, fetchShareItems]);
 
   // Handle image click
-  const _handleImageClick = (image: MasonryImage) => {
+  const handleImageClick = (image: MasonryImage) => {
     window.open(`/share/${image.id}`, '_blank');
   };
 
@@ -136,6 +137,7 @@ export default function ShareGallery() {
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
           loading={loading || isFetching}
+          onImageClick={handleImageClick}
         />
       ) : (
         <EmptyGallery onRefresh={() => fetchShareItems(0, false)} />
