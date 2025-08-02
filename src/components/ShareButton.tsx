@@ -24,6 +24,9 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享
+  
+  // 分享链接是否已就绪（已有或已生成）
+  const isShareReady = Boolean(existingShareUrl || shareUrl)
   const [menuPosition, setMenuPosition] = useState<'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top-left')
   const buttonRef = useRef<HTMLDivElement>(null)
   const shareRequestRef = useRef<Promise<string> | null>(null) // 防止重复请求
@@ -270,10 +273,10 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
         tabIndex={0}
         aria-haspopup="true"
         aria-expanded={showShareMenu}
-        disabled={isLoading || isSharing}
+        disabled={isLoading || isSharing || !isShareReady}
       >
         <span>✨</span>
-        <span>{isLoading || isSharing ? '生成中...' : '自分も試してみる'}</span>
+        <span>{isLoading || isSharing ? '生成中...' : (!isShareReady ? '準備中...' : '自分も試してみる')}</span>
       </button>
 
       {/* 分享菜单 */}

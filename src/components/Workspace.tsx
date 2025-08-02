@@ -518,6 +518,9 @@ export default function WorkspaceRefactored() {
     }
 
     console.log('[generateImage] 开始生成流程, mode:', mode, 'selectedTemplate:', selectedTemplate?.name)
+    // 清空上一次生成的分享链接
+    shareCreatedRef.current = false
+    setAutoShareUrl('')
     setIsGenerating(true)
     setGenerationError('')
     setCurrentResult(null)
@@ -590,7 +593,19 @@ export default function WorkspaceRefactored() {
   }
 
 
+  const shareCreatedRef = useRef(false)
+
   const handleShare = async (result: GenerationResult) => {
+    if (shareCreatedRef.current) {
+      console.log('[handleShare] 已创建分享，直接返回')
+      return
+    }
+    // 如果已经有分享链接，避免重复创建
+    if (autoShareUrl) {
+      console.log('[handleShare] 已存在分享链接，跳过:', autoShareUrl)
+      return
+    }
+    shareCreatedRef.current = true
     try {
       let originalUrl = null
       
@@ -621,6 +636,7 @@ export default function WorkspaceRefactored() {
       if (response.ok) {
         const shareData = await response.json()
         setAutoShareUrl(shareData.shareUrl)
+        shareCreatedRef.current = true
         console.log('自动分享创建成功:', shareData.shareUrl)
       } else {
         console.error('自动分享创建失败:', response.statusText)
@@ -1129,7 +1145,10 @@ export default function WorkspaceRefactored() {
 
           <div className="flex gap-2">
             <button
-              onClick={() => setMode('template-mode')}
+              onClick={() => {
+                setMode('template-mode')
+                if (!selectedTemplate) setPrompt('')
+              }}
               className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'template-mode' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
@@ -1137,7 +1156,12 @@ export default function WorkspaceRefactored() {
               簡単
             </button>
             <button
-              onClick={() => setMode('image-to-image')}
+              onClick={() => {
+                setMode('image-to-image')
+                setPrompt('')
+                setSelectedTemplate(null)
+                localStorage.removeItem('selectedTemplateId')
+              }}
               className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'image-to-image' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
@@ -1145,7 +1169,16 @@ export default function WorkspaceRefactored() {
               図→図
             </button>
             <button
-              onClick={() => setMode('text-to-image')}
+              onClick={() => {
+                setMode('text-to-image')
+                setPrompt('')
+                setSelectedTemplate(null)
+                setFileUrl(null)
+                setImagePreview(null)
+                localStorage.removeItem('selectedTemplateId')
+                localStorage.removeItem('savedFileUrl')
+                localStorage.removeItem('savedMode')
+              }}
               className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'text-to-image' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
@@ -1666,7 +1699,7 @@ export default function WorkspaceRefactored() {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
                     <p className="mt-4 text-amber-600 font-cute">
-                      2kawaiiのGPT-4o Image FluxMax版で画像生成中... 1-3分で完成！✨
+                      2kawaiiのGPT-4o Image で画像生成中... 1-3分で完成！✨
                     </p>
                   </div>
                 )}
