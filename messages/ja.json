@@ -74,5 +74,19 @@
       "unknownError": "不明なエラー",
       "networkError": "ネットワークエラー、再試行してください"
     }
+  },
+  "share": {
+    "title": "シェアギャラリー",
+    "description": "コミュニティの素晴らしいアニメ変換作品を発見",
+    "gallery": {
+      "title": "みんなの作品ギャラリー",
+      "description": "他の人たちのAI変換作品をチェック！",
+      "empty": {
+        "title": "ギャラリーはまだ空です",
+        "description": "あなたが最初の作品を作ってみませんか？",
+        "cta": "今すぐ始める",
+        "refresh": "更新"
+      }
+    }
   }
 } 

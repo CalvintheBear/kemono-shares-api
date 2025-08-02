@@ -30,7 +30,10 @@
       "WebFetch(domain:pollo.ai)",
       "Bash(rg:*)",
       "Bash(npm run dev)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:javascript.plainenglish.io)",
+      "WebFetch(domain:harshalranjhani.in)",
+      "WebFetch(domain:gestalt.pinterest.systems)"
     ],
     "deny": []
   }
