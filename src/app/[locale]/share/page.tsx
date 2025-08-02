@@ -7,7 +7,6 @@ import Footer from '@/components/Footer'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import PinterestWaterfall from '@/components/PinterestWaterfall'
 import { SparklesIcon } from '@heroicons/react/24/outline'
-import Head from 'next/head'
 import Image from 'next/image'
 
 interface ShareData {
@@ -180,7 +179,7 @@ export default function SharePage() {
             <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-8 text-center">
               <div className="flex items-center justify-center space-x-2 mb-4">
                 <SparklesIcon className="w-6 h-6" />
-                <h1 className="text-3xl font-bold">AI画像変換結果</h1>
+                <h1 className="text-3xl font-bold">変換完了！</h1>
                 <SparklesIcon className="w-6 h-6" />
               </div>
               <p className="text-lg opacity-90">
@@ -247,13 +246,6 @@ export default function SharePage() {
   // 显示画廊页面
   return (
     <>
-      <Head>
-        <title>AI画像変換ギャラリー | プロンプト生成・美しいアニメ風変換作品集 | 2kawaii</title>
-        <meta name="description" content="AI画像変換の美しい作品ギャラリー。プロンプト自動生成でジブリ風、VTuber、ウマ娘など20+スタイルの変換結果をご覧ください。無料で写真をアニメ風に変換できます。" />
-        <meta name="keywords" content="AI画像変換,プロンプト生成,アニメ風変換,ジブリ風,VTuber,ウマ娘,写真変換,無料AI,画像ギャラリー,AIプロンプト" />
-        <meta name="robots" content="index, follow, max-image-preview:large" />
-        <meta name="author" content="2kawaii" />
-      </Head>
 
       <div className="min-h-screen bg-[#fff7ea] flex flex-col">
         <Header />
@@ -262,9 +254,12 @@ export default function SharePage() {
           {/* Hero Section */}
           <section className="w-full max-w-5xl mx-auto text-center py-8 mb-8">
             <div className="mb-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-amber-700 mb-4 tracking-tight">
-                AI画像変換ギャラリー
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-amber-700 mb-3 tracking-tight">
+                みんなの作品ギャラリー
               </h1>
+              <p className="text-lg sm:text-xl text-amber-600 max-w-2xl mx-auto">
+                他の人たちのAI変換作品をチェック！
+              </p>
             </div>
           </section>
 
@@ -298,8 +293,8 @@ export default function SharePage() {
             ) : (
               <div className="text-center py-20">
                 <div className="text-8xl mb-6">🎨</div>
-                <h3 className="text-2xl font-bold text-gray-700 mb-4">まだ変換結果がありません</h3>
-                <p className="text-gray-600 mb-8">最初のAI画像変換を体験してみませんか？</p>
+                <h3 className="text-2xl font-bold text-gray-700 mb-4">ギャラリーはまだ空です</h3>
+                <p className="text-gray-600 mb-8">あなたが最初の作品を作ってみませんか？</p>
                 <button
                   onClick={() => window.location.href = 'https://2kawaii.com'}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105"

@@ -5,11 +5,32 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "LINEスタンプ作り方 - AIで写真を可愛いスタンプに無料変換",
-  description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！自分の写真からオリジナルスタンプが簡単に作成できます。登録不要・商用利用可能・LINEクリエイターズ登録対応。",
-  keywords: "LINEスタンプ作り方, LINEスタンプ作成 無料, AI LINEスタンプ, オリジナルスタンプ 作り方, LINEクリエイターズ スタンプ作成, 写真 LINEスタンプ, スタンプ作成 AI 無料",
+  title: "LINEスタンプ作り方 無料 | AIで写真を可愛いスタンプに即変換",
+  description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！自分の写真からオリジナルスタンプが簡単作成。登録不要・商用利用可能・LINEクリエイターズ対応。",
   alternates: {
-    canonical: "https://2kawaii.com/line-stamp",
+    canonical: "https://2kawaii.com/line-sticker-creation",
+  },
+  openGraph: {
+    title: "LINEスタンプ作り方 無料 | AIで写真を可愛いスタンプに即変換",
+    description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！自分の写真からオリジナルスタンプが簡単に作成できます。登録不要・商用利用可能。",
+    url: "https://2kawaii.com/line-sticker-creation",
+    siteName: "2kawaii AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-line-stamp.jpg",
+        width: 1200,
+        height: 630,
+        alt: "LINEスタンプ作成 - 2kawaii AI",
+      }
+    ],
+    locale: "ja_JP",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LINEスタンプ作り方 無料 | AIで写真を可愛いスタンプに即変換",
+    description: "【完全無料】AIで写真を可愛いLINEスタンプに即変換！登録不要・商用利用可能。",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-line-stamp.jpg"],
   },
   robots: {
     index: true,

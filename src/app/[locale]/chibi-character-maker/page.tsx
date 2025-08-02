@@ -5,11 +5,32 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "Chibiキャラクター作成 - AIで可愛いchibiキャラを無料作成",
-  description: "【完全無料】AIで写真を可愛いchibiキャラクターに変換！頭が大きくて体が小さいデフォルメ表現が特徴的なchibiキャラが簡単に作成できます。LINEスタンプやSNSアイコンに最適。",
-  keywords: "chibiキャラクター作成, chibi化 AI, AIでchibiキャラ作成, chibiキャラ 作り方 無料, 写真をchibiに変換, 可愛いキャラクター作成 AI, chibiアイコン作成",
+  title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換 - 2kawaii",
+  description: "【完全無料】GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが1-3分で完成。LINEスタンプ・SNSアイコン・可愛い壁紙に最適。商用利用OK。",
   alternates: {
-    canonical: "https://2kawaii.com/chibi",
+    canonical: "https://2kawaii.com/chibi-character-maker",
+  },
+  openGraph: {
+    title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換",
+    description: "GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが1-3分で完成。LINEスタンプに最適。",
+    url: "https://2kawaii.com/chibi-character-maker",
+    siteName: "2kawaii AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-chibi.jpg",
+        width: 1200,
+        height: 630,
+        alt: "chibi SDキャラ作成 - 2kawaii GPT-4o",
+      }
+    ],
+    locale: "ja_JP",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換",
+    description: "GPT-4oで写真を可愛いchibiキャラに即変換！1-3分で完成。",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-chibi.jpg"],
   },
   robots: {
     index: true,

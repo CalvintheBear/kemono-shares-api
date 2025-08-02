@@ -5,11 +5,32 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "AI画像変換 無料比較 - 2025年最新版 人気サービス徹底比較",
-  description: "【2025年最新】無料AI画像変換ツールを徹底比較！FuryCode、Canva、Midjourney、Stable Diffusionなど人気サービスの機能、料金、使いやすさを詳しく解説。あなたに最適な無料AI画像変換ツールを見つけましょう。",
-  keywords: "AI画像変換 無料比較, 無料AI画像生成 比較, AI画像変換 無料 おすすめ, 写真アニメ化 無料比較, AI画像生成 ツール 比較, 無料AI画像変換 ランキング",
+  title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+  description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4oで写真を1-3分でアニメ風に即変換。ジブリ風・VTuber・chibiなど20+スタイル対応。商用利用OK。",
   alternates: {
-    canonical: "https://2kawaii.com/conversion",
+    canonical: "https://2kawaii.com/ai-image-generation-guide",
+  },
+  openGraph: {
+    title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+    description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4oで1-3分で完成。",
+    url: "https://2kawaii.com/ai-image-conversion-free",
+    siteName: "2kawaii AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-ai-conversion.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AI画像変換 完全無料 - 2kawaii GPT-4o",
+      }
+    ],
+    locale: "ja_JP",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+    description: "【2025年最強】完全無料・登録不要で写真をアニメ風に即変換！",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-ai-conversion.jpg"],
   },
   robots: {
     index: true,

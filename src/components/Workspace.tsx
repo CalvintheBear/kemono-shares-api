@@ -30,21 +30,14 @@ interface GenerationResult {
 }
 
 const templates: Template[] = [
+  
   {
-    id: '1',
-    name: '擬人化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after',
-    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
-    category: '擬人化'
-  },
-  {
-    id: '18',
-    name: '可愛line アイコン',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr',
-    prompt: 'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン',
-    category: '可愛line アイコン'
+    id: '24',
+    name: 'emoji 絵文字風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
+    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
+    category: 'emoji 絵文字風'
   },
   {
     id: '19',
@@ -53,6 +46,14 @@ const templates: Template[] = [
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after',
     prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、感情を表すシンボルのような要素も含む、透明な背景のイラスト',
     category: 'lineスタンプ'
+  },
+  {
+    id: '9',
+    name: 'chibi',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
+    prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
+    category: 'chibi'
   },
   {
     id: '20',
@@ -69,6 +70,14 @@ const templates: Template[] = [
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-afterr',
     prompt: 'イラストはエレガントなスタイルで、穏やかで愛らしい、商用フリー素材スタイルで、シンプルで親しみやすく、柔らかな触感、可愛いキャラクター、誇張した表情、抽象芸術、フラットデザイン、親しみやすい雰囲気、清潔な背景です。',
     category: 'irasutoya'
+  },
+  {
+    id: '8',
+    name: '萌え化',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-afterr',
+    prompt: 'ちび風ロリータ少女、可愛いウサギ耳、フリルディテール、ふわふわの要素が特徴で。チビ、カワイイ、ソフトシェーディング、可愛いウサギ耳、フリルディテール、繊細なラインアート、パステル背景、愛らしい表情、スウィートテーマ、手描き、カートゥーン調、ミニマリスト背景、光沢のある瞳、フローラルアクセント、リボンディテール、ふわふわ要素、明るい色調、甘美なカラーパレット、魅力的',
+    category: '萌え化'
   },
   {
     id: '2',
@@ -102,22 +111,16 @@ const templates: Template[] = [
     prompt: 'eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
     category: '少女'
   },
+  
   {
-    id: '8',
-    name: '萌え化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-afterr',
-    prompt: 'ちび風ロリータ少女、可愛いウサギ耳、フリルディテール、ふわふわの要素が特徴で。チビ、カワイイ、ソフトシェーディング、可愛いウサギ耳、フリルディテール、繊細なラインアート、パステル背景、愛らしい表情、スウィートテーマ、手描き、カートゥーン調、ミニマリスト背景、光沢のある瞳、フローラルアクセント、リボンディテール、ふわふわ要素、明るい色調、甘美なカラーパレット、魅力的',
-    category: '萌え化'
+    id: '18',
+    name: '可愛line アイコン',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr',
+    prompt: 'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン',
+    category: '可愛line アイコン'
   },
-  {
-    id: '9',
-    name: 'chibi',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
-    prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
-    category: 'chibi'
-  },
+  
   {
     id: '10',
     name: 'ジブリ風',
@@ -167,6 +170,14 @@ const templates: Template[] = [
     category: '3D CG'
   },
   {
+    id: '1',
+    name: '擬人化',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after',
+    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
+    category: '擬人化'
+  },
+  {
     id: '16',
     name: '乙女ゲーム',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E4%B9%99%E6%B8%B8-before',
@@ -190,14 +201,7 @@ const templates: Template[] = [
     prompt: 'カワイイアニメのメイドガールで、繊細なレースとフリルのディテール、ソフトなシェーディング、パステルカラー、可愛い表情、ゴシックロリータ要素、光沢のある瞳。アニメメイド、カワイイ、繊細なレース、ソフトシェーディング、パステルカラー、フリルディテール、可愛い表情、ゴシックロリータ要素、光沢のある瞳、ディテール豊かな衣装、ロマンチックな雰囲気、手描きアニメ、魅力的、女性的、複雑なデザイン、ライトバックグラウンド、甘美、エレガント、アニメ美学、メイドヘッドドレス',
     category: '写真 アニメ風'
   },
-  {
-    id: '24',
-    name: 'emoji 絵文字風',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
-    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
-    category: 'emoji 絵文字風'
-  },
+  
   {
     id: '25',
     name: '獣耳',
@@ -301,7 +305,7 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
     return (
       <button
         onClick={onClick}
-        className={`px-2 py-1.5 rounded-lg text-xs font-medium transition-all transform hover:scale-105 flex items-center gap-1.5 relative ${
+        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 flex items-center gap-1.5 relative ${
           isSelected
             ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-md'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -1059,30 +1063,30 @@ export default function WorkspaceRefactored() {
             ))}
           </div>
 
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <button
               onClick={() => setMode('template-mode')}
-              className={`px-2 py-1 rounded text-xs font-medium ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'template-mode' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
-              テンプレート
+              簡単
             </button>
             <button
               onClick={() => setMode('image-to-image')}
-              className={`px-2 py-1 rounded text-xs font-medium ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'image-to-image' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
-              図生
+              図→図
             </button>
             <button
               onClick={() => setMode('text-to-image')}
-              className={`px-2 py-1 rounded text-xs font-medium ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium ${
                 mode === 'text-to-image' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
-              文生
+              文→図
             </button>
           </div>
         </div>
@@ -1125,7 +1129,7 @@ export default function WorkspaceRefactored() {
                       : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
                   }`}
                 >
-                  ✨ シンプルモード
+                  ✨ 簡単
                 </button>
                 <button
                   onClick={() => {
@@ -1140,7 +1144,7 @@ export default function WorkspaceRefactored() {
                       : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
                   }`}
                 >
-                  🎨 マニュアルモード
+                  🎨 図→図
                 </button>
                 <button
                   onClick={() => {
@@ -1159,7 +1163,7 @@ export default function WorkspaceRefactored() {
                       : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
                   }`}
                 >
-                  ✍️ 文生图モード
+                  ✍️ 文→図
                 </button>
               </div>
             </div>

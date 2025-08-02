@@ -4,12 +4,11 @@ import Link from 'next/link'
 
 // プライバシーポリシーSEOメタデータ
 export const metadata = {
-  title: "プライバシーポリシー - 2kawaii AI画像生成サービス",
-      description: "2kawaii.comのプライバシーポリシー。AI画像生成サービスにおける個人情報の取り扱い、データ保護、Cookieの使用について詳しく説明します。",
-      keywords: "2kawaii プライバシーポリシー, AI画像生成 プライバシー, 個人情報保護, データセキュリティ, Cookieポリシー, 画像保存 ポリシー, 第三者提供 禁止, 無料 AIツール プライバシー",
-      openGraph: {
-    title: "プライバシーポリシー - 2kawaii AI画像生成",
-    description: "2kawaii AI画像生成サービスのプライバシーポリシー詳細",
+  title: "プライバシーポリシー AI画像生成 | 2kawaii.com個人情報保護方針",
+  description: "2kawaii.com AI画像生成サービスのプライバシーポリシー。個人情報・画像データ保護・Cookie使用・商用利用・第三者提供禁止を詳しく説明。無料・登録不要・安全。",
+  openGraph: {
+    title: "プライバシーポリシー AI画像生成 | 2kawaii.com個人情報保護方針",
+    description: "2kawaii AI画像生成サービスのプライバシーポリシー。個人情報保護・画像データ削除・商用利用・第三者提供禁止を詳しく説明。",
     url: "https://2kawaii.com/privacy",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -25,8 +24,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "プライバシーポリシー - 2kawaii AI画像生成",
-    description: "AI画像生成サービスのプライバシーポリシー詳細",
+    title: "プライバシーポリシー AI画像生成 | 2kawaii.com個人情報保護方針",
+    description: "2kawaii AI画像生成サービスのプライバシーポリシー。個人情報保護・画像データ削除・商用利用・第三者提供禁止を詳しく説明。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-privacy.jpg"],
   },
   alternates: {

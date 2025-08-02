@@ -5,11 +5,32 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "アイコン作成 無料 - AIで可愛いアニメアイコンを即作成【SNS対応】",
-  description: "【完全無料】AIで写真を可愛いアニメアイコンに即変換！Twitter、Instagram、LINE、DiscordなどSNSプロフィール画像に最適。商用利用可能・登録不要・高画質ダウンロード。",
-  keywords: "アイコン作成 無料, アニメアイコン作成, AIアイコン作成, SNSアイコン作成 無料, プロフィール画像作成 AI, アイコン作成 AI 無料, アニメアイコン 作り方",
+  title: "アイコン作成 無料 AI | 写真をSNSアニメアイコンに即変換 - 2kawaii",
+  description: "【完全無料】AIで写真を可愛いアニメアイコンに即変換！Twitter/Instagram/LINE/Discordプロフィール画像に最適。商用利用可能・登録不要・高画質ダウンロード。",
   alternates: {
-    canonical: "https://2kawaii.com/icon",
+    canonical: "https://2kawaii.com/anime-icon-creation",
+  },
+  openGraph: {
+    title: "アイコン作成 無料 AI | 写真をSNSアニメアイコンに即変換",
+    description: "【完全無料】AIで写真を可愛いアニメアイコンに即変換！Twitter/Instagram/LINE/Discordプロフィール画像に最適。商用利用可能・登録不要。",
+    url: "https://2kawaii.com/anime-icon-creation",
+    siteName: "2kawaii AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-icon.jpg",
+        width: 1200,
+        height: 630,
+        alt: "アニメアイコン作成 - 2kawaii AI",
+      }
+    ],
+    locale: "ja_JP",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "アイコン作成 無料 AI | 写真をSNSアニメアイコンに即変換",
+    description: "【完全無料】AIで写真を可愛いアニメアイコンに即変換！商用利用可能・登録不要。",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-icon.jpg"],
   },
   robots: {
     index: true,

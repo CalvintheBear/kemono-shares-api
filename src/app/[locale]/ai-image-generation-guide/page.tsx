@@ -5,11 +5,32 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "AI画像生成 初心者ガイド | 写真をアニメ風に変換する完全ガイド",
-  description: "【初心者向け】AI画像生成で写真をアニメ風に変換する完全ガイド。登録不要・無料で使えるAI画像変換の使い方を詳しく解説。ジブリ風、VTuber風、美少女、chibiなど人気スタイルの選び方も紹介。",
-  keywords: "AI画像生成 初心者, 写真 アニメ風に変換, AI画像変換 使い方, アニメ風画像作成 初心者, 写真加工 アニメ風, AI 画像生成 無料 初心者",
+  title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
+  description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換する完全ガイド。プロンプト不要で1-3分完成。ジブリ風・VTuber・chibiなど20スタイルの選び方も解説。",
   alternates: {
-    canonical: "https://2kawaii.com/guide",
+    canonical: "https://2kawaii.com/ai-image-generation-guide",
+  },
+  openGraph: {
+    title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
+    description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換。プロンプト不要で1-3分完成。ジブリ風・VTuber・chibi対応。",
+    url: "https://2kawaii.com/ai-image-generation-guide",
+    siteName: "2kawaii AI画像生成",
+    images: [
+      {
+        url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-ai-guide.jpg",
+        width: 1200,
+        height: 630,
+        alt: "AI画像生成 完全ガイド - 2kawaii GPT-4o",
+      }
+    ],
+    locale: "ja_JP",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
+    description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換。プロンプト不要で1-3分完成。",
+    images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-ai-guide.jpg"],
   },
   robots: {
     index: true,

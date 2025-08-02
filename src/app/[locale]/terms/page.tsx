@@ -4,12 +4,11 @@ import Link from 'next/link'
 
 // 利用規約SEOメタデータ
 export const metadata = {
-  title: "利用規約 - 2kawaii AI画像生成サービス",
-      description: "2kawaii.comの利用規約。AI画像生成サービスの利用条件、著作権、免責事項、禁止事項について詳しく説明します。",
-      keywords: "2kawaii 利用規約, AI画像生成 利用条件, 著作権 ポリシー, 商用利用 規約, 禁止事項, 免責事項, AI生成画像 権利, サービス利用規約, 無料ツール 規約, ユーザー責任",
-      openGraph: {
-    title: "利用規約 - 2kawaii AI画像生成",
-    description: "2kawaii AI画像生成サービスの利用規約詳細",
+  title: "利用規約 AI画像生成 | 2kawaii.com無料サービス利用条件",
+  description: "2kawaii.com AI画像生成サービスの利用規約。無料利用条件・著作権・商用利用・免責事項・禁止事項を詳しく説明。GPT-4oで写真をアニメ風に完全無料・登録不要。",
+  openGraph: {
+    title: "利用規約 AI画像生成 | 2kawaii.com無料サービス利用条件",
+    description: "2kawaii.com AI画像生成サービスの利用規約。無料利用条件・著作権・商用利用・免責事項を詳しく説明。",
     url: "https://2kawaii.com/terms",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -25,8 +24,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "利用規約 - 2kawaii AI画像生成",
-    description: "AI画像生成サービスの利用規約詳細",
+    title: "利用規約 AI画像生成 | 2kawaii.com無料サービス利用条件",
+    description: "2kawaii.com AI画像生成サービスの利用規約。無料利用条件・著作権・商用利用・免責事項を詳しく説明。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-terms.jpg"],
   },
   alternates: {

@@ -8,12 +8,11 @@ import Image from 'next/image'
 
 // ホームページSEOメタデータ
 export const metadata = {
-  title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-  description: "【完全無料・登録不要】2kawaiiは最新AIでプロンプト自動生成により写真をジブリ風・可愛い壁紙・chibi・美少女・証明写真加工など20種類以上のアニメイラストに自動変換！商用利用OK・高画質・スマホ対応。SNSアイコンやLINEスタンプも簡単作成。1-3分で高品質なアニメ画像を生成します。",
-      keywords: "2kawaii, AI画像生成 無料, プロンプト生成, AIイラスト, アニメ化, 写真 変換, ジブリ風, 可愛い壁紙, 証明写真加工, chibi, 美少女, LINEスタンプ, SNSアイコン, 商用利用, 登録不要, 高画質, AI自動化, AIプロンプト",
-      openGraph: {
-          title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-    description: "プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙・証明写真加工に即変換！2kawaiiのAIで1-3分で高画質画像を無料生成。登録不要・商用利用OK。",
+  title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+  description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風・chibi等20+スタイル対応。商用利用OK。",
+  openGraph: {
+    title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+    description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風・chibi等20+スタイル対応。",
     url: "https://2kawaii.com",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -21,7 +20,7 @@ export const metadata = {
         url: "https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/og-homepage.jpg",
         width: 1200,
         height: 630,
-        alt: "2kawaii AI画像生成 ホームページ",
+        alt: "AI画像生成 無料 登録不要 - 2kawaii GPT-4o",
       }
     ],
     locale: "ja_JP",
@@ -29,8 +28,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "2kawaii｜無料AI画像生成ツール - プロンプト自動生成で写真をアニメ・イラスト・可愛い壁紙に1-3分で変換",
-    description: "プロンプト自動生成でAI写真をアニメ・イラスト・可愛い壁紙・証明写真加工に自動変換！20+スタイル・1-3分で完成・完全無料・登録不要",
+    title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
+    description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風等20+スタイル対応。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
@@ -53,9 +52,9 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: '2kawaii AI画像生成',
-  description: 'GPT-4o Image でプロンプト自動生成により写真をアニメ風に即変換できる無料ツール',
-      url: 'https://2kawaii.com',
+  name: '2kawaii GPT-4o画像生成',
+  description: 'GPT-4o Imageでプロンプト自動生成により写真をアニメ風に即変換できる無料AIツール',
+  url: 'https://2kawaii.com',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
   offers: {
@@ -65,12 +64,12 @@ const structuredData = {
     availability: 'https://schema.org/InStock',
   },
   featureList: [
+    'AI画像生成 無料 登録不要',
     'プロンプト自動生成',
-    '写真をアニメ風に変換',
-    '20種類以上のスタイル選択',
+    '写真をアニメ風に即変換',
+    'ジブリ風・chibi・VTuber対応',
     '1-3分で高速生成',
-    '商用利用可能',
-    '登録不要・完全無料'
+    '商用利用可能'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/homepage-screenshot.jpg',
 };

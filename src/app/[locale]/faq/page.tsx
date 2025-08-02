@@ -4,12 +4,11 @@ import Link from 'next/link'
 
 // FAQページSEOメタデータ
 export const metadata = {
-  title: "よくある質問 - 2kawaii AI画像生成についてのご質問にお答えします",
-      description: "2kawaii.comのAI画像生成サービスについてのよくある質問と回答をまとめました。無料AI画像変換・写真アニメ化・商用利用可能など、ユーザー様からのご質問に詳しくお答えします。",
-      keywords: "2kawaii FAQ, AI画像生成 使い方, 写真 アニメ風 変換 質問, 無料 AI画像変換 よくある質問, LINEスタンプ作り方 方法, chibiキャラクター作成 解説, 商用利用可能 AI画像, 1-3分 高速生成, プライバシー 保護, 登録不要 無料ツール",
-      openGraph: {
-    title: "よくある質問 - 2kawaii AI画像生成",
-    description: "2kawaii AI画像生成サービスについてのよくある質問と回答まとめ",
+  title: "FAQ AI画像生成 無料 | GPT-4o写真変換よくある質問まとめ - 2kawaii",
+  description: "2kawaii.comのAI画像生成サービスFAQ。無料で写真をアニメ風に変換・商用利用可能・登録不要・1-3分高速生成・プライバシー保護など、よくある質問に詳しく回答。",
+  openGraph: {
+    title: "FAQ AI画像生成 無料 | GPT-4o写真変換よくある質問まとめ",
+    description: "2kawaii.comのAI画像生成サービスよくある質問まとめ。無料・商用利用可能・登録不要。",
     url: "https://2kawaii.com/faq",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -25,8 +24,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "よくある質問 - 2kawaii AI画像生成",
-    description: "AI画像生成サービスについてのよくある質問と回答まとめ",
+    title: "FAQ AI画像生成 無料 | GPT-4o写真変換よくある質問まとめ",
+    description: "2kawaii.comのAI画像生成サービスよくある質問まとめ。無料・商用利用可能・登録不要。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-faq.jpg"],
   },
   alternates: {

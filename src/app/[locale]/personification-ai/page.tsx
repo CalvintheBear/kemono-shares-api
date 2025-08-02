@@ -5,11 +5,10 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "擬人化 AI 活用術 - ペットやキャラクターを可愛いアニメキャラに変換",
-  description: "【最新技術】AIでペットやキャラクターを可愛いアニメキャラに擬人化！写真をアップロードするだけで愛犬・愛猫を美少女キャラに。無料で使える擬人化AIの完全ガイド。",
-  keywords: "擬人化 AI, ペット 擬人化, AI 擬人化, キャラクター 擬人化, モノ 擬人化, 写真 擬人化 AI 無料, 擬人化 キャラクター 作成",
+  title: "チャットgpt 擬人化 | GPT-4oでペット・キャラを美少女に無料変換",
+  description: "【GPT-4o】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを1-3分で可愛いアニメキャラに。無料で商用利用可能。",
   alternates: {
-    canonical: "https://2kawaii.com/personification",
+    canonical: "https://2kawaii.com/personification-ai",
   },
   robots: {
     index: true,
