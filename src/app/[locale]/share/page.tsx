@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MobileBottomNav from '@/components/MobileBottomNav'
@@ -71,6 +72,13 @@ export default function SharePage() {
             <p className="text-lg sm:text-xl text-amber-600 max-w-2xl mx-auto">
               他の人たちのAI変換作品をチェック！
             </p>
+          </div>
+          
+          {/* CTA Buttons */}
+          <div className="flex justify-center items-center mt-6">
+            <Link href="/workspace" className="btn-kawaii text-base sm:text-lg px-6 sm:px-8 lg:px-10 py-3 lg:py-4 animate-glow-pulse animate-scale-bounce shadow-lg hover:shadow-xl shadow-amber-300/50 hover:shadow-amber-400/60 transition-all duration-300 hover:scale-110 active:scale-95">
+              今すぐ無料で始める ✨
+            </Link>
           </div>
         </section>
 

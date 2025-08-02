@@ -259,6 +259,15 @@ body {
   animation: glow-pulse 2s ease-in-out infinite;
 }
 
+@keyframes scale-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-scale-bounce {
+  animation: scale-bounce 2s ease-in-out infinite;
+}
+
 /* 渐入渐出动画 */
 @keyframes fade-in-up {
   0% {
