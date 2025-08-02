@@ -4,6 +4,7 @@ import TemplateGallery from "@/components/TemplateGallery";
 import FAQ from "@/components/FAQ";
 import Link from "next/link";
 import HomeHero from "@/components/HomeHero";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import Image from 'next/image'
 
 // ホームページSEOメタデータ
@@ -105,47 +106,47 @@ export default function Home() {
             <div className="text-center card-kawaii p-4 sm:p-6 lg:p-8 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.2s'}}>
               <div className="w-32 sm:w-48 lg:w-56 h-32 sm:h-48 lg:h-56 mx-auto mb-4 lg:mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-uploadimage" 
-                  alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
+                  alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
                   width={200}
                   height={200}
                   unoptimized
-                  className="w-full h-full object-cover rounded-full shadow-lg"
-                  title="AI画像変換 写真アップロードガイド"
+                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  title="AI画像変換 モデル選択とテンプレート選択ガイド"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. 写真をアップロード</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. モデルとテンプレートを選択</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルとアニメスタイルテンプレートを選択してください</p>
             </div>
             <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.4s'}}>
               <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choosetem" 
-                  alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
+                  alt="AI画像変換 画像アップロードと開始 - 無料ツール" 
                   width={200}
                   height={200}
                   unoptimized
-                  className="w-full h-full object-cover rounded-full shadow-lg"
-                  title="AI画像変換 アニメスタイル選択"
+                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  title="AI画像変換 画像アップロードと開始"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. アニメスタイルを選択</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. 画像をアップロードして開始</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">写真をアップロードして「開始」ボタンをクリックするとAI変換が始まります</p>
             </div>
             <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.6s'}}>
               <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-finalimage" 
-                  alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                  alt="AI画像変換成功 - 最終画像取得 ダウンロード可能 商用利用" 
                   width={200}
                   height={200}
                   unoptimized
-                  className="w-full h-full object-cover rounded-full shadow-lg"
-                  title="AI画像変換完了"
+                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                  title="AI画像変換成功 - 最終画像取得"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">3. AI画像生成完了</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">最新のAI技術で1-3分で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">3. 成功！最終画像を取得</h3>
+              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">AI変換が完了！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
             </div>
           </div>
         </div>
@@ -246,33 +247,117 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
             <Link href="/ai-image-generation-guide" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">写真をアニメ風に変換する完全ガイド</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
+                    alt="AI画像生成 初心者ガイド" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">AI画像生成 初心者ガイド</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">写真をアニメ風に変換する完全ガイド</p>
+                </div>
+              </div>
             </Link>
             
             <Link href="/line-sticker-creation" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">写真を可愛いLINEスタンプに無料変換</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after" 
+                    alt="LINEスタンプ作り方" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">LINEスタンプ作り方</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">写真を可愛いLINEスタンプに無料変換</p>
+                </div>
+              </div>
             </Link>
             
             <Link href="/chibi-character-maker" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">可愛いchibiキャラをAIで作る</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                    alt="Chibiキャラクター作成" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">Chibiキャラクター作成</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">可愛いchibiキャラをAIで作る</p>
+                </div>
+              </div>
             </Link>
             
             <Link href="/ai-image-conversion-free" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">無料AI画像変換ツールを徹底比較</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after" 
+                    alt="AI画像変換 無料比較" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">AI画像変換 無料比較</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">無料AI画像変換ツールを徹底比較</p>
+                </div>
+              </div>
             </Link>
             
             <Link href="/personification-ai" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">ペットやオブジェクトを擬人化する方法</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after" 
+                    alt="擬人化 AI 活用術" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">擬人化 AI 活用術</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">ペットやオブジェクトを擬人化する方法</p>
+                </div>
+              </div>
             </Link>
             
             <Link href="/anime-icon-creation" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
-              <p className="text-amber-700 text-xs sm:text-sm">SNS用アニメアイコンを無料で作成</p>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <Image 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr" 
+                    alt="アイコン作成 無料" 
+                    width={60}
+                    height={60}
+                    className="w-15 h-15 object-cover rounded-lg shadow-md"
+                    unoptimized
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">アイコン作成 無料</h3>
+                  <p className="text-amber-700 text-xs sm:text-sm">SNS用アニメアイコンを無料で作成</p>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
@@ -304,6 +389,7 @@ export default function Home() {
       </section>
 
       <Footer />
+      <MobileBottomNav />
     </div>
   );
 } 

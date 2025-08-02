@@ -62,7 +62,7 @@ export default function AIGuidePage() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-after" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-afterr" 
                     alt="萌え化スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
                     width={128}
@@ -113,14 +113,14 @@ export default function AIGuidePage() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div className="text-center">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after" 
-                    alt="証明写真スタイルサンプル" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%86%99%E7%9C%9F%E6%BC%AB%E7%94%BB%E5%8C%96-after" 
+                    alt="写真 アニメ風スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
                     width={128}
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">証明写真</p>
+                  <p className="text-xs text-amber-700 mt-2">写真 アニメ風</p>
                 </div>
                 
                 <div className="text-center">
@@ -176,7 +176,7 @@ export default function AIGuidePage() {
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-uploadimage" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
                     alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -191,7 +191,7 @@ export default function AIGuidePage() {
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choosetem" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
                     alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -206,7 +206,7 @@ export default function AIGuidePage() {
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-finalimage" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
                     alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -291,9 +291,50 @@ export default function AIGuidePage() {
           </section>
 
           <section className="text-center mt-12">
-            <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
-              今すぐAI画像生成を始める 🎨
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
+                今すぐAI画像生成を始める 🎨
+              </Link>
+              <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                ギャラリーを見る 🖼️
+              </Link>
+            </div>
+          </section>
+
+          {/* 関連コンテンツ */}
+          <section className="card-kawaii p-8 mt-12">
+            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+              </Link>
+              
+              <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
+                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+              </Link>
+              
+              <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
+                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+              </Link>
+              
+              <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
+                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+              </Link>
+              
+              <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
+                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+              </Link>
+              
+              <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
+                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+              </Link>
+            </div>
           </section>
         </article>
       </div>

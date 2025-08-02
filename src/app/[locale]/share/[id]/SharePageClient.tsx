@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import MobileBottomNav from '@/components/MobileBottomNav'
 import { HeartIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
@@ -109,6 +110,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           </div>
         </div>
         <Footer />
+        <MobileBottomNav />
       </div>
     )
   }
@@ -178,21 +180,23 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={handleDownload}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
-            >
-              <span>📥</span>
-              <span>ダウンロード</span>
-            </button>
-            <button
-              onClick={handleTryNow}
-              className="bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
-            >
-              <span>✨</span>
-              <span>自分も試してみる</span>
-            </button>
+          <div className="p-6 bg-gray-50 rounded-xl">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <button
+                onClick={handleDownload}
+                className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px]"
+              >
+                <span>📥</span>
+                <span>ダウンロード</span>
+              </button>
+              <button
+                onClick={handleTryNow}
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px]"
+              >
+                <span>✨</span>
+                <span>自分も試してみる</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -229,6 +233,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
         </div>
       </main>
       <Footer />
+      <MobileBottomNav />
     </div>
   )
 } 

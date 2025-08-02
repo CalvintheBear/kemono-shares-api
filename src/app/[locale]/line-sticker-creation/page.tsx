@@ -60,7 +60,7 @@ export default function LineStickerCreationPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="text-center">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85-after" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after" 
                   alt="LINEスタンプサンプル" 
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
                   width={192}
@@ -72,7 +72,7 @@ export default function LineStickerCreationPage() {
               
               <div className="text-center">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-after" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr" 
                   alt="可愛いLINEアイコンサンプル" 
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
                   width={192}
@@ -184,9 +184,50 @@ export default function LineStickerCreationPage() {
           </section>
 
           <section className="text-center mt-12">
-            <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
-              今すぐLINEスタンプを作る 🎨
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
+                今すぐLINEスタンプを作る 🎨
+              </Link>
+              <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                ギャラリーを見る 🖼️
+              </Link>
+            </div>
+          </section>
+
+          {/* 関連コンテンツ */}
+          <section className="card-kawaii p-8 mt-12">
+            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+              </Link>
+              
+              <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
+                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+              </Link>
+              
+              <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
+                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+              </Link>
+              
+              <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
+                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+              </Link>
+              
+              <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
+                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+              </Link>
+              
+              <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
+                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+              </Link>
+            </div>
           </section>
         </article>
       </div>

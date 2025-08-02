@@ -31,8 +31,6 @@ export default function Header() {
           {/* Desktop Navigation - Centered */}
           <nav className="hidden md:block order-2 flex-1">
             <div className="flex items-baseline justify-center space-x-8">
-              <Link href="/workspace" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">サービスを始める</Link>
-              <Link href="/share" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">ギャラリー</Link>
               <Link href="/faq" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">利用規約</Link>
@@ -40,10 +38,23 @@ export default function Header() {
           </nav>
           
           {/* CTA Button and Mobile Menu - Now on the right */}
-          <div className="flex items-center space-x-4 order-3">
-            <Link href="/workspace" className="btn-kawaii text-sm font-medium transition-colors">
-              今すぐ体験
-            </Link>
+          <div className="flex items-center space-x-2 sm:space-x-4 order-3">
+            {/* 移动端按钮 - 优化显示 */}
+            <div className="flex items-center space-x-1 sm:space-x-2">
+                             <Link 
+                 href="/workspace" 
+                 className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-3 sm:px-5 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
+               >
+                 体験
+               </Link>
+              
+              <Link 
+                href="/share" 
+                className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-2 sm:px-4 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
+              >
+                ギャラリー
+              </Link>
+            </div>
             
             {/* Mobile menu button */}
             <button
@@ -63,8 +74,7 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              <Link href="/workspace" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">サービスを始める</Link>
-              <Link href="/share" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">ギャラリー</Link>
+              {/* 其他链接 */}
               <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">利用規約</Link>

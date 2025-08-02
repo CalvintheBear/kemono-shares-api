@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { ShareIcon, LinkIcon } from '@heroicons/react/24/outline'
+import { LinkIcon } from '@heroicons/react/24/outline'
 
 interface ShareButtonProps {
   generatedImageUrl: string
@@ -254,15 +254,15 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     <div className="relative inline-block" ref={buttonRef}>
       <button
         onClick={handleButtonClick}
-        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 transform flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-pink-400 active:scale-95"
+        className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-orange-400 active:scale-95"
         type="button"
         tabIndex={0}
         aria-haspopup="true"
         aria-expanded={showShareMenu}
         disabled={isLoading || isSharing}
       >
-        <ShareIcon className="w-5 h-5" />
-        {isLoading || isSharing ? '生成中...' : 'シェア'}
+        <span>✨</span>
+        <span>{isLoading || isSharing ? '生成中...' : '自分も試してみる'}</span>
       </button>
 
       {/* 分享菜单 */}

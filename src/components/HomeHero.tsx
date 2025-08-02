@@ -31,11 +31,45 @@ export default function HomeHero() {
         }`}>
           ジブリ風・VTuber・美少女・chibiLINE・スタンプ・可愛い壁紙など20+スタイルから即選べる
         </p>
-        <Link href="/workspace" className={`btn-kawaii text-lg sm:text-xl lg:text-2xl px-8 sm:px-10 lg:px-12 py-4 lg:py-5 animate-pulse-custom transition-all duration-1000 delay-900 ${
+        
+        {/* 两排并列居中的按钮 */}
+        <div className={`flex flex-col gap-4 justify-center items-center transition-all duration-1000 delay-900 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          今すぐ無料で始める ✨
-        </Link>
+          {/* 第一排按钮 */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link 
+              href="/workspace" 
+              className="btn-kawaii text-lg sm:text-xl lg:text-2xl px-8 sm:px-10 lg:px-12 py-4 lg:py-5 animate-pulse-custom hover:scale-110 transition-transform duration-300 ease-in-out"
+              style={{
+                animation: 'sizeAlternate1 2s ease-in-out infinite'
+              }}
+            >
+              今すぐ無料で始める ✨
+            </Link>
+            <Link 
+              href="/share" 
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-base sm:text-lg lg:text-xl px-6 sm:px-8 lg:px-10 py-3 lg:py-4 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 ease-in-out"
+              style={{
+                animation: 'sizeAlternate2 2s ease-in-out infinite'
+              }}
+            >
+              ギャラリーを見る 🖼️
+            </Link>
+          </div>
+        </div>
+        
+        {/* 自定义动画样式 */}
+        <style jsx>{`
+          @keyframes sizeAlternate1 {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          @keyframes sizeAlternate2 {
+            0%, 100% { transform: scale(1.05); }
+            50% { transform: scale(1); }
+          }
+        `}</style>
       </div>
     </section>
   );

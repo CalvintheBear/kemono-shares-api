@@ -43,7 +43,7 @@ export default function PersonificationPage() {
                   <p className="text-sm text-gray-600 mb-3 font-bold">変身前</p>
                   <div className="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg inline-block">
                     <Image
-                      src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before"
+                      src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before"
                       alt="擬人化 変身前"
                       width={0}
                       height={0}
@@ -69,7 +69,7 @@ export default function PersonificationPage() {
                   <p className="text-sm text-amber-700 mb-3 font-bold">変身後</p>
                   <div className="bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg inline-block">
                     <Image
-                      src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after"
+                      src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after"
                       alt="擬人化 変身後"
                       width={0}
                       height={0}
@@ -212,9 +212,50 @@ export default function PersonificationPage() {
           </section>
 
           <section className="text-center mt-12">
-            <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
-              今すぐ擬人化キャラを作る 🎭
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
+                今すぐ擬人化キャラを作る 🎭
+              </Link>
+              <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                ギャラリーを見る 🖼️
+              </Link>
+            </div>
+          </section>
+
+          {/* 関連コンテンツ */}
+          <section className="card-kawaii p-8 mt-12">
+            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+              </Link>
+              
+              <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
+                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+              </Link>
+              
+              <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
+                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+              </Link>
+              
+              <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
+                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+              </Link>
+              
+              <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
+                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+              </Link>
+              
+              <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
+                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+              </Link>
+            </div>
           </section>
         </article>
       </div>
