@@ -190,8 +190,16 @@ const templates = [
     name: 'emoji 絵文字風',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
-    prompt: 'カワイイアニメのメイドガールで、繊細なレースとフリルのディテール、ソフトなシェーディング、パステルカラー、可愛い表情、ゴシックロリータ要素、光沢のある瞳。アニメメイド、カワイイ、繊細なレース、ソフトシェーディング、パステルカラー、フリルディテール、可愛い表情、ゴシックロリータ要素、光沢のある瞳、ディテール豊かな衣装、ロマンチックな雰囲気、手描きアニメ、魅力的、女性的、複雑なデザイン、ライトバックグラウンド、甘美、エレガント、アニメ美学、メイドヘッドドレス',
+    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
     category: 'emoji 絵文字風'
+  },
+  {
+    id: '25',
+    name: '獣耳',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%85%BD%E8%80%B3-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%85%BD%E8%80%B3-after',
+    prompt: 'かわいい獣耳キャラクター、猫耳または狐耳、ふわふわの耳と尻尾が特徴。自然な髪色と大きな瞳、柔らかい表情。耳と同系色の髪飾りやリボンをつけている。ファンタジー風の衣装、モフモフ感を大事にしたデザイン。背景はややぼかした自然風景、柔らかい光、アニメ風イラスト、高解像度、全身が見える構図。',
+    category: '獣耳'
   },
 ]
 

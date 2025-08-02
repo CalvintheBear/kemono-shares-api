@@ -183,14 +183,6 @@ const templates: Template[] = [
     category: 'クレヨンしんちゃん'
   },
   {
-    id: '22',
-    name: '証明写真加工',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-after',
-    prompt: '韓国風の証明写真スタイル。自然な美肌補正、清潔な背景、ソフトなライティング、白くて滑らかな肌、ナチュラルメイク、整った髪型、正面からの顔アップ、制服は韓国の女子高校生風、整った制服スタイル、清楚で上品な雰囲気、可愛いけど控えめ、HD、証明写真構図。',
-    category: '証明写真加工'
-  },
-  {
     id: '23',
     name: '写真 アニメ風',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%86%99%E7%9C%9F%E6%BC%AB%E7%94%BB%E5%8C%96-before',
@@ -203,8 +195,16 @@ const templates: Template[] = [
     name: 'emoji 絵文字風',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
-    prompt: 'カワイイアニメのメイドガールで、繊細なレースとフリルのディテール、ソフトなシェーディング、パステルカラー、可愛い表情、ゴシックロリータ要素、光沢のある瞳。アニメメイド、カワイイ、繊細なレース、ソフトシェーディング、パステルカラー、フリルディテール、可愛い表情、ゴシックロリータ要素、光沢のある瞳、ディテール豊かな衣装、ロマンチックな雰囲気、手描きアニメ、魅力的、女性的、複雑なデザイン、ライトバックグラウンド、甘美、エレガント、アニメ美学、メイドヘッドドレス',
+    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
     category: 'emoji 絵文字風'
+  },
+  {
+    id: '25',
+    name: '獣耳',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%85%BD%E8%80%B3-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%85%BD%E8%80%B3-after',
+    prompt: 'かわいい獣耳キャラクター、猫耳または狐耳、ふわふわの耳と尻尾が特徴。自然な髪色と大きな瞳、柔らかい表情。耳と同系色の髪飾りやリボンをつけている。ファンタジー風の衣装、モフモフ感を大事にしたデザイン。背景はややぼかした自然風景、柔らかい光、アニメ風イラスト、高解像度、全身が見える構図。',
+    category: '獣耳'
   },
 ]
 
