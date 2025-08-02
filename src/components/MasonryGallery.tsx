@@ -46,9 +46,9 @@ export default function MasonryGallery({
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { ref: loadMoreRef, inView } = useInView({
-    threshold: 0.1,
+    threshold: 0.5, // Require 50% visibility
     triggerOnce: false,
-    rootMargin: '100px',
+    rootMargin: '50px', // Smaller trigger area
   });
 
   // Calculate column count based on container width
@@ -102,7 +102,7 @@ export default function MasonryGallery({
     }
   }, [images, columnCount, distributeImages]);
 
-  // Handle infinite scroll
+  // Handle infinite scroll with proper debouncing
   useEffect(() => {
     if (inView && hasMore && !isLoading && !loading) {
       setIsLoading(true);

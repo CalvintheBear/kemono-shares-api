@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import MasonryGallery from './MasonryGallery';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
@@ -28,6 +28,8 @@ export default function ShareGallery() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [currentOffset, setCurrentOffset] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+  const lastRequestRef = useRef<number>(0);
 
   const ITEMS_PER_PAGE = 20;
 
@@ -44,10 +46,18 @@ export default function ShareGallery() {
 
   // Fetch share items from API
   const fetchShareItems = useCallback(async (offset: number = 0, append: boolean = false) => {
-    if (loading) return;
+    // Debounce to prevent rapid requests
+    const now = Date.now();
+    if (now - lastRequestRef.current < 1000) {
+      console.log('Request too fast, skipping...');
+      return;
+    }
+    lastRequestRef.current = now;
+
+    if (loading || isFetching) return;
 
     try {
-      setLoading(true);
+      setIsFetching(true);
       console.log('Fetching share items, offset:', offset, 'append:', append);
       
       const response = await fetch(
@@ -63,7 +73,7 @@ export default function ShareGallery() {
       
       if (result.success && result.data?.items) {
         const newImages = transformToMasonryImages(result.data.items);
-        console.log('Transformed images:', newImages.length, 'items');
+        console.log('Transformed images:', newImages.length, 'items', 'hasMore:', result.data.hasMore);
         
         if (append) {
           setImages(prev => [...prev, ...newImages]);
@@ -73,17 +83,25 @@ export default function ShareGallery() {
 
         setHasMore(result.data.hasMore || false);
         setCurrentOffset(offset + newImages.length);
+        
+        // Prevent infinite loop if no new items
+        if (newImages.length === 0) {
+          setHasMore(false);
+        }
       } else {
         console.log('No items found or invalid response format:', result);
         if (!append) setImages([]);
+        setHasMore(false);
       }
     } catch (error) {
       console.error('Failed to fetch share items:', error);
       if (!append) setImages([]);
+      setHasMore(false);
     } finally {
+      setIsFetching(false);
       setLoading(false);
     }
-  }, [loading, ITEMS_PER_PAGE]);
+  }, [loading, isFetching, ITEMS_PER_PAGE]);
 
   // Initial load
   useEffect(() => {
@@ -92,10 +110,10 @@ export default function ShareGallery() {
 
   // Load more handler for infinite scroll
   const handleLoadMore = useCallback(async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore || loading || isFetching) return;
     console.log('Loading more items, offset:', currentOffset);
     await fetchShareItems(currentOffset, true);
-  }, [hasMore, loading, currentOffset, fetchShareItems]);
+  }, [hasMore, loading, isFetching, currentOffset, fetchShareItems]);
 
   // Handle image click
   const _handleImageClick = (image: MasonryImage) => {
@@ -105,7 +123,7 @@ export default function ShareGallery() {
   return (
     <div className="w-full">
       {/* Gallery */}
-      {loading && images.length === 0 ? (
+      {(loading || isFetching) && images.length === 0 ? (
         <div className="flex justify-center py-20">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
@@ -117,7 +135,7 @@ export default function ShareGallery() {
           images={images}
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
-          loading={loading}
+          loading={loading || isFetching}
         />
       ) : (
         <EmptyGallery onRefresh={() => fetchShareItems(0, false)} />
