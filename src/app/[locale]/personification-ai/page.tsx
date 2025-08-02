@@ -42,12 +42,14 @@ export default function PersonificationPage() {
                 {/* 变身前 */}
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-3 font-bold">変身前</p>
-                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
+                  <div className="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg inline-block">
                     <Image
                       src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before"
                       alt="擬人化 変身前"
-                      width={200}
-                      height={200}
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="w-auto h-auto max-w-full max-h-96 object-contain"
                       unoptimized
                     />
                   </div>
@@ -66,12 +68,14 @@ export default function PersonificationPage() {
                 {/* 变身后 */}
                 <div className="text-center">
                   <p className="text-sm text-amber-700 mb-3 font-bold">変身後</p>
-                  <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
+                  <div className="bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg inline-block">
                     <Image
                       src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after"
                       alt="擬人化 変身後"
-                      width={200}
-                      height={200}
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="w-auto h-auto max-w-full max-h-96 object-contain"
                       unoptimized
                     />
                   </div>

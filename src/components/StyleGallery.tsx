@@ -101,43 +101,45 @@ export default function StyleGallery() {
                   key={`${selectedStyle}-${image.id}-${index}`}
                   className="card-kawaii p-2 hover:scale-105 transition-transform duration-300"
                 >
-                                   <div className="w-64 h-64 bg-gradient-to-br from-pink-100 to-orange-100 rounded-lg overflow-hidden relative group">
-                   {/* 占位背景 */}
-                   <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">
-                     {styleTypes.find(s => s.id === selectedStyle)?.emoji}
-                   </div>
-                   
-                   {/* 主图片 */}
-                   <Image
-                     src={image.url}
-                     alt={image.alt}
-                     fill
-                     className="object-cover transition-opacity duration-500"
-                     onError={(e) => {
-                       const img = e.target as HTMLImageElement
-                       img.src = image.fallbackUrl
-                     }}
-                   />
-                   
-                   {/* 悬停遮罩效果 */}
-                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
-                   
-                   {/* 图片标签 */}
-                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent p-4">
-                     <p className="text-white text-sm font-medium">
-                       サンプル {image.id + 1}
-                     </p>
-                   </div>
-                   
-                   {/* 放大镜图标 (悬停时显示) */}
-                   <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                     <div className="bg-white/90 rounded-full p-2">
-                       <svg className="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                       </svg>
-                     </div>
-                   </div>
-                 </div>
+                  <div className="bg-gradient-to-br from-pink-100 to-orange-100 rounded-lg overflow-hidden relative group inline-block">
+                    {/* 占位背景 */}
+                    <div className="w-64 h-64 flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">
+                      {styleTypes.find(s => s.id === selectedStyle)?.emoji}
+                    </div>
+                    
+                    {/* 主图片 */}
+                    <Image
+                      src={image.url}
+                      alt={image.alt}
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, 256px"
+                      className="w-auto h-auto max-w-64 max-h-64 object-contain transition-opacity duration-500"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement
+                        img.src = image.fallbackUrl
+                      }}
+                    />
+                    
+                    {/* 悬停遮罩效果 */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+                    
+                    {/* 图片标签 */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent p-4">
+                      <p className="text-white text-sm font-medium">
+                        サンプル {image.id + 1}
+                      </p>
+                    </div>
+                    
+                    {/* 放大镜图标 (悬停时显示) */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="bg-white/90 rounded-full p-2">
+                        <svg className="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

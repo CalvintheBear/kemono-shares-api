@@ -20,42 +20,50 @@ const templates = [
   {
     id: '1',
     name: '擬人化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after',
-    prompt: '擬人化キャラクター、画像中のオブジェクトの美少女化、創造的なデザイン、可愛い擬人化、個性的な表現',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after',
+    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
     category: '擬人化'
   },
   {
     id: '18',
     name: '可愛line アイコン',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-after',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr',
     prompt: 'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン',
     category: '可愛line アイコン'
   },
   {
     id: '19',
     name: 'lineスタンプ',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85-after',
-    prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、4コマ漫画（怒り、驚き、軽蔑、陰険）',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after',
+    prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、感情を表すシンボルのような要素も含む、透明な背景のイラスト',
     category: 'lineスタンプ'
+  },
+  {
+    id: '20',
+    name: '可愛い壁紙',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-after',
+    prompt: 'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
+    category: '可愛い壁紙'
   },
   {
     id: '17',
     name: 'irasutoya',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-after',
-    prompt: 'イラストはエレガントなスタイルで、穏やかで愛らしい、商用フリー素材スタイルで、シンプルで親しみやすく、柔らかな触感、可愛いキャラクター、癒し系、フラットデザイン、親しみやすい雰囲気、清潔な背景です。',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-afterr',
+    prompt: 'イラストはエレガントなスタイルで、穏やかで愛らしい、商用フリー素材スタイルで、シンプルで親しみやすく、柔らかな触感、可愛いキャラクター、誇張した表情、抽象芸術、フラットデザイン、親しみやすい雰囲気、清潔な背景です。',
     category: 'irasutoya'
   },
   {
     id: '2',
-    name: 'BlueArchive&ブルーアーカイブ',
+    name: 'ブルーアーカイブ',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%93%9D%E8%89%B2%E6%A1%A3%E6%A1%88-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%93%9D%E8%89%B2%E6%A1%A3%E6%A1%88-after',
     prompt: 'ウルトラブルーアーカイブスタイル、アニメの女の子、制服の美学、柔らかなカートゥーンの影、細く綺麗な線画、半写実的な比率、柔らかなカラーパレット、フラットな照明、最小限の影、光のグラデーション、高解像度、未来的な現代学校デザイン、SF要素、光り輝くアクセサリー、スタイリッシュな武器デザイン、テクノロジーの服装のアクセント、最小限の背景、プロフェッショナルなキャラクターシートの雰囲気、活気に満ちた柔らかな色調の調和。',
-    category: 'BlueArchive&ブルーアーカイブ'
+    category: 'ブルーアーカイブ'
   },
   {
     id: '3',
@@ -76,7 +84,7 @@ const templates = [
   {
     id: '7',
     name: '少女',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-before',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-beforer',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-after',
     prompt: 'eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
     category: '少女'
@@ -84,16 +92,16 @@ const templates = [
   {
     id: '8',
     name: '萌え化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-after',
-    prompt: '萌え化キャラクター、可愛く魅力的なデザイン、萌え要素満載、癒し系ふわふわ、美少女アニメスタイル',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%90%8C%E5%8C%96-afterr',
+    prompt: 'ちび風ロリータ少女、可愛いウサギ耳、フリルディテール、ふわふわの要素が特徴で。チビ、カワイイ、ソフトシェーディング、可愛いウサギ耳、フリルディテール、繊細なラインアート、パステル背景、愛らしい表情、スウィートテーマ、手描き、カートゥーン調、ミニマリスト背景、光沢のある瞳、フローラルアクセント、リボンディテール、ふわふわ要素、明るい色調、甘美なカラーパレット、魅力的',
     category: '萌え化'
   },
   {
     id: '9',
     name: 'chibi',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
     prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
     category: 'chibi'
   },
@@ -108,8 +116,8 @@ const templates = [
   {
     id: '11',
     name: 'SDキャラ',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD-after',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD%E5%B0%8F%E4%BA%BA-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD%E5%B0%8F%E4%BA%BA-after',
     prompt: 'SDキャラクター、スーパーデフォルメ、ちびキャラ、可愛らしい小さな体、頭身の短いデフォルメスタイル',
     category: 'SDキャラ'
   },
@@ -123,11 +131,11 @@ const templates = [
   },
   {
     id: '13',
-    name: ' ヤンデレ&地雷女',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E7%97%85%E5%A8%87-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E7%97%85%E5%A8%87-after',
-    prompt: '病娇キャラクター、ヤンデレ、危険で魅力的、暗い雰囲気、複雑な感情表現、アニメ風病娇美少女、狂気と愛の境界、執着心の強いキャラクター',
-    category: 'ヤンデレ&地雷女'
+    name: 'ゴシック地雷女',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%93%A5%E7%89%B9%E5%9C%B0%E9%9B%B7-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%93%A5%E7%89%B9%E5%9C%B0%E9%9B%B7-after',
+    prompt: 'ゴシックロリータスタイルの少女で、スウィートゴスとカワイイ要素を融合、黒白トーン、繊細なレースディテール、猫耳アクセサリー、鏡撮りのクールでカワイイ雰囲気。ゴシックロリータ、スウィートゴス、黒白トーン、繊細なレースディテール、猫耳アクセサリー、フリルテクスチャ、カワイイゴス美学、モノクロパレット、チェッカードパターン、チョーカーネックレス、ロングツインテール、ミラーセルフィー構図、エッジーでカワイイヴァイブ、テキストオーバーレイ、複雑な衣装デザイン、ゴシックアクセサリー、ムーディライティング、レースグローブ、コルセットディテール、ダークロマンス',
+    category: 'ゴシック地雷女'
   },
   {
     id: '14',
@@ -154,14 +162,6 @@ const templates = [
     category: '乙女ゲーム'
   },
   {
-    id: '20',
-    name: '可愛い壁紙',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-after',
-    prompt: 'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
-    category: '可愛い壁紙'
-  },
-  {
     id: '21',
     name: 'クレヨンしんちゃん',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%9C%A1%E7%AC%94%E5%B0%8F%E6%96%B0-before',
@@ -172,10 +172,26 @@ const templates = [
   {
     id: '22',
     name: '証明写真加工',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E8%AF%81%E4%BB%B6%E7%85%A7-after',
-    prompt: '証明写真スタイルのレタッチ：背景は真っ白で清潔感があり、人物は中央配置、柔らかく均一なライティング、ナチュラルな肌質感、軽いスキントーン補正とシミ除去を行いつつリアルさを保持、瞳はクリアに、顔立ちはシャープに、全体的にプロフェッショナルかつシンプルな仕上がり。',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-after',
+    prompt: '韓国風の証明写真スタイル。自然な美肌補正、清潔な背景、ソフトなライティング、白くて滑らかな肌、ナチュラルメイク、整った髪型、正面からの顔アップ、制服は韓国の女子高校生風、整った制服スタイル、清楚で上品な雰囲気、可愛いけど控えめ、HD、証明写真構図。',
     category: '証明写真加工'
+  },
+  {
+    id: '23',
+    name: '写真 アニメ風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%86%99%E7%9C%9F%E6%BC%AB%E7%94%BB%E5%8C%96-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%86%99%E7%9C%9F%E6%BC%AB%E7%94%BB%E5%8C%96-after',
+    prompt: 'カワイイアニメのメイドガールで、繊細なレースとフリルのディテール、ソフトなシェーディング、パステルカラー、可愛い表情、ゴシックロリータ要素、光沢のある瞳。アニメメイド、カワイイ、繊細なレース、ソフトシェーディング、パステルカラー、フリルディテール、可愛い表情、ゴシックロリータ要素、光沢のある瞳、ディテール豊かな衣装、ロマンチックな雰囲気、手描きアニメ、魅力的、女性的、複雑なデザイン、ライトバックグラウンド、甘美、エレガント、アニメ美学、メイドヘッドドレス',
+    category: '写真 アニメ風'
+  },
+  {
+    id: '24',
+    name: 'emoji 絵文字風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
+    prompt: 'カワイイアニメのメイドガールで、繊細なレースとフリルのディテール、ソフトなシェーディング、パステルカラー、可愛い表情、ゴシックロリータ要素、光沢のある瞳。アニメメイド、カワイイ、繊細なレース、ソフトシェーディング、パステルカラー、フリルディテール、可愛い表情、ゴシックロリータ要素、光沢のある瞳、ディテール豊かな衣装、ロマンチックな雰囲気、手描きアニメ、魅力的、女性的、複雑なデザイン、ライトバックグラウンド、甘美、エレガント、アニメ美学、メイドヘッドドレス',
+    category: 'emoji 絵文字風'
   },
 ]
 
@@ -245,13 +261,15 @@ export default function TemplateGallery() {
               {/* 变身前 */}
               <div className="text-center animate-fade-in-left" style={{animationDelay: '0.8s'}}>
                 <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 font-bold">変身前</p>
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg">
+                <div className="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg inline-block">
                   {isClient && (
                     <Image
                       src={selectedTemplate.beforeImage}
                       alt={`${selectedTemplate.name} 変身前`}
-                      width={500}
-                      height={500}
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="w-auto h-auto max-w-full max-h-96 object-contain"
                       unoptimized
                     />
                   )}
@@ -271,13 +289,15 @@ export default function TemplateGallery() {
               {/* 变身后 */}
               <div className="text-center animate-fade-in-right" style={{animationDelay: '0.8s'}}>
                 <p className="text-sm sm:text-base text-amber-700 mb-3 sm:mb-4 font-bold">変身後</p>
-                <div className="aspect-square bg-amber-100 rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg">
+                <div className="bg-white rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg inline-block">
                   {isClient && (
                     <Image
                       src={selectedTemplate.afterImage}
                       alt={`${selectedTemplate.name} 変身後`}
-                      width={500}
-                      height={500}
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="w-auto h-auto max-w-full max-h-96 object-contain"
                       unoptimized
                     />
                   )}
