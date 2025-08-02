@@ -846,7 +846,6 @@ export default function WorkspaceRefactored() {
                   </div>
                 ) : (
                   <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
                     <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
                       <div className="text-6xl sm:text-7xl mb-6 animate-bounce">📸✨</div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">

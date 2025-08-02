@@ -713,5 +713,38 @@
     "createdAt": "2025-08-02T12:26:21.102Z",
     "isR2Stored": true,
     "isTextToImage": false
+  },
+  "share_1754150074251_auockgwin": {
+    "id": "share_1754150074251_auockgwin",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-emoji 絵文字風-1754150069089.png",
+    "originalUrl": "https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev/uploads/1754149777262-sssmqx4d11.jpg",
+    "prompt": "写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。",
+    "style": "emoji 絵文字風",
+    "timestamp": 1754150069089,
+    "createdAt": "2025-08-02T15:54:34.251Z",
+    "isR2Stored": true,
+    "isTextToImage": false
+  },
+  "share_1754150374265_5m3612ail": {
+    "id": "share_1754150374265_5m3612ail",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-emoji 絵文字風-1754150368928.png",
+    "originalUrl": null,
+    "prompt": "ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系",
+    "style": "emoji 絵文字風",
+    "timestamp": 1754150368928,
+    "createdAt": "2025-08-02T15:59:34.265Z",
+    "isR2Stored": true,
+    "isTextToImage": true
+  },
+  "share_1754150380648_as5a4v3rv": {
+    "id": "share_1754150380648_as5a4v3rv",
+    "generatedUrl": "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/kie-downloads/share-emoji 絵文字風-1754150376119.png",
+    "originalUrl": null,
+    "prompt": "ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系",
+    "style": "emoji 絵文字風",
+    "timestamp": 1754150376119,
+    "createdAt": "2025-08-02T15:59:40.648Z",
+    "isR2Stored": true,
+    "isTextToImage": true
   }
 }
