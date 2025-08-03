@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
-import { randomUUID } from 'crypto'
+
+// Edge Runtime 兼容
+export const runtime = 'edge'
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,39 +42,27 @@ export async function POST(request: NextRequest) {
     }
 
     const extension = extensionMap[mimeType] || 'jpg'
-    const fileName = `${randomUUID()}.${extension}`
+    // Edge Runtime 兼容：使用 crypto.randomUUID()
+    const fileName = `${crypto.randomUUID()}.${extension}`
 
-    // 创建临时文件目录
-    const tempDir = path.join(process.cwd(), 'public', 'temp')
-    try {
-      await mkdir(tempDir, { recursive: true })
-    } catch {
-      // 目录可能已存在，忽略错误
-    }
+    // Edge Runtime 中不支持文件系统操作
+    // 直接返回处理后的数据，由前端使用 blob URL 或直接使用 base64
+    const fileUrl = base64Data // 直接返回 base64 数据作为 URL
 
-    // 将base64数据转换为Buffer并写入文件
-    const buffer = Buffer.from(base64String, 'base64')
-    const filePath = path.join(tempDir, fileName)
-    await writeFile(filePath, buffer)
-
-    // 生成可访问的URL
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const host = request.headers.get('host') || 'localhost:3000'
-    const fileUrl = `${protocol}://${host}/temp/${fileName}`
-
-    console.log('临时文件已创建:', { fileName, fileUrl, mimeType })
+    console.log('临时数据已处理:', { fileName, mimeType })
 
     return NextResponse.json({
       success: true,
       fileUrl,
       fileName,
-      mimeType
+      mimeType,
+      isBase64: true // 标识这是 base64 数据而不是实际文件 URL
     })
 
   } catch (error) {
-    console.error('创建临时文件失败:', error)
+    console.error('处理临时数据失败:', error)
     return NextResponse.json(
-      { error: '创建临时文件失败', details: error instanceof Error ? error.message : String(error) },
+      { error: '处理临时数据失败', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }

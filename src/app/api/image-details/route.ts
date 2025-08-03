@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getApiKeyRotation } from '@/lib/api-key-rotation'
 
+// Edge Runtime 兼容
+export const runtime = 'edge'
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams

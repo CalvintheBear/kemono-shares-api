@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Edge Runtime 兼容
+export const runtime = 'edge'
+
 // KIE AI API 配置
 const KIE_AI_API_KEY = process.env.KIE_AI_API_KEY
 const KIE_AI_BASE_URL = process.env.KIE_AI_BASE_URL || 'https://api.kie.ai'

@@ -1,5 +1,4 @@
-import fs from 'fs'
-import path from 'path'
+// Edge Runtime 兼容：移除 Node.js 模块
 
 export interface ShareData {
   id: string
@@ -375,31 +374,18 @@ export class ShareKVStore {
   }
 }
 
-const DEV_JSON_PATH = path.resolve(process.cwd(), 'local-storage/shares-dev.json')
-
+// Edge Runtime 兼容：禁用本地文件系统操作
 function isDev() {
-  return process.env.NODE_ENV === 'development'
+  return false // Edge Runtime 中始终返回 false
 }
 
 function readDevJson(): Record<string, ShareData> {
-  try {
-    if (fs.existsSync(DEV_JSON_PATH)) {
-      const raw = fs.readFileSync(DEV_JSON_PATH, 'utf-8')
-      return JSON.parse(raw)
-    }
-  } catch (e) {
-    console.warn('⚠️ 读取本地持久化分享数据失败:', e)
-  }
+  // Edge Runtime 中不支持文件系统操作，返回空对象
   return {}
 }
 
-function writeDevJson(data: Record<string, ShareData>) {
-  try {
-    fs.writeFileSync(DEV_JSON_PATH, JSON.stringify(data, null, 2), 'utf-8')
-    console.log('💾 已写入本地持久化分享数据:', DEV_JSON_PATH)
-  } catch (e) {
-    console.warn('⚠️ 写入本地持久化分享数据失败:', e)
-  }
+function writeDevJson(_data: Record<string, ShareData>) {
+  // Edge Runtime 中不支持文件系统操作，空操作
 }
 
 // 创建全局实例
