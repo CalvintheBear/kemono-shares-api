@@ -49,6 +49,9 @@ process.env.NEXT_OPTIMIZE_FONTS = 'false';
 process.env.NEXT_OPTIMIZE_IMAGES = 'false';
 // 禁用webpack缓存
 process.env.WEBPACK_CACHE = 'false';
+// 禁用所有缓存
+process.env.NEXT_WEBPACK_CACHE = 'false';
+process.env.NEXT_CACHE_DIR = 'false';
 
 console.log('📦 开始 Next.js 极优化构建...');
 try {
@@ -66,6 +69,33 @@ try {
     console.log('📝 使用 Cloudflare Pages 极优化配置...');
   }
   
+  // 创建临时的webpack配置文件来禁用缓存
+  const webpackConfig = `
+const path = require('path');
+
+module.exports = {
+  cache: false,
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      maxSize: 2000,
+      minSize: 500,
+    },
+    minimize: false,
+    concatenateModules: false,
+  },
+  performance: {
+    hints: 'warning',
+    maxEntrypointSize: 10000,
+    maxAssetSize: 10000,
+  },
+  devtool: false,
+};
+`;
+  
+  fs.writeFileSync('webpack.config.js', webpackConfig);
+  console.log('📝 创建临时 webpack 配置...');
+  
   // 使用极优化的构建命令，禁用缓存
   execSync('next build --no-lint --no-cache', { 
     stdio: 'inherit',
@@ -76,9 +106,16 @@ try {
       NEXT_CACHE: 'false',
       NEXT_OPTIMIZE_FONTS: 'false',
       NEXT_OPTIMIZE_IMAGES: 'false',
-      WEBPACK_CACHE: 'false'
+      WEBPACK_CACHE: 'false',
+      NEXT_WEBPACK_CACHE: 'false',
+      NEXT_CACHE_DIR: 'false'
     }
   });
+  
+  // 删除临时webpack配置
+  if (fs.existsSync('webpack.config.js')) {
+    fs.unlinkSync('webpack.config.js');
+  }
   
   // 恢复原配置
   if (fs.existsSync(originalConfig + '.backup')) {
@@ -91,6 +128,11 @@ try {
 } catch (error) {
   console.error('❌ Next.js 构建失败:', error.message);
   
+  // 删除临时webpack配置
+  if (fs.existsSync('webpack.config.js')) {
+    fs.unlinkSync('webpack.config.js');
+  }
+  
   // 恢复原配置
   if (fs.existsSync(originalConfig + '.backup')) {
     fs.copyFileSync(originalConfig + '.backup', originalConfig);
@@ -99,6 +141,32 @@ try {
   }
   
   process.exit(1);
+}
+
+// 构建后清理大文件
+console.log('🧹 构建后清理大文件...');
+try {
+  const cleanLargeFiles = (dir) => {
+    if (fs.existsSync(dir)) {
+      const files = fs.readdirSync(dir, { recursive: true });
+      files.forEach(file => {
+        const filePath = path.join(dir, file);
+        if (fs.statSync(filePath).isFile()) {
+          const sizeInMB = fs.statSync(filePath).size / (1024 * 1024);
+          if (sizeInMB > 25) {
+            console.log(`🗑️  删除大文件: ${filePath} (${sizeInMB.toFixed(2)} MB)`);
+            fs.unlinkSync(filePath);
+          }
+        }
+      });
+    }
+  };
+  
+  cleanLargeFiles('.');
+  cleanLargeFiles('.next');
+  cleanLargeFiles('cache');
+} catch (error) {
+  console.log('清理大文件时出错:', error.message);
 }
 
 // 检查文件大小
