@@ -34,7 +34,12 @@
       "WebFetch(domain:javascript.plainenglish.io)",
       "WebFetch(domain:harshalranjhani.in)",
       "WebFetch(domain:gestalt.pinterest.systems)",
-      "Bash(npm run build:railway:*)"
+      "Bash(npm run build:railway:*)",
+      "Bash(npm run pages:build:*)",
+      "Bash(wrangler:*)",
+      "Bash(rm:*)",
+      "Bash(true)",
+      "Bash(npm run build:light:*)"
     ],
     "deny": []
   }

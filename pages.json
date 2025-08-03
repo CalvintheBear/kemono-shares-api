@@ -1,0 +1,10 @@
+{
+  "build": {
+    "command": "npm run build",
+    "output": ".next"
+  },
+  "build": {
+    "command": "npm run build",
+    "output": ".next"
+  }
+}

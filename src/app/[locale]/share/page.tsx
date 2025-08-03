@@ -24,7 +24,7 @@ export default function SharePage() {
   const [hasShareData, setHasShareData] = useState(false)
 
   useEffect(() => {
-    const dataParam = searchParams.get('data')
+    const dataParam = searchParams?.get('data')
     if (dataParam) {
       try {
         const decodedData = atob(dataParam)

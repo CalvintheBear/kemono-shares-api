@@ -11,7 +11,7 @@ export default function MobileBottomNav() {
   const [currentPath, setCurrentPath] = useState('')
 
   useEffect(() => {
-    setCurrentPath(pathname)
+    setCurrentPath(pathname || '')
   }, [pathname])
 
   // 使用媒体查询来检测移动端，而不是props
