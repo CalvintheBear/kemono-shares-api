@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && npx rimraf cache webpack .next/cache",
+    "build:railway": "next build",
     "start": "next start",
     "lint": "next lint",
     "pages:build": "NEXT_CACHE=false npx @cloudflare/next-on-pages",
