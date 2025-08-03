@@ -366,7 +366,8 @@ export default function WorkspaceRefactored() {
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
-  const templatesPerPage = 5
+  const [isMobile, setIsMobile] = useState(false)
+  const templatesPerPage = isMobile ? 3 : 5
   // const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
 
 
@@ -375,7 +376,6 @@ export default function WorkspaceRefactored() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pollIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isMountedRef = useRef(true)
-  const [isMobile, setIsMobile] = useState(false)
   const templateScrollRef = useRef<HTMLDivElement>(null)
   const hasInitializedRef = useRef(false)
   
@@ -1104,26 +1104,28 @@ export default function WorkspaceRefactored() {
           <div className="px-3 pb-3">
             <div 
               ref={templateScrollRef}
-              className="flex gap-2 overflow-x-auto pb-2 touch-pan-x"
+              className="flex gap-3 overflow-x-auto pb-2 touch-pan-x"
             >
               {templates.map((template) => (
                 <button
                   key={template.id}
                   onClick={() => handleMobileTemplateSelect(template)}
-                  className={`flex-shrink-0 w-20 p-1 rounded-lg transition-all ${
+                  className={`flex-none min-w-[5.5rem] max-w-[5.5rem] w-[5.5rem] h-36 p-1.5 rounded-[16px] border-2 transition-all transform hover:scale-105 flex flex-col items-center ${
                     selectedTemplate?.id === template.id
-                      ? 'border-2 border-pink-500 bg-pink-50'
-                      : 'border border-gray-300 bg-white'
+                      ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
+                      : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
                   }`}
                 >
-                  <Image
-                    src={template.afterImage}
-                    alt={template.name}
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded mx-auto"
-                  />
-                  <p className="text-xs mt-1 text-center break-words leading-tight">{template.name}</p>
+                  <div className="flex-1 flex items-center justify-center mb-1">
+                    <Image
+                      src={template.afterImage}
+                      alt={template.name}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 object-cover rounded-[12px] shadow-sm"
+                    />
+                  </div>
+                  <p className="text-xs font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words">{template.name}</p>
                 </button>
               ))}
             </div>
@@ -1306,20 +1308,22 @@ export default function WorkspaceRefactored() {
                         <button
                           key={template.id}
                           onClick={() => handleTemplateSelect(template)}
-                          className={`p-1.5 rounded-[16px] border-2 transition-all transform hover:scale-105 ${
+                          className={`p-1.5 h-36 rounded-[16px] border-2 transition-all transform hover:scale-105 flex flex-col ${
                             selectedTemplate?.id === template.id
                               ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
                               : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
                           }`}
                         >
-                          <Image
-                            src={template.afterImage}
-                            alt={template.name}
-                            width={128}
-                            height={128}
-                            className="w-full aspect-square object-cover rounded-[12px] mb-1 shadow-sm mx-auto"
-                          />
-                          <p className="text-[10px] font-bold text-amber-800 font-cute leading-tight px-0.5 text-center">{template.name}</p>
+                          <div className="flex-1 flex items-center justify-center mb-1">
+                            <Image
+                              src={template.afterImage}
+                              alt={template.name}
+                              width={128}
+                              height={128}
+                              className="w-full max-w-28 aspect-square object-cover rounded-[12px] shadow-sm"
+                            />
+                          </div>
+                          <p className="text-xs font-bold text-amber-800 font-cute leading-tight px-0.5 text-center h-8 flex items-center justify-center">{template.name}</p>
                         </button>
                       ))}
                   </div>
@@ -1344,7 +1348,7 @@ export default function WorkspaceRefactored() {
 
             {mode !== 'text-to-image' && (
               <div
-                className={`border-2 border-dashed border-pink-300/30 rounded-[28px] p-8 text-center hover:border-pink-400 transition-all cursor-pointer bg-white/50 backdrop-blur-lg hover:bg-white/70 transform hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-1000 delay-900 ${
+                className={`border-2 border-dashed border-pink-300/30 rounded-[28px] p-8 text-center hover:border-pink-400 cursor-pointer bg-white/50 backdrop-blur-lg hover:bg-white/70 transform hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-1000 delay-900 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
                 onDrop={handleDrop}
