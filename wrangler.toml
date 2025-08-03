@@ -1,13 +1,12 @@
 name = "kemono-shares-api"
-main = "src/index.js"
 compatibility_date = "2024-07-01"
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+compatibility_flags = ["nodejs_compat"]
 
 # Cloudflare Pages 配置
 pages_build_output_dir = ".next"
 
 [build]
-command = "npm run build"
+command = "npm run build:cloudflare-pages"
 
 [env.production]
 name = "kemono-shares-api"
