@@ -4,17 +4,117 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
-  // 禁用构建缓存以避免生成超过 25MB 的 webpack 缓存文件
+  // 优化 webpack 配置以减少包大小
   experimental: {
     webpackBuildWorker: false,
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
   },
+  
   // 禁用持久化缓存
   distDir: '.next',
   generateBuildId: async () => {
     // 生成随机 build ID 避免缓存
     return Date.now().toString()
   },
+  
+  // 优化 webpack 配置
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // 客户端构建优化 - 针对 Cloudflare Pages 25MB 限制
+      config.optimization = {
+        ...config.optimization,
+        // 启用代码分割
+        splitChunks: {
+          chunks: 'all',
+          maxSize: 244000, // 约 250KB，确保每个块都小于 25MB
+          cacheGroups: {
+            // 分离 React 相关库
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+              name: 'react',
+              chunks: 'all',
+              priority: 40,
+              enforce: true,
+            },
+            // 分离 Next.js 相关
+            next: {
+              test: /[\\/]node_modules[\\/]next[\\/]/,
+              name: 'next',
+              chunks: 'all',
+              priority: 30,
+              enforce: true,
+            },
+            // 分离 AWS SDK
+            aws: {
+              test: /[\\/]node_modules[\\/]@aws-sdk[\\/]/,
+              name: 'aws-sdk',
+              chunks: 'all',
+              priority: 20,
+              enforce: true,
+            },
+            // 分离其他第三方库
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              priority: 10,
+              enforce: true,
+            },
+            // 分离公共代码
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 5,
+              enforce: true,
+            },
+          },
+        },
+        // 启用模块连接
+        concatenateModules: true,
+        // 启用副作用优化
+        sideEffects: false,
+        // 启用最小化
+        minimize: true,
+      };
+      
+      // 优化模块解析
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          ...config.resolve.fallback,
+          fs: false,
+          net: false,
+          tls: false,
+          crypto: false,
+          stream: false,
+          url: false,
+          zlib: false,
+          http: false,
+          https: false,
+          assert: false,
+          os: false,
+          path: false,
+        },
+      };
+      
+      // 性能提示
+      config.performance = {
+        hints: 'warning',
+        maxEntrypointSize: 512000, // 500KB
+        maxAssetSize: 512000, // 500KB
+      };
+    }
+    
+    return config;
+  },
+  
+  // 压缩配置
+  compress: true,
+  
+  // 启用 gzip 压缩
+  poweredByHeader: false,
+  
   images: {
     unoptimized: true, // 允许所有远程图片不受限制
     remotePatterns: [
