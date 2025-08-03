@@ -34,7 +34,8 @@
     "clean": "if exist .next rmdir /s /q .next && if exist cache rmdir /s /q cache && if exist dist rmdir /s /q dist",
     "build:clean": "npm run clean && npm run build",
     "analyze": "node scripts/optimize-bundle.js",
-    "build:optimized": "npm run clean && npm run build:cloudflare && npm run analyze"
+    "build:optimized": "npm run clean && npm run build:cloudflare && npm run analyze",
+    "build:aggressive": "node scripts/build-cloudflare-aggressive.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",

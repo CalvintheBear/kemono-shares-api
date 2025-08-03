@@ -26,7 +26,8 @@ const nextConfig: NextConfig = {
         // 启用代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 244000, // 约 250KB，确保每个块都小于 25MB
+          maxSize: 100000, // 更激进的限制：100KB
+          minSize: 20000,  // 最小块大小：20KB
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -35,6 +36,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
+              maxSize: 50000, // React 库单独限制
             },
             // 分离 Next.js 相关
             next: {
@@ -43,6 +45,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
+              maxSize: 50000, // Next.js 库单独限制
             },
             // 分离 AWS SDK
             aws: {
@@ -51,6 +54,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
+              maxSize: 30000, // AWS SDK 单独限制
             },
             // 分离其他第三方库
             vendors: {
@@ -59,6 +63,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
+              maxSize: 40000, // 其他库限制
             },
             // 分离公共代码
             common: {
@@ -67,6 +72,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 5,
               enforce: true,
+              maxSize: 30000, // 公共代码限制
             },
           },
         },
@@ -76,6 +82,10 @@ const nextConfig: NextConfig = {
         sideEffects: false,
         // 启用最小化
         minimize: true,
+        // 更激进的压缩
+        minimizer: [
+          ...config.optimization.minimizer || [],
+        ],
       };
       
       // 优化模块解析
