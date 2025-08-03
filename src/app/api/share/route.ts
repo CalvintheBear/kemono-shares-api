@@ -4,6 +4,9 @@ import { shareKVStore, initializeSampleData, ShareData } from '@/lib/share-store
 import { clearShareCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
+// Cloudflare Pages 需要 Edge Runtime
+export const runtime = 'edge'
+
 // 用于检测重复请求的缓存
 const requestCache = new Map<string, { timestamp: number, shareId: string }>()
 const DUPLICATE_REQUEST_THRESHOLD = 5000 // 5秒内的重复请求阈值

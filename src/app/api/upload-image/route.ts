@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadImageToR2 } from '@/lib/image-upload';
 
+// Cloudflare Pages 需要 Edge Runtime
+export const runtime = 'edge'
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();

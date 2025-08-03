@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getApiKeyRotation } from '@/lib/api-key-rotation'
 
+// Cloudflare Pages 需要 Edge Runtime
+export const runtime = 'edge'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
