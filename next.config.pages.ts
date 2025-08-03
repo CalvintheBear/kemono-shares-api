@@ -16,17 +16,17 @@ const nextConfig: NextConfig = {
     return Date.now().toString()
   },
   
-  // 针对 Cloudflare Pages 25MB 限制的优化
+  // 针对 Cloudflare Pages 25MB 限制的激进优化
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
       // 客户端构建优化
       config.optimization = {
         ...config.optimization,
-        // 适度的代码分割
+        // 极激进的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 50000, // 50KB 限制
-          minSize: 10000,  // 10KB 最小块
+          maxSize: 10000, // 10KB 限制
+          minSize: 2000,  // 2KB 最小块
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 50,
               enforce: true,
-              maxSize: 30000, // 30KB
+              maxSize: 8000, // 8KB
             },
             // 分离 Next.js 相关
             next: {
@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
-              maxSize: 30000, // 30KB
+              maxSize: 8000, // 8KB
             },
             // 分离 AWS SDK
             aws: {
@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
-              maxSize: 20000, // 20KB
+              maxSize: 5000, // 5KB
             },
             // 分离其他第三方库
             vendors: {
@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
-              maxSize: 25000, // 25KB
+              maxSize: 6000, // 6KB
             },
             // 分离公共代码
             common: {
@@ -71,7 +71,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
-              maxSize: 20000, // 20KB
+              maxSize: 5000, // 5KB
             },
             // 分离样式文件
             styles: {
@@ -79,12 +79,12 @@ const nextConfig: NextConfig = {
               test: /\.(css|scss|sass)$/,
               chunks: 'all',
               enforce: true,
-              maxSize: 15000, // 15KB
+              maxSize: 4000, // 4KB
             },
           },
         },
-        // 启用模块连接
-        concatenateModules: true,
+        // 禁用模块连接
+        concatenateModules: false,
         // 启用副作用优化
         sideEffects: false,
         // 启用最小化
@@ -113,11 +113,11 @@ const nextConfig: NextConfig = {
         },
       };
       
-      // 适度的性能提示
+      // 极严格的性能提示
       config.performance = {
-        hints: 'warning',
-        maxEntrypointSize: 250000, // 250KB
-        maxAssetSize: 250000, // 250KB
+        hints: 'error',
+        maxEntrypointSize: 100000, // 100KB
+        maxAssetSize: 100000, // 100KB
       };
     }
     
