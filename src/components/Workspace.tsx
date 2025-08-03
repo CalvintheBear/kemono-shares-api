@@ -1003,7 +1003,6 @@ export default function WorkspaceRefactored() {
                         originalImageUrl={currentResult.original_url}
                         prompt={currentResult.prompt}
                         style={selectedTemplate?.name || 'カスタム'}
-                        existingShareUrl={autoShareUrl}
                       />
                     </div>
                   </div>
@@ -1689,7 +1688,6 @@ export default function WorkspaceRefactored() {
                           originalImageUrl={(currentResult as GenerationResult).original_url}
                           prompt={(currentResult as GenerationResult).prompt}
                           style={selectedTemplate?.name || 'カスタム'}
-                          existingShareUrl={autoShareUrl}
                         />
                       </div>
                     </div>

@@ -8,10 +8,9 @@ interface ShareButtonProps {
   originalImageUrl: string
   prompt: string
   style: string
-  existingShareUrl?: string // 已存在的分享链接 - 将被忽略，每次创建新分享
 }
 
-export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style, existingShareUrl }: ShareButtonProps) {
+export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style }: ShareButtonProps) {
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [shareUrl, setShareUrl] = useState('') // 始终重置为空，强制创建新分享
   
