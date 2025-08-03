@@ -1,0 +1,2 @@
+# Exclude Next.js webpack cache bundles over 25 MiB that are not required in production
+.vercel/output/static/_next/cache/webpack/**
