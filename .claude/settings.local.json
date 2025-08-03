@@ -39,7 +39,11 @@
       "Bash(wrangler:*)",
       "Bash(rm:*)",
       "Bash(true)",
-      "Bash(npm run build:light:*)"
+      "Bash(npm run build:light:*)",
+      "Bash(npm run clean:*)",
+      "Bash(npx rimraf:*)",
+      "Bash(npm run build:cloudflare-pages:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

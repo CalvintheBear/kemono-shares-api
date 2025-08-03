@@ -18,10 +18,15 @@ try {
   const dirsToClean = ['.next', 'cache', 'dist', '.vercel', 'node_modules/.cache'];
   dirsToClean.forEach(dir => {
     if (fs.existsSync(dir)) {
-      if (process.platform === 'win32') {
-        execSync(`if exist ${dir} rmdir /s /q ${dir}`, { stdio: 'inherit' });
-      } else {
-        execSync(`rm -rf ${dir}`, { stdio: 'inherit' });
+      try {
+        if (process.platform === 'win32') {
+          execSync(`rmdir /s /q "${dir}"`, { stdio: 'inherit', shell: true });
+        } else {
+          execSync(`rm -rf "${dir}"`, { stdio: 'inherit' });
+        }
+        console.log(`✅ 已清理: ${dir}`);
+      } catch (error) {
+        console.log(`⚠️  清理失败: ${dir} - ${error.message}`);
       }
     }
   });
@@ -30,10 +35,15 @@ try {
   const cacheFiles = ['cache/webpack', '.next/cache', 'node_modules/.cache'];
   cacheFiles.forEach(cachePath => {
     if (fs.existsSync(cachePath)) {
-      if (process.platform === 'win32') {
-        execSync(`if exist ${cachePath} rmdir /s /q ${cachePath}`, { stdio: 'inherit' });
-      } else {
-        execSync(`rm -rf ${cachePath}`, { stdio: 'inherit' });
+      try {
+        if (process.platform === 'win32') {
+          execSync(`rmdir /s /q "${cachePath}"`, { stdio: 'inherit', shell: true });
+        } else {
+          execSync(`rm -rf "${cachePath}"`, { stdio: 'inherit' });
+        }
+        console.log(`✅ 已清理缓存: ${cachePath}`);
+      } catch (error) {
+        console.log(`⚠️  清理缓存失败: ${cachePath} - ${error.message}`);
       }
     }
   });
@@ -57,7 +67,7 @@ console.log('📦 开始 Next.js 极优化构建...');
 try {
   // 临时重命名配置文件
   const originalConfig = 'next.config.ts';
-  const cloudflareConfig = 'next.config.cloudflare.ts';
+  const cloudflareConfig = 'next.config.pages.ts';
   
   if (fs.existsSync(cloudflareConfig)) {
     // 备份原配置
@@ -109,7 +119,8 @@ module.exports = {
       WEBPACK_CACHE: 'false',
       NEXT_WEBPACK_CACHE: 'false',
       NEXT_CACHE_DIR: 'false'
-    }
+    },
+    shell: true
   });
   
   // 删除临时webpack配置
@@ -118,9 +129,9 @@ module.exports = {
   }
   
   // 恢复原配置
-  if (fs.existsSync(originalConfig + '.backup')) {
-    fs.copyFileSync(originalConfig + '.backup', originalConfig);
-    fs.unlinkSync(originalConfig + '.backup');
+  if (fs.existsSync('next.config.ts.backup')) {
+    fs.copyFileSync('next.config.ts.backup', 'next.config.ts');
+    fs.unlinkSync('next.config.ts.backup');
     console.log('📝 恢复原配置...');
   }
   
@@ -134,9 +145,9 @@ module.exports = {
   }
   
   // 恢复原配置
-  if (fs.existsSync(originalConfig + '.backup')) {
-    fs.copyFileSync(originalConfig + '.backup', originalConfig);
-    fs.unlinkSync(originalConfig + '.backup');
+  if (fs.existsSync('next.config.ts.backup')) {
+    fs.copyFileSync('next.config.ts.backup', 'next.config.ts');
+    fs.unlinkSync('next.config.ts.backup');
     console.log('📝 恢复原配置...');
   }
   
@@ -199,4 +210,4 @@ try {
   console.error('检查文件大小时出错:', error.message);
 }
 
-console.log('🎉 Cloudflare Pages 构建完成！'); 
+console.log('🎉 Cloudflare Pages 构建完成！');

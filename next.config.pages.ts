@@ -25,8 +25,8 @@ const nextConfig: NextConfig = {
         // 极激进的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 10000, // 10KB 限制
-          minSize: 2000,  // 2KB 最小块
+          maxSize: 2000, // 2KB 限制
+          minSize: 500,  // 500B 最小块
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 50,
               enforce: true,
-              maxSize: 8000, // 8KB
+              maxSize: 2000, // 2KB
             },
             // 分离 Next.js 相关
             next: {
@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
-              maxSize: 8000, // 8KB
+              maxSize: 2000, // 2KB
             },
             // 分离 AWS SDK
             aws: {
@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
-              maxSize: 5000, // 5KB
+              maxSize: 2000, // 2KB
             },
             // 分离其他第三方库
             vendors: {
@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
-              maxSize: 6000, // 6KB
+              maxSize: 2000, // 2KB
             },
             // 分离公共代码
             common: {
@@ -71,7 +71,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
-              maxSize: 5000, // 5KB
+              maxSize: 2000, // 2KB
             },
             // 分离样式文件
             styles: {
@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
               test: /\.(css|scss|sass)$/,
               chunks: 'all',
               enforce: true,
-              maxSize: 4000, // 4KB
+              maxSize: 2000, // 2KB
             },
           },
         },
