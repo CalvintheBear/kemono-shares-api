@@ -14,8 +14,7 @@ export interface ShareData {
 
 // Cloudflare KV 存储类
 export class ShareKVStore {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private kv: any = null // KVNamespace 类型在 Cloudflare Workers 环境中可用
+  private kv: KVNamespace | null = null // KVNamespace 类型在 Cloudflare Workers 环境中可用
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存
   private isInitialized = false
@@ -31,94 +30,55 @@ export class ShareKVStore {
       // 检查是否在 Cloudflare Workers 环境
       if (typeof globalThis !== 'undefined') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const globalAny = globalThis as any
+        const globalAny = globalThis as Record<string, unknown>
         
-        // 检查多种可能的KV绑定名称，包括更多可能性
+        // 检查多种可能的KV绑定名称
         const possibleBindings = [
           'SHARE_DATA_KV',
           'KV',
           '__KV__',
-          'KV_NAMESPACE',
-          'share_data_kv',
-          'kv'
+          'KV_NAMESPACE'
         ]
         
         for (const binding of possibleBindings) {
           if (globalAny[binding]) {
             this.kv = globalAny[binding]
-            console.log(`✅ Cloudflare KV 存储已初始化 (${binding})`)
             break
           }
-        }
-        
-        // 如果在Workers环境中但没有检测到KV，仍然标记为初始化完成
-        // 因为KV可能在运行时动态可用
-        if (!this.kv && this.isCloudflareWorkers()) {
-          console.log('⚠️ Cloudflare Workers环境中未检测到KV绑定，但继续初始化')
         }
       }
       
       this.isInitialized = true
-      console.log('🔍 KV初始化完成:', {
-        hasKV: this.kv !== null,
-        env: process.env.NODE_ENV,
-        cfWorker: process.env.CF_WORKER,
-        isWorkersEnv: this.isCloudflareWorkers()
-      })
-    } catch (error) {
-      console.error('❌ KV 初始化失败:', error)
+    } catch (_error) {
       this.isInitialized = false
     }
   }
 
   // 检查是否在 Cloudflare Workers 环境
   private isCloudflareWorkers(): boolean {
-    if (!this.isInitialized) {
-      this.initializeKV()
+    // 避免递归调用，使用简单检查
+    try {
+      // 检查CF_WORKER环境变量
+      if (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') {
+        return true
+      }
+      
+      // 检查全局变量
+      if (typeof globalThis !== 'undefined') {
+        const globalAny = globalThis as Record<string, unknown>
+        return (
+          globalAny.SHARE_DATA_KV !== undefined ||
+          globalAny.KV !== undefined ||
+          globalAny.__KV__ !== undefined ||
+          globalAny.KV_NAMESPACE !== undefined ||
+          globalAny.CF_WORKER === true
+        )
+      }
+      
+      return false
+    } catch (_error) {
+      return false
     }
-    
-    // 检查CF_WORKER环境变量
-    if (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') {
-      console.log('✅ 检测到CF_WORKER环境变量，强制启用Cloudflare Workers模式')
-      return true
-    }
-    
-    // 检查多种环境标识 - 更可靠的检测方法
-    const isWorkers = typeof globalThis !== 'undefined' && (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).SHARE_DATA_KV !== undefined ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).KV !== undefined ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).__KV__ !== undefined ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (globalThis as any).KV_NAMESPACE !== undefined ||
-      // 检查Cloudflare Workers特有的全局变量
-      (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('Cloudflare-Workers')) ||
-      // 检查是否存在WorkerGlobalScope
-      (typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined')
-    )
-    
-    // 强制Cloudflare模式 - 在生产环境始终尝试使用KV
-    // 移除对NODE_ENV的依赖，因为这在Workers中不可靠
-    const forceCloudflare = typeof process !== 'undefined' && 
-                           (process.env.CF_WORKER === 'true' || 
-                            process.env.NODE_ENV === 'production') &&
-                           typeof globalThis !== 'undefined'
-    
-    // 即使KV为null，在Workers环境中也应该返回true
-    // 因为KV可能在运行时可用
-    const result = isWorkers || forceCloudflare || this.kv !== null
-    console.log('🔍 Cloudflare Workers检测:', { 
-      isWorkers, 
-      forceCloudflare, 
-      hasKV: this.kv !== null,
-      result,
-      env: process.env.NODE_ENV,
-      cfWorker: process.env.CF_WORKER,
-      navigatorUA: typeof navigator !== 'undefined' ? navigator.userAgent : 'undefined'
-    })
-    return result
   }
 
   // 生成 KV 键名
