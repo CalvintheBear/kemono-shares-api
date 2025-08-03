@@ -596,16 +596,11 @@ export default function WorkspaceRefactored() {
   const shareCreatedRef = useRef(false)
 
   const handleShare = async (result: GenerationResult) => {
-    if (shareCreatedRef.current) {
-      console.log('[handleShare] 已创建分享，直接返回')
-      return
-    }
-    // 如果已经有分享链接，避免重复创建
-    if (autoShareUrl) {
-      console.log('[handleShare] 已存在分享链接，跳过:', autoShareUrl)
-      return
-    }
-    shareCreatedRef.current = true
+    // 每次生成时强制创建新的分享页面，不复用旧链接
+    console.log('[handleShare] 强制创建新分享页面，不复用旧链接')
+    // 重置分享状态，确保每次都能创建新分享
+    shareCreatedRef.current = false
+    setAutoShareUrl('')
     try {
       let originalUrl = null
       

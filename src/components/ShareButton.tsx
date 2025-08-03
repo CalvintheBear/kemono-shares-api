@@ -8,25 +8,24 @@ interface ShareButtonProps {
   originalImageUrl: string
   prompt: string
   style: string
-  existingShareUrl?: string // 新增：已存在的分享链接
+  existingShareUrl?: string // 已存在的分享链接 - 将被忽略，每次创建新分享
 }
 
 export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style, existingShareUrl }: ShareButtonProps) {
   const [showShareMenu, setShowShareMenu] = useState(false)
-  const [shareUrl, setShareUrl] = useState(existingShareUrl || '') // 初始化时使用已存在的分享链接
+  const [shareUrl, setShareUrl] = useState('') // 始终重置为空，强制创建新分享
   
-  // 当existingShareUrl更新时，同步更新shareUrl
+  // 忽略existingShareUrl，每次生成都创建新分享
   useEffect(() => {
-    if (existingShareUrl) {
-      setShareUrl(existingShareUrl)
-    }
-  }, [existingShareUrl])
+    // 每次组件重新挂载时重置分享URL，确保创建新分享
+    setShareUrl('')
+  }, [generatedImageUrl]) // 当generatedImageUrl变化时（新图片），重置分享URL
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享
   
-  // 分享链接是否已就绪（已有或已生成）
-  const isShareReady = Boolean(existingShareUrl || shareUrl)
+  // 分享链接是否已就绪（强制启用，确保每次都能创建新分享）
+  const isShareReady = true
   const [menuPosition, setMenuPosition] = useState<'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top-left')
   const buttonRef = useRef<HTMLDivElement>(null)
   const shareRequestRef = useRef<Promise<string> | null>(null) // 防止重复请求
@@ -85,17 +84,9 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
 
   // 生成分享链接
   const generateShareUrl = useCallback(async () => {
-    // 如果有已存在的分享链接，直接返回（优先级最高）
-    if (existingShareUrl) {
-      console.log('🔄 使用已存在的分享链接:', existingShareUrl)
-      setShareUrl(existingShareUrl) // 确保状态也同步更新
-      return existingShareUrl
-    }
-    
-    // 如果本地已有分享URL，直接返回
+    // 每次生成都创建新分享，不复用旧链接
     if (shareUrl) {
-      console.log('🔄 使用已有的分享链接:', shareUrl)
-      return shareUrl
+      console.log('🔄 创建新的分享链接，不复用旧链接')
     }
     
     // 如果正在请求中，等待现有请求完成
