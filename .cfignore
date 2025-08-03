@@ -1,2 +1,6 @@
-# Exclude Next.js webpack cache bundles over 25 MiB that are not required in production
-.vercel/output/static/_next/cache/webpack/**
+# 排除 Next.js 导出的 webpack 缓存，避免单文件超 25 MiB
+.vercel/output/static/**/cache/webpack/**
+# 保险起见，也排除所有 *.pack 和大缓存文件
+*.pack
+**/cache/webpack/**
+.vercel/output/static/cache/**
