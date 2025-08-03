@@ -35,8 +35,8 @@ const nextConfig: NextConfig = {
         // 极激进的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 200, // 2KB 限制 - 极激进
-          minSize: 500,   // 500B 最小块
+          maxSize: 20000, // 20KB 限制 - 极激进
+          minSize: 5000,   // 5KB 最小块
           cacheGroups: {
             // React 相关库
             react: {
