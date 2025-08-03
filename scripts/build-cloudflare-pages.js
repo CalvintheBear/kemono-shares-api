@@ -4,16 +4,36 @@ const path = require('path');
 
 console.log('🚀 开始 Cloudflare Pages 极优化构建...');
 
+// 先运行缓存清理脚本
+console.log('🧹 运行缓存清理脚本...');
+try {
+  execSync('node scripts/clean-cache.js', { stdio: 'inherit' });
+} catch (error) {
+  console.log('缓存清理脚本执行失败:', error.message);
+}
+
 // 清理之前的构建文件
 console.log('🧹 清理之前的构建文件...');
 try {
-  const dirsToClean = ['.next', 'cache', 'dist', '.vercel'];
+  const dirsToClean = ['.next', 'cache', 'dist', '.vercel', 'node_modules/.cache'];
   dirsToClean.forEach(dir => {
     if (fs.existsSync(dir)) {
       if (process.platform === 'win32') {
         execSync(`if exist ${dir} rmdir /s /q ${dir}`, { stdio: 'inherit' });
       } else {
         execSync(`rm -rf ${dir}`, { stdio: 'inherit' });
+      }
+    }
+  });
+  
+  // 清理webpack缓存文件
+  const cacheFiles = ['cache/webpack', '.next/cache', 'node_modules/.cache'];
+  cacheFiles.forEach(cachePath => {
+    if (fs.existsSync(cachePath)) {
+      if (process.platform === 'win32') {
+        execSync(`if exist ${cachePath} rmdir /s /q ${cachePath}`, { stdio: 'inherit' });
+      } else {
+        execSync(`rm -rf ${cachePath}`, { stdio: 'inherit' });
       }
     }
   });
@@ -27,6 +47,8 @@ process.env.NEXT_TELEMETRY_DISABLED = '1';
 process.env.NEXT_CACHE = 'false';
 process.env.NEXT_OPTIMIZE_FONTS = 'false';
 process.env.NEXT_OPTIMIZE_IMAGES = 'false';
+// 禁用webpack缓存
+process.env.WEBPACK_CACHE = 'false';
 
 console.log('📦 开始 Next.js 极优化构建...');
 try {
@@ -44,8 +66,8 @@ try {
     console.log('📝 使用 Cloudflare Pages 极优化配置...');
   }
   
-  // 使用极优化的构建命令
-  execSync('next build --no-lint', { 
+  // 使用极优化的构建命令，禁用缓存
+  execSync('next build --no-lint --no-cache', { 
     stdio: 'inherit',
     env: {
       ...process.env,
@@ -53,7 +75,8 @@ try {
       NEXT_TELEMETRY_DISABLED: '1',
       NEXT_CACHE: 'false',
       NEXT_OPTIMIZE_FONTS: 'false',
-      NEXT_OPTIMIZE_IMAGES: 'false'
+      NEXT_OPTIMIZE_IMAGES: 'false',
+      WEBPACK_CACHE: 'false'
     }
   });
   

@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
   
   // 极激进的 webpack 配置
   webpack: (config, { dev, isServer }) => {
+    // 禁用所有缓存
+    config.cache = false;
+    
     if (!dev && !isServer) {
       // 客户端构建优化
       config.optimization = {
@@ -27,15 +30,15 @@ const nextConfig: NextConfig = {
         // 极激进的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 10000, // 10KB 限制
-          minSize: 2000,  // 2KB 最小块
+          maxSize: 5000, // 5KB 限制 - 更激进
+          minSize: 1000,  // 1KB 最小块
           cacheGroups: {
             // React 相关库
             react: {
               test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
               name: 'react',
               chunks: 'all',
-              maxSize: 8000, // 8KB
+              maxSize: 4000, // 4KB
               priority: 40,
             },
             // Next.js 相关库
@@ -43,7 +46,7 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/](next)[\\/]/,
               name: 'next',
               chunks: 'all',
-              maxSize: 8000, // 8KB
+              maxSize: 4000, // 4KB
               priority: 30,
             },
             // AWS SDK
@@ -51,7 +54,7 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/](@aws-sdk)[\\/]/,
               name: 'aws',
               chunks: 'all',
-              maxSize: 5000, // 5KB
+              maxSize: 3000, // 3KB
               priority: 20,
             },
             // 其他第三方库
@@ -59,7 +62,7 @@ const nextConfig: NextConfig = {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendors',
               chunks: 'all',
-              maxSize: 6000, // 6KB
+              maxSize: 3000, // 3KB
               priority: 10,
             },
             // 公共代码
@@ -67,7 +70,7 @@ const nextConfig: NextConfig = {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              maxSize: 5000, // 5KB
+              maxSize: 2000, // 2KB
               priority: 5,
             },
             // 样式文件
@@ -75,7 +78,7 @@ const nextConfig: NextConfig = {
               name: 'styles',
               test: /\.css$/,
               chunks: 'all',
-              maxSize: 4000, // 4KB
+              maxSize: 2000, // 2KB
               priority: 1,
             },
           },
@@ -84,13 +87,15 @@ const nextConfig: NextConfig = {
         concatenateModules: false,
         // 设置更小的入口点大小限制
         runtimeChunk: 'single',
+        // 禁用压缩以减少文件大小
+        minimize: false,
       };
       
       // 设置性能提示
       config.performance = {
         hints: 'warning',
-        maxEntrypointSize: 50000, // 50KB
-        maxAssetSize: 50000, // 50KB
+        maxEntrypointSize: 25000, // 25KB
+        maxAssetSize: 25000, // 25KB
       };
       
       // 优化模块解析
@@ -103,6 +108,9 @@ const nextConfig: NextConfig = {
           tls: false,
         },
       };
+      
+      // 禁用source map以减少文件大小
+      config.devtool = false;
     }
     
     return config;

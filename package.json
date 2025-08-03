@@ -13,6 +13,7 @@
     "build:cloudflare": "next build --no-lint",
     "build:cloudflare-optimized": "node scripts/build-cloudflare-optimized.js",
     "build:cloudflare-pages": "node scripts/build-cloudflare-pages.js",
+    "clean:cache": "node scripts/clean-cache.js",
     "build:workers": "next build && wrangler deploy --dry-run",
     "build:light": "next build --no-lint",
     "start": "next start",
