@@ -14,7 +14,8 @@ export interface ShareData {
 
 // Cloudflare KV 存储类
 export class ShareKVStore {
-  private kv: KVNamespace | null = null // KVNamespace 类型在 Cloudflare Workers 环境中可用
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private kv: any = null // 使用 any 类型避免 TypeScript 编译错误
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存
   private isInitialized = false
@@ -29,8 +30,7 @@ export class ShareKVStore {
     try {
       // 检查是否在 Cloudflare Workers 环境
       if (typeof globalThis !== 'undefined') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const globalAny = globalThis as Record<string, unknown>
+          const globalAny = globalThis as Record<string, unknown>
         
         // 检查多种可能的KV绑定名称
         const possibleBindings = [
