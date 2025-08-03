@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:railway": "next build",
+    "build:cloudflare": "next build",
     "start": "next start",
     "lint": "next lint",
     "pages:build": "next build && NEXT_CACHE=false npx @cloudflare/next-on-pages",
@@ -27,7 +28,9 @@
     "test:kv-storage": "node scripts/test-kv-storage.js",
     "check:production": "node scripts/check-production-config.js",
     "monitor:status": "curl -s https://kemono-shares-api.y2983236233.workers.dev/api/share/monitor | jq .",
-    "deploy:safe": "npm run check:production && npm run deploy"
+    "deploy:safe": "npm run check:production && npm run deploy",
+    "clean": "rm -rf .next cache dist",
+    "build:clean": "npm run clean && npm run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",

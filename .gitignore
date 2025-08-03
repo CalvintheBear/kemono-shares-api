@@ -49,3 +49,9 @@ next-env.d.ts
 
 # build cache
 .next/cache/
+
+# Cloudflare Pages specific
+.cache/
+cache/
+.next/cache/
+.next/static/

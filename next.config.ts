@@ -7,7 +7,10 @@ const nextConfig: NextConfig = {
   // 禁用构建缓存以避免生成超过 25MB 的 webpack 缓存文件
   experimental: {
     webpackBuildWorker: false,
+    optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
   },
+  swcMinify: true,
+  compress: false,
   // 禁用持久化缓存
   distDir: '.next',
   generateBuildId: async () => {
