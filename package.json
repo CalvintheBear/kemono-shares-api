@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "eslint-config-next": "15.3.5"
+    "eslint-config-next": "15.3.5",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }
