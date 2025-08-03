@@ -44,14 +44,28 @@ export class ShareKVStore {
           this.kv = globalAny.__KV__
           console.log('✅ Cloudflare KV 存储已初始化 (__KV__)')
         } else {
-          // 只在非生产环境下显示警告
-          if (process.env.NODE_ENV !== 'production') {
-            console.log('⚠️ 未检测到 Cloudflare KV 绑定，将使用内存存储')
+          // 检查CF_WORKER环境变量
+          if (process.env.CF_WORKER === 'true') {
+            console.log('⚠️ CF_WORKER=true但未检测到KV绑定，尝试直接访问')
+            // 在Cloudflare Workers环境中，即使未检测到绑定也尝试使用
+            if (globalAny.SHARE_DATA_KV) {
+              this.kv = globalAny.SHARE_DATA_KV
+            }
+          } else {
+            // 只在非生产环境下显示警告
+            if (process.env.NODE_ENV !== 'production') {
+              console.log('⚠️ 未检测到 Cloudflare KV 绑定，将使用内存存储')
+            }
           }
         }
       }
       
       this.isInitialized = true
+      console.log('🔍 KV初始化完成:', {
+        hasKV: this.kv !== null,
+        env: process.env.NODE_ENV,
+        cfWorker: process.env.CF_WORKER
+      })
     } catch (error) {
       console.error('❌ KV 初始化失败:', error)
       this.isInitialized = false
@@ -64,7 +78,13 @@ export class ShareKVStore {
       this.initializeKV()
     }
     
-    // 检查多种环境标识 - 更精确的判断
+    // 检查CF_WORKER环境变量
+    if (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') {
+      console.log('✅ 检测到CF_WORKER环境变量，强制启用Cloudflare Workers模式')
+      return true
+    }
+    
+    // 检查多种环境标识
     const isWorkers = typeof globalThis !== 'undefined' && (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).SHARE_DATA_KV !== undefined ||
@@ -72,23 +92,26 @@ export class ShareKVStore {
       (globalThis as any).KV !== undefined ||
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).__KV__ !== undefined ||
-      // 检查环境变量 - 更严格的检查
+      // 检查环境变量
       (typeof process !== 'undefined' && process.env.NODE_ENV === 'production') ||
-      (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') ||
-      // 检查是否存在Cloudflare特定变量
-      (typeof globalThis !== 'undefined' && 
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       !!(globalThis as any).caches !== undefined) ||
-      // 检查用户代理
-      (typeof navigator !== 'undefined' && navigator.userAgent.includes('Cloudflare'))
+      (typeof process !== 'undefined' && process.env.CF_WORKER === 'true')
     )
     
     // 强制Cloudflare模式 - 在生产环境始终尝试使用KV
     const forceCloudflare = typeof process !== 'undefined' && 
-                           process.env.NODE_ENV === 'production' &&
+                           (process.env.NODE_ENV === 'production' || process.env.CF_WORKER === 'true') &&
                            typeof globalThis !== 'undefined'
     
-    return (isWorkers || forceCloudflare) && this.kv !== null
+    const result = (isWorkers || forceCloudflare) && this.kv !== null
+    console.log('🔍 Cloudflare Workers检测:', { 
+      isWorkers, 
+      forceCloudflare, 
+      hasKV: this.kv !== null,
+      result,
+      env: process.env.NODE_ENV,
+      cfWorker: process.env.CF_WORKER
+    })
+    return result
   }
 
   // 生成 KV 键名
@@ -119,6 +142,9 @@ export class ShareKVStore {
         console.log('✅ 数据已存储到 Cloudflare KV:', shareId)
       } else {
         console.log('⚠️ 不在 Cloudflare Workers 环境，仅使用内存存储:', shareId)
+        // 确保内存模式下也能维护分享ID列表
+        await this.updateShareList(shareId, data)
+        
         // 在开发环境中，也尝试保存到本地存储作为备份
         if (typeof window !== 'undefined' && window.localStorage) {
           try {
@@ -233,6 +259,8 @@ export class ShareKVStore {
           .sort((a, b) => b.timestamp - a.timestamp)
         
         console.log('📦 从内存列表获取所有数据:', shareDataList.length, '个分享')
+        console.log('📋 内存中的分享ID列表:', this.shareIdList)
+        console.log('📊 内存缓存内容:', Array.from(this.memoryCache.keys()))
         return shareDataList
       }
 
