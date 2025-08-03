@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   images: {
@@ -58,6 +58,32 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'fury-template-1363880159.cos.ap-guangzhou.myqcloud.com',
+        port: '',
+        pathname: '/**',
+      },
+      // 添加 2kawaii.com 域名支持
+      {
+        protocol: 'https',
+        hostname: '2kawaii.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.2kawaii.com',
+        port: '',
+        pathname: '/**',
+      },
+      // 添加 Cloudflare R2 域名支持
+      {
+        protocol: 'https',
+        hostname: 'pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pub-d00e7b41917848d1a8403c984cb62880.r2.dev',
         port: '',
         pathname: '/**',
       }
