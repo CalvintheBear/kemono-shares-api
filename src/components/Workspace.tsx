@@ -362,7 +362,6 @@ export default function WorkspaceRefactored() {
   const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
   const [enhancePrompt, setEnhancePrompt] = useState(false)
   const [generationError, setGenerationError] = useState<string>('')
-  const [autoShareUrl, setAutoShareUrl] = useState<string>('')
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
@@ -520,7 +519,6 @@ export default function WorkspaceRefactored() {
     console.log('[generateImage] 开始生成流程, mode:', mode, 'selectedTemplate:', selectedTemplate?.name)
     // 清空上一次生成的分享链接
     shareCreatedRef.current = false
-    setAutoShareUrl('')
     setIsGenerating(true)
     setGenerationError('')
     setCurrentResult(null)
@@ -600,7 +598,6 @@ export default function WorkspaceRefactored() {
     console.log('[handleShare] 强制创建新分享页面，不复用旧链接')
     // 重置分享状态，确保每次都能创建新分享
     shareCreatedRef.current = false
-    setAutoShareUrl('')
     try {
       let originalUrl = null
       
@@ -630,7 +627,6 @@ export default function WorkspaceRefactored() {
 
       if (response.ok) {
         const shareData = await response.json()
-        setAutoShareUrl(shareData.shareUrl)
         shareCreatedRef.current = true
         console.log('自动分享创建成功:', shareData.shareUrl)
       } else {
