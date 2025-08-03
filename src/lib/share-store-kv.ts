@@ -19,6 +19,7 @@ export class ShareKVStore {
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存
   private isInitialized = false
+  private shareIdList: string[] = [] // 分享ID列表（用于非Cloudflare环境）
 
   constructor() {
     this.initializeKV()
@@ -215,6 +216,17 @@ export class ShareKVStore {
         }
       }
 
+      // 非Cloudflare环境：使用内存列表
+      if (!this.isCloudflareWorkers()) {
+        // 使用内存中的分享ID列表，确保顺序正确
+        const shareDataList = this.shareIdList.map(id => this.memoryCache.get(id))
+          .filter((data): data is ShareData => data !== undefined)
+          .sort((a, b) => b.timestamp - a.timestamp)
+        
+        console.log('📦 从内存列表获取所有数据:', shareDataList.length, '个分享')
+        return shareDataList
+      }
+
       // 在开发环境中，从本地JSON文件加载数据
       if (isDev()) {
         const devData = readDevJson()
@@ -225,7 +237,7 @@ export class ShareKVStore {
         return devDataArray
       }
 
-      // 回退到内存缓存
+      // 最终回退：直接返回内存缓存所有数据
       const memoryData = Array.from(this.memoryCache.values())
         .sort((a, b) => b.timestamp - a.timestamp)
       
@@ -279,28 +291,38 @@ export class ShareKVStore {
 
   // 更新分享列表
   private async updateShareList(shareId: string, _data: ShareData): Promise<void> {
-    if (!this.kv) return
-
     try {
-      const listData = await this.kv.get(this.getListKey())
-      let shareIds: string[] = []
-      
-      if (listData) {
-        shareIds = JSON.parse(listData)
-      }
-
-      // 添加新的分享ID（如果不存在）
-      if (!shareIds.includes(shareId)) {
-        shareIds.unshift(shareId) // 添加到开头
+      if (this.isCloudflareWorkers() && this.kv) {
+        const listData = await this.kv.get(this.getListKey())
+        let shareIds: string[] = []
         
-        // 限制列表长度（最多1000个）
-        if (shareIds.length > 1000) {
-          shareIds = shareIds.slice(0, 1000)
+        if (listData) {
+          shareIds = JSON.parse(listData)
         }
 
-        await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
-          expirationTtl: 60 * 60 * 24 * 30 // 30天过期
-        })
+        // 添加新的分享ID（如果不存在）
+        if (!shareIds.includes(shareId)) {
+          shareIds.unshift(shareId) // 添加到开头
+          
+          // 限制列表长度（最多1000个）
+          if (shareIds.length > 1000) {
+            shareIds = shareIds.slice(0, 1000)
+          }
+
+          await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
+            expirationTtl: 60 * 60 * 24 * 30 // 30天过期
+          })
+        }
+      } else {
+        // 内存环境：直接更新内存列表
+        if (!this.shareIdList.includes(shareId)) {
+          this.shareIdList.unshift(shareId)
+          
+          // 限制列表长度（最多1000个）
+          if (this.shareIdList.length > 1000) {
+            this.shareIdList = this.shareIdList.slice(0, 1000)
+          }
+        }
       }
     } catch (error) {
       console.error('❌ 更新分享列表失败:', error)
@@ -309,17 +331,20 @@ export class ShareKVStore {
 
   // 从分享列表中删除
   private async removeFromShareList(shareId: string): Promise<void> {
-    if (!this.kv) return
-
     try {
-      const listData = await this.kv.get(this.getListKey())
-      if (listData) {
-        let shareIds = JSON.parse(listData) as string[]
-        shareIds = shareIds.filter(id => id !== shareId)
-        
-        await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
-          expirationTtl: 60 * 60 * 24 * 30
-        })
+      if (this.isCloudflareWorkers() && this.kv) {
+        const listData = await this.kv.get(this.getListKey())
+        if (listData) {
+          let shareIds = JSON.parse(listData) as string[]
+          shareIds = shareIds.filter(id => id !== shareId)
+          
+          await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
+            expirationTtl: 60 * 60 * 24 * 30
+          })
+        }
+      } else {
+        // 内存环境：从内存列表中移除
+        this.shareIdList = this.shareIdList.filter(id => id !== shareId)
       }
     } catch (error) {
       console.error('❌ 从分享列表删除失败:', error)
