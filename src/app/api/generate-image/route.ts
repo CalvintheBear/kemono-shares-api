@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getApiKeyRotation } from '@/lib/api-key-rotation'
 
 // 针对生产环境的优化：使用 Railway 部署
-// 在 Cloudflare Workers 中将使用分离的轮询端点
-export const runtime = process.env.NODE_ENV === 'production' ? 'nodejs' : 'edge'
+export const runtime = 'nodejs'
 
 // 创建任务后立即返回，避免超时
 export async function POST(request: NextRequest) {
@@ -42,11 +41,20 @@ export async function POST(request: NextRequest) {
     }
 
     // 组装请求体
-    const requestData = {
+    interface GenerateRequestData {
+      prompt: string
+      model: string
+      userId: string
+      size?: string
+      filesUrl?: string[]
+    }
+
+    const requestData: GenerateRequestData = {
       prompt: finalPrompt,
       model: 'gpt-4o-image',
       userId: defaultUserId,
-      size: size || '1:1'
+      size: size || '1:1',
+      filesUrl: undefined // 初始化为undefined
     }
 
     // 图生图模式添加文件URL

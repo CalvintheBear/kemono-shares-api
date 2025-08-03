@@ -28,9 +28,17 @@ async function uploadImageToImgBB(file: File): Promise<{ url: string }> {
 }
 
 // 检测当前运行环境
-function getRuntimeEnvironment() {
+interface RuntimeEnvironment {
+  isCloudflareWorkers: boolean
+  isRailway: boolean
+  isDevelopment: boolean
+  isEdgeRuntime: boolean
+}
+
+function getRuntimeEnvironment(): RuntimeEnvironment {
+  const globalTyped = globalThis as typeof globalThis & { CF_PAGES?: boolean }
   return {
-    isCloudflareWorkers: typeof globalThis !== 'undefined' && !!(globalThis as any).CF_PAGES,
+    isCloudflareWorkers: typeof globalThis !== 'undefined' && !!globalTyped.CF_PAGES,
     isRailway: !!process.env.RAILWAY_SERVICE_ID,
     isDevelopment: process.env.NODE_ENV === 'development',
     isEdgeRuntime: process.env.NEXT_RUNTIME === 'edge'
@@ -84,7 +92,7 @@ export async function batchUploadWithFallback(files: File[]): Promise<Array<{ ur
   
   // 过滤成功结果
   const successful = results
-    .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
+    .filter((result): result is PromiseFulfilledResult<{ url: string; key?: string; source: string }> => result.status === 'fulfilled')
     .map(result => result.value)
   
   const failed = results

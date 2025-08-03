@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { uploadImageWithFallback } from '@/lib/image-upload-fallback';
 
 // 使用最适合的运行时
-export const runtime = process.env.NODE_ENV === 'production' ? 'nodejs' : 'edge'
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {

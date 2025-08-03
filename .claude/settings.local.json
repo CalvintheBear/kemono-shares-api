@@ -33,7 +33,8 @@
       "Bash(curl:*)",
       "WebFetch(domain:javascript.plainenglish.io)",
       "WebFetch(domain:harshalranjhani.in)",
-      "WebFetch(domain:gestalt.pinterest.systems)"
+      "WebFetch(domain:gestalt.pinterest.systems)",
+      "Bash(npm run build:railway:*)"
     ],
     "deny": []
   }
