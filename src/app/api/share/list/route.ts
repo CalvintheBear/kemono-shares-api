@@ -73,7 +73,21 @@ export async function GET(request: NextRequest) {
         return share.isTextToImage
       }
       
-      // 回退到原始URL检测
+      // 简化的回退检测 - 与调试端点保持一致
+      const hasValidOriginalUrl = share.originalUrl && 
+        typeof share.originalUrl === 'string' && 
+        share.originalUrl.trim() !== '' &&
+        share.originalUrl !== null &&
+        share.originalUrl !== undefined
+      
+      return !hasValidOriginalUrl
+    })
+    
+    console.log(`📊 过滤结果: 总共${sortedShares.length}个分享，文生图${textToImageShares.length}个（画廊显示）`)
+    
+    // 调试：列出所有被过滤掉的分享
+    const filteredOut = sortedShares.filter(share => {
+      if (typeof share.isTextToImage === 'boolean') return !share.isTextToImage;
       const hasValidOriginalUrl = share.originalUrl && 
         typeof share.originalUrl === 'string' && 
         share.originalUrl.trim() !== '' &&
@@ -81,19 +95,14 @@ export async function GET(request: NextRequest) {
         !share.originalUrl.includes('placeholder.com') &&
         !share.originalUrl.includes('Text+to+Image') &&
         !share.originalUrl.includes('base64') &&
-        share.originalUrl.length <= 1000
-      
-      const isTextToImage = !hasValidOriginalUrl
-      
-      // 添加调试日志
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 筛选检查 - ID: ${share.id}, Style: ${share.style}, OriginalUrl: ${share.originalUrl}, IsTextToImage: ${isTextToImage}`)
-      }
-      
-      return isTextToImage
-    })
+        share.originalUrl.length <= 1000;
+      return hasValidOriginalUrl;
+    });
     
-    console.log(`📊 过滤结果: 总共${sortedShares.length}个分享，文生图${textToImageShares.length}个（画廊显示）`)
+    console.log(`🚫 被过滤掉的分享: ${filteredOut.length}个`);
+    filteredOut.forEach(share => {
+      console.log(`   - ${share.id}: ${share.style}, originalUrl: ${share.originalUrl}, isTextToImage: ${share.isTextToImage}`);
+    });
     
     // 转换为列表项格式
     const shareList: ShareListItem[] = textToImageShares.map(share => ({
