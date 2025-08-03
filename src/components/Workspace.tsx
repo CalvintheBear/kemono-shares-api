@@ -674,8 +674,14 @@ export default function WorkspaceRefactored() {
         const responseData = data.data || data
         const status = responseData.status || 'GENERATING'
         const generatedUrl = responseData.response?.resultUrls?.[0] || null
+        const successFlag = responseData.successFlag
+        const errorMessage = responseData.errorMessage || responseData.error || null
         
-        if (status === 'SUCCESS' && generatedUrl) {
+        // 检查成功标志或状态
+        const isSuccess = status === 'SUCCESS' || successFlag === 1 || successFlag === 0
+        const isFailed = status === 'FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
+
+        if (isSuccess && generatedUrl) {
           const downloadResponse = await fetch('/api/download-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -711,20 +717,28 @@ export default function WorkspaceRefactored() {
           setTimeout(() => {
             setIsGenerating(false)
           }, 2000)
-        } else if (status === 'FAILED') {
-          setGenerationError(responseData.errorMessage || '生成に失敗しました')
+        } else if (isFailed) {
+          console.error('[pollProgress] 生成失败:', errorMessage || '生成に失敗しました')
+          setGenerationError(errorMessage || '生成に失敗しました')
           setCurrentResult(null)
           setIsGenerating(false)
         } else {
+          // 继续轮询，但检查是否应该停止
           if (!isMountedRef.current) {
-            console.log('[pollProgress] isMountedRef.current 为 false，提前 return (loop)')
+            console.log('[pollProgress] 组件已卸载，停止轮询')
             return
           }
-          if (!isMountedRef.current) {
-            console.log('[轮询] 组件已卸载，停止轮询')
+          
+          // 检查是否超时
+          if (Date.now() - startTime >= timeout) {
+            console.log('[pollProgress] 轮询超时')
+            setGenerationError('タイムアウトしました')
+            setCurrentResult(null)
+            setIsGenerating(false)
             return
           }
-          pollIntervalRef.current = setTimeout(loop, 500)
+          
+          pollIntervalRef.current = setTimeout(loop, 2000) // 增加轮询间隔到2秒
         }
       } catch (_error) {
         console.error('[轮询] 发生异常:', _error)

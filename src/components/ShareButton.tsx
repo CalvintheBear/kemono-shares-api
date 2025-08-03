@@ -170,7 +170,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     }
   }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing])
 
-  // 复制分享链接
+  // 复制分享链接 - 如果有现有URL直接复制，不重新生成
   const copyShareUrl = useCallback(async () => {
     // 防止重复点击
     if (isSharing || isLoading) {
@@ -178,12 +178,26 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       return
     }
     
-    const url = await generateShareUrl()
+    let url = shareUrl
+    
+    // 如果没有URL，才重新生成
+    if (!url) {
+      console.log('🔄 没有现有URL，创建新的分享链接')
+      url = await generateShareUrl()
+    } else {
+      console.log('📋 使用现有URL直接复制:', url)
+    }
+    
+    if (!url) {
+      console.error('❌ 没有可用的分享URL')
+      return
+    }
+    
     try {
       await navigator.clipboard.writeText(url)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-      console.log('✅ 链接已复制到剪贴板')
+      console.log('✅ 链接已复制到剪贴板:', url)
     } catch (error) {
       console.error('复制失败:', error)
       // 备用方案
@@ -197,7 +211,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       setTimeout(() => setCopied(false), 2000)
       console.log('✅ 链接已复制到剪贴板（备用方案）')
     }
-  }, [generateShareUrl, isSharing, isLoading])
+  }, [generateShareUrl, isSharing, isLoading, shareUrl])
 
   // 处理分享到社交媒体
   const handleSocialShare = useCallback(async (platform: string) => {

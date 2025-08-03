@@ -64,7 +64,7 @@ export class ShareKVStore {
       this.initializeKV()
     }
     
-    // 检查多种环境标识
+    // 检查多种环境标识 - 更精确的判断
     const isWorkers = typeof globalThis !== 'undefined' && (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).SHARE_DATA_KV !== undefined ||
@@ -72,14 +72,23 @@ export class ShareKVStore {
       (globalThis as any).KV !== undefined ||
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).__KV__ !== undefined ||
-      // 检查环境变量
-      process.env.NODE_ENV === 'production' ||
-      process.env.CF_WORKER === 'true' ||
+      // 检查环境变量 - 更严格的检查
+      (typeof process !== 'undefined' && process.env.NODE_ENV === 'production') ||
+      (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') ||
+      // 检查是否存在Cloudflare特定变量
+      (typeof globalThis !== 'undefined' && 
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       !!(globalThis as any).caches !== undefined) ||
       // 检查用户代理
       (typeof navigator !== 'undefined' && navigator.userAgent.includes('Cloudflare'))
     )
     
-    return isWorkers && this.kv !== null
+    // 强制Cloudflare模式 - 在生产环境始终尝试使用KV
+    const forceCloudflare = typeof process !== 'undefined' && 
+                           process.env.NODE_ENV === 'production' &&
+                           typeof globalThis !== 'undefined'
+    
+    return (isWorkers || forceCloudflare) && this.kv !== null
   }
 
   // 生成 KV 键名
