@@ -165,7 +165,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       setIsLoading(false)
       setIsSharing(false)
     }
-  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing, existingShareUrl])
+  }, [shareUrl, generatedImageUrl, originalImageUrl, prompt, style, isSharing])
 
   // 复制分享链接
   const copyShareUrl = useCallback(async () => {
