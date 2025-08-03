@@ -362,6 +362,7 @@ export default function WorkspaceRefactored() {
   const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
   const [enhancePrompt, setEnhancePrompt] = useState(false)
   const [generationError, setGenerationError] = useState<string>('')
+  const [autoShareUrl, setAutoShareUrl] = useState<string>('')
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
@@ -563,7 +564,10 @@ export default function WorkspaceRefactored() {
 
         // 自动分享处理 - 确保在状态更新后调用
         try {
-          await handleShare(completedResult)
+          const shareResponse = await handleShare(completedResult)
+          if (shareResponse) {
+            setAutoShareUrl(shareResponse)
+          }
         } catch (shareError) {
           console.warn('自动分享失败:', shareError)
         }
@@ -593,11 +597,12 @@ export default function WorkspaceRefactored() {
 
   const shareCreatedRef = useRef(false)
 
-  const handleShare = async (result: GenerationResult) => {
+  const handleShare = async (result: GenerationResult): Promise<string | null> => {
     // 每次生成时强制创建新的分享页面，不复用旧链接
     console.log('[handleShare] 强制创建新分享页面，不复用旧链接')
     // 重置分享状态，确保每次都能创建新分享
     shareCreatedRef.current = false
+    setAutoShareUrl('')
     try {
       let originalUrl = null
       
@@ -629,11 +634,14 @@ export default function WorkspaceRefactored() {
         const shareData = await response.json()
         shareCreatedRef.current = true
         console.log('自动分享创建成功:', shareData.shareUrl)
+        return shareData.shareUrl
       } else {
         console.error('自动分享创建失败:', response.statusText)
+        return null
       }
     } catch (error) {
       console.warn('自动分享处理失败:', error)
+      return null
     }
   }
 
@@ -692,7 +700,10 @@ export default function WorkspaceRefactored() {
           
           // 自动分享处理
           try {
-            await handleShare(completedResult)
+            const shareResponse = await handleShare(completedResult)
+            if (shareResponse) {
+              setAutoShareUrl(shareResponse)
+            }
           } catch (shareError) {
             console.warn('自动分享失败:', shareError)
           }
@@ -999,6 +1010,7 @@ export default function WorkspaceRefactored() {
                         originalImageUrl={currentResult.original_url}
                         prompt={currentResult.prompt}
                         style={selectedTemplate?.name || 'カスタム'}
+                        existingShareUrl={autoShareUrl}
                       />
                     </div>
                   </div>
@@ -1684,6 +1696,7 @@ export default function WorkspaceRefactored() {
                           originalImageUrl={(currentResult as GenerationResult).original_url}
                           prompt={(currentResult as GenerationResult).prompt}
                           style={selectedTemplate?.name || 'カスタム'}
+                          existingShareUrl={autoShareUrl}
                         />
                       </div>
                     </div>

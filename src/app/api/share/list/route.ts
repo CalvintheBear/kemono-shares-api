@@ -73,10 +73,11 @@ export async function GET(request: NextRequest) {
         return share.isTextToImage
       }
       
-      // 简化的回退检测 - 与调试端点保持一致
+      // 文生图检测：originalUrl 为空或无效
       const hasValidOriginalUrl = share.originalUrl && 
         typeof share.originalUrl === 'string' && 
         share.originalUrl.trim() !== '' &&
+        share.originalUrl !== 'null' &&
         share.originalUrl !== null &&
         share.originalUrl !== undefined
       

@@ -8,17 +8,21 @@ interface ShareButtonProps {
   originalImageUrl: string
   prompt: string
   style: string
+  existingShareUrl?: string
 }
 
-export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style }: ShareButtonProps) {
+export default function ShareButton({ generatedImageUrl, originalImageUrl, prompt, style, existingShareUrl }: ShareButtonProps) {
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [shareUrl, setShareUrl] = useState('') // 始终重置为空，强制创建新分享
   
-  // 忽略existingShareUrl，每次生成都创建新分享
+  // 使用existingShareUrl如果有值，否则创建新分享
   useEffect(() => {
-    // 每次组件重新挂载时重置分享URL，确保创建新分享
-    setShareUrl('')
-  }, [generatedImageUrl]) // 当generatedImageUrl变化时（新图片），重置分享URL
+    if (existingShareUrl) {
+      setShareUrl(existingShareUrl)
+    } else {
+      setShareUrl('')
+    }
+  }, [generatedImageUrl, existingShareUrl])
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享

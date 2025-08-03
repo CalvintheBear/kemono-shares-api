@@ -79,6 +79,13 @@ export async function POST(request: NextRequest) {
       normalizedOriginalUrl = originalUrl
     }
     
+    // 明确设置isTextToImage标志
+    const isTextToImage = normalizedOriginalUrl === null || normalizedOriginalUrl === '' || 
+                         originalUrl === null || originalUrl === undefined ||
+                         (typeof originalUrl === 'string' && 
+                          (originalUrl.includes('placeholder.com') || 
+                           originalUrl.includes('Text+to+Image')))
+    
     const shareData: ShareData = {
       id: shareId,
       generatedUrl: processedGeneratedUrl,
@@ -88,7 +95,7 @@ export async function POST(request: NextRequest) {
       timestamp,
       createdAt: new Date().toISOString(),
       isR2Stored,
-      isTextToImage: !normalizedOriginalUrl
+      isTextToImage: isTextToImage
     }
     
     console.log('💾 存储分享数据:', { 
