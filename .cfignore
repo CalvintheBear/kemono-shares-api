@@ -1,6 +1,11 @@
 # 排除 Next.js 导出的 webpack 缓存，避免单文件超 25 MiB
-.vercel/output/static/**/cache/webpack/**
-# 保险起见，也排除所有 *.pack 和大缓存文件
+# 根据构建日志，文件路径为 cache/webpack/client-production/0.pack
+cache/
+cache/**
+webpack/
+webpack/**
+cache/webpack/
+cache/webpack/**
 *.pack
-**/cache/webpack/**
-.vercel/output/static/cache/**
+**/webpack/**
+**/cache/**

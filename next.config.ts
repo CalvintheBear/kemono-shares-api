@@ -4,6 +4,16 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
+  // 禁用构建缓存以避免生成超过 25MB 的 webpack 缓存文件
+  experimental: {
+    webpackBuildWorker: false,
+  },
+  // 禁用持久化缓存
+  distDir: '.next',
+  generateBuildId: async () => {
+    // 生成随机 build ID 避免缓存
+    return Date.now().toString()
+  },
   images: {
     unoptimized: true, // 允许所有远程图片不受限制
     remotePatterns: [
