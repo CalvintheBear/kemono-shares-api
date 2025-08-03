@@ -9,8 +9,6 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: false,
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
   },
-  swcMinify: true,
-  compress: false,
   // 禁用持久化缓存
   distDir: '.next',
   generateBuildId: async () => {
