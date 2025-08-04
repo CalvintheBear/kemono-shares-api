@@ -32,7 +32,8 @@
     "test:kv-storage": "node scripts/test-kv-storage.js",
     "check:production": "node scripts/check-production-config.js",
     "clean:cache": "node scripts/clean-cache.js",
-    "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache"
+    "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache",
+    "fix:production": "node scripts/fix-production-errors.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",

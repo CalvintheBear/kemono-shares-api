@@ -22,11 +22,11 @@ const nextConfig: NextConfig = {
       // 客户端构建优化
       config.optimization = {
         ...config.optimization,
-        // 极激进的代码分割
+        // 适度的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 2000, // 2KB 限制
-          minSize: 500,  // 500B 最小块
+          maxSize: 50000, // 50KB 限制
+          minSize: 10000,  // 10KB 最小块
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -35,7 +35,6 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 50,
               enforce: true,
-              maxSize: 2000, // 2KB
             },
             // 分离 Next.js 相关
             next: {
@@ -44,7 +43,6 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
-              maxSize: 2000, // 2KB
             },
             // 分离 AWS SDK
             aws: {
@@ -53,7 +51,6 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
-              maxSize: 2000, // 2KB
             },
             // 分离其他第三方库
             vendors: {
@@ -62,7 +59,6 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
-              maxSize: 2000, // 2KB
             },
             // 分离公共代码
             common: {
@@ -71,15 +67,6 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
-              maxSize: 2000, // 2KB
-            },
-            // 分离样式文件
-            styles: {
-              name: 'styles',
-              test: /\.(css|scss|sass)$/,
-              chunks: 'all',
-              enforce: true,
-              maxSize: 2000, // 2KB
             },
           },
         },
@@ -113,11 +100,11 @@ const nextConfig: NextConfig = {
         },
       };
       
-      // 极严格的性能提示
+      // 合理的性能提示
       config.performance = {
-        hints: 'error',
-        maxEntrypointSize: 100000, // 100KB
-        maxAssetSize: 100000, // 100KB
+        hints: 'warning',
+        maxEntrypointSize: 500000, // 500KB
+        maxAssetSize: 500000, // 500KB
       };
     }
     
