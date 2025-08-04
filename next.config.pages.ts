@@ -8,8 +8,6 @@ const nextConfig: NextConfig = {
   experimental: {
     webpackBuildWorker: false,
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
-    // 禁用一些可能导致大文件的功能
-    optimizeCss: false,
   },
   
   // 静态导出配置

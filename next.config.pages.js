@@ -22,7 +22,6 @@ const nextConfig = {
   
   // 禁用压缩和优化以减少构建时间
   compress: false,
-  swcMinify: false,
   productionBrowserSourceMaps: false,
   
   // 静态导出配置
@@ -31,7 +30,6 @@ const nextConfig = {
   
   // 实验性配置
   experimental: {
-    appDir: true,
     webpackBuildWorker: false,
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react'],
   },
@@ -84,17 +82,6 @@ const nextConfig = {
     return config;
   },
   
-  // 导出路径映射
-  exportPathMap: async function () {
-    return {
-      '/': { page: '/' },
-      '/workspace': { page: '/workspace' },
-      '/share': { page: '/share' },
-      '/faq': { page: '/faq' },
-      '/privacy': { page: '/privacy' },
-      '/terms': { page: '/terms' },
-    };
-  },
 };
 
 module.exports = nextConfig;
