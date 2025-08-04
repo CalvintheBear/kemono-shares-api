@@ -1,12 +1,20 @@
 import type { NextConfig } from "next";
 import type { Configuration } from 'webpack';
+import createNextIntlPlugin from 'next-intl/plugin';
 
-// 创建适用于 Cloudflare Pages 的 Next.js 配置
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+// 根据环境变量确定构建类型
+const isCloudflarePages = process.env.CF_PAGES === 'true';
+const isCloudflareWorkers = process.env.CF_WORKERS === 'true';
+const isRailway = process.env.RAILWAY === 'true';
+
 const nextConfig: NextConfig = {
-  output: 'export',
+  // 根据部署环境设置输出类型
+  output: isCloudflarePages ? 'export' : 'standalone',
   distDir: '.next',
   
-  // 禁用所有缓存
+  // 禁用缓存以确保构建一致性
   generateBuildId: () => Date.now().toString(),
   
   // 图片配置
@@ -20,55 +28,57 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // 禁用压缩和优化以减少构建时间
+  // 性能优化配置
   compress: false,
   productionBrowserSourceMaps: false,
   
-  // 静态导出配置
-  trailingSlash: true,
-  skipTrailingSlashRedirect: true,
+  // 静态导出配置（仅用于Cloudflare Pages）
+  ...(isCloudflarePages && {
+    trailingSlash: true,
+    skipTrailingSlashRedirect: true,
+  }),
   
-  // 排除API路由
+  // 实验性功能
   experimental: {
     webpackBuildWorker: false,
-    optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react'],
+    optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
   },
   
-  // 极激进的 Webpack 配置
+  // Webpack配置
   webpack: (config: Configuration, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     if (!dev && !isServer) {
-      // 完全禁用缓存
+      // 禁用缓存
       config.cache = false;
       
-      // 合理的代码分割
+      // 代码分割配置
       config.optimization = {
         ...config.optimization,
         splitChunks: {
           chunks: 'all',
-          maxSize: 50000, // 50KB
-          minSize: 10000,  // 10KB
+          maxSize: isCloudflarePages ? 20000 : 50000, // Cloudflare Pages使用更小的块
+          minSize: isCloudflarePages ? 5000 : 10000,
           cacheGroups: {
             react: {
               test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
               name: 'react',
               chunks: 'all',
-              maxSize: 20000,
+              maxSize: isCloudflarePages ? 1500 : 20000,
               priority: 50,
             },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendor',
               chunks: 'all',
-              maxSize: 50000,
-              minSize: 10000,
+              maxSize: isCloudflarePages ? 1000 : 50000,
+              minSize: isCloudflarePages ? 5000 : 10000,
               priority: 20,
             },
             common: {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              maxSize: 20000,
-              minSize: 10000,
+              maxSize: isCloudflarePages ? 800 : 20000,
+              minSize: isCloudflarePages ? 5000 : 10000,
             },
           },
         },
@@ -76,14 +86,14 @@ const nextConfig: NextConfig = {
         minimize: true,
       };
       
-      // 禁用 source map
+      // 禁用source map
       config.devtool = false;
       
-      // 完全禁用性能限制以避免构建失败
+      // 性能配置
       config.performance = {
         hints: false,
-        maxEntrypointSize: Infinity,
-        maxAssetSize: Infinity,
+        maxEntrypointSize: isCloudflarePages ? 10000 : Infinity,
+        maxAssetSize: isCloudflarePages ? 10000 : Infinity,
       };
     }
     
@@ -91,4 +101,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig; 
+export default withNextIntl(nextConfig); 
