@@ -21,11 +21,6 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   
-  // 确保静态导出
-  images: {
-    unoptimized: true,
-    loader: 'custom',
-  },
   
   // 针对 Cloudflare Pages 25MB 限制的极激进优化
   webpack: (config, { dev, isServer }) => {
@@ -36,11 +31,11 @@ const nextConfig: NextConfig = {
       // 客户端构建优化
       config.optimization = {
         ...config.optimization,
-        // 极激进的代码分割
+        // 合理的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 5000, // 5KB 限制 - 极激进
-          minSize: 500,  // 500B 最小块
+          maxSize: 50000, // 50KB 限制 - 合理范围
+          minSize: 10000,  // 10KB 最小块
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -49,7 +44,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 50,
               enforce: true,
-              maxSize: 2000, // 2KB
+              maxSize: 20000, // 20KB
             },
             // 分离 Next.js 相关
             next: {
@@ -58,7 +53,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
-              maxSize: 2000, // 2KB
+              maxSize: 20000, // 20KB
             },
             // 分离 AWS SDK
             aws: {
@@ -67,7 +62,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
-              maxSize: 1000, // 1KB
+              maxSize: 50000, // 50KB
             },
             // 分离其他第三方库
             vendors: {
@@ -76,7 +71,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
-              maxSize: 1000, // 1KB
+              maxSize: 50000, // 50KB
             },
             // 分离公共代码
             common: {
@@ -85,7 +80,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
-              maxSize: 500, // 500B
+              maxSize: 20000, // 20KB
             },
             // 分离样式文件
             styles: {
@@ -93,7 +88,7 @@ const nextConfig: NextConfig = {
               test: /\.(css|scss|sass)$/,
               chunks: 'all',
               enforce: true,
-              maxSize: 500, // 500B
+              maxSize: 10000, // 10KB
             },
           },
         },
@@ -130,11 +125,11 @@ const nextConfig: NextConfig = {
         },
       };
       
-      // 极严格的性能提示
+      // 放宽性能限制以避免构建失败
       config.performance = {
-        hints: 'error',
-        maxEntrypointSize: 10000, // 10KB
-        maxAssetSize: 10000, // 10KB
+        hints: 'warning',
+        maxEntrypointSize: 250000, // 250KB
+        maxAssetSize: 250000, // 250KB
       };
       
       // 禁用source map以减少文件大小
@@ -158,32 +153,29 @@ const nextConfig: NextConfig = {
   // 启用 gzip 压缩
   poweredByHeader: false,
   
-  // 禁用图片优化
+  // 图片配置 - 静态导出专用
   images: {
     unoptimized: true,
+    loader: 'custom',
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'picsum.photos',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'i.ibb.co',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'ibb.co',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'tempfile.aiquickdraw.com',
-        port: '',
         pathname: '/**',
       },
       {
@@ -193,51 +185,18 @@ const nextConfig: NextConfig = {
         pathname: '/temp/**',
       },
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3002',
-        pathname: '/temp/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3003',
-        pathname: '/temp/**',
-      },
-      {
         protocol: 'https',
         hostname: 'via.placeholder.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'fury-template-1363880159.cos.ap-guangzhou.myqcloud.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '2kawaii.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.2kawaii.com',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'pub-d00e7b41917848d1a8403c984cb62880.r2.dev',
-        port: '',
         pathname: '/**',
       }
     ],

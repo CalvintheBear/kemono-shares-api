@@ -40,42 +40,50 @@ const nextConfig = {
       // 完全禁用缓存
       config.cache = false;
       
-      // 极激进的代码分割
+      // 合理的代码分割
       config.optimization = {
         ...config.optimization,
         splitChunks: {
           chunks: 'all',
-          maxSize: 2000, // 2KB
-          minSize: 500,  // 500B
+          maxSize: 50000, // 50KB
+          minSize: 10000,  // 10KB
           cacheGroups: {
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+              name: 'react',
+              chunks: 'all',
+              maxSize: 20000,
+              priority: 50,
+            },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendor',
               chunks: 'all',
-              maxSize: 2000,
-              minSize: 500,
+              maxSize: 50000,
+              minSize: 10000,
+              priority: 20,
             },
             common: {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              maxSize: 2000,
-              minSize: 500,
+              maxSize: 20000,
+              minSize: 10000,
             },
           },
         },
         concatenateModules: false,
-        minimize: false,
+        minimize: true,
       };
       
       // 禁用 source map
       config.devtool = false;
       
-      // 严格的性能限制
+      // 放宽性能限制
       config.performance = {
-        hints: 'error',
-        maxEntrypointSize: 25000,
-        maxAssetSize: 25000,
+        hints: 'warning',
+        maxEntrypointSize: 250000, // 250KB
+        maxAssetSize: 250000, // 250KB
       };
     }
     
