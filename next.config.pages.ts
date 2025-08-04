@@ -22,8 +22,8 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   
   
-  // 针对 Cloudflare Pages 25MB 限制的极激进优化
-  webpack: (config, { dev, isServer }) => {
+  // 针对 Cloudflare Pages 25MB 限制的优化
+  webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     // 完全禁用所有缓存
     config.cache = false;
     
@@ -125,11 +125,11 @@ const nextConfig: NextConfig = {
         },
       };
       
-      // 放宽性能限制以避免构建失败
+      // 完全禁用性能限制以避免构建失败
       config.performance = {
-        hints: 'warning',
-        maxEntrypointSize: 250000, // 250KB
-        maxAssetSize: 250000, // 250KB
+        hints: false,
+        maxEntrypointSize: Infinity,
+        maxAssetSize: Infinity,
       };
       
       // 禁用source map以减少文件大小

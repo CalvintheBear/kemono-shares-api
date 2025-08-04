@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   },
   
   // 优化的 webpack 配置
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     // 保持缓存以提高构建性能
     if (dev) {
       config.cache = true;
