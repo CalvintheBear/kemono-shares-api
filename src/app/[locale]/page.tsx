@@ -7,6 +7,13 @@ import HomeHero from "@/components/HomeHero";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import Image from 'next/image'
 
+// 生成静态参数
+export function generateStaticParams() {
+  return [
+    { locale: 'ja' }
+  ];
+}
+
 // ホームページSEOメタデータ
 export const metadata = {
   title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",

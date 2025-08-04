@@ -1,129 +1,83 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
+import type { Configuration } from 'webpack';
 
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
-
+// 创建适用于 Cloudflare Pages 的 Next.js 配置
 const nextConfig: NextConfig = {
-  // 针对 Cloudflare Pages 的极激进优化
-  experimental: {
-    webpackBuildWorker: false,
-    optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
+  output: 'export',
+  distDir: '.next',
+  
+  // 禁用所有缓存
+  generateBuildId: () => Date.now().toString(),
+  
+  // 图片配置
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
+  
+  // 禁用压缩和优化以减少构建时间
+  compress: false,
+  productionBrowserSourceMaps: false,
   
   // 静态导出配置
-  output: 'export',
-  distDir: 'out',
-  generateBuildId: async () => {
-    return Date.now().toString()
-  },
-  
-  // 禁用Next.js优化以减小包大小
-  trailingSlash: false,
+  trailingSlash: true,
   skipTrailingSlashRedirect: true,
   
+  // 排除API路由
+  experimental: {
+    webpackBuildWorker: false,
+    optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react'],
+  },
   
-  // 针对 Cloudflare Pages 25MB 限制的优化
-  webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
-    // 完全禁用所有缓存
-    config.cache = false;
-    
+  // 极激进的 Webpack 配置
+  webpack: (config: Configuration, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     if (!dev && !isServer) {
-      // 客户端构建优化
+      // 完全禁用缓存
+      config.cache = false;
+      
+      // 合理的代码分割
       config.optimization = {
         ...config.optimization,
-        // 合理的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 50000, // 50KB 限制 - 合理范围
-          minSize: 10000,  // 10KB 最小块
+          maxSize: 50000, // 50KB
+          minSize: 10000,  // 10KB
           cacheGroups: {
-            // 分离 React 相关库
             react: {
               test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
               name: 'react',
               chunks: 'all',
+              maxSize: 20000,
               priority: 50,
-              enforce: true,
-              maxSize: 20000, // 20KB
             },
-            // 分离 Next.js 相关
-            next: {
-              test: /[\\/]node_modules[\\/]next[\\/]/,
-              name: 'next',
-              chunks: 'all',
-              priority: 40,
-              enforce: true,
-              maxSize: 20000, // 20KB
-            },
-            // 分离 AWS SDK
-            aws: {
-              test: /[\\/]node_modules[\\/]@aws-sdk[\\/]/,
-              name: 'aws-sdk',
-              chunks: 'all',
-              priority: 30,
-              enforce: true,
-              maxSize: 50000, // 50KB
-            },
-            // 分离其他第三方库
-            vendors: {
+            vendor: {
               test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
+              name: 'vendor',
               chunks: 'all',
+              maxSize: 50000,
+              minSize: 10000,
               priority: 20,
-              enforce: true,
-              maxSize: 50000, // 50KB
             },
-            // 分离公共代码
             common: {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              priority: 10,
-              enforce: true,
-              maxSize: 20000, // 20KB
-            },
-            // 分离样式文件
-            styles: {
-              name: 'styles',
-              test: /\.(css|scss|sass)$/,
-              chunks: 'all',
-              enforce: true,
-              maxSize: 10000, // 10KB
+              maxSize: 20000,
+              minSize: 10000,
             },
           },
         },
-        // 禁用模块连接
         concatenateModules: false,
-        // 启用副作用优化
-        sideEffects: false,
-        // 启用最小化
         minimize: true,
-        // 设置更小的入口点大小限制
-        runtimeChunk: 'single',
-        // 禁用模块连接
-        moduleIds: 'named',
-        chunkIds: 'named',
       };
       
-      // 优化模块解析
-      config.resolve = {
-        ...config.resolve,
-        fallback: {
-          ...config.resolve.fallback,
-          fs: false,
-          net: false,
-          tls: false,
-          crypto: false,
-          stream: false,
-          url: false,
-          zlib: false,
-          http: false,
-          https: false,
-          assert: false,
-          os: false,
-          path: false,
-        },
-      };
+      // 禁用 source map
+      config.devtool = false;
       
       // 完全禁用性能限制以避免构建失败
       config.performance = {
@@ -131,76 +85,10 @@ const nextConfig: NextConfig = {
         maxEntrypointSize: Infinity,
         maxAssetSize: Infinity,
       };
-      
-      // 禁用source map以减少文件大小
-      config.devtool = false;
-      
-      // 禁用缓存相关的插件
-      config.plugins = config.plugins.filter((plugin: any) => {
-        const pluginName = plugin.constructor.name;
-        return !pluginName.includes('Cache') && 
-               !pluginName.includes('HotModuleReplacement') &&
-               !pluginName.includes('DefinePlugin');
-      });
     }
     
     return config;
   },
-  
-  // 压缩配置
-  compress: true,
-  
-  // 启用 gzip 压缩
-  poweredByHeader: false,
-  
-  // 图片配置 - 静态导出专用
-  images: {
-    unoptimized: true,
-    loader: 'custom',
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.ibb.co',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'ibb.co',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'tempfile.aiquickdraw.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/temp/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pub-d00e7b41917848d1a8403c984cb62880.r2.dev',
-        pathname: '/**',
-      }
-    ],
-  },
 };
 
-export default withNextIntl(nextConfig); 
+export default nextConfig; 

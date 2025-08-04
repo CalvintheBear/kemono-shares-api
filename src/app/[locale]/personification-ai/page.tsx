@@ -4,6 +4,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from 'next/image'
 
+// 生成静态参数
+export function generateStaticParams() {
+  return [
+    { locale: 'ja' }
+  ];
+}
+
 export const metadata: Metadata = {
   title: "チャットgpt 擬人化 | GPT-4oでペット・キャラを美少女に無料変換",
   description: "【GPT-4o】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを1-3分で可愛いアニメキャラに。無料で商用利用可能。",

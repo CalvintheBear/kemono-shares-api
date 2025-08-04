@@ -1,4 +1,11 @@
 import Header from '@/components/Header'
+
+// 生成静态参数
+export function generateStaticParams() {
+  return [
+    { locale: 'ja' }
+  ];
+}
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 

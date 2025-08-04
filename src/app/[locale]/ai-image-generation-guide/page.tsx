@@ -1,4 +1,11 @@
 import type { Metadata } from 'next';
+
+// 生成静态参数
+export function generateStaticParams() {
+  return [
+    { locale: 'ja' }
+  ];
+}
 import Link from "next/link"
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

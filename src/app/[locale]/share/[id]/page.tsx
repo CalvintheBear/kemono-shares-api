@@ -1,6 +1,13 @@
 import { Metadata } from 'next'
 import SharePageClient from './SharePageClient'
 
+// 生成静态参数 - 为静态导出提供示例ID
+export function generateStaticParams() {
+  return [
+    { locale: 'ja', id: 'example' }
+  ];
+}
+
 interface PageProps {
   params: Promise<{
     id: string
