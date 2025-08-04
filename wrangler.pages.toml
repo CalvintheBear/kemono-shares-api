@@ -1,26 +1,10 @@
-# Cloudflare Workers 配置文件
+# Cloudflare Pages 配置文件
 name = "kemono-shares-api"
-main = ".next/standalone/server.js"
 compatibility_date = "2024-07-01"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# 构建配置
-[build]
-command = "npm run build:cloudflare"
-cwd = "."
-
-# 环境配置
-[env.production]
-name = "kemono-shares-api"
-
-[env.development]
-name = "kemono-shares-api-dev"
-
-# KV 命名空间配置
-[[kv_namespaces]]
-binding = "SHARE_DATA_KV"
-id = "77b81f5b787b449e931fa6a51263b38c"
-preview_id = "2d7d8b533f3049b89d808fbb569bb09c"
+# Pages配置
+pages_build_output_dir = "out"
 
 # 全局环境变量
 [vars]
@@ -40,7 +24,7 @@ CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-d00e7b41917848d1a8403c984cb62
 NODE_ENV = "production"
 NEXT_PUBLIC_APP_URL = "https://2kawaii.com"
 
-# 开发环境变量
-[env.development.vars]
+# 预览环境变量
+[env.preview.vars]
 NODE_ENV = "development"
-NEXT_PUBLIC_APP_URL = "https://kemono-shares-api-dev.y2983236233.workers.dev"
+NEXT_PUBLIC_APP_URL = "https://kemono-shares-api-dev.y2983236233.workers.dev" 
