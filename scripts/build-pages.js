@@ -22,6 +22,28 @@ function cleanDirectory(dir) {
   }
 }
 
+// 跨平台复制目录函数
+function copyDirectory(src, dest) {
+  if (!fs.existsSync(src)) return;
+  
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+  
+  const items = fs.readdirSync(src);
+  
+  for (const item of items) {
+    const srcPath = path.join(src, item);
+    const destPath = path.join(dest, item);
+    
+    if (fs.statSync(srcPath).isDirectory()) {
+      copyDirectory(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 // 设置环境变量
 process.env.NODE_ENV = 'production';
 process.env.NEXT_TELEMETRY_DISABLED = '1';
@@ -51,8 +73,8 @@ if (fs.existsSync(apiDir)) {
   if (fs.existsSync(apiBackupDir)) {
     cleanDirectory(apiBackupDir);
   }
-  // 复制而不是重命名，避免权限问题
-  execSync(`xcopy "${apiDir}" "${apiBackupDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  // 使用跨平台复制函数
+  copyDirectory(apiDir, apiBackupDir);
   cleanDirectory(apiDir);
   console.log('✅ 已备份API路由');
 }
@@ -69,7 +91,7 @@ if (fs.existsSync(shareDir)) {
   if (fs.existsSync(shareBackupDir)) {
     cleanDirectory(shareBackupDir);
   }
-  execSync(`xcopy "${shareDir}" "${shareBackupDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(shareDir, shareBackupDir);
   cleanDirectory(shareDir);
   console.log('✅ 已备份share目录');
 }
@@ -79,7 +101,7 @@ if (fs.existsSync(i18nDir)) {
   if (fs.existsSync(i18nBackupDir)) {
     cleanDirectory(i18nBackupDir);
   }
-  execSync(`xcopy "${i18nDir}" "${i18nBackupDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(i18nDir, i18nBackupDir);
   cleanDirectory(i18nDir);
   console.log('✅ 已备份i18n目录');
 }
@@ -135,7 +157,7 @@ try {
     if (fs.existsSync(apiDir)) {
       cleanDirectory(apiDir);
     }
-    execSync(`xcopy "${apiBackupDir}" "${apiDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+    copyDirectory(apiBackupDir, apiDir);
     cleanDirectory(apiBackupDir);
     console.log('✅ 已恢复API路由');
   }
@@ -152,7 +174,7 @@ if (fs.existsSync(shareBackupDir)) {
   if (fs.existsSync(shareDir)) {
     cleanDirectory(shareDir);
   }
-  execSync(`xcopy "${shareBackupDir}" "${shareDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(shareBackupDir, shareDir);
   cleanDirectory(shareBackupDir);
   console.log('✅ 已恢复share目录');
 }
@@ -162,7 +184,7 @@ if (fs.existsSync(i18nBackupDir)) {
   if (fs.existsSync(i18nDir)) {
     cleanDirectory(i18nDir);
   }
-  execSync(`xcopy "${i18nBackupDir}" "${i18nDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(i18nBackupDir, i18nDir);
   cleanDirectory(i18nBackupDir);
   console.log('✅ 已恢复i18n目录');
 }
@@ -224,7 +246,7 @@ if (!fs.existsSync(targetDir)) {
 
 // 复制所有文件到目标目录
 try {
-  execSync(`xcopy "${staticDir}" "${targetDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(staticDir, targetDir);
   console.log('✅ 已复制文件到 .vercel/output/static');
 } catch (error) {
   console.error('❌ 复制文件失败:', error.message);
@@ -244,7 +266,7 @@ if (fs.existsSync(apiBackupDir)) {
   if (fs.existsSync(apiDir)) {
     cleanDirectory(apiDir);
   }
-  execSync(`xcopy "${apiBackupDir}" "${apiDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(apiBackupDir, apiDir);
   cleanDirectory(apiBackupDir);
   console.log('✅ 已恢复API路由');
 }
@@ -254,7 +276,7 @@ if (fs.existsSync(shareBackupDir)) {
   if (fs.existsSync(shareDir)) {
     cleanDirectory(shareDir);
   }
-  execSync(`xcopy "${shareBackupDir}" "${shareDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  copyDirectory(shareBackupDir, shareDir);
   cleanDirectory(shareBackupDir);
   console.log('✅ 已恢复share目录');
 }
