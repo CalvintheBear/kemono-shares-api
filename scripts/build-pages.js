@@ -46,10 +46,10 @@ if (fs.existsSync(pagesConfig)) {
   console.log('✅ 已应用 Pages 配置');
 }
 
-// 步骤3: 执行构建
-console.log('🔨 开始构建...');
+// 步骤3: 执行静态构建
+console.log('🔨 开始静态构建...');
 try {
-  execSync('npx @cloudflare/next-on-pages', {
+  execSync('npm run build', {
     stdio: 'inherit',
     env: {
       ...process.env,
@@ -96,7 +96,7 @@ function checkFileSizes(dir) {
   return !hasLargeFiles;
 }
 
-const staticDir = '.vercel/output/static';
+const staticDir = 'out';
 if (checkFileSizes(staticDir)) {
   console.log('✅ 所有文件都在 25MB 限制内');
 } else {

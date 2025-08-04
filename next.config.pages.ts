@@ -12,10 +12,21 @@ const nextConfig: NextConfig = {
     optimizeCss: false,
   },
   
-  // 禁用持久化缓存
-  distDir: '.next',
+  // 静态导出配置
+  output: 'export',
+  distDir: 'out',
   generateBuildId: async () => {
     return Date.now().toString()
+  },
+  
+  // 禁用Next.js优化以减小包大小
+  trailingSlash: false,
+  skipTrailingSlashRedirect: true,
+  
+  // 确保静态导出
+  images: {
+    unoptimized: true,
+    loader: 'custom',
   },
   
   // 针对 Cloudflare Pages 25MB 限制的极激进优化
