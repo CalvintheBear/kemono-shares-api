@@ -2,7 +2,7 @@
 // 这个文件将处理Next.js的API路由
 
 const worker = {
-  async fetch(request, env, ctx) {
+  async fetch(request, _env, _ctx) {
     try {
       const url = new URL(request.url);
       
