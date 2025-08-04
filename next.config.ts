@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import type { Configuration } from 'webpack';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
@@ -45,7 +44,7 @@ const nextConfig: NextConfig = {
   },
   
   // Webpack配置
-  webpack: (config: Configuration, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
+  webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     if (!dev && !isServer) {
       // 禁用缓存
       config.cache = false;
