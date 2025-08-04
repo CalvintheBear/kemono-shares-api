@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:pages": "set CF_PAGES=true && next build",
+    "build:pages": "set CF_PAGES=true && next build && node scripts/copy-pages-output.js",
     "build:cloudflare": "set CF_WORKERS=true && next build",
     "build:railway": "set RAILWAY=true && next build",
     "start": "next start",

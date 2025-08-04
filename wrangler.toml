@@ -1,8 +1,11 @@
 # Cloudflare 统一配置文件
 name = "kemono-shares-api"
-main = ".vercel/output/functions/[[path]]/func/index.js"
+main = ".next/standalone/server.js"
 compatibility_date = "2024-07-01"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+# Pages配置
+pages_build_output_dir = "out"
 
 # 构建配置
 [build]
