@@ -20,8 +20,25 @@ const nextConfig: NextConfig = {
   
   // 极激进的 webpack 配置
   webpack: (config, { dev, isServer }) => {
-    // 完全禁用所有缓存
+    // 完全禁用所有缓存 - CRITICAL for 25MiB limit
     config.cache = false;
+    config.infrastructureLogging = { debug: false };
+    
+    // 强制禁用持久化缓存
+    if (config.cache && typeof config.cache === 'object') {
+      config.cache = false;
+    }
+    
+    // 禁用文件系统缓存
+    config.snapshot = { managedPaths: [] };
+    
+    // 确保输出目录干净
+    if (!dev) {
+      config.output = {
+        ...config.output,
+        clean: true,
+      };
+    }
     
     // 禁用持久化缓存
     if (config.cache && typeof config.cache === 'object') {
