@@ -207,6 +207,30 @@ if (checkFileSizes(staticDir)) {
   process.exit(1);
 }
 
+// 步骤5.5: 复制文件到 Cloudflare Pages 期望的目录
+console.log('📁 复制文件到 Cloudflare Pages 输出目录...');
+const targetDir = '.vercel/output/static';
+
+// 创建目标目录
+if (!fs.existsSync('.vercel')) {
+  fs.mkdirSync('.vercel');
+}
+if (!fs.existsSync('.vercel/output')) {
+  fs.mkdirSync('.vercel/output');
+}
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir);
+}
+
+// 复制所有文件到目标目录
+try {
+  execSync(`xcopy "${staticDir}" "${targetDir}" /E /I /H /Y`, { stdio: 'inherit', shell: true });
+  console.log('✅ 已复制文件到 .vercel/output/static');
+} catch (error) {
+  console.error('❌ 复制文件失败:', error.message);
+  process.exit(1);
+}
+
 // 步骤6: 恢复原始配置和API路由
 console.log('🔄 恢复原始配置...');
 if (fs.existsSync(`${originalConfig}.backup`)) {
