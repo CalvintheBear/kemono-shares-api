@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import type { Configuration } from 'webpack';
 
 // 创建适用于 Cloudflare Pages 的 Next.js 配置
 const nextConfig: NextConfig = {
@@ -35,7 +34,7 @@ const nextConfig: NextConfig = {
   },
   
   // 极激进的 Webpack 配置
-  webpack: (config: Configuration, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
+  webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     if (!dev && !isServer) {
       // 完全禁用缓存
       config.cache = false;
