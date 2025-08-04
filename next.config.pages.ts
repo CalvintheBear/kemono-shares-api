@@ -4,10 +4,12 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
-  // 针对 Cloudflare Pages 的优化配置
+  // 针对 Cloudflare Pages 的极激进优化
   experimental: {
     webpackBuildWorker: false,
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
+    // 禁用一些可能导致大文件的功能
+    optimizeCss: false,
   },
   
   // 禁用持久化缓存
@@ -16,17 +18,20 @@ const nextConfig: NextConfig = {
     return Date.now().toString()
   },
   
-  // 针对 Cloudflare Pages 25MB 限制的激进优化
+  // 针对 Cloudflare Pages 25MB 限制的极激进优化
   webpack: (config, { dev, isServer }) => {
+    // 完全禁用所有缓存
+    config.cache = false;
+    
     if (!dev && !isServer) {
       // 客户端构建优化
       config.optimization = {
         ...config.optimization,
-        // 适度的代码分割
+        // 极激进的代码分割
         splitChunks: {
           chunks: 'all',
-          maxSize: 50000, // 50KB 限制
-          minSize: 10000,  // 10KB 最小块
+          maxSize: 5000, // 5KB 限制 - 极激进
+          minSize: 500,  // 500B 最小块
           cacheGroups: {
             // 分离 React 相关库
             react: {
@@ -35,6 +40,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 50,
               enforce: true,
+              maxSize: 2000, // 2KB
             },
             // 分离 Next.js 相关
             next: {
@@ -43,6 +49,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 40,
               enforce: true,
+              maxSize: 2000, // 2KB
             },
             // 分离 AWS SDK
             aws: {
@@ -51,6 +58,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 30,
               enforce: true,
+              maxSize: 1000, // 1KB
             },
             // 分离其他第三方库
             vendors: {
@@ -59,6 +67,7 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 20,
               enforce: true,
+              maxSize: 1000, // 1KB
             },
             // 分离公共代码
             common: {
@@ -67,6 +76,15 @@ const nextConfig: NextConfig = {
               chunks: 'all',
               priority: 10,
               enforce: true,
+              maxSize: 500, // 500B
+            },
+            // 分离样式文件
+            styles: {
+              name: 'styles',
+              test: /\.(css|scss|sass)$/,
+              chunks: 'all',
+              enforce: true,
+              maxSize: 500, // 500B
             },
           },
         },
@@ -78,6 +96,9 @@ const nextConfig: NextConfig = {
         minimize: true,
         // 设置更小的入口点大小限制
         runtimeChunk: 'single',
+        // 禁用模块连接
+        moduleIds: 'named',
+        chunkIds: 'named',
       };
       
       // 优化模块解析
@@ -100,12 +121,23 @@ const nextConfig: NextConfig = {
         },
       };
       
-      // 合理的性能提示
+      // 极严格的性能提示
       config.performance = {
-        hints: 'warning',
-        maxEntrypointSize: 500000, // 500KB
-        maxAssetSize: 500000, // 500KB
+        hints: 'error',
+        maxEntrypointSize: 10000, // 10KB
+        maxAssetSize: 10000, // 10KB
       };
+      
+      // 禁用source map以减少文件大小
+      config.devtool = false;
+      
+      // 禁用缓存相关的插件
+      config.plugins = config.plugins.filter((plugin: any) => {
+        const pluginName = plugin.constructor.name;
+        return !pluginName.includes('Cache') && 
+               !pluginName.includes('HotModuleReplacement') &&
+               !pluginName.includes('DefinePlugin');
+      });
     }
     
     return config;

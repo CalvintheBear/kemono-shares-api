@@ -84,7 +84,7 @@ export default function LazyImage({
     setRetryCount(0)
     
     // 添加调试信息
-    if (typeof window !== 'undefined' && process?.env?.NODE_ENV === 'development') {
+    if (typeof window !== 'undefined' && typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
       console.log(`✅ 图片加载成功: ${src}`)
     }
   }

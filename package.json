@@ -12,6 +12,7 @@
     "build:railway": "next build",
     "build:cloudflare": "next build --no-lint",
     "build:pages": "node scripts/build-pages.js",
+    "build:ultra": "node scripts/build-cloudflare-ultra-aggressive.js",
     "build:optimized": "node scripts/build-pages.js",
     "clean": "node scripts/clean-cache.js",
     "start": "next start",

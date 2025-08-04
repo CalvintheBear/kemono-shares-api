@@ -59,7 +59,7 @@ export class ShareKVStore {
     // 避免递归调用，使用简单检查
     try {
       // 检查CF_WORKER环境变量
-      if (typeof process !== 'undefined' && process.env.CF_WORKER === 'true') {
+      if (typeof process !== 'undefined' && process.env?.CF_WORKER === 'true') {
         return true
       }
       
@@ -413,7 +413,7 @@ export class ShareKVStore {
       isInitialized: this.isInitialized,
       hasKV: this.kv !== null,
       memoryCacheSize: this.memoryCache.size,
-      environment: process.env.NODE_ENV || 'unknown'
+      environment: typeof process !== 'undefined' ? process.env?.NODE_ENV || 'unknown' : 'edge'
     }
   }
 }
@@ -455,7 +455,7 @@ export const initializeSampleData = async () => {
   })
   
   // 在开发环境中，可以添加一些测试数据（可选）
-  if (process.env.NODE_ENV === 'development' && size === 0) {
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development' && size === 0) {
     console.log('🔧 开发环境：存储为空，可以添加测试数据')
   }
 } 

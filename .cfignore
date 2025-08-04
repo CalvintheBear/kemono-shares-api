@@ -1,11 +1,95 @@
-# 排除 Next.js 导出的 webpack 缓存，避免单文件超 25 MiB
-# 根据构建日志，文件路径为 cache/webpack/client-production/0.pack
+# Cloudflare Pages ignore file - similar to .gitignore
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js build output
+.next/
+out/
+
+# Build cache
+.cache/
 cache/
-cache/**
-webpack/
-webpack/**
-cache/webpack/
-cache/webpack/**
+
+# Webpack cache
+.next/cache/
+.next/cache/webpack/*
+
+# Temporary files
+temp/
+.tmp/
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Large binary files
+*.node
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Debug files
+debug-*.log
+test-*.log
+
+# Backup files
+*.backup
+*.bak
+
+# Development scripts and documentation
+scripts/
+*.md
+!README.md
+
+# Local storage
+local-storage/
+
+# Test files
+test-results/
+coverage/
+
+# Build artifacts
 *.pack
+*.chunk.js
+*.chunk.js.map
+
+# Webpack specific
 **/webpack/**
 **/cache/**
+**/*.pack
