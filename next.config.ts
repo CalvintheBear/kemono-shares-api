@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
     ],
   },
   
+  // 确保静态资源路径正确
+  assetPrefix: process.env.CF_PAGES ? '/' : undefined,
+  basePath: '',
+  
   // 性能优化配置
   compress: false,
   productionBrowserSourceMaps: false,
