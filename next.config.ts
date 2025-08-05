@@ -7,8 +7,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
-// 只有在明确设置为Cloudflare Pages时才使用静态导出
-const shouldUseStaticExport = isCloudflarePages && !isRailway; // 启用Pages静态导出，但Railway不使用
+// 对于Cloudflare Pages，使用next-on-pages而不是静态导出
+const shouldUseStaticExport = false; // 禁用静态导出，使用Edge Runtime
 
 
 
@@ -35,10 +35,10 @@ const nextConfig: NextConfig = {
   compress: false,
   productionBrowserSourceMaps: false,
   
-  // 静态导出配置（仅用于Cloudflare Pages）
+  // Cloudflare Pages配置
   ...(isCloudflarePages && {
-    trailingSlash: true,
-    skipTrailingSlashRedirect: true,
+    trailingSlash: false,
+    skipTrailingSlashRedirect: false,
   }),
   
   // 实验性功能

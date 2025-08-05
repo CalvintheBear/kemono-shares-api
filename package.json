@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "pages:build": "@cloudflare/next-on-pages", 
     "build:pages": "set CF_PAGES=true && next build && node scripts/copy-pages-output.js",
     "build:railway": "cross-env RAILWAY=true next build",
     "start": "next start",
