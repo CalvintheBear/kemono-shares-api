@@ -1,11 +1,9 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 interface ProgressStep {
   id: string
-  titleKey: string
-  descriptionKey: string
+  title: string
+  description: string
   icon: string
 }
 
@@ -15,31 +13,29 @@ interface ProgressIndicatorProps {
 }
 
 export default function ProgressIndicator({ currentStep, isActive }: ProgressIndicatorProps) {
-  const t = useTranslations('workspace.progress')
-
   const steps: ProgressStep[] = [
     {
       id: 'upload',
-      titleKey: 'upload.title',
-      descriptionKey: 'upload.description',
+      title: '上传图片',
+      description: '选择并上传图片',
       icon: '📤'
     },
     {
       id: 'process',
-      titleKey: 'process.title', 
-      descriptionKey: 'process.description',
+      title: '处理中', 
+      description: 'AI正在处理',
       icon: '🎨'
     },
     {
       id: 'enhance',
-      titleKey: 'enhance.title',
-      descriptionKey: 'enhance.description', 
+      title: '增强优化',
+      description: '提升图片质量', 
       icon: '✨'
     },
     {
       id: 'complete',
-      titleKey: 'complete.title',
-      descriptionKey: 'complete.description',
+      title: '完成',
+      description: '处理完成',
       icon: '🎉'
     }
   ]
@@ -50,10 +46,10 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
     <div className="card-kawaii p-6 mb-8 animate-scale-in progress-indicator">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gradient font-cute mb-2">
-          {t('title')}
+          处理进度
         </h3>
         <p className="text-gray-600">
-          {t('description')}
+          正在为您处理图片，请稍候...
         </p>
       </div>
 
@@ -80,13 +76,13 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
                   font-cute font-bold text-sm
                   ${index <= currentStep ? 'text-pink-600' : 'text-gray-400'}
                 `}>
-                  {t(step.titleKey)}
+                  {step.title}
                 </h4>
                 <p className={`
                   text-xs mt-1 max-w-20
                   ${index <= currentStep ? 'text-gray-600' : 'text-gray-400'}
                 `}>
-                  {t(step.descriptionKey)}
+                  {step.description}
                 </p>
               </div>
             </div>
@@ -107,7 +103,7 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
         <div className="inline-flex items-center space-x-2 bg-pink-50 px-4 py-2 rounded-full">
           <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse"></div>
           <span className="text-pink-700 font-medium">
-            {t(steps[currentStep]?.titleKey || 'processing')}
+            {steps[currentStep]?.title || '处理中'}
           </span>
         </div>
       </div>
