@@ -1,0 +1,56 @@
+# Cloudflare Pages 配置文件 - 支持API路由
+name = "kemono-shares-api"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm run build:pages:api"
+output_directory = ".next"
+
+[build.environment]
+NODE_VERSION = "20"
+NPM_VERSION = "10"
+
+# 环境变量配置
+[vars]
+NODE_ENV = "production"
+CF_PAGES = "true"
+STATIC_EXPORT = "false"
+
+# 必需的环境变量（需要在Cloudflare Pages控制台中设置）
+# CLOUDFLARE_R2_ACCOUNT_ID
+# CLOUDFLARE_R2_ACCESS_KEY_ID
+# CLOUDFLARE_R2_SECRET_ACCESS_KEY
+# CLOUDFLARE_R2_BUCKET_NAME
+# CLOUDFLARE_R2_PUBLIC_URL
+# CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME
+# CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL
+
+# 路由配置
+[[redirects]]
+from = "/api/*"
+to = "/api/:splat"
+status = 200
+
+# 静态资源缓存
+[[headers]]
+for = "/_next/static/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+# API路由不缓存
+[[headers]]
+for = "/api/*"
+[headers.values]
+Cache-Control = "no-cache, no-store, must-revalidate"
+Pragma = "no-cache"
+Expires = "0"
+
+# 安全头
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "camera=(), microphone=(), geolocation=()" 
