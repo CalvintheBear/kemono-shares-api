@@ -3,9 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 // 配置为动态路由，避免静态导出错误
 export const dynamic = 'force-dynamic'
 
-// 禁用静态生成，确保只在运行时执行
-export const runtime = 'nodejs'
-
 export async function GET(_request: NextRequest) {
   try {
     const apiKey = process.env.KIE_AI_API_KEY
