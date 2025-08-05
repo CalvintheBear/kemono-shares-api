@@ -6,6 +6,12 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 # Pages配置
 pages_build_output_dir = "out"
 
+# KV 命名空间配置
+[[kv_namespaces]]
+binding = "SHARE_DATA_KV"
+id = "77b81f5b787b449e931fa6a51263b38c"
+preview_id = "2d7d8b533f3049b89d808fbb569bb09c"
+
 # 全局环境变量
 [vars]
 NODE_ENV = "production"

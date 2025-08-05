@@ -5,7 +5,6 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 // 根据环境变量确定构建类型
 const isCloudflarePages = process.env.CF_PAGES === 'true';
-const isCloudflareWorkers = process.env.CF_WORKERS === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
 // 只有在明确设置为Cloudflare Pages时才使用静态导出
