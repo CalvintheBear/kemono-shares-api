@@ -4,9 +4,9 @@ main = "src/worker.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# 构建配置
+# 构建配置 - 使用预构建方式避免依赖安装问题
 [build]
-command = "npm run build:cloudflare"
+command = "echo '跳过构建，使用预构建文件'"
 cwd = "."
 
 # 环境配置
