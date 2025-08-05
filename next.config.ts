@@ -8,9 +8,12 @@ const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isCloudflareWorkers = process.env.CF_WORKERS === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
+// 只有在明确设置为Cloudflare Pages时才使用静态导出
+const shouldUseStaticExport = false; // 暂时禁用静态导出以修复构建问题
+
 const nextConfig: NextConfig = {
   // 根据部署环境设置输出类型
-  output: isCloudflarePages ? 'export' : (isCloudflareWorkers ? undefined : 'standalone'),
+  output: shouldUseStaticExport ? 'export' : undefined,
   distDir: '.next',
   
   // 禁用缓存以确保构建一致性
@@ -54,30 +57,31 @@ const nextConfig: NextConfig = {
         ...config.optimization,
         splitChunks: {
           chunks: 'all',
-          maxSize: isCloudflarePages ? 20000 : 50000, // Cloudflare Pages使用更小的块
-          minSize: isCloudflarePages ? 5000 : 10000,
+          maxSize: shouldUseStaticExport ? 20000 : 50000, // Cloudflare Pages使用更小的块
+          minSize: shouldUseStaticExport ? 5000 : 10000,
           cacheGroups: {
             react: {
               test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
               name: 'react',
               chunks: 'all',
-              maxSize: isCloudflarePages ? 1500 : 20000,
+              maxSize: shouldUseStaticExport ? 20000 : 20000,
+              minSize: shouldUseStaticExport ? 5000 : 10000,
               priority: 50,
             },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendor',
               chunks: 'all',
-              maxSize: isCloudflarePages ? 1000 : 50000,
-              minSize: isCloudflarePages ? 5000 : 10000,
+              maxSize: shouldUseStaticExport ? 10000 : 50000,
+              minSize: shouldUseStaticExport ? 5000 : 10000,
               priority: 20,
             },
             common: {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              maxSize: isCloudflarePages ? 800 : 20000,
-              minSize: isCloudflarePages ? 5000 : 10000,
+              maxSize: shouldUseStaticExport ? 10000 : 20000,
+              minSize: shouldUseStaticExport ? 5000 : 10000,
             },
           },
         },
@@ -91,8 +95,8 @@ const nextConfig: NextConfig = {
       // 性能配置
       config.performance = {
         hints: false,
-        maxEntrypointSize: isCloudflarePages ? 10000 : Infinity,
-        maxAssetSize: isCloudflarePages ? 10000 : Infinity,
+        maxEntrypointSize: shouldUseStaticExport ? 10000 : Infinity,
+        maxAssetSize: shouldUseStaticExport ? 10000 : Infinity,
       };
     }
     

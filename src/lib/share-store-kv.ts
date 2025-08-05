@@ -14,7 +14,6 @@ export interface ShareData {
 
 // Cloudflare KV 存储类
 export class ShareKVStore {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private kv: any = null // 使用 any 类型避免 TypeScript 编译错误
   private memoryCache = new Map<string, ShareData>() // 内存缓存
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5分钟缓存

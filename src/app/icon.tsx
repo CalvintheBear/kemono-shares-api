@@ -1,5 +1,9 @@
 import { ImageResponse } from 'next/og'
- 
+
+// 静态导出配置
+export const dynamic = 'force-static'
+export const revalidate = false
+
 // Image metadata
 export const size = {
   width: 32,

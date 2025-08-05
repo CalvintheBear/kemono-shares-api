@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS测试页面</title>
+    <style>
+        /* 测试基本样式 */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #fff7ea;
+            color: #2d1b69;
+            padding: 20px;
+        }
+        
+        .test-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .test-button {
+            background: linear-gradient(to right, #f87171, #fb923c);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1.5rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px 0 rgba(255, 105, 180, 0.39);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .test-button:hover {
+            box-shadow: 0 4px 14px 0 rgba(255, 159, 67, 0.39);
+            transform: scale(1.05);
+        }
+        
+        .test-input {
+            background: #ffffff;
+            border: 2px solid #fdc9c9;
+            border-radius: 1.5rem;
+            padding: 0.75rem 1rem;
+            margin: 10px 0;
+            width: 200px;
+        }
+        
+        .test-input:focus {
+            outline: none;
+            border-color: #f87171;
+            box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 0.5rem;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>🎨 CSS样式测试页面</h1>
+        <p>这个页面用于测试furycode项目的CSS样式是否正确加载。</p>
+        
+        <div class="status success">
+            ✅ CSS文件已生成：.next/static/css/ea50d73b68f94f38.css (85KB)
+        </div>
+        
+        <div class="status success">
+            ✅ CSS文件已生成：.next/static/css/f3b08536374a10de.css (6KB)
+        </div>
+        
+        <h2>样式测试</h2>
+        
+        <div class="test-card">
+            <h3>按钮样式测试</h3>
+            <button class="test-button">可爱的按钮</button>
+        </div>
+        
+        <div class="test-card">
+            <h3>输入框样式测试</h3>
+            <input type="text" class="test-input" placeholder="输入一些文字...">
+        </div>
+        
+        <div class="test-card">
+            <h3>卡片样式测试</h3>
+            <p>这个卡片使用了自定义的CSS样式，包括背景、阴影和圆角。</p>
+        </div>
+        
+        <div class="status success">
+            ✅ 如果上面的元素都有正确的样式，说明CSS配置成功！
+        </div>
+    </div>
+    
+    <script>
+        // 简单的JavaScript测试
+        console.log('🎨 CSS测试页面已加载');
+        
+        // 检查CSS文件是否存在
+        fetch('/_next/static/css/ea50d73b68f94f38.css')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ 主CSS文件可访问');
+                } else {
+                    console.log('❌ 主CSS文件不可访问');
+                }
+            })
+            .catch(error => {
+                console.log('❌ CSS文件访问失败:', error);
+            });
+    </script>
+</body>
+</html> 

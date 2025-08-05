@@ -1,7 +1,7 @@
 // Cloudflare Workers 入口点
 // 简化的API路由处理器
 
-export default {
+const worker = {
   async fetch(request, env, _ctx) {
     try {
       const url = new URL(request.url);
@@ -94,6 +94,8 @@ export default {
     }
   }
 };
+
+export default worker;
 
 // API处理器函数
 async function handleTestEnv(request, env) {
