@@ -115,6 +115,73 @@ npm run check:production
 npm run test:r2-config
 ```
 
+## 图片上传配置
+
+### Cloudflare R2 配置（优先）
+
+项目优先使用Cloudflare R2进行图片上传，提供更好的性能和可靠性。
+
+#### 1. 配置R2环境变量
+
+在您的部署平台（Cloudflare Pages、Vercel等）中设置以下环境变量：
+
+```
+CLOUDFLARE_R2_ACCOUNT_ID=your_r2_account_id
+CLOUDFLARE_R2_ACCESS_KEY_ID=your_r2_access_key_id
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=your_r2_secret_access_key
+CLOUDFLARE_R2_BUCKET_NAME=your_r2_bucket_name
+CLOUDFLARE_R2_PUBLIC_URL=your_r2_public_url
+```
+
+#### 2. 本地开发配置
+
+在项目根目录创建 `.env.local` 文件并添加上述环境变量。
+
+### ImgBB API Key 配置（备选）
+
+由于项目使用静态导出模式，API路由无法正常工作，因此需要使用外部图片上传服务。
+
+#### 1. 获取 ImgBB API Key
+
+1. 访问 [ImgBB](https://imgbb.com/)
+2. 注册账户并登录
+3. 在账户设置中找到 API Key
+4. 复制 API Key
+
+#### 2. 配置环境变量
+
+在您的部署平台（Cloudflare Pages、Vercel等）中设置以下环境变量：
+
+```
+NEXT_PUBLIC_IMGBB_API_KEY=your_actual_imgbb_api_key_here
+```
+
+#### 3. 本地开发配置
+
+在项目根目录创建 `.env.local` 文件：
+
+```
+NEXT_PUBLIC_IMGBB_API_KEY=your_actual_imgbb_api_key_here
+```
+
+### 上传服务说明
+
+项目配置了多种上传方式，按优先级排序：
+
+1. **Cloudflare R2** - 优先上传服务（需要R2配置）
+2. **ImgBB** - 备选上传服务（需要API Key）
+3. **Cloudinary** - 免费备选服务（无需配置）
+4. **Base64** - 最后的回退方案（本地编码）
+
+### 故障排除
+
+如果遇到上传问题：
+
+1. 检查 `NEXT_PUBLIC_IMGBB_API_KEY` 是否正确配置
+2. 确认网络连接正常
+3. 检查浏览器控制台是否有错误信息
+4. 验证文件大小是否超过10MB限制
+
 ## 注意事项
 
 1. **静态导出限制**: API路由在静态导出时不可用，需要通过重写规则处理

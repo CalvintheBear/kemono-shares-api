@@ -4,21 +4,21 @@ import type { NextConfig } from "next";
 const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
-// Cloudflare Pages 始终使用静态导出
-const shouldUseStaticExport = isCloudflarePages || process.env.STATIC_EXPORT === 'true';
+// 移除静态导出配置，支持API路由
+const shouldUseStaticExport = false; // 强制禁用静态导出以支持API
 
 const nextConfig: NextConfig = {
-  // 静态导出配置
-  output: shouldUseStaticExport ? 'export' : undefined,
+  // 移除静态导出配置
+  // output: shouldUseStaticExport ? 'export' : undefined,
   distDir: '.next',
   
-  // 静态导出优化
-  trailingSlash: shouldUseStaticExport ? true : false,
-  skipTrailingSlashRedirect: shouldUseStaticExport ? true : false,
+  // 移除静态导出优化
+  trailingSlash: false,
+  skipTrailingSlashRedirect: false,
   
-  // 图片配置 - 静态导出必需
+  // 图片配置 - 支持API路由
   images: {
-    unoptimized: true,
+    unoptimized: false, // 启用图片优化
     remotePatterns: [
       {
         protocol: 'https',
@@ -28,11 +28,11 @@ const nextConfig: NextConfig = {
   },
   
   // 静态资源路径
-  assetPrefix: shouldUseStaticExport ? undefined : undefined,
+  assetPrefix: undefined,
   basePath: '',
   
   // 性能优化配置
-  compress: false,
+  compress: true,
   productionBrowserSourceMaps: false,
   
   // 实验性功能
@@ -52,31 +52,31 @@ const nextConfig: NextConfig = {
         ...config.optimization,
         splitChunks: {
           chunks: 'all',
-          maxSize: shouldUseStaticExport ? 20000 : 50000, // Cloudflare Pages使用更小的块
-          minSize: shouldUseStaticExport ? 5000 : 10000,
+          maxSize: 50000,
+          minSize: 10000,
           cacheGroups: {
             react: {
               test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
               name: 'react',
               chunks: 'all',
-              maxSize: shouldUseStaticExport ? 20000 : 20000,
-              minSize: shouldUseStaticExport ? 5000 : 10000,
+              maxSize: 20000,
+              minSize: 5000,
               priority: 50,
             },
             vendor: {
               test: /[\\/]node_modules[\\/]/,
               name: 'vendor',
               chunks: 'all',
-              maxSize: shouldUseStaticExport ? 10000 : 50000,
-              minSize: shouldUseStaticExport ? 5000 : 10000,
+              maxSize: 50000,
+              minSize: 10000,
               priority: 20,
             },
             common: {
               name: 'common',
               minChunks: 2,
               chunks: 'all',
-              maxSize: shouldUseStaticExport ? 10000 : 20000,
-              minSize: shouldUseStaticExport ? 5000 : 10000,
+              maxSize: 20000,
+              minSize: 10000,
             },
           },
         },
@@ -90,8 +90,8 @@ const nextConfig: NextConfig = {
       // 性能配置
       config.performance = {
         hints: false,
-        maxEntrypointSize: shouldUseStaticExport ? 10000 : Infinity,
-        maxAssetSize: shouldUseStaticExport ? 10000 : Infinity,
+        maxEntrypointSize: Infinity,
+        maxAssetSize: Infinity,
       };
     }
     

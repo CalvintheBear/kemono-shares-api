@@ -12,6 +12,7 @@ import TemplateGallery from './TemplateGallery'
 import Link from 'next/link'
 import Image from 'next/image'
 
+
 interface Template {
   id: string
   name: string
@@ -470,35 +471,142 @@ export default function WorkspaceRefactored() {
 
     try {
       setIsUploading(true)
-      const url = await uploadImageToKie(file)
+      
+      // 直接使用客户端上传，不依赖API路由
+      const url = await uploadImageDirectly(file)
       setFileUrl(url)
       localStorage.setItem('savedFileUrl', url)
       localStorage.setItem('savedMode', mode)
     } catch (err) {
       console.error('文件上传失败:', err)
-      alert('画像アップロードに失败しました')
+      const errorMessage = err instanceof Error ? err.message : '画像アップロードに失败しました'
+      alert(errorMessage)
       setFileUrl(null)
     } finally {
       setIsUploading(false)
     }
   }, [mode])
 
-  const uploadImageToKie = async (file: File): Promise<string> => {
-    const formData = new FormData()
-    formData.append('file', file)
+  // 直接上传到外部服务
+  const uploadImageDirectly = async (file: File): Promise<string> => {
+    // 检查文件类型和大小
+    if (!file.type.startsWith('image/')) {
+      throw new Error('画像ファイルを選択してください')
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error('画像サイズは10MBを超えることはできません')
+    }
 
-    const response = await fetch('/api/upload-image', {
+    // 尝试多种上传方式，优先使用R2
+    const uploadMethods = [
+      () => uploadToR2(file),
+      () => uploadToImgBB(file),
+      () => uploadToCloudinary(file),
+      () => uploadToBase64(file) // 作为最后的回退方案
+    ]
+
+    for (const uploadMethod of uploadMethods) {
+      try {
+        const url = await uploadMethod()
+        console.log('✅ 图片上传成功:', url)
+        return url
+      } catch (error) {
+        console.warn('⚠️ 上传方式失败，尝试下一个:', error)
+        continue
+      }
+    }
+
+    throw new Error('すべてのアップロード方法が失敗しました')
+  }
+
+  // 上传到 Cloudflare R2 (优先) - 使用API路由
+  const uploadToR2 = async (file: File): Promise<string> => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `上传失败: ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (data.success && data.fileUrl) {
+        return data.fileUrl
+      } else {
+        throw new Error(data.error || '上传响应格式错误')
+      }
+    } catch (error) {
+      console.warn('R2上传失败，尝试其他方式:', error)
+      throw error
+    }
+  }
+
+  // 上传到 ImgBB
+  const uploadToImgBB = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('image', file)
+    
+    // 从环境变量获取API Key，如果没有则使用默认值
+    const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || 'YOUR_IMGBB_API_KEY'
+    
+    if (imgbbApiKey === 'YOUR_IMGBB_API_KEY') {
+      throw new Error('ImgBB API Key が設定されていません')
+    }
+    
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, {
       method: 'POST',
       body: formData
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || '文件上传失败')
+      throw new Error(`ImgBB アップロード失敗: ${response.status}`)
     }
 
     const data = await response.json()
-    return data.url || data.fileUrl || data.imageUrl || data.uploadedUrl
+    if (data.success) {
+      return data.data.url
+    } else {
+      throw new Error(data.error?.message || 'ImgBB アップロード失敗')
+    }
+  }
+
+  // 上传到 Cloudinary (免费服务)
+  const uploadToCloudinary = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'ml_default') // 使用默认预设
+    
+    const response = await fetch('https://api.cloudinary.com/v1_1/demo/image/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!response.ok) {
+      throw new Error(`Cloudinary アップロード失敗: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.secure_url
+  }
+
+  // Base64 编码作为最后的回退方案
+  const uploadToBase64 = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        resolve(reader.result as string)
+      }
+      reader.onerror = () => {
+        reject(new Error('Base64 エンコード失敗'))
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   // 图片生成

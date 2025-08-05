@@ -16,26 +16,26 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
   const steps: ProgressStep[] = [
     {
       id: 'upload',
-      title: '上传图片',
-      description: '选择并上传图片',
+      title: '画像アップロード',
+      description: '画像を選択してアップロード',
       icon: '📤'
     },
     {
       id: 'process',
-      title: '处理中', 
-      description: 'AI正在处理',
+      title: '処理中', 
+      description: 'AIが処理中です',
       icon: '🎨'
     },
     {
       id: 'enhance',
-      title: '增强优化',
-      description: '提升图片质量', 
+      title: '画質向上',
+      description: '画像品質を向上中', 
       icon: '✨'
     },
     {
       id: 'complete',
-      title: '完成',
-      description: '处理完成',
+      title: '完了',
+      description: '処理完了',
       icon: '🎉'
     }
   ]
@@ -46,10 +46,10 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
     <div className="card-kawaii p-6 mb-8 animate-scale-in progress-indicator">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-gradient font-cute mb-2">
-          处理进度
+          処理の進捗
         </h3>
         <p className="text-gray-600">
-          正在为您处理图片，请稍候...
+          画像を処理中です。しばらくお待ちください...
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
         <div className="inline-flex items-center space-x-2 bg-pink-50 px-4 py-2 rounded-full">
           <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse"></div>
           <span className="text-pink-700 font-medium">
-            {steps[currentStep]?.title || '处理中'}
+            {steps[currentStep]?.title || '処理中'}
           </span>
         </div>
       </div>

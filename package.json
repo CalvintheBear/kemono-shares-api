@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:static": "set STATIC_EXPORT=true && next build",
+    "build:api": "set STATIC_EXPORT=false && set CF_PAGES=false && next build",
     "build:pages": "node scripts/build-for-pages.js",
     "build:railway": "set RAILWAY=true && next build",
     "start": "next start",
@@ -18,11 +19,13 @@
     "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache",
     "deploy:pages": "wrangler pages deploy out --config wrangler.pages.toml",
     "deploy:pages:dev": "wrangler pages deploy out --config wrangler.pages.toml --project-name=kemono-shares-api-dev",
+    "deploy:api": "node scripts/deploy-with-api.js",
     "test:r2-config": "node scripts/test-r2-config.js",
     "test:upload": "node scripts/test-upload.js",
     "test:share-r2": "node scripts/test-share-r2-integration.js",
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
-    "check:production": "node scripts/check-production-config.js"
+    "check:production": "node scripts/check-production-config.js",
+    "validate:env": "node scripts/validate-env.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",
