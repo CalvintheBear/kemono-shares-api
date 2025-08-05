@@ -1,88 +1,131 @@
-# Furycode 统一部署指南
+# 部署指南
 
-## 项目配置优化完成
+## 概述
+本项目支持在Cloudflare Pages和Railway上部署，使用静态导出模式。
 
-### 已完成的优化：
-1. ✅ 统一了Next.js配置文件（删除6个重复配置）
-2. ✅ 简化了package.json脚本（删除重复构建命令）
-3. ✅ 统一了wrangler配置（删除重复配置文件）
-4. ✅ 删除了重复的构建脚本（删除8个重复脚本）
-5. ✅ 移除了Cloudflare Workers部署，只保留Pages和Railway
+## 部署架构
+- **前端**: Cloudflare Pages (静态导出)
+- **后端API**: Railway (Node.js服务器)
+- **存储**: Cloudflare R2
 
-### 当前部署配置：
+## 部署步骤
 
-#### Cloudflare Pages 部署（静态网站 + KV存储）
+### 1. Cloudflare Pages 部署
+
+#### 构建配置
+- **构建命令**: `npm run build:pages`
+- **输出目录**: `out`
+- **Node.js版本**: 20.x
+
+#### 环境变量
+确保在Cloudflare Pages中设置以下环境变量：
+```
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://2kawaii.com
+CF_PAGES=true
+STATIC_EXPORT=true
+```
+
+#### R2存储桶配置
+在Cloudflare Pages中绑定以下R2存储桶：
+- `R2_BUCKET`: kemono-uploadimage
+- `R2_AFTERIMAGE_BUCKET`: kemono-afterimage
+
+### 2. Railway 部署
+
+#### 构建配置
+- **构建命令**: `npm run build:railway`
+- **启动命令**: `npm start`
+- **Node.js版本**: 20.x
+
+#### 环境变量
+在Railway中设置以下环境变量：
+```
+NODE_ENV=production
+RAILWAY=true
+NEXT_PUBLIC_APP_URL=https://your-railway-domain.railway.app
+```
+
+### 3. 域名配置
+
+#### 主域名 (2kawaii.com)
+- 指向Cloudflare Pages
+- 支持静态页面访问
+
+#### API子域名
+- 创建API子域名指向Railway
+- 例如: `api.2kawaii.com` -> Railway部署
+
+### 4. 静态导出说明
+
+由于使用静态导出，以下功能需要特殊处理：
+
+#### API路由
+- 静态导出时API路由不可用
+- 需要将API请求重定向到Railway部署
+- 在Cloudflare Pages中配置重写规则
+
+#### 重写规则配置
+在Cloudflare Pages中配置以下重写规则：
+```
+/api/* -> https://your-railway-api.railway.app/api/$1
+```
+
+### 5. 构建和部署命令
+
+#### 本地测试
 ```bash
-# 构建命令
+# 静态构建测试
+npm run build:static
+
+# 启动开发服务器
+npm run dev
+```
+
+#### Cloudflare Pages部署
+```bash
+# 构建
 npm run build:pages
 
-# 构建输出目录
-out/
-
-# 根目录
-/
-
-# 部署命令
+# 部署
 npm run deploy:pages
 ```
 
-#### Railway 部署（API服务）
+#### Railway部署
 ```bash
-# 构建命令
+# 构建
 npm run build:railway
 
-# 启动命令
-npm start
-
-# Watch Paths
-src/**, package.json, next.config.ts
+# Railway会自动部署
 ```
 
-### 环境变量说明：
-- `CF_PAGES=true`: 用于Cloudflare Pages构建
-- `RAILWAY=true`: 用于Railway构建
+### 6. 故障排除
 
-### 统一后的命令：
+#### 常见问题
+1. **API路由404**: 确保重写规则正确配置
+2. **图片上传失败**: 检查R2存储桶权限
+3. **构建失败**: 检查Node.js版本和环境变量
+
+#### 调试命令
 ```bash
-# 开发
-npm run dev
+# 检查生产配置
+npm run check:production
 
-# 构建（根据环境自动选择配置）
-npm run build:pages    # Cloudflare Pages
-npm run build:railway   # Railway
-
-# 部署
-npm run deploy:pages   # Cloudflare Pages
-npm run deploy:pages:dev # Cloudflare Pages (开发环境)
-
-# 清理
-npm run clean          # 清理缓存
-npm run clean:build    # 清理构建文件
+# 测试R2配置
+npm run test:r2-config
 ```
 
-### 部署架构：
+## 注意事项
 
-#### Cloudflare Pages（前端 + KV存储）
-- **用途**: 静态网站托管
-- **功能**: 用户界面、图片展示、分享页面
-- **存储**: Cloudflare KV用于分享数据
-- **域名**: 2kawaii.com
+1. **静态导出限制**: API路由在静态导出时不可用，需要通过重写规则处理
+2. **环境变量**: 确保所有必要的环境变量都已正确设置
+3. **R2权限**: 确保R2存储桶有正确的读写权限
+4. **域名配置**: 确保域名DNS配置正确指向对应服务
 
-#### Railway（后端API）
-- **用途**: API服务
-- **功能**: 图片生成、上传、处理
-- **存储**: Cloudflare R2用于图片存储
-- **域名**: api.2kawaii.com 或 railway.app域名
+## 更新部署
 
-### 注意事项：
-1. 所有API交互保持不变
-2. 构建配置根据环境变量自动调整
-3. 删除了重复和冲突的配置文件
-4. 简化了部署流程
-5. Pages负责前端，Railway负责后端API
-
-### 测试建议：
-1. 先测试本地开发：`npm run dev`
-2. 测试各平台构建：`npm run build:pages`、`npm run build:railway`
-3. 测试部署：`npm run deploy:pages`
-4. 测试Railway部署：通过GitHub连接自动部署 
+当需要更新部署时：
+1. 推送代码到Git仓库
+2. Cloudflare Pages会自动触发构建
+3. Railway会自动重新部署
+4. 检查部署状态和功能 

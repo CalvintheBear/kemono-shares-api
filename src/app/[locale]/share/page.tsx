@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/components/Header'
@@ -8,6 +8,8 @@ import Footer from '@/components/Footer'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import ShareGallery from '@/components/ShareGallery'
 import ShareDetail from '@/components/ShareDetail'
+
+
 
 interface ShareData {
   generated: string
@@ -17,7 +19,7 @@ interface ShareData {
   timestamp: number
 }
 
-export default function SharePage() {
+function SharePageContent() {
   const searchParams = useSearchParams()
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -91,5 +93,20 @@ export default function SharePage() {
       <Footer />
       <MobileBottomNav />
     </div>
+  )
+}
+
+export default function SharePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fff7ea] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto"></div>
+          <p className="mt-4 text-amber-700">読み込み中...</p>
+        </div>
+      </div>
+    }>
+      <SharePageContent />
+    </Suspense>
   )
 }

@@ -1,24 +1,23 @@
-import { validateAfterimageR2Config, getAfterimageR2ConfigInfo } from '@/lib/r2-afterimage-client';
+import { NextResponse } from 'next/server'
 
-// 配置为动态路由，避免静态导出错误
-export const dynamic = 'force-dynamic'
 
-// 禁用静态生成，确保只在运行时执行
-export const runtime = 'nodejs'
+// 静态导出配置
+export const dynamic = 'force-static'
+export const revalidate = false
 
-export async function GET(_request: Request) {
-  try {
-    // 检查afterimage R2配置
-    const info = await getAfterimageR2ConfigInfo()
-    const valid = await validateAfterimageR2Config()
-    return new Response(JSON.stringify({ valid, info }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : '未知错误' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
-} 
+// 静态导出兼容路由
+export async function GET() {
+  return NextResponse.json({ 
+    error: 'API not available in static export mode',
+    message: 'This feature requires server-side processing',
+    status: 'static_mode'
+  }, { status: 501 })
+}
+
+export async function POST() {
+  return NextResponse.json({ 
+    error: 'API not available in static export mode',
+    message: 'This feature requires server-side processing',
+    status: 'static_mode'
+  }, { status: 501 })
+}

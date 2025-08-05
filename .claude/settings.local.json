@@ -47,7 +47,8 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(npx:*)",
-      "Bash(npm init -y)"
+      "Bash(npm init -y)",
+      "Bash(CF_PAGES=true npm run build)"
     ],
     "deny": []
   }

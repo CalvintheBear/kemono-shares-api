@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "pages:build": "node scripts/deploy-cf-pages.js",
-    "build:pages": "cross-env CF_PAGES=true npm run build && npx @cloudflare/next-on-pages",
-    "build:railway": "cross-env RAILWAY=true next build",
+    "build:static": "set STATIC_EXPORT=true && next build",
+    "build:pages": "node scripts/build-for-pages.js",
+    "build:railway": "set RAILWAY=true && next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "node scripts/clean-cache.js",
@@ -22,7 +22,6 @@
     "test:upload": "node scripts/test-upload.js",
     "test:share-r2": "node scripts/test-share-r2-integration.js",
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
-    "test:kv-storage": "node scripts/test-kv-storage.js",
     "check:production": "node scripts/check-production-config.js"
   },
   "dependencies": {
@@ -53,7 +52,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/webpack": "^5.28.5",
-    "cross-env": "^10.0.0",
     "eslint-config-next": "15.3.5",
     "webpack-bundle-analyzer": "^4.10.2",
     "wrangler": "^4.27.0"

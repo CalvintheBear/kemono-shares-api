@@ -1,0 +1,22 @@
+# API重定向到Railway
+/api/* https://your-railway-api.railway.app/api/:splat 200
+
+# 静态资源缓存
+/_next/static/* /_next/static/:splat 200
+/_next/image/* /_next/image/:splat 200
+
+# 图片资源缓存
+*.jpg /:splat 200
+*.jpeg /:splat 200
+*.png /:splat 200
+*.webp /:splat 200
+*.gif /:splat 200
+
+# 其他静态资源
+*.ico /:splat 200
+*.svg /:splat 200
+*.css /:splat 200
+*.js /:splat 200
+
+# 默认重定向到首页
+/* /index.html 200 

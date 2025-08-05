@@ -7,20 +7,19 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
-// 对于Cloudflare Pages，使用next-on-pages而不是静态导出
-const shouldUseStaticExport = false; // 禁用静态导出，使用Edge Runtime
-
-
+// Cloudflare Pages 始终使用静态导出
+const shouldUseStaticExport = isCloudflarePages || process.env.STATIC_EXPORT === 'true';
 
 const nextConfig: NextConfig = {
-  // 根据部署环境设置输出类型
+  // 静态导出配置
   output: shouldUseStaticExport ? 'export' : undefined,
   distDir: '.next',
   
-  // 禁用缓存以确保构建一致性
-  generateBuildId: () => Date.now().toString(),
+  // 静态导出优化
+  trailingSlash: shouldUseStaticExport ? true : false,
+  skipTrailingSlashRedirect: shouldUseStaticExport ? true : false,
   
-  // 图片配置
+  // 图片配置 - 静态导出必需
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -31,19 +30,13 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  // 确保静态资源路径正确
-  assetPrefix: process.env.CF_PAGES ? '/' : undefined,
+  // 静态资源路径
+  assetPrefix: shouldUseStaticExport ? undefined : undefined,
   basePath: '',
   
   // 性能优化配置
   compress: false,
   productionBrowserSourceMaps: false,
-  
-  // Cloudflare Pages配置
-  ...(isCloudflarePages && {
-    trailingSlash: false,
-    skipTrailingSlashRedirect: false,
-  }),
   
   // 实验性功能
   experimental: {
