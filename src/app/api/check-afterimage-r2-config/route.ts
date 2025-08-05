@@ -1,5 +1,8 @@
 import { validateAfterimageR2Config, getAfterimageR2ConfigInfo } from '@/lib/r2-afterimage-client';
 
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 export async function GET(_request: Request) {
   try {
     // 检查afterimage R2配置

@@ -4,6 +4,9 @@ import { shareKVStore, initializeSampleData, ShareData } from '@/lib/share-store
 import { clearShareCache } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 // Cloudflare Pages 需要 Edge Runtime
 export const runtime = 'edge'
 

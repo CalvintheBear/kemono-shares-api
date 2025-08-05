@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 // Edge Runtime 兼容
 export const runtime = 'edge'
 

@@ -4,7 +4,9 @@ import { getApiKeyRotation } from '@/lib/api-key-rotation'
 // 针对生产环境的优化：使用 Railway 部署
 export const runtime = 'nodejs'
 
-// 创建任务后立即返回，避免超时
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

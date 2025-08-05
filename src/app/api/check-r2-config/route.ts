@@ -1,5 +1,8 @@
 import { validateR2Config, getR2ConfigInfo } from '@/lib/r2-client';
 
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 export async function GET(_request: Request) {
   try {
     // 检查R2配置

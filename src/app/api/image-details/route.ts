@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
 import { getApiKeyRotation } from '@/lib/api-key-rotation'
 
 // Edge Runtime 兼容

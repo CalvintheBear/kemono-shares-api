@@ -10,7 +10,7 @@ const isRailway = process.env.RAILWAY === 'true';
 
 const nextConfig: NextConfig = {
   // 根据部署环境设置输出类型
-  output: isCloudflarePages ? 'export' : 'standalone',
+  output: isCloudflarePages ? 'export' : (isCloudflareWorkers ? undefined : 'standalone'),
   distDir: '.next',
   
   // 禁用缓存以确保构建一致性

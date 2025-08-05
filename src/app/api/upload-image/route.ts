@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { uploadImageWithFallback } from '@/lib/image-upload-fallback';
+import { NextRequest, NextResponse } from 'next/server'
+import { uploadImageWithFallback } from '@/lib/image-upload-fallback'
 
-// 使用最适合的运行时
-export const runtime = 'nodejs'
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {

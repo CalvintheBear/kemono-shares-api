@@ -3,6 +3,9 @@ import { shareKVStore } from '@/lib/share-store-kv'
 import { getCacheStats } from '@/lib/share-cache'
 import { monitor } from '@/lib/share-monitor'
 
+// 配置为动态路由，避免静态导出错误
+export const dynamic = 'force-dynamic'
+
 export async function GET(_request: NextRequest) {
   try {
     // 获取存储状态
