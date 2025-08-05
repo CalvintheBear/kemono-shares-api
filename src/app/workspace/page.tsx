@@ -1,14 +1,6 @@
 import Workspace from "@/components/Workspace";
-
-// 生成静态参数
-export function generateStaticParams() {
-  return [
-    { locale: 'ja' }
-  ];
-}
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { NextIntlClientProvider } from "next-intl";
 
 // 追加SEOメタデータ
 export const metadata = {
@@ -78,10 +70,7 @@ const structuredData = {
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/workspace-screenshot.jpg',
 }
 
-export default async function WorkspacePage() {
-  // const t = await getTranslations("workspace");
-  const messages = (await import("../../../../messages/ja.json")).default; // 仅使用日语
-
+export default function WorkspacePage() {
   return (
     <div className="min-h-screen bg-[#fff7ea]">
       {/* JSON-LD 構造化データ埋め込み */}
@@ -110,9 +99,7 @@ export default async function WorkspacePage() {
           </div>
 
           {/* Workspaceコンポーネント */}
-          <NextIntlClientProvider locale="ja" messages={messages}>
-            <Workspace />
-          </NextIntlClientProvider>
+          <Workspace />
         </div>
       </main>
 

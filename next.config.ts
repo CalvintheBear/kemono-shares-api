@@ -1,7 +1,4 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 // 根据环境变量确定构建类型
 const isCloudflarePages = process.env.CF_PAGES === 'true';
@@ -102,4 +99,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig); 
+export default nextConfig; 

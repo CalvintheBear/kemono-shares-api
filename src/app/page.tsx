@@ -7,12 +7,7 @@ import HomeHero from "@/components/HomeHero";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import Image from 'next/image'
 
-// 生成静态参数
-export function generateStaticParams() {
-  return [
-    { locale: 'ja' }
-  ];
-}
+
 
 // ホームページSEOメタデータ
 export const metadata = {

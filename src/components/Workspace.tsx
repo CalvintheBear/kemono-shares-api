@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { PhotoIcon, PaperAirplaneIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
-import { useTranslations } from 'next-intl'
+
 import { useAppStore } from '@/store/useAppStore'
 import { ImageSize } from '@/store/useAppStore'
 import BeforeAfterSlider from './BeforeAfterSlider'
@@ -350,7 +350,6 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
 }
 
 export default function WorkspaceRefactored() {
-  const t = useTranslations('workspace')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -477,12 +476,12 @@ export default function WorkspaceRefactored() {
       localStorage.setItem('savedMode', mode)
     } catch (err) {
       console.error('文件上传失败:', err)
-      alert(t('uploadSection.uploadFailed'))
+      alert('画像アップロードに失败しました')
       setFileUrl(null)
     } finally {
       setIsUploading(false)
     }
-  }, [t, mode])
+  }, [mode])
 
   const uploadImageToKie = async (file: File): Promise<string> => {
     const formData = new FormData()
@@ -795,11 +794,11 @@ export default function WorkspaceRefactored() {
     const file = event.target.files?.[0]
     if (file) {
       if (!file.type.startsWith('image/')) {
-        alert(t('uploadSection.invalidFileType'))
+        alert('画像ファイルを選択してください')
         return
       }
       if (file.size > 10 * 1024 * 1024) {
-        alert(t('uploadSection.fileTooLarge'))
+        alert('画像サイズは10MBを超えることはできません')
         return
       }
       handleImageSelect(file)

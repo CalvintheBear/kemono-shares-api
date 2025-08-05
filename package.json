@@ -37,7 +37,6 @@
     "dotenv": "^17.2.0",
     "eslint": "^9",
     "next": "15.3.5",
-    "next-intl": "^4.3.4",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-compare-image": "^3.5.6",

@@ -1,16 +1,10 @@
-import createMiddleware from 'next-intl/middleware'
-
-export default createMiddleware({
-  // 只支持日语
-  locales: ['ja'],
-  defaultLocale: 'ja',
-  // 关闭路径前缀，直接使用根路径
-  localePrefix: 'never'
-})
+// 移除国际化中间件，直接使用根路径
+export function middleware() {
+  // 不进行任何重定向，直接访问
+  return
+}
 
 export const config = {
-  // 仅对应用路由进行国际化处理（排除 _next 等资源）
-  matcher: [
-    '/((?!_next|favicon.ico|assets|api|.*\\.).*)'
-  ]
+  // 不匹配任何路径，禁用中间件
+  matcher: []
 } 
