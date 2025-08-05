@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:pages": "set CF_PAGES=true && next build && node scripts/copy-pages-output.js",
-    "build:railway": "set RAILWAY=true && next build",
+    "build:railway": "cross-env RAILWAY=true next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "node scripts/clean-cache.js",
@@ -52,6 +52,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/webpack": "^5.28.5",
+    "cross-env": "^10.0.0",
     "eslint-config-next": "15.3.5",
     "webpack-bundle-analyzer": "^4.10.2",
     "wrangler": "^4.27.0"

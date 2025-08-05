@@ -8,7 +8,9 @@ const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
 // 只有在明确设置为Cloudflare Pages时才使用静态导出
-const shouldUseStaticExport = isCloudflarePages; // 启用Pages静态导出
+const shouldUseStaticExport = isCloudflarePages && !isRailway; // 启用Pages静态导出，但Railway不使用
+
+
 
 const nextConfig: NextConfig = {
   // 根据部署环境设置输出类型

@@ -4,6 +4,9 @@ import { uploadImageWithFallback } from '@/lib/image-upload-fallback'
 // 配置为动态路由，避免静态导出错误
 export const dynamic = 'force-dynamic'
 
+// 禁用静态生成，确保只在运行时执行
+export const runtime = 'nodejs'
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
