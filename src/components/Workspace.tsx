@@ -650,7 +650,9 @@ export default function WorkspaceRefactored() {
           fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
           prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
           enhancePrompt,
-          size: selectedSize
+          size: selectedSize,
+          mode: mode,
+          style: selectedTemplate?.name || 'default'
         })
       })
 

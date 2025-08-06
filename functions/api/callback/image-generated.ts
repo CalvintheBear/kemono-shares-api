@@ -1,14 +1,70 @@
-// Cloudflare Pages Functions 版本的回调 API
-export async function onRequestPost({ request }: { request: Request }) {
+// Cloudflare Pages Functions 版本的 image-generated 回调处理 API
+export async function onRequestPost({ request, env }: { request: Request; env: any }) {
   try {
     const body = await request.json();
-    
     console.log('📞 收到 Kie.ai 回调:', body);
     
-    // 处理 Kie.ai 的图片生成完成回调
-    // 这里可以添加数据库存储、通知用户等逻辑
+    // 验证回调数据
+    const { taskId, status, response, errorMessage } = body;
     
-    return new Response(JSON.stringify({
+    if (!taskId) {
+      console.error('❌ 回调缺少 taskId');
+      return new Response(JSON.stringify({ error: '缺少任务ID' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // 处理不同的状态
+    if (status === 'SUCCESS' && response?.resultUrls) {
+      console.log(`✅ 任务 ${taskId} 生成成功，图片URLs:`, response.resultUrls);
+      
+      // 这里可以添加额外的处理逻辑，比如：
+      // 1. 将图片保存到 R2 afterimage 桶
+      // 2. 更新数据库中的任务状态
+      // 3. 发送通知给用户
+      
+      // 示例：保存到 R2 afterimage 桶
+      if (env.AFTERIMAGE_BUCKET && response.resultUrls.length > 0) {
+        try {
+          const { createR2Client } = await import('../../../src/lib/r2-client-cloudflare');
+          const r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET);
+          
+          for (let i = 0; i < response.resultUrls.length; i++) {
+            const imageUrl = response.resultUrls[i];
+            const key = `generated/${taskId}_${i + 1}.jpg`;
+            
+            // 下载图片并上传到 R2
+            const imageResponse = await fetch(imageUrl);
+            if (imageResponse.ok) {
+              const imageBuffer = await imageResponse.arrayBuffer();
+              await r2Client.uploadToAfterimageBucket(
+                key,
+                imageBuffer,
+                'image/jpeg',
+                {
+                  taskId,
+                  originalUrl: imageUrl,
+                  generatedAt: new Date().toISOString(),
+                  index: (i + 1).toString()
+                }
+              );
+              console.log(`✅ 图片已保存到 R2: ${key}`);
+            }
+          }
+        } catch (error) {
+          console.error('❌ 保存到 R2 失败:', error);
+        }
+      }
+      
+    } else if (status === 'FAILED') {
+      console.error(`❌ 任务 ${taskId} 生成失败:`, errorMessage);
+    } else {
+      console.log(`⏳ 任务 ${taskId} 状态更新:`, status);
+    }
+    
+    // 返回成功响应给 Kie.ai
+    return new Response(JSON.stringify({ 
       success: true,
       message: '回调处理成功'
     }), {
