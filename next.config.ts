@@ -56,52 +56,63 @@ const nextConfig: NextConfig = {
           ...config.optimization,
           splitChunks: {
             chunks: 'all',
-            maxSize: 20000, // 降低到20KB
-            minSize: 5000,  // 降低到5KB
+            maxSize: 15000, // 降低到15KB
+            minSize: 2000,  // 降低到2KB
             cacheGroups: {
               react: {
                 test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
                 name: 'react',
                 chunks: 'all',
-                maxSize: 15000, // 15KB
-                minSize: 3000,  // 3KB
+                maxSize: 10000, // 10KB
+                minSize: 1000,  // 1KB
                 priority: 50,
               },
               aws: {
                 test: /[\\/]node_modules[\\/]@aws-sdk[\\/]/,
                 name: 'aws-sdk',
                 chunks: 'all',
-                maxSize: 10000, // 10KB
-                minSize: 2000,  // 2KB
+                maxSize: 8000,  // 8KB
+                minSize: 1000,  // 1KB
                 priority: 40,
               },
               vendor: {
                 test: /[\\/]node_modules[\\/]/,
                 name: 'vendor',
                 chunks: 'all',
-                maxSize: 15000, // 15KB
-                minSize: 3000,  // 3KB
+                maxSize: 10000, // 10KB
+                minSize: 1000,  // 1KB
                 priority: 20,
               },
               common: {
                 name: 'common',
                 minChunks: 2,
                 chunks: 'all',
-                maxSize: 10000, // 10KB
-                minSize: 2000,  // 2KB
+                maxSize: 8000,  // 8KB
+                minSize: 1000,  // 1KB
               },
             },
           },
           concatenateModules: false,
           minimize: true,
+          // 禁用一些可能导致大文件的优化
+          usedExports: false,
+          sideEffects: false,
         };
         
         // 更严格的性能限制
         config.performance = {
           hints: 'warning',
-          maxEntrypointSize: 20000, // 20KB
-          maxAssetSize: 20000,      // 20KB
+          maxEntrypointSize: 15000, // 15KB
+          maxAssetSize: 15000,      // 15KB
         };
+        
+        // 禁用一些可能导致大文件的插件
+        if (config.plugins) {
+          config.plugins = config.plugins.filter((plugin: any) => {
+            const pluginName = plugin.constructor.name;
+            return !['BundleAnalyzerPlugin', 'ForkTsCheckerWebpackPlugin'].includes(pluginName);
+          });
+        }
       } else {
         // 非Cloudflare Pages的配置
         config.optimization = {
