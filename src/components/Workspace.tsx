@@ -814,7 +814,7 @@ export default function WorkspaceRefactored() {
         const data = await response.json()
         const responseData = data.data || data
         const status = responseData.status || 'GENERATING'
-        const generatedUrl = responseData.response?.resultUrls?.[0] || null
+        const generatedUrl = responseData.response?.resultUrls?.[0] || responseData.response?.result_urls?.[0] || null
         const successFlag = responseData.successFlag
         const errorMessage = responseData.errorMessage || responseData.error || null
         
@@ -822,6 +822,7 @@ export default function WorkspaceRefactored() {
         console.log('[pollProgress] 完整响应数据:', responseData)
         console.log('[pollProgress] response字段:', responseData.response)
         console.log('[pollProgress] resultUrls字段:', responseData.response?.resultUrls)
+        console.log('[pollProgress] result_urls字段:', responseData.response?.result_urls)
         
         // 检查成功标志或状态
         const isSuccess = status === 'SUCCESS' || successFlag === 1
