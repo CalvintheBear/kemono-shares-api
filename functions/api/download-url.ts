@@ -24,15 +24,22 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     // 根据 Kie.ai 文档，使用正确的API端点
     // POST https://api.kie.ai/api/v1/gpt4o-image/download-url
+    const requestBody: any = { url: url }
+    
+    // 如果URL包含taskId，提取并添加
+    const urlMatch = url.match(/([a-f0-9]{32})/)
+    if (urlMatch) {
+      requestBody.taskId = urlMatch[1]
+      console.log(`🔍 从URL提取taskId: ${requestBody.taskId}`)
+    }
+    
     const response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${kieApiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        url: url
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {

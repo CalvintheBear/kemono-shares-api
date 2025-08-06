@@ -609,6 +609,29 @@ export default function WorkspaceRefactored() {
     })
   }
 
+  // 提示词安全检查函数
+  const sanitizePrompt = (prompt: string): string => {
+    // 替换可能被误判为违规的词汇
+    const replacements: { [key: string]: string } = {
+      '肌のレンダリング': '美しい質感',
+      '肌': '質感',
+      'スキン': 'テクスチャ',
+      'nude': 'natural',
+      'naked': 'simple',
+      'explicit': 'detailed',
+      'adult': 'mature',
+      'sexy': 'elegant',
+      'seductive': 'charming'
+    };
+    
+    let sanitizedPrompt = prompt;
+    Object.entries(replacements).forEach(([original, replacement]) => {
+      sanitizedPrompt = sanitizedPrompt.replace(new RegExp(original, 'gi'), replacement);
+    });
+    
+    return sanitizedPrompt;
+  };
+
   // 图片生成
   const generateImage = async () => {
     if (mode === 'template-mode' && !selectedTemplate) {
@@ -759,6 +782,7 @@ export default function WorkspaceRefactored() {
     const startTime = Date.now()
     const timeout = 5 * 60 * 1000
     let errorCount = 0
+    let consecutiveFailures = 0 // 添加连续失败计数
     
     if (!isGenerating) {
       setIsGenerating(true)
@@ -786,11 +810,16 @@ export default function WorkspaceRefactored() {
         const successFlag = responseData.successFlag
         const errorMessage = responseData.errorMessage || responseData.error || null
         
+        console.log('[pollProgress] 状态检查:', { status, successFlag, generatedUrl, errorMessage })
+        
         // 检查成功标志或状态
-        const isSuccess = status === 'SUCCESS' || successFlag === 1 || successFlag === 0
-        const isFailed = status === 'FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
+        const isSuccess = status === 'SUCCESS' || successFlag === 1
+        const isFailed = status === 'FAILED' || status === 'GENERATE_FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
 
         if (isSuccess && generatedUrl) {
+          console.log('[pollProgress] 生成成功，开始下载图片:', generatedUrl)
+          consecutiveFailures = 0 // 重置失败计数
+          
           const downloadResponse = await fetch('/api/download-url', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -801,6 +830,9 @@ export default function WorkspaceRefactored() {
           if (downloadResponse.ok) {
             const downloadData = await downloadResponse.json()
             finalImageUrl = downloadData.downloadUrl || generatedUrl
+            console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
+          } else {
+            console.log('[pollProgress] 下载URL获取失败，使用原始URL')
           }
 
           const completedResult = {
@@ -811,6 +843,7 @@ export default function WorkspaceRefactored() {
             timestamp: Date.now()
           }
 
+          console.log('[pollProgress] 设置完成结果:', completedResult)
           setCurrentResult(completedResult)
           
           // 自动分享处理
@@ -818,6 +851,7 @@ export default function WorkspaceRefactored() {
             const shareResponse = await handleShare(completedResult)
             if (shareResponse) {
               setAutoShareUrl(shareResponse)
+              console.log('[pollProgress] 自动分享成功:', shareResponse)
             }
           } catch (shareError) {
             console.warn('自动分享失败:', shareError)
@@ -826,13 +860,31 @@ export default function WorkspaceRefactored() {
           setTimeout(() => {
             setIsGenerating(false)
           }, 2000)
+          return // 重要：成功时直接返回，停止轮询
         } else if (isFailed) {
-          console.error('[pollProgress] 生成失败:', errorMessage || '生成に失敗しました')
-          setGenerationError(errorMessage || '生成に失敗しました')
-          setCurrentResult(null)
-          setIsGenerating(false)
+          consecutiveFailures++
+          console.error('[pollProgress] 生成失败 (连续失败次数:', consecutiveFailures, '):', errorMessage || '生成に失敗しました')
+          
+          // 如果连续失败5次，停止轮询
+          if (consecutiveFailures >= 5) {
+            console.log('[pollProgress] 连续失败5次，停止轮询')
+            setGenerationError(errorMessage || '生成に失敗しました')
+            setCurrentResult(null)
+            setIsGenerating(false)
+            return
+          }
+          
+          // 失败时继续轮询，但增加延迟
+          if (!isMountedRef.current) {
+            console.log('[pollProgress] 组件已卸载，停止轮询')
+            return
+          }
+          
+          pollIntervalRef.current = setTimeout(loop, 5000) // 失败时增加延迟到5秒
         } else {
           // 继续轮询，但检查是否应该停止
+          consecutiveFailures = 0 // 重置失败计数
+          
           if (!isMountedRef.current) {
             console.log('[pollProgress] 组件已卸载，停止轮询')
             return
@@ -852,22 +904,21 @@ export default function WorkspaceRefactored() {
       } catch (_error) {
         console.error('[轮询] 发生异常:', _error)
         errorCount++
-        console.log('[轮询] 错误计数:', errorCount)
-        if (errorCount >= 3) {
-          console.log('[轮询] 达到最大错误次数，停止轮询')
+        consecutiveFailures++
+        console.log('[轮询] 错误计数:', errorCount, '连续失败次数:', consecutiveFailures)
+        
+        if (errorCount >= 3 || consecutiveFailures >= 5) {
+          console.log('[轮询] 达到最大错误次数或连续失败次数，停止轮询')
           setGenerationError('ネットワークエラー')
           setCurrentResult(null)
           setIsGenerating(false)
+          return
         } else {
           if (!isMountedRef.current) {
             console.log('[pollProgress] isMountedRef.current 为 false，提前 return (catch)')
             return
           }
-          if (!isMountedRef.current) {
-            console.log('[轮询] 组件已卸载，停止轮询')
-            return
-          }
-          pollIntervalRef.current = setTimeout(loop, 500)
+          pollIntervalRef.current = setTimeout(loop, 5000) // 错误时增加延迟到5秒
         }
       }
     }

@@ -12,12 +12,12 @@ directory = ""
 
 # R2 存储桶配置
 [[r2_buckets]]
-binding = "R2_BUCKET"
+binding = "UPLOAD_BUCKET"
 bucket_name = "kemono-uploadimage"
 preview_bucket_name = "kemono-uploadimage-dev"
 
 [[r2_buckets]]
-binding = "R2_AFTERIMAGE_BUCKET"
+binding = "AFTERIMAGE_BUCKET"
 bucket_name = "kemono-afterimage"
 preview_bucket_name = "kemono-afterimage-dev"
 
