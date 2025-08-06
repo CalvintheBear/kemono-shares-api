@@ -1,67 +1,53 @@
-// Cloudflare Pages Functions 版本的 share/list API
-// 用于获取分享列表，支持分页和过滤
+// 导入 KV 存储库
+import { ShareStoreWorkers } from '../../../src/lib/share-store-workers.js';
 
+// Cloudflare Pages Functions 版本的 share/list API
+// 用于获取分享列表，支持分页
 export async function onRequestGet({ request, env }: { request: Request; env: any }) {
   try {
+    // 1. 检查KV绑定是否存在
+    if (!env.SHARE_DATA_KV) {
+      console.error('❌ GET List: KV存储绑定 (SHARE_DATA_KV) 未配置！');
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: '服务器配置错误: 存储服务不可用' 
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get('limit') || '20');
     const offset = parseInt(url.searchParams.get('offset') || '0');
-    const sort = url.searchParams.get('sort') || 'createdAt';
-    const order = url.searchParams.get('order') || 'desc';
-    const filter = url.searchParams.get('filter'); // 'text2img' | 'img2img' | 'template'
-
-    console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}, sort=${sort}, order=${order}, filter=${filter}`);
-
-    // 从全局存储中获取分享数据
-    let shareItems: any[] = [];
     
-    if (typeof globalThis !== 'undefined' && (globalThis as any).shareDataStore) {
-      shareItems = Array.from((globalThis as any).shareDataStore.values());
-      console.log(`📊 从内存中获取到 ${shareItems.length} 个分享数据`);
-    } else {
-      console.log('📊 当前分享数据为空，需要实际的分享数据写入');
+    console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}`);
+
+    // 2. 初始化KV存储
+    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    
+    // 3. 从KV获取分享列表
+    console.log('📊 正在从KV获取分享列表...');
+    const result = await shareStore.getShareList(limit, offset);
+
+    if (!result || !result.items) {
+      console.log('⚠️ 未从KV中获取到分享项目。');
+      result.items = [];
+      result.total = 0;
+      result.hasMore = false;
     }
 
-    // 应用过滤器
-    let filteredItems = shareItems;
-    if (filter) {
-      if (filter === 'text2img') {
-        filteredItems = shareItems.filter(item => item.generationType === 'text2img');
-      } else if (filter === 'img2img') {
-        filteredItems = shareItems.filter(item => item.generationType === 'img2img');
-      } else if (filter === 'template') {
-        filteredItems = shareItems.filter(item => item.generationType === 'template');
-      }
-    }
-
-    // 排序
-    filteredItems.sort((a, b) => {
-      const aValue = sort === 'createdAt' ? new Date(a.createdAt).getTime() : a.timestamp;
-      const bValue = sort === 'createdAt' ? new Date(b.createdAt).getTime() : b.timestamp;
-      
-      if (order === 'desc') {
-        return bValue > aValue ? 1 : -1;
-      } else {
-        return aValue > bValue ? 1 : -1;
-      }
-    });
-
-    // 分页
-    const totalItems = filteredItems.length;
-    const paginatedItems = filteredItems.slice(offset, offset + limit);
-    const hasMore = offset + limit < totalItems;
-
-    console.log(`✅ 返回 ${paginatedItems.length} 个分享项目，总共 ${totalItems} 个，hasMore: ${hasMore}`);
+    console.log(`✅ 返回 ${result.items.length} 个分享项目，总共 ${result.total} 个，hasMore: ${result.hasMore}`);
 
     return new Response(JSON.stringify({
       success: true,
       data: {
-        items: paginatedItems,
-        total: totalItems,
+        items: result.items,
+        total: result.total,
         limit,
         offset,
-        hasMore,
-        filter: filter || 'all'
+        hasMore: result.hasMore,
+        filter: 'all' // 因为我们移除了过滤，所以总是'all'
       }
     }), {
       status: 200,
