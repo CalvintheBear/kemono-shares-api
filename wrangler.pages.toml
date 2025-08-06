@@ -6,6 +6,10 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 # Pages配置 - 使用 Next.js 静态导出
 pages_build_output_dir = "out"
 
+# 禁用 Functions（使用静态部署）
+[functions]
+directory = ""
+
 # R2 存储桶配置
 [[r2_buckets]]
 binding = "R2_BUCKET"
