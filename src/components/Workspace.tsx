@@ -755,9 +755,7 @@ export default function WorkspaceRefactored() {
       const originalUrl = result.original_url && result.original_url.trim() !== '' ? result.original_url : null
       
       // 检查生成图URL类型
-      const isR2Url = result.generated_url.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
-                     result.generated_url.includes('.r2.dev') || 
-                     result.generated_url.includes('.r2.cloudflarestorage.com')
+      const isR2Url = result.generated_url.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
       
       console.log('[handleShare] URL类型检查:', {
         generatedUrl: result.generated_url,
@@ -867,9 +865,7 @@ export default function WorkspaceRefactored() {
             console.log('[pollProgress] 有generatedUrl:', generatedUrl)
             
             // 检查是否已经是R2的永久URL
-            const isR2Url = generatedUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
-                           generatedUrl.includes('.r2.dev') || 
-                           generatedUrl.includes('.r2.cloudflarestorage.com')
+            const isR2Url = generatedUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
             
             if (isR2Url) {
               console.log('[pollProgress] 已经是R2永久URL，直接使用:', generatedUrl)
@@ -1003,9 +999,7 @@ export default function WorkspaceRefactored() {
           if (finalImageUrl && finalImageUrl.trim() !== '') {
             try {
               // 检查是否是R2永久URL
-              const isR2Url = finalImageUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
-                             finalImageUrl.includes('.r2.dev') || 
-                             finalImageUrl.includes('.r2.cloudflarestorage.com')
+              const isR2Url = finalImageUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
               
               if (isR2Url) {
                 console.log('[pollProgress] 使用R2永久URL创建分享:', finalImageUrl)

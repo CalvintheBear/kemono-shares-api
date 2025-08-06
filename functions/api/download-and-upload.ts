@@ -3,16 +3,18 @@
 export async function onRequestPost({ request, env }: { request: Request; env: any }) {
   try {
     const body = await request.json();
-    const { kieImageUrl, taskId, fileName } = body;
+    // 兼容两种字段：url (新版) 或 imageUrl (旧版)
+    const { url: incomingUrl, kieImageUrl, taskId, fileName } = body;
+    const imageUrl: string = (kieImageUrl ?? incomingUrl) as string;
     
-    if (!kieImageUrl) {
-      return new Response(JSON.stringify({ error: '缺少KIE图片URL' }), {
+    if (!imageUrl) {
+      return new Response(JSON.stringify({ error: '缺少图片URL' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
     
-    console.log(`🔄 开始下载并上传流程: ${kieImageUrl}, taskId: ${taskId}`);
+    console.log(`🔄 开始下载并上传流程: ${imageUrl}, taskId: ${taskId}`);
     
     // 获取 Kie.ai API 密钥
     const kieApiKey = env.KIE_AI_API_KEY;
@@ -44,14 +46,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       });
     }
     
-    let downloadUrl = kieImageUrl;
+    let downloadUrl = imageUrl;
     
     // 1. 如果是KIE AI的临时URL，先获取下载直链
-    if (kieImageUrl.includes('tempfile.aiquickdraw.com') || kieImageUrl.includes('kie.ai')) {
+    if (imageUrl.includes('tempfile.aiquickdraw.com') || imageUrl.includes('kie.ai')) {
       console.log('🔗 检测到KIE AI临时URL，获取下载直链...');
       
       const downloadRequestBody: any = { 
-        url: kieImageUrl  // 使用 'url' 而不是 'imageUrl'
+        url: imageUrl
       };
       
       if (taskId) {
@@ -86,7 +88,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       console.log(`✅ KIE AI 下载URL API 响应:`, downloadData);
       
       // 根据KIE AI官方文档，响应格式是 { code: 200, msg: "success", data: "download_url" }
-      downloadUrl = downloadData.data || downloadData.downloadUrl || kieImageUrl;
+      downloadUrl = downloadData.data || downloadData.downloadUrl || imageUrl;
       console.log(`✅ 获取到下载直链: ${downloadUrl}`);
     }
     
@@ -123,7 +125,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
           fileSize: imageData.byteLength.toString(),
           taskId: taskId || '',
           source: 'kie-download',
-          originalUrl: kieImageUrl
+          originalUrl: imageUrl
         }
       });
 
@@ -150,7 +152,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       size: imageData.byteLength,
       contentType: contentType,
       taskId: taskId,
-      originalUrl: kieImageUrl
+      originalUrl: imageUrl
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

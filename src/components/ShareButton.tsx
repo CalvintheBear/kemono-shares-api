@@ -96,9 +96,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     }
     
     // 检查是否是R2永久URL（推荐）
-    const isR2Url = generatedImageUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
-                   generatedImageUrl.includes('.r2.dev') || 
-                   generatedImageUrl.includes('.r2.cloudflarestorage.com')
+    const isR2Url = generatedImageUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
     
     if (!isR2Url && generatedImageUrl.includes('tempfile.aiquickdraw.com')) {
       console.warn('⚠️ 检测到临时URL，建议等待R2永久URL生成后再分享')
