@@ -1,5 +1,12 @@
 import { S3Client } from '@aws-sdk/client-s3';
 
+// Cloudflare R2 类型定义
+interface R2Bucket {
+  put(key: string, value: ArrayBuffer, options?: any): Promise<void>;
+  get(key: string): Promise<any>;
+  delete(key: string): Promise<void>;
+}
+
 // Cloudflare Pages Functions 环境下的 R2 客户端
 export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket) {
   return {
