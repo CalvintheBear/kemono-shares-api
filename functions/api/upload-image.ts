@@ -1,7 +1,7 @@
 import { generateUniqueFileName, validateImageFile } from '../../src/lib/r2-client-cloudflare';
 
 // 使用Web Crypto API进行哈希计算
-async function sha256Hash(data: ArrayBuffer): Promise<string> {
+async function sha256Hash(data: ArrayBuffer | Uint8Array): Promise<string> {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -119,7 +119,8 @@ function createR2ClientFromEnv(env: any) {
         
         // 生成规范化的请求字符串
         const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
-        const canonicalRequestHash = await sha256Hash(new TextEncoder().encode(canonicalRequest).buffer);
+        const canonicalRequestBytes = new TextEncoder().encode(canonicalRequest);
+        const canonicalRequestHash = await sha256Hash(canonicalRequestBytes);
         
         // 生成待签名字符串
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
