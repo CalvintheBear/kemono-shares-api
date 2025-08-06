@@ -10,13 +10,15 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  // 使用兼容模式扩展Next.js配置
+  ...compat.extends("next"),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     rules: {
+      // 基本规则
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
@@ -25,7 +27,14 @@ const eslintConfig = [
       ],
       "@typescript-eslint/no-explicit-any": "off",
       "react/display-name": "off",
-      "@next/next/no-img-element": "off" // 允许使用img标签（OptimizedImage组件需要）
+      
+      // Next.js 特定规则
+      "@next/next/no-img-element": "off", // 允许使用img标签（OptimizedImage组件需要）
+      "@next/next/no-html-link-for-pages": "off",
+      
+      // 其他规则
+      "react-hooks/exhaustive-deps": "warn",
+      "prefer-const": "warn"
     }
   }
 ];

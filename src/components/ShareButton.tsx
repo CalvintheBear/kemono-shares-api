@@ -26,6 +26,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
   const [copied, setCopied] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSharing, setIsSharing] = useState(false) // 防止重复分享
+  const [error, setError] = useState<string>('') // 错误状态
   
   // 分享链接是否已就绪（强制启用，确保每次都能创建新分享）
   const isShareReady = true
@@ -124,6 +125,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     
     setIsSharing(true)
     setIsLoading(true)
+    setError('') // 清除之前的错误
     
     try {
       // 创建新的请求Promise
@@ -171,6 +173,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
       return result
     } catch (error) {
       console.error('分享链接生成失败:', error)
+      setError(error instanceof Error ? error.message : '分享链接生成失败')
       // 清理请求引用
       shareRequestRef.current = null
       
@@ -376,8 +379,15 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
                 </button>
               </div>
 
+              {/* 错误显示 */}
+              {error && (
+                <div className="mt-3 p-2 bg-red-50 rounded-lg border border-red-200">
+                  <p className="text-xs text-red-600">{error}</p>
+                </div>
+              )}
+
               {/* 分享链接预览 */}
-              {shareUrl && (
+              {shareUrl && !error && (
                 <div className="mt-3 p-2 bg-gray-50 rounded-lg">
                   <p className="text-xs text-gray-600 mb-1">シェアリンク:</p>
                   <p className="text-xs text-gray-800 break-all">{shareUrl}</p>
