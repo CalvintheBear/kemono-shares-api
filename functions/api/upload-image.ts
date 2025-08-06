@@ -1,5 +1,43 @@
 import { generateUniqueFileName, validateImageFile } from '../../src/lib/r2-client-cloudflare';
 
+// 生成AWS S3兼容的签名
+function generateS3Signature(stringToSign: string, secretKey: string): string {
+  const crypto = require('crypto');
+  return crypto.createHmac('sha256', secretKey).update(stringToSign).digest('hex');
+}
+
+// 生成规范化的请求字符串
+function generateCanonicalRequest(method: string, uri: string, queryString: string, headers: Record<string, string>, payloadHash: string): string {
+  const canonicalHeaders = Object.keys(headers)
+    .sort()
+    .map(key => `${key.toLowerCase()}:${headers[key].trim()}`)
+    .join('\n') + '\n';
+  
+  const signedHeaders = Object.keys(headers)
+    .sort()
+    .map(key => key.toLowerCase())
+    .join(';');
+  
+  return [
+    method,
+    uri,
+    queryString,
+    canonicalHeaders,
+    signedHeaders,
+    payloadHash
+  ].join('\n');
+}
+
+// 生成待签名字符串
+function generateStringToSign(algorithm: string, requestDateTime: string, credentialScope: string, canonicalRequestHash: string): string {
+  return [
+    algorithm,
+    requestDateTime,
+    credentialScope,
+    canonicalRequestHash
+  ].join('\n');
+}
+
 // 使用环境变量创建 R2 客户端
 function createR2ClientFromEnv(env: any) {
   // 检查必要的环境变量
@@ -26,13 +64,63 @@ function createR2ClientFromEnv(env: any) {
         // 构建上传 URL
         const uploadUrl = `${endpoint}/${bucketName}/${key}`;
         
-        // 创建简单的上传请求（不使用复杂的 AWS 签名）
+        // 计算payload hash
+        const crypto = require('crypto');
+        const payloadHash = crypto.createHash('sha256').update(Buffer.from(data)).digest('hex');
+        
+        // 准备签名
+        const now = new Date();
+        const requestDateTime = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+        const dateStamp = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const region = 'auto';
+        const service = 's3';
+        const algorithm = 'AWS4-HMAC-SHA256';
+        const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+        
+        // 准备headers
+        const headers: Record<string, string> = {
+          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+          'Content-Type': contentType,
+          'X-Amz-Date': requestDateTime,
+          'X-Amz-Content-Sha256': payloadHash,
+          'Content-Length': data.byteLength.toString()
+        };
+        
+        // 添加metadata
+        if (metadata) {
+          Object.entries(metadata).forEach(([key, value]) => {
+            headers[`X-Amz-Meta-${key}`] = value;
+          });
+        }
+        
+        // 生成规范化的请求字符串
+        const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
+        const canonicalRequestHash = crypto.createHash('sha256').update(canonicalRequest).digest('hex');
+        
+        // 生成待签名字符串
+        const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
+        
+        // 生成签名
+        const dateKey = crypto.createHmac('sha256', `AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`).update(dateStamp).digest();
+        const dateRegionKey = crypto.createHmac('sha256', dateKey).update(region).digest();
+        const dateRegionServiceKey = crypto.createHmac('sha256', dateRegionKey).update(service).digest();
+        const signingKey = crypto.createHmac('sha256', dateRegionServiceKey).update('aws4_request').digest();
+        const signature = crypto.createHmac('sha256', signingKey).update(stringToSign).digest('hex');
+        
+        // 构建Authorization header
+        const signedHeaders = Object.keys(headers)
+          .sort()
+          .map(key => key.toLowerCase())
+          .join(';');
+        
+        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+        
+        // 创建上传请求
         const response = await fetch(uploadUrl, {
           method: 'PUT',
           headers: {
-            'Authorization': `Bearer ${env.CLOUDFLARE_R2_ACCESS_KEY_ID}`,
-            'Content-Type': contentType,
-            'X-Amz-Date': new Date().toISOString().replace(/[:-]|\.\d{3}/g, ''),
+            ...headers,
+            'Authorization': authorization
           },
           body: data
         });

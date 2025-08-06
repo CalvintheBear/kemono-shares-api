@@ -1,5 +1,5 @@
 // Cloudflare Pages Functions 版本的 image-details API
-export async function onRequestGet({ request }: { request: Request }) {
+export async function onRequestGet({ request, env }: { request: Request; env: any }) {
   try {
     const url = new URL(request.url);
     const taskId = url.searchParams.get('taskId');
@@ -15,7 +15,7 @@ export async function onRequestGet({ request }: { request: Request }) {
     
     // 这里应该调用 Kie.ai API 查询任务状态
     // 根据 https://old-docs.kie.ai/4o-image-api/generate-4-o-image 文档
-    const kieApiKey = process.env.KIE_AI_API_KEY;
+    const kieApiKey = env.KIE_AI_API_KEY;
     if (!kieApiKey) {
       return new Response(JSON.stringify({ error: 'Kie.ai API 密钥未配置' }), {
         status: 500,
