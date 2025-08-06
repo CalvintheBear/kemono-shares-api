@@ -825,7 +825,8 @@ export default function WorkspaceRefactored() {
         console.log('[pollProgress] result_urls字段:', responseData.response?.result_urls)
         
         // 检查成功标志或状态 - 修复成功判断逻辑
-        const isSuccess = (status === 'SUCCESS' || successFlag === 1) && generatedUrl
+        // 如果状态是SUCCESS，即使没有generatedUrl也要处理（可能是回调已处理）
+        const isSuccess = (status === 'SUCCESS' || successFlag === 1)
         const isFailed = status === 'FAILED' || status === 'GENERATE_FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
         
         // 添加调试日志
@@ -839,33 +840,62 @@ export default function WorkspaceRefactored() {
 
         console.log('[pollProgress] 状态判断:', { isSuccess, isFailed, hasGeneratedUrl: !!generatedUrl })
         
-        if (isSuccess && generatedUrl) {
-          console.log('[pollProgress] 生成成功，图片URL:', generatedUrl)
+        if (isSuccess) {
+          console.log('[pollProgress] 生成成功，处理结果...')
           consecutiveFailures = 0 // 重置失败计数
           
-          // 检查是否是R2 URL，如果是则直接使用
-          let finalImageUrl = generatedUrl
-          if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
-            // 如果是KIE AI的临时URL，尝试下载到R2
-            try {
-              const downloadResponse = await fetch('/api/download-url', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: generatedUrl })
-              })
+          let finalImageUrl = ''
+          
+          if (generatedUrl) {
+            console.log('[pollProgress] 有generatedUrl:', generatedUrl)
+            // 检查是否是R2 URL，如果是则直接使用
+            finalImageUrl = generatedUrl
+            if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
+              // 如果是KIE AI的临时URL，尝试下载到R2
+              try {
+                const downloadResponse = await fetch('/api/download-url', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ url: generatedUrl })
+                })
 
-              if (downloadResponse.ok) {
-                const downloadData = await downloadResponse.json()
-                finalImageUrl = downloadData.downloadUrl || generatedUrl
-                console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
-              } else {
-                console.log('[pollProgress] 下载URL获取失败，使用原始URL')
+                if (downloadResponse.ok) {
+                  const downloadData = await downloadResponse.json()
+                  finalImageUrl = downloadData.downloadUrl || generatedUrl
+                  console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
+                } else {
+                  console.log('[pollProgress] 下载URL获取失败，使用原始URL')
+                }
+              } catch (error) {
+                console.warn('[pollProgress] 下载URL处理失败:', error)
               }
-            } catch (error) {
-              console.warn('[pollProgress] 下载URL处理失败:', error)
+            } else {
+              console.log('[pollProgress] 使用R2 URL:', finalImageUrl)
             }
           } else {
-            console.log('[pollProgress] 使用R2 URL:', finalImageUrl)
+            console.log('[pollProgress] 没有generatedUrl，尝试构建R2 URL...')
+            // 尝试构建R2 URL
+            const currentTaskId = responseData.taskId || taskId;
+            const possibleR2Url = `https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/generated/${currentTaskId}_1.jpg`;
+            
+            // 测试R2 URL是否可访问
+            try {
+              const r2Response = await fetch(possibleR2Url, { method: 'HEAD' });
+              if (r2Response.ok) {
+                finalImageUrl = possibleR2Url;
+                console.log('[pollProgress] 找到R2 URL:', finalImageUrl);
+              } else {
+                console.log('[pollProgress] R2 URL不可访问:', possibleR2Url);
+                // 如果R2 URL不可访问，继续轮询等待
+                pollIntervalRef.current = setTimeout(loop, 2000);
+                return;
+              }
+            } catch (error) {
+              console.warn('[pollProgress] 测试R2 URL失败:', error);
+              // 如果测试失败，继续轮询等待
+              pollIntervalRef.current = setTimeout(loop, 2000);
+              return;
+            }
           }
 
           const completedResult = {
@@ -924,6 +954,8 @@ export default function WorkspaceRefactored() {
             pollIntervalRef.current = setTimeout(loop, 1000) // 快速轮询等待回调
             return
           }
+          
+
           
           if (!isMountedRef.current) {
             console.log('[pollProgress] 组件已卸载，停止轮询')
