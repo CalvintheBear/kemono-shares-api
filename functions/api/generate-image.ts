@@ -2,7 +2,7 @@
 export async function onRequestPost({ request, env }: { request: Request; env: any }) {
   try {
     const body = await request.json();
-    const { prompt, style, size = '1024x1024', mode = 'template', fileUrl, enhancePrompt } = body;
+    const { prompt, style, size = '1:1', mode = 'template', fileUrl, enhancePrompt } = body;
     
     if (!prompt) {
       return new Response(JSON.stringify({ error: '缺少提示词' }), {
@@ -22,46 +22,68 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       });
     }
     
-    // 处理尺寸格式 - 将比例转换为具体像素尺寸
+    // 验证尺寸格式 - KIE AI API 只支持比例格式
+    const supportedSizes = ['1:1', '3:2', '2:3'];
     let processedSize = size;
-    if (size === '1:1') {
-      processedSize = '1024x1024';
-    } else if (size === '3:2') {
-      processedSize = '1024x683';
-    } else if (size === '2:3') {
-      processedSize = '683x1024';
-    } else if (size === '16:9') {
-      processedSize = '1024x576';
-    } else if (size === '9:16') {
-      processedSize = '576x1024';
+    
+    // 如果传入的是像素格式，转换为比例格式
+    if (size.includes('x')) {
+      if (size === '1024x1024') {
+        processedSize = '1:1';
+      } else if (size === '1024x683') {
+        processedSize = '3:2';
+      } else if (size === '683x1024') {
+        processedSize = '2:3';
+      } else if (size === '1024x576') {
+        processedSize = '16:9';
+      } else if (size === '576x1024') {
+        processedSize = '9:16';
+      } else {
+        // 默认使用1:1
+        processedSize = '1:1';
+      }
     }
     
-    // 构建请求体
+    // 确保尺寸格式在支持范围内
+    if (!supportedSizes.includes(processedSize)) {
+      processedSize = '1:1';
+    }
+    
+    console.log(`📏 尺寸转换: ${size} → ${processedSize}`);
+    
+    // 构建请求体 - 只包含KIE AI API官方支持的参数
     const requestBody: any = {
       prompt: enhancePrompt ? `anime style, high quality, detailed, kawaii, ${prompt}` : prompt,
       size: processedSize,
-      style: style || 'default',
-      mode: mode,
-      callBackUrl: `${env.NEXT_PUBLIC_APP_URL || 'https://2kawaii.com'}/api/callback/image-generated`
+      userId: env.KIE_AI_USER_ID || 'j2983236233@gmail.com' // 添加必需的userId参数
     };
     
     // 如果是image-to-image模式，添加图片URL
     if (mode === 'image-to-image' && fileUrl) {
-      requestBody.imageUrl = fileUrl;
+      requestBody.filesUrl = [fileUrl];
       console.log(`📸 添加参考图片URL: ${fileUrl}`);
     }
     
     // 如果是template模式且有fileUrl，也添加图片URL
     if (mode === 'template' && fileUrl) {
-      requestBody.imageUrl = fileUrl;
+      requestBody.filesUrl = [fileUrl];
       console.log(`📸 模板模式添加参考图片URL: ${fileUrl}`);
     }
     
-    // 如果是text-to-image模式，确保不传递imageUrl
+    // 如果是text-to-image模式，确保不传递filesUrl
     if (mode === 'text-to-image') {
-      delete requestBody.imageUrl;
       console.log(`📝 文本生成模式，不传递图片URL`);
     }
+    
+    // 添加回调URL（可选）
+    if (env.NEXT_PUBLIC_APP_URL) {
+      requestBody.callBackUrl = `${env.NEXT_PUBLIC_APP_URL}/api/callback/image-generated`;
+    }
+    
+    // 添加其他可选参数
+    requestBody.nVariants = 1; // 生成1张图片
+    requestBody.isEnhance = enhancePrompt || false; // 是否增强提示词
+    requestBody.enableFallback = true; // 启用备用模型
     
     console.log('📤 发送请求到 Kie.ai:', requestBody);
     
