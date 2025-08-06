@@ -18,11 +18,11 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket,
           customMetadata: metadata,
         });
         
-        // 构建公共URL - 使用环境变量中的正确域名，必须包含桶名
-        const bucketName = env.CLOUDFLARE_R2_BUCKET_NAME || 'kemono-uploadimage';
+        // 构建公共URL - 使用环境变量中的正确域名
+        // 注意：您的配置中已经包含了完整的公共URL，不需要再添加桶名
         const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
-          ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${bucketName}/${key}`
-          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${bucketName}/${key}`;
+          ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
+          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${env.CLOUDFLARE_R2_BUCKET_NAME}/${key}`;
         
         return {
           url: publicUrl,
@@ -45,11 +45,11 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket,
           customMetadata: metadata,
         });
         
-        // 构建公共URL - 使用环境变量中的正确域名，必须包含桶名
-        const bucketName = env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME || 'kemono-afterimage';
+        // 构建公共URL - 使用环境变量中的正确域名
+        // 注意：您的配置中已经包含了完整的公共URL，不需要再添加桶名
         const publicUrl = env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL 
-          ? `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${bucketName}/${key}`
-          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${bucketName}/${key}`;
+          ? `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`
+          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME}/${key}`;
         
         return {
           url: publicUrl,

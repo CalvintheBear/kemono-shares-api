@@ -40,14 +40,14 @@ const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL
 
 **修复前**:
 ```toml
-CLOUDFLARE_R2_PUBLIC_URL = "https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev"
-CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev"
+CLOUDFLARE_R2_PUBLIC_URL = "https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev"
+CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev"
 ```
 
 **修复后**:
 ```toml
-CLOUDFLARE_R2_PUBLIC_URL = "https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev"
-CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev"
+CLOUDFLARE_R2_PUBLIC_URL = "https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev"
+CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev"
 ```
 
 ### 3. 修复轮询逻辑
@@ -62,12 +62,12 @@ CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL = "https://pub-9a5ff316a26b8abb696af519e515d
 
 ### 上传图片URL
 ```
-https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/kemono-uploadimage/uploads/1754454431160-gl2z86hasq5.jpg
+https://pub-9ea5461e9e8b418caecb7e5b7748bdea.r2.dev/uploads/1754454431160-gl2z86hasq5.jpg
 ```
 
 ### 生成图片URL
 ```
-https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/kemono-afterimage/generated/ef5a8f6c837341545eeed156c149b481_1.jpg
+https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/generated/ef5a8f6c837341545eeed156c149b481_1.jpg
 ```
 
 ## 验证步骤
