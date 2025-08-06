@@ -1,5 +1,3 @@
-import { S3Client } from '@aws-sdk/client-s3';
-
 // Cloudflare R2 类型定义
 interface R2Bucket {
   put(key: string, value: ArrayBuffer, options?: any): Promise<void>;
