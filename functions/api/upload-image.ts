@@ -18,6 +18,12 @@ export async function onRequestPost({
   } 
 }) {
   try {
+    // 调试：检查环境变量和绑定
+    console.log('🔍 调试信息:');
+    console.log('- R2_BUCKET 存在:', !!env.R2_BUCKET);
+    console.log('- R2_AFTERIMAGE_BUCKET 存在:', !!env.R2_AFTERIMAGE_BUCKET);
+    console.log('- 环境变量:', Object.keys(env));
+    
     const formData = await request.formData();
     const file = formData.get('file') as File;
     
@@ -33,6 +39,15 @@ export async function onRequestPost({
     if (!validation.valid) {
       return new Response(JSON.stringify({ error: validation.error }), {
         status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // 检查 R2 绑定是否存在
+    if (!env.R2_BUCKET) {
+      console.error('❌ R2_BUCKET 绑定不存在');
+      return new Response(JSON.stringify({ error: 'R2 存储桶未配置' }), {
+        status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
     }

@@ -18,8 +18,8 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket)
           customMetadata: metadata,
         });
         
-        // 构建公共URL
-        const publicUrl = `https://${process.env.CLOUDFLARE_R2_PUBLIC_URL || 'pub-${CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev'}/${key}`;
+        // 构建公共URL - 使用正确的域名
+        const publicUrl = `https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/${key}`;
         
         return {
           url: publicUrl,
@@ -42,8 +42,8 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket)
           customMetadata: metadata,
         });
         
-        // 构建公共URL
-        const publicUrl = `https://${process.env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL || 'pub-${CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev'}/${key}`;
+        // 构建公共URL - 使用正确的域名
+        const publicUrl = `https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/${key}`;
         
         return {
           url: publicUrl,
