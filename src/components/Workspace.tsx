@@ -461,34 +461,8 @@ export default function WorkspaceRefactored() {
 
   // 移除滚动位置恢复，保持原生滚动状态
 
-  // 图片上传
-  const handleImageSelect = useCallback(async (file: File) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      setImagePreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-
-    try {
-      setIsUploading(true)
-      
-      // 直接使用客户端上传，不依赖API路由
-      const url = await uploadImageDirectly(file)
-      setFileUrl(url)
-      localStorage.setItem('savedFileUrl', url)
-      localStorage.setItem('savedMode', mode)
-    } catch (err) {
-      console.error('文件上传失败:', err)
-      const errorMessage = err instanceof Error ? err.message : '画像アップロードに失败しました'
-      alert(errorMessage)
-      setFileUrl(null)
-    } finally {
-      setIsUploading(false)
-    }
-  }, [mode])
-
   // 直接上传到外部服务
-  const uploadImageDirectly = async (file: File): Promise<string> => {
+  const uploadImageDirectly = useCallback(async (file: File): Promise<string> => {
     // 检查文件类型和大小
     if (!file.type.startsWith('image/')) {
       throw new Error('画像ファイルを選択してください')
@@ -517,7 +491,33 @@ export default function WorkspaceRefactored() {
     }
 
     throw new Error('すべてのアップロード方法が失敗しました')
-  }
+  }, [])
+
+  // 图片上传
+  const handleImageSelect = useCallback(async (file: File) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+
+    try {
+      setIsUploading(true)
+      
+      // 直接使用客户端上传，不依赖API路由
+      const url = await uploadImageDirectly(file)
+      setFileUrl(url)
+      localStorage.setItem('savedFileUrl', url)
+      localStorage.setItem('savedMode', mode)
+    } catch (err) {
+      console.error('文件上传失败:', err)
+      const errorMessage = err instanceof Error ? err.message : '画像アップロードに失败しました'
+      alert(errorMessage)
+      setFileUrl(null)
+    } finally {
+      setIsUploading(false)
+    }
+  }, [mode, uploadImageDirectly])
 
   // 上传到 Cloudflare R2 (优先) - 使用API路由
   const uploadToR2 = async (file: File): Promise<string> => {

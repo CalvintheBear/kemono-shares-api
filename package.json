@@ -15,7 +15,7 @@
     "build:pages:api": "node scripts/build-for-cloudflare-pages.js",
     "build:pages:api:optimized": "node scripts/build-for-cloudflare-pages-optimized.js",
     "build:pages:api:minimal": "node scripts/build-for-cloudflare-pages-minimal.js",
-    "build:static": "node scripts/build-static-for-pages.js",
+    "build:static:pages": "node scripts/build-static-for-pages.js",
     "build:railway": "set RAILWAY=true && next build",
     "start": "next start",
     "lint": "next lint",
