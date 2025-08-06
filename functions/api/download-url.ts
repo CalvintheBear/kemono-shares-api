@@ -36,6 +36,18 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       });
     }
     
+    // 构建KIE AI API请求体 - 根据官方文档
+    const requestBody: any = {
+      url: url  // 使用 'url' 而不是 'imageUrl'
+    };
+    
+    // 如果有taskId，添加到请求中
+    if (taskId) {
+      requestBody.taskId = taskId;
+    }
+    
+    console.log(`📤 发送请求到KIE AI:`, JSON.stringify(requestBody, null, 2));
+    
     // 调用 KIE AI 下载URL API
     const response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
       method: 'POST',
@@ -43,9 +55,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
         'Authorization': `Bearer ${kieApiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        imageUrl: url
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {
@@ -65,7 +75,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     const data = await response.json();
     console.log(`✅ KIE AI 下载URL API 响应:`, data);
     
-    const downloadUrl = data.data?.downloadUrl || data.downloadUrl;
+    // 根据KIE AI官方文档，响应格式是 { code: 200, msg: "success", data: "download_url" }
+    const downloadUrl = data.data || data.downloadUrl;
     
     if (!downloadUrl) {
       console.error('❌ 无法获取下载URL:', data);
@@ -84,7 +95,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       success: true,
       downloadUrl: downloadUrl,
       originalUrl: url,
-      taskId: taskId
+      taskId: taskId,
+      expiresIn: '20 minutes' // KIE AI文档说明URL有效期为20分钟
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

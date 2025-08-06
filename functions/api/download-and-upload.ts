@@ -28,7 +28,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       'CLOUDFLARE_R2_ACCOUNT_ID',
       'CLOUDFLARE_R2_ACCESS_KEY_ID', 
       'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
-      'CLOUDFLARE_R2_BUCKET_NAME'
+      'CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME'  // 优先使用AFTERIMAGE_BUCKET
     ];
     
     const missingVars = requiredVars.filter(varName => !env[varName]);
@@ -48,12 +48,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       console.log('🔗 检测到KIE AI临时URL，获取下载直链...');
       
       const downloadRequestBody: any = { 
-        imageUrl: kieImageUrl
+        url: kieImageUrl  // 使用 'url' 而不是 'imageUrl'
       };
       
       if (taskId) {
         downloadRequestBody.taskId = taskId;
       }
+      
+      console.log(`📤 发送请求到KIE AI:`, JSON.stringify(downloadRequestBody, null, 2));
       
       const downloadResponse = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
         method: 'POST',
@@ -78,7 +80,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       }
       
       const downloadData = await downloadResponse.json();
-      downloadUrl = downloadData.data?.downloadUrl || downloadData.downloadUrl || kieImageUrl;
+      console.log(`✅ KIE AI 下载URL API 响应:`, downloadData);
+      
+      // 根据KIE AI官方文档，响应格式是 { code: 200, msg: "success", data: "download_url" }
+      downloadUrl = downloadData.data || downloadData.downloadUrl || kieImageUrl;
       console.log(`✅ 获取到下载直链: ${downloadUrl}`);
     }
     
