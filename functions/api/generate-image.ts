@@ -51,11 +51,16 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`📏 尺寸转换: ${size} → ${processedSize}`);
     
-    // 构建请求体 - 只包含KIE AI API官方支持的参数
+    // 构建请求体 - 根据KIE AI官方示例代码
     const requestBody: any = {
       prompt: enhancePrompt ? `anime style, high quality, detailed, kawaii, ${prompt}` : prompt,
       size: processedSize,
-      userId: env.KIE_AI_USER_ID || 'j2983236233@gmail.com' // 添加必需的userId参数
+      userId: env.KIE_AI_USER_ID || 'j2983236233@gmail.com',
+      nVariants: 1,
+      isEnhance: enhancePrompt || false,
+      enableFallback: true,
+      fallbackModel: "FLUX_MAX",
+      uploadCn: false
     };
     
     // 如果是image-to-image模式，添加图片URL
@@ -80,12 +85,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       requestBody.callBackUrl = `${env.NEXT_PUBLIC_APP_URL}/api/callback/image-generated`;
     }
     
-    // 添加其他可选参数
-    requestBody.nVariants = 1; // 生成1张图片
-    requestBody.isEnhance = enhancePrompt || false; // 是否增强提示词
-    requestBody.enableFallback = true; // 启用备用模型
-    
-    console.log('📤 发送请求到 Kie.ai:', requestBody);
+    console.log('📤 发送请求到 Kie.ai:', JSON.stringify(requestBody, null, 2));
     
     // 调用 Kie.ai 4o Image API
     const response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/generate', {

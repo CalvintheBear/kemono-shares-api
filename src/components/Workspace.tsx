@@ -648,6 +648,10 @@ export default function WorkspaceRefactored() {
     }
 
     console.log('[generateImage] 开始生成流程, mode:', mode, 'selectedTemplate:', selectedTemplate?.name)
+    console.log('[generateImage] fileUrl:', fileUrl)
+    console.log('[generateImage] prompt:', prompt)
+    console.log('[generateImage] selectedSize:', selectedSize)
+    
     // 清空上一次生成的分享链接
     shareCreatedRef.current = false
     setIsGenerating(true)
@@ -665,18 +669,22 @@ export default function WorkspaceRefactored() {
     setCurrentResult(newResult)
     console.log('[generateImage] 设置currentResult:', newResult.id)
 
+    const requestBody = {
+      fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
+      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+      enhancePrompt,
+      size: selectedSize,
+      mode: mode,
+      style: selectedTemplate?.name || 'default'
+    }
+    
+    console.log('[generateImage] 请求体:', JSON.stringify(requestBody, null, 2))
+
     try {
       const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
-          prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
-          enhancePrompt,
-          size: selectedSize,
-          mode: mode,
-          style: selectedTemplate?.name || 'default'
-        })
+        body: JSON.stringify(requestBody)
       })
 
       if (!response.ok) {
@@ -811,11 +819,16 @@ export default function WorkspaceRefactored() {
         const errorMessage = responseData.errorMessage || responseData.error || null
         
         console.log('[pollProgress] 状态检查:', { status, successFlag, generatedUrl, errorMessage })
+        console.log('[pollProgress] 完整响应数据:', responseData)
+        console.log('[pollProgress] response字段:', responseData.response)
+        console.log('[pollProgress] resultUrls字段:', responseData.response?.resultUrls)
         
         // 检查成功标志或状态
         const isSuccess = status === 'SUCCESS' || successFlag === 1
         const isFailed = status === 'FAILED' || status === 'GENERATE_FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
 
+        console.log('[pollProgress] 状态判断:', { isSuccess, isFailed, hasGeneratedUrl: !!generatedUrl })
+        
         if (isSuccess && generatedUrl) {
           console.log('[pollProgress] 生成成功，开始下载图片:', generatedUrl)
           consecutiveFailures = 0 // 重置失败计数
