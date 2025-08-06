@@ -741,40 +741,33 @@ export default function WorkspaceRefactored() {
   const handleShare = async (result: GenerationResult): Promise<string | null> => {
     // 每次生成时强制创建新的分享页面，不复用旧链接
     console.log('[handleShare] 强制创建新分享页面，不复用旧链接')
-    console.log('[handleShare] 分享数据:', {
-      generatedUrl: result.generated_url,
-      originalUrl: result.original_url,
-      prompt: result.prompt,
-      mode: mode
-    })
     // 重置分享状态，确保每次都能创建新分享
     shareCreatedRef.current = false
     setAutoShareUrl('')
     try {
-      // 直接使用result中的数据，不再重新判断
-      const originalUrl = result.original_url && result.original_url.trim() !== '' ? result.original_url : null
+      let originalUrl = null
       
-      // 检查生成图URL类型
-      const isR2Url = result.generated_url.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
-                     result.generated_url.includes('.r2.dev') || 
-                     result.generated_url.includes('.r2.cloudflarestorage.com')
-      
-      console.log('[handleShare] URL类型检查:', {
-        generatedUrl: result.generated_url,
-        isR2Url: isR2Url,
-        originalUrl: originalUrl
-      })
+      // 根据模式正确处理originalUrl
+      if (mode === 'text-to-image') {
+        originalUrl = null
+      } else if ((mode === 'image-to-image' || mode === 'template-mode') && fileUrl) {
+        if (fileUrl && 
+            !fileUrl.includes('placeholder.com') && 
+            !fileUrl.includes('Text+to+Image') &&
+            !fileUrl.startsWith('data:image/')) {
+          originalUrl = fileUrl
+        }
+      }
 
       const response = await fetch('/api/share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           generatedUrl: result.generated_url,
-          originalUrl: originalUrl,
+          originalUrl,
           prompt: result.prompt,
           style: selectedTemplate?.name || 'カスタム',
-          timestamp: Date.now(),
-          isR2Stored: isR2Url // 标记是否使用R2永久URL
+          timestamp: Date.now()
         })
       })
 
@@ -990,7 +983,7 @@ export default function WorkspaceRefactored() {
 
           const completedResult = {
             id: resultId,
-            original_url: mode === 'text-to-image' ? '' : (fileUrl || ''), // 使用原始fileUrl而不是base64
+            original_url: mode === 'text-to-image' ? '' : imagePreview!, // 文生图不需要原图
             generated_url: finalImageUrl,
             prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
             timestamp: Date.now()

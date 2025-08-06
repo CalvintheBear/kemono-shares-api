@@ -1,13 +1,56 @@
 // Cloudflare Pages Functions 版本的 share API
-export async function onRequestGet() {
-  return new Response(JSON.stringify({ 
-    error: 'API not available in static export mode',
-    message: 'This feature requires server-side processing',
-    status: 'static_mode'
-  }), {
-    status: 501,
-    headers: { 'Content-Type': 'application/json' }
-  });
+export async function onRequestGet({ request }: { request: Request }) {
+  try {
+    const url = new URL(request.url);
+    const shareId = url.searchParams.get('id');
+    
+    if (!shareId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: '缺少分享ID'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    console.log(`[分享获取] 查询分享ID: ${shareId}`);
+    
+    // 从内存存储中获取分享数据
+    if (typeof globalThis !== 'undefined' && (globalThis as any).shareDataStore) {
+      const shareData = (globalThis as any).shareDataStore.get(shareId);
+      
+      if (shareData) {
+        console.log(`[分享获取] 找到分享数据:`, shareData);
+        return new Response(JSON.stringify({
+          success: true,
+          data: shareData
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+    
+    console.log(`[分享获取] 未找到分享ID: ${shareId}`);
+    return new Response(JSON.stringify({
+      success: false,
+      error: '分享不存在或已过期'
+    }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+  } catch (error) {
+    console.error('[分享获取] 处理失败:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: '获取分享数据失败'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
 
 export async function onRequestPost({ request }: { request: Request }) {
@@ -82,8 +125,8 @@ export async function onRequestPost({ request }: { request: Request }) {
     return new Response(JSON.stringify({
       success: true,
       shareId: shareData.id,
-      shareUrl: `https://2kawaii.com/share/${shareData.id}`,  // 添加完整域名
-      generationType,
+      shareUrl: `https://2kawaii.com/share/${shareData.id}`,
+      data: shareData, // 返回完整的分享数据
       message: '分享创建成功'
     }), {
       status: 200,
