@@ -23,13 +23,16 @@
     "deploy:pages": "wrangler pages deploy out --config wrangler.pages.toml",
     "deploy:pages:dev": "wrangler pages deploy out --config wrangler.pages.toml --project-name=kemono-shares-api-dev",
     "deploy:pages:api": "wrangler pages deploy .next --config wrangler.pages.api.toml",
+    "deploy:2kawaii": "wrangler pages deploy .next --config wrangler.pages.2kawaii.toml",
+    "deploy:2kawaii:full": "node scripts/deploy-2kawaii.js",
     "deploy:api": "node scripts/deploy-with-api.js",
     "test:r2-config": "node scripts/test-r2-config.js",
     "test:upload": "node scripts/test-upload.js",
     "test:share-r2": "node scripts/test-share-r2-integration.js",
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
     "check:production": "node scripts/check-production-config.js",
-    "validate:env": "node scripts/validate-env.js"
+    "validate:env": "node scripts/validate-env.js",
+    "diagnose:404": "node scripts/diagnose-404.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",

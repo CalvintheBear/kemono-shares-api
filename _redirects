@@ -19,4 +19,10 @@
 *.js /:splat 200
 
 # 默认重定向到首页
-/* /index.html 200 
+/* /index.html 200
+
+# 确保API路由正常工作
+/api/* /api/:splat 200
+
+# 确保静态资源正常工作
+/_next/* /_next/:splat 200 
