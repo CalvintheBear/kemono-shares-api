@@ -18,11 +18,14 @@
 *.css /:splat 200
 *.js /:splat 200
 
-# 默认重定向到首页
-/* /index.html 200
+# SPA路由支持 - 修复无限循环
+/faq /faq.html 200
+/ai-image-conversion-free /ai-image-conversion-free.html 200
+/ai-image-generation-guide /ai-image-generation-guide.html 200
+/anime-icon-creation /anime-icon-creation.html 200
+/chibi-character-maker /chibi-character-maker.html 200
+/privacy /privacy.html 200
+/terms /terms.html 200
 
-# 确保API路由正常工作
-/api/* /api/:splat 200
-
-# 确保静态资源正常工作
-/_next/* /_next/:splat 200 
+# 默认重定向到首页（避免无限循环）
+/* /index.html 200 
