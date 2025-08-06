@@ -903,18 +903,6 @@ export default function WorkspaceRefactored() {
                     if (uploadData.success && uploadData.publicUrl) {
                       finalImageUrl = uploadData.publicUrl
                       console.log('[pollProgress] ✅ 成功获取R2永久URL:', finalImageUrl)
-                      
-                      // 验证R2 URL可访问性
-                      try {
-                        const testResponse = await fetch(finalImageUrl, { method: 'HEAD' })
-                        if (testResponse.ok) {
-                          console.log('[pollProgress] ✅ R2 URL验证成功，可正常访问')
-                        } else {
-                          console.warn('[pollProgress] ⚠️ R2 URL验证失败，但继续使用')
-                        }
-                      } catch (testError) {
-                        console.warn('[pollProgress] ⚠️ R2 URL验证异常:', testError)
-                      }
                     } else {
                       console.warn('[pollProgress] ❌ R2上传失败，回退到临时URL')
                       finalImageUrl = directUrl
