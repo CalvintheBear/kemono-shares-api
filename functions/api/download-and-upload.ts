@@ -23,18 +23,21 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       });
     }
     
-    // 检查R2环境变量
-    const requiredVars = [
-      'CLOUDFLARE_R2_ACCOUNT_ID',
-      'CLOUDFLARE_R2_ACCESS_KEY_ID', 
-      'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
-      'CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME'  // 优先使用AFTERIMAGE_BUCKET
-    ];
-    
-    const missingVars = requiredVars.filter(varName => !env[varName]);
-    if (missingVars.length > 0) {
+    // 检查R2绑定
+    const bucket = env.AFTERIMAGE_BUCKET;
+    if (!bucket) {
       return new Response(JSON.stringify({ 
-        error: `缺少必要的 R2 环境变量: ${missingVars.join(', ')}` 
+        error: '缺少R2桶绑定: AFTERIMAGE_BUCKET' 
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // 检查公共URL配置
+    if (!env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL) {
+      return new Response(JSON.stringify({ 
+        error: '缺少R2公共URL配置: CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL' 
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -100,99 +103,42 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`✅ 图片下载成功: ${(imageData.byteLength / 1024).toFixed(2)}KB, 类型: ${contentType}`);
     
-    // 3. 生成文件名
+    // 3. 生成文件名和对象键
     const timestamp = Date.now();
-    const randomId = Math.random().toString(36).substring(2, 8);
+    const randomId = crypto.randomUUID ? crypto.randomUUID().substring(0, 8) : Math.random().toString(36).substring(2, 8);
     const finalFileName = fileName || `generated_${taskId || timestamp}_${randomId}.png`;
     const key = `generated/${finalFileName}`;
     
     console.log(`📤 开始上传到R2: ${key}`);
     
-    // 4. 上传到R2 afterimage桶
-    const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
-    const bucketName = env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME || env.CLOUDFLARE_R2_BUCKET_NAME;
-    const uploadUrl = `${endpoint}/${bucketName}/${key}`;
-    
-    // 计算payload hash
-    const payloadHash = await sha256Hash(imageData);
-    
-    // 准备签名
-    const now = new Date();
-    const requestDateTime = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
-    const dateStamp = now.toISOString().slice(0, 10).replace(/-/g, '');
-    const region = 'auto';
-    const service = 's3';
-    const algorithm = 'AWS4-HMAC-SHA256';
-    const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
-    
-    // 准备headers
-    const headers: Record<string, string> = {
-      'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      'Content-Type': contentType,
-      'X-Amz-Date': requestDateTime,
-      'X-Amz-Content-Sha256': payloadHash,
-      'Content-Length': imageData.byteLength.toString()
-    };
-    
-    // 添加metadata
-    const metadata = {
-      originalName: finalFileName,
-      uploadedAt: new Date().toISOString(),
-      fileSize: imageData.byteLength.toString(),
-      taskId: taskId || '',
-      source: 'kie-download',
-      originalUrl: kieImageUrl
-    };
-    
-    Object.entries(metadata).forEach(([key, value]) => {
-      headers[`X-Amz-Meta-${key}`] = value;
-    });
-    
-    // 生成规范化的请求字符串
-    const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
-    const canonicalRequestBytes = new TextEncoder().encode(canonicalRequest);
-    const canonicalRequestHash = await sha256Hash(canonicalRequestBytes);
-    
-    // 生成待签名字符串
-    const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
-    
-    // 生成签名
-    const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
-    const dateRegionKey = await hmacSha256(dateKey, region);
-    const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
-    const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
-    const signature = await hmacSha256(signingKey, stringToSign);
-    
-    // 构建Authorization header
-    const signedHeaders = Object.keys(headers)
-      .sort()
-      .map(key => key.toLowerCase())
-      .join(';');
-    
-    const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
-    
-    // 创建上传请求
-    const uploadResponse = await fetch(uploadUrl, {
-      method: 'PUT',
-      headers: {
-        ...headers,
-        'Authorization': authorization
-      },
-      body: imageData
-    });
+    // 4. 使用R2 Binding上传到afterimage桶
+    try {
+      const uploadResult = await bucket.put(key, imageData, {
+        httpMetadata: { 
+          contentType: contentType 
+        },
+        customMetadata: {
+          originalName: finalFileName,
+          uploadedAt: new Date().toISOString(),
+          fileSize: imageData.byteLength.toString(),
+          taskId: taskId || '',
+          source: 'kie-download',
+          originalUrl: kieImageUrl
+        }
+      });
 
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text();
-      console.error(`❌ R2 上传失败: ${uploadResponse.status} ${uploadResponse.statusText}`, errorText);
-      throw new Error(`R2 上传失败: ${uploadResponse.status} ${uploadResponse.statusText}`);
+      if (!uploadResult) {
+        throw new Error('R2 上传返回空结果');
+      }
+
+      console.log(`✅ R2上传成功，对象键: ${key}`);
+    } catch (uploadError) {
+      console.error(`❌ R2 上传失败:`, uploadError);
+      throw new Error(`R2 上传失败: ${uploadError instanceof Error ? uploadError.message : '未知错误'}`);
     }
     
-    // 构建公共URL - 使用afterimage桶的公共URL
-    const publicUrl = env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL 
-      ? `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`
-      : env.CLOUDFLARE_R2_PUBLIC_URL 
-        ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
-        : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${key}`;
+    // 5. 构建公共URL
+    const publicUrl = `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`;
     
     console.log(`✅ 成功上传到R2: ${publicUrl}`);
     
@@ -222,59 +168,4 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
   }
 }
 
-// 辅助函数
-async function sha256Hash(data: ArrayBuffer | Uint8Array): Promise<string> {
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
-async function hmacSha256(key: string | ArrayBuffer, message: string): Promise<string> {
-  const keyBuffer = typeof key === 'string' ? new TextEncoder().encode(key) : key;
-  const messageBuffer = new TextEncoder().encode(message);
-  
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    keyBuffer,
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  );
-  
-  const signature = await crypto.subtle.sign('HMAC', cryptoKey, messageBuffer);
-  return Array.from(new Uint8Array(signature))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-
-function generateCanonicalRequest(method: string, uri: string, query: string, headers: Record<string, string>, payloadHash: string): string {
-  const canonicalHeaders = Object.entries(headers)
-    .sort(([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase()))
-    .map(([key, value]) => `${key.toLowerCase()}:${value.trim()}`)
-    .join('\n');
-  
-  const signedHeaders = Object.keys(headers)
-    .sort()
-    .map(key => key.toLowerCase())
-    .join(';');
-  
-  return [
-    method,
-    uri,
-    query,
-    canonicalHeaders,
-    '',
-    signedHeaders,
-    payloadHash
-  ].join('\n');
-}
-
-function generateStringToSign(algorithm: string, requestDateTime: string, credentialScope: string, canonicalRequestHash: string): string {
-  return [
-    algorithm,
-    requestDateTime,
-    credentialScope,
-    canonicalRequestHash
-  ].join('\n');
-} 
+ 
