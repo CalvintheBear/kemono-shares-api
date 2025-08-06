@@ -23,9 +23,8 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     }
     
     // 根据 Kie.ai 文档，使用正确的API端点
-    // GET https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=xxx&userId=xxx
-    const userId = env.KIE_AI_USER_ID || 'j2983236233@gmail.com';
-    const response = await fetch(`https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=${taskId}&userId=${encodeURIComponent(userId)}`, {
+    // GET https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=xxx
+    const response = await fetch(`https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=${taskId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${kieApiKey}`,

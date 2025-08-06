@@ -851,18 +851,40 @@ export default function WorkspaceRefactored() {
             // 检查是否是R2 URL，如果是则直接使用
             finalImageUrl = generatedUrl
             if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
-              // 如果是KIE AI的临时URL，尝试下载到R2
+              // 如果是KIE AI的临时URL，先获取下载URL，然后下载并上传到R2
               try {
+                console.log('[pollProgress] 处理KIE临时URL，获取下载链接...')
                 const downloadResponse = await fetch('/api/download-url', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ url: generatedUrl })
+                  body: JSON.stringify({ url: generatedUrl, taskId })
                 })
 
                 if (downloadResponse.ok) {
                   const downloadData = await downloadResponse.json()
-                  finalImageUrl = downloadData.downloadUrl || generatedUrl
-                  console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
+                  const directUrl = downloadData.downloadUrl
+                  console.log('[pollProgress] 获取到直接下载URL:', directUrl)
+                  
+                  // 下载并上传到R2
+                  console.log('[pollProgress] 开始下载并上传到R2...')
+                  const uploadResponse = await fetch('/api/download-and-upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                      kieImageUrl: directUrl, 
+                      taskId,
+                      fileName: `generated_${taskId}.png`
+                    })
+                  })
+                  
+                  if (uploadResponse.ok) {
+                    const uploadData = await uploadResponse.json()
+                    finalImageUrl = uploadData.url
+                    console.log('[pollProgress] 成功上传到R2:', finalImageUrl)
+                  } else {
+                    console.log('[pollProgress] R2上传失败，使用直接下载URL')
+                    finalImageUrl = directUrl
+                  }
                 } else {
                   console.log('[pollProgress] 下载URL获取失败，使用原始URL')
                 }
@@ -956,8 +978,6 @@ export default function WorkspaceRefactored() {
             pollIntervalRef.current = setTimeout(loop, 1000) // 快速轮询等待回调
             return
           }
-          
-
           
           if (!isMountedRef.current) {
             console.log('[pollProgress] 组件已卸载，停止轮询')

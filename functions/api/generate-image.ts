@@ -55,34 +55,24 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     const requestBody: any = {
       prompt: enhancePrompt ? `anime style, high quality, detailed, kawaii, ${prompt}` : prompt,
       size: processedSize,
-      userId: env.KIE_AI_USER_ID || 'j2983236233@gmail.com',
       nVariants: 1,
       isEnhance: enhancePrompt || false,
       enableFallback: true,
-      fallbackModel: "FLUX_MAX",
-      uploadCn: false
+      fallbackModel: "FLUX_MAX"
     };
     
-    // 如果是image-to-image模式，添加图片URL
-    if (mode === 'image-to-image' && fileUrl) {
+    // 根据模式添加图片URL - 使用filesUrl而不是已废弃的fileUrl
+    if (fileUrl && (mode === 'image-to-image' || mode === 'template')) {
       requestBody.filesUrl = [fileUrl];
-      console.log(`📸 添加参考图片URL: ${fileUrl}`);
-    }
-    
-    // 如果是template模式且有fileUrl，也添加图片URL
-    if (mode === 'template' && fileUrl) {
-      requestBody.filesUrl = [fileUrl];
-      console.log(`📸 模板模式添加参考图片URL: ${fileUrl}`);
-    }
-    
-    // 如果是text-to-image模式，确保不传递filesUrl
-    if (mode === 'text-to-image') {
+      console.log(`📸 ${mode}模式添加参考图片URL: ${fileUrl}`);
+    } else if (mode === 'text-to-image') {
       console.log(`📝 文本生成模式，不传递图片URL`);
     }
     
     // 添加回调URL（可选）
     if (env.NEXT_PUBLIC_APP_URL) {
       requestBody.callBackUrl = `${env.NEXT_PUBLIC_APP_URL}/api/callback/image-generated`;
+      console.log(`📞 设置回调URL: ${requestBody.callBackUrl}`);
     }
     
     console.log('📤 发送请求到 Kie.ai:', JSON.stringify(requestBody, null, 2));
