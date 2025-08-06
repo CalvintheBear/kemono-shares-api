@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试轮询修复</title>
+</head>
+<body>
+    <h1>轮询修复测试</h1>
+    <div>
+        <label>Task ID: <input type="text" id="taskId" placeholder="输入taskId"></label>
+        <button onclick="testPolling()">测试轮询</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        async function testPolling() {
+            const taskId = document.getElementById('taskId').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!taskId) {
+                alert('请输入taskId');
+                return;
+            }
+
+            resultDiv.innerHTML = '正在测试轮询...';
+
+            try {
+                // 测试新的 API 端点
+                const response = await fetch(`/api/get-generated-url?taskId=${taskId}`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h3>查询结果:</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+                if (data.found) {
+                    resultDiv.innerHTML += `
+                        <p style="color: green;">✅ 找到图片URL: <a href="${data.url}" target="_blank">${data.url}</a></p>
+                    `;
+                } else {
+                    resultDiv.innerHTML += `
+                        <p style="color: orange;">❌ 未找到图片，回调可能尚未完成</p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red;">错误: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

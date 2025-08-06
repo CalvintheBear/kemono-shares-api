@@ -873,28 +873,30 @@ export default function WorkspaceRefactored() {
               console.log('[pollProgress] 使用R2 URL:', finalImageUrl)
             }
           } else {
-            console.log('[pollProgress] 没有generatedUrl，尝试构建R2 URL...')
-            // 尝试构建R2 URL
-            const currentTaskId = responseData.taskId || taskId;
-            const possibleR2Url = `https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/generated/${currentTaskId}_1.jpg`;
-            
-            // 测试R2 URL是否可访问
+            console.log('[pollProgress] 没有generatedUrl，主动查询after桶...')
+            // 主动查询after桶获取实际的公网URL
             try {
-              const r2Response = await fetch(possibleR2Url, { method: 'HEAD' });
-              if (r2Response.ok) {
-                finalImageUrl = possibleR2Url;
-                console.log('[pollProgress] 找到R2 URL:', finalImageUrl);
+              const r2UrlResponse = await fetch(`/api/get-generated-url?taskId=${taskId}`)
+              if (r2UrlResponse.ok) {
+                const r2UrlData = await r2UrlResponse.json()
+                if (r2UrlData.found && r2UrlData.url) {
+                  finalImageUrl = r2UrlData.url
+                  console.log('[pollProgress] 从after桶获取URL成功:', finalImageUrl)
+                } else {
+                  console.log('[pollProgress] after桶中未找到图片，等待回调处理...')
+                  // 如果after桶中还没有，继续轮询等待
+                  pollIntervalRef.current = setTimeout(loop, 2000)
+                  return
+                }
               } else {
-                console.log('[pollProgress] R2 URL不可访问:', possibleR2Url);
-                // 如果R2 URL不可访问，继续轮询等待
-                pollIntervalRef.current = setTimeout(loop, 2000);
-                return;
+                console.log('[pollProgress] 查询after桶失败，继续等待...')
+                pollIntervalRef.current = setTimeout(loop, 2000)
+                return
               }
             } catch (error) {
-              console.warn('[pollProgress] 测试R2 URL失败:', error);
-              // 如果测试失败，继续轮询等待
-              pollIntervalRef.current = setTimeout(loop, 2000);
-              return;
+              console.warn('[pollProgress] 查询after桶出错:', error)
+              pollIntervalRef.current = setTimeout(loop, 2000)
+              return
             }
           }
 
