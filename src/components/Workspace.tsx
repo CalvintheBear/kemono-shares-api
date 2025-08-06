@@ -812,12 +812,21 @@ export default function WorkspaceRefactored() {
         const response = await fetch(`/api/image-details?taskId=${taskId}`)
         if (!response.ok) throw new Error(`HTTP ${response.status}`)
         const data = await response.json()
-        const responseData = data.data || data
+        // image-details.ts 返回格式: { success: true, data: { code: 200, msg: 'success', data: {...} } }
+        // 所以 KIE API 的实际数据在 data.data.data 中
+        const kieApiData = data.data?.data || data.data || data
+        const responseData = kieApiData
         const status = responseData.status || 'GENERATING'
         const generatedUrl = responseData.response?.result_urls?.[0] || responseData.response?.resultUrls?.[0] || null
         const successFlag = responseData.successFlag
         const errorMessage = responseData.errorMessage || responseData.error || null
         
+        console.log('[pollProgress] === 调试数据解析 ===')
+        console.log('[pollProgress] 原始响应:', data)
+        console.log('[pollProgress] data.data:', data.data)
+        console.log('[pollProgress] data.data.data:', data.data?.data)
+        console.log('[pollProgress] 解析后的 kieApiData:', kieApiData)
+        console.log('[pollProgress] === 状态信息 ===')
         console.log('[pollProgress] 状态检查:', { status, successFlag, generatedUrl, errorMessage })
         console.log('[pollProgress] 完整响应数据:', responseData)
         console.log('[pollProgress] response字段:', responseData.response)
