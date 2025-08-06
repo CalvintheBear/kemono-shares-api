@@ -4,13 +4,13 @@ import type { NextConfig } from "next";
 const isCloudflarePages = process.env.CF_PAGES === 'true';
 const isRailway = process.env.RAILWAY === 'true';
 
-// 移除静态导出配置，支持API路由
-const shouldUseStaticExport = false; // 强制禁用静态导出以支持API
+// 根据环境变量决定是否使用静态导出
+const shouldUseStaticExport = process.env.STATIC_EXPORT === 'true';
 
 const nextConfig: NextConfig = {
-  // 移除静态导出配置
-  // output: shouldUseStaticExport ? 'export' : undefined,
-  distDir: '.next',
+  // 根据环境变量配置输出
+  output: shouldUseStaticExport ? 'export' : undefined,
+  distDir: shouldUseStaticExport ? undefined : '.next',
   
   // 移除静态导出优化
   trailingSlash: false,

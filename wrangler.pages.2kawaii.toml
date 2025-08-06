@@ -4,8 +4,12 @@ compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
 [build]
-command = "npm run build:pages:api:minimal"
-output_directory = ".next"
+command = "npm run build:static"
+output_directory = "out"
+
+# Functions配置
+[functions]
+directory = "functions"
 
 [build.environment]
 NODE_VERSION = "20"
