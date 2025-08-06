@@ -24,18 +24,39 @@ try {
     for (const item of items) {
       const sourcePath = path.join(source, item);
       const targetPath = path.join(target, item);
-      const stat = fs.statSync(sourcePath);
       
-      if (stat.isDirectory()) {
-        // 创建目录
-        if (!fs.existsSync(targetPath)) {
-          fs.mkdirSync(targetPath, { recursive: true });
+      try {
+        const stat = fs.statSync(sourcePath);
+        
+        if (stat.isDirectory()) {
+          // 创建目录
+          if (!fs.existsSync(targetPath)) {
+            fs.mkdirSync(targetPath, { recursive: true });
+          }
+          copyFiles(sourcePath, targetPath);
+        } else {
+          // 复制文件
+          // 跳过一些不需要的文件
+          if (item.endsWith('.nft.json') || 
+              item.endsWith('_reference-manifest.js') ||
+              item.endsWith('.meta') ||
+              item.endsWith('.rsc') ||
+              item.endsWith('.body')) {
+            continue;
+          }
+          
+          // 确保目标目录存在
+          const targetDir = path.dirname(targetPath);
+          if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+          }
+          
+          fs.copyFileSync(sourcePath, targetPath);
+          console.log(`✅ 复制: ${item}`);
         }
-        copyFiles(sourcePath, targetPath);
-      } else {
-        // 复制文件
-        fs.copyFileSync(sourcePath, targetPath);
-        console.log(`✅ 复制: ${item}`);
+      } catch (error) {
+        console.warn(`⚠️  跳过文件 ${item}: ${error.message}`);
+        continue;
       }
     }
   }
@@ -52,6 +73,12 @@ try {
       fs.mkdirSync(staticTarget, { recursive: true });
     }
     copyFiles(staticSource, staticTarget);
+  }
+  
+  // 复制 public 目录中的静态文件
+  const publicSource = 'public';
+  if (fs.existsSync(publicSource)) {
+    copyFiles(publicSource, targetDir);
   }
   
   // 创建 _redirects 文件
