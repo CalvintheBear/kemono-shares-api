@@ -1,9 +1,34 @@
 import { generateUniqueFileName, validateImageFile } from '../../src/lib/r2-client-cloudflare';
 
+// 使用Web Crypto API进行哈希计算
+async function sha256Hash(data: ArrayBuffer): Promise<string> {
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// 使用Web Crypto API进行HMAC计算
+async function hmacSha256(key: string, data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyBuffer = encoder.encode(key);
+  const dataBuffer = encoder.encode(data);
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, dataBuffer);
+  const signatureArray = Array.from(new Uint8Array(signature));
+  return signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 // 生成AWS S3兼容的签名
-function generateS3Signature(stringToSign: string, secretKey: string): string {
-  const crypto = require('crypto');
-  return crypto.createHmac('sha256', secretKey).update(stringToSign).digest('hex');
+async function generateS3Signature(stringToSign: string, secretKey: string): Promise<string> {
+  return await hmacSha256(secretKey, stringToSign);
 }
 
 // 生成规范化的请求字符串
@@ -65,8 +90,7 @@ function createR2ClientFromEnv(env: any) {
         const uploadUrl = `${endpoint}/${bucketName}/${key}`;
         
         // 计算payload hash
-        const crypto = require('crypto');
-        const payloadHash = crypto.createHash('sha256').update(Buffer.from(data)).digest('hex');
+        const payloadHash = await sha256Hash(data);
         
         // 准备签名
         const now = new Date();
@@ -95,17 +119,17 @@ function createR2ClientFromEnv(env: any) {
         
         // 生成规范化的请求字符串
         const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
-        const canonicalRequestHash = crypto.createHash('sha256').update(canonicalRequest).digest('hex');
+        const canonicalRequestHash = await sha256Hash(new TextEncoder().encode(canonicalRequest));
         
         // 生成待签名字符串
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
         
         // 生成签名
-        const dateKey = crypto.createHmac('sha256', `AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`).update(dateStamp).digest();
-        const dateRegionKey = crypto.createHmac('sha256', dateKey).update(region).digest();
-        const dateRegionServiceKey = crypto.createHmac('sha256', dateRegionKey).update(service).digest();
-        const signingKey = crypto.createHmac('sha256', dateRegionServiceKey).update('aws4_request').digest();
-        const signature = crypto.createHmac('sha256', signingKey).update(stringToSign).digest('hex');
+        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+        const dateRegionKey = await hmacSha256(dateKey, region);
+        const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
+        const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
+        const signature = await hmacSha256(signingKey, stringToSign);
         
         // 构建Authorization header
         const signedHeaders = Object.keys(headers)
