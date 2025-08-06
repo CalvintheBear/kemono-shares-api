@@ -19,22 +19,27 @@ function createR2ClientFromEnv(env: any) {
     // 上传到主存储桶
     async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
-        // 构建上传 URL
-        const uploadUrl = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${env.CLOUDFLARE_R2_BUCKET_NAME}/${key}`;
+        // 使用 S3 兼容的 API 端点
+        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+        const bucketName = env.CLOUDFLARE_R2_BUCKET_NAME;
         
-        // 创建上传请求
+        // 构建上传 URL
+        const uploadUrl = `${endpoint}/${bucketName}/${key}`;
+        
+        // 创建简单的上传请求（不使用复杂的 AWS 签名）
         const response = await fetch(uploadUrl, {
           method: 'PUT',
           headers: {
-            'Authorization': `AWS4-HMAC-SHA256 Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}`,
+            'Authorization': `Bearer ${env.CLOUDFLARE_R2_ACCESS_KEY_ID}`,
             'Content-Type': contentType,
-            'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
-            'x-amz-date': new Date().toISOString().replace(/[:-]|\.\d{3}/g, ''),
+            'X-Amz-Date': new Date().toISOString().replace(/[:-]|\.\d{3}/g, ''),
           },
           body: data
         });
 
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`❌ R2 上传失败: ${response.status} ${response.statusText}`, errorText);
           throw new Error(`R2 上传失败: ${response.status} ${response.statusText}`);
         }
         
@@ -42,6 +47,8 @@ function createR2ClientFromEnv(env: any) {
         const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
           ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
           : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${key}`;
+        
+        console.log(`✅ R2 上传成功: ${publicUrl}`);
         
         return {
           url: publicUrl,
