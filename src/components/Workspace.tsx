@@ -814,7 +814,7 @@ export default function WorkspaceRefactored() {
         const data = await response.json()
         const responseData = data.data || data
         const status = responseData.status || 'GENERATING'
-        const generatedUrl = responseData.response?.resultUrls?.[0] || responseData.response?.result_urls?.[0] || null
+        const generatedUrl = responseData.response?.result_urls?.[0] || responseData.response?.resultUrls?.[0] || null
         const successFlag = responseData.successFlag
         const errorMessage = responseData.errorMessage || responseData.error || null
         
@@ -906,17 +906,38 @@ export default function WorkspaceRefactored() {
                   console.log('[pollProgress] 从after桶获取URL成功:', finalImageUrl)
                 } else {
                   console.log('[pollProgress] after桶中未找到图片，等待回调处理...')
-                  // 如果after桶中还没有，继续轮询等待
+                  // 增加等待计数，避免无限轮询
+                  errorCount++
+                  if (errorCount > 15) { // 等待30秒后停止
+                    console.log('[pollProgress] 等待after桶超时，停止轮询')
+                    setGenerationError('图片生成完成但无法获取URL，请稍后刷新页面查看')
+                    setIsGenerating(false)
+                    return
+                  }
                   pollIntervalRef.current = setTimeout(loop, 2000)
                   return
                 }
               } else {
                 console.log('[pollProgress] 查询after桶失败，继续等待...')
+                errorCount++
+                if (errorCount > 15) {
+                  console.log('[pollProgress] 查询after桶失败次数过多，停止轮询')
+                  setGenerationError('无法获取生成的图片URL，请稍后刷新页面查看')
+                  setIsGenerating(false)
+                  return
+                }
                 pollIntervalRef.current = setTimeout(loop, 2000)
                 return
               }
             } catch (error) {
               console.warn('[pollProgress] 查询after桶出错:', error)
+              errorCount++
+              if (errorCount > 15) {
+                console.log('[pollProgress] 查询after桶错误次数过多，停止轮询')
+                setGenerationError('查询图片状态时出错，请稍后刷新页面查看')
+                setIsGenerating(false)
+                return
+              }
               pollIntervalRef.current = setTimeout(loop, 2000)
               return
             }

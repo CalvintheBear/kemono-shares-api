@@ -62,11 +62,17 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     };
     
     // 根据模式添加图片URL - 使用filesUrl而不是已废弃的fileUrl
-    if (fileUrl && (mode === 'image-to-image' || mode === 'template')) {
+    // 支持前端的 template-mode 模式
+    const imageBasedModes = ['image-to-image', 'template', 'template-mode'];
+    if (fileUrl && imageBasedModes.includes(mode)) {
       requestBody.filesUrl = [fileUrl];
       console.log(`📸 ${mode}模式添加参考图片URL: ${fileUrl}`);
     } else if (mode === 'text-to-image') {
       console.log(`📝 文本生成模式，不传递图片URL`);
+    } else if (fileUrl) {
+      // 如果有fileUrl但模式不匹配，仍然添加filesUrl以确保参考图片被使用
+      requestBody.filesUrl = [fileUrl];
+      console.log(`📸 检测到图片URL，强制添加到请求中: ${fileUrl}`);
     }
     
     // 添加回调URL（可选）
