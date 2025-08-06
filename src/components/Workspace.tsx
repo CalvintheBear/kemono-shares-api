@@ -11,6 +11,7 @@ import MobileBottomNav from './MobileBottomNav'
 import TemplateGallery from './TemplateGallery'
 import Link from 'next/link'
 import Image from 'next/image'
+import OptimizedImage from './OptimizedImage'
 
 
 interface Template {
@@ -1243,7 +1244,7 @@ export default function WorkspaceRefactored() {
                         {mode === 'text-to-image' ? (
                           <div className="text-center">
                             <div className="relative inline-block">
-                              <Image
+                              <OptimizedImage
                                 src={currentResult.generated_url}
                                 alt="生成された画像"
                                 width={400}
@@ -1950,7 +1951,7 @@ export default function WorkspaceRefactored() {
                     {mode === 'text-to-image' ? (
                       <div className="text-center">
                         <a href={(currentResult as GenerationResult).generated_url} target="_blank" rel="noopener noreferrer">
-                          <Image
+                          <OptimizedImage
                             src={(currentResult as GenerationResult).generated_url}
                             alt="生成された画像"
                             width={400}

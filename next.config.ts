@@ -16,13 +16,29 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   skipTrailingSlashRedirect: false,
   
-  // 图片配置 - 支持API路由
+  // 图片配置 - 根据环境决定是否优化
   images: {
-    unoptimized: false, // 启用图片优化
+    unoptimized: isCloudflarePages || shouldUseStaticExport, // Cloudflare Pages和静态导出禁用优化
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'pub-d00e7b41917848d1a8403c984cb62880.r2.dev', // R2 afterimage桶
+      },
+      {
+        protocol: 'https',
+        hostname: 'fury-template-1363880159.cos.ap-guangzhou.myqcloud.com', // 模板图片
+      },
+      {
+        protocol: 'https',
+        hostname: 'tempfile.aiquickdraw.com', // KIE临时URL
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.cloudflarestorage.com', // R2直接URL
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev', // R2公共URL
       },
     ],
   },
