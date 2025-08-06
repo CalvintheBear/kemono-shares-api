@@ -10,22 +10,12 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  ...compat.extends("next/core-web-vitals"),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: 2020,
-      sourceType: "module",
-      parser: "@typescript-eslint/parser",
-      parserOptions: {
-        ecmaVersion: 2020,
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true
-        }
-      }
-    },
     rules: {
-      "no-unused-vars": [
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
         "error",
         {
           argsIgnorePattern: "^_",
@@ -34,12 +24,8 @@ const eslintConfig = [
         }
       ],
       "@typescript-eslint/no-explicit-any": "off",
-      "react/display-name": "off"
-    },
-    settings: {
-      next: {
-        rootDir: ["./"]
-      }
+      "react/display-name": "off",
+      "@next/next/no-img-element": "off" // 允许使用img标签（OptimizedImage组件需要）
     }
   }
 ];

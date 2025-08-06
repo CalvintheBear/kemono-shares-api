@@ -57,6 +57,11 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['@aws-sdk/client-s3', '@heroicons/react', 'axios'],
   },
   
+  // 构建配置
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
+  },
+  
   // Webpack配置
   webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
     if (!dev && !isServer) {

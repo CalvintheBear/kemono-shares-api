@@ -4,189 +4,169 @@ const path = require('path');
 
 console.log('🚀 开始Cloudflare Pages优化构建...');
 
-try {
-  // 设置环境变量 - 支持API路由
-  process.env.CF_PAGES = 'true';
-  process.env.STATIC_EXPORT = 'false'; // 禁用静态导出以支持API
-  process.env.NODE_ENV = 'production';
+// 设置环境变量
+process.env.STATIC_EXPORT = 'true';
+process.env.CF_PAGES = 'true';
+process.env.NODE_ENV = 'production';
+process.env.NEXT_TELEMETRY_DISABLED = '1'; // 禁用遥测
 
-  console.log('📦 构建Next.js应用（Cloudflare Pages优化）...');
-  
-  // 清理之前的构建
-  console.log('🧹 清理之前的构建...');
-  if (fs.existsSync('.next')) {
-    // 使用跨平台的删除命令
-    if (process.platform === 'win32') {
-      execSync('if exist .next rmdir /s /q .next', { stdio: 'inherit' });
-    } else {
-      execSync('rm -rf .next', { stdio: 'inherit' });
+// 设置构建超时
+process.env.NEXT_BUILD_TIMEOUT = '300'; // 5分钟超时
+
+try {
+  // 1. 清理构建缓存
+  console.log('🧹 清理构建缓存...');
+  const dirsToClean = ['.next', 'out', '.next/cache'];
+  dirsToClean.forEach(dir => {
+    try {
+      if (fs.existsSync(dir)) {
+        fs.rmSync(dir, { recursive: true, force: true });
+        console.log(`✅ 已清理: ${dir}`);
+      }
+    } catch (error) {
+      console.warn(`⚠️  无法删除 ${dir}，继续...`);
     }
-  }
-  
-  // 执行Next.js构建
-  execSync('next build', { 
-    stdio: 'inherit',
-    env: { ...process.env }
   });
 
-  console.log('✅ Next.js构建完成');
-
-  // 检查.next目录
-  const nextDir = path.join(process.cwd(), '.next');
-  if (fs.existsSync(nextDir)) {
-    console.log('📁 Next.js构建文件已生成到:', nextDir);
-    
-    // 检查API路由
-    const apiDir = path.join(nextDir, 'server', 'app', 'api');
-    if (fs.existsSync(apiDir)) {
-      console.log('✅ API路由已生成');
-      const apiFiles = fs.readdirSync(apiDir);
-      console.log('📋 API路由列表:', apiFiles);
-    } else {
-      console.warn('⚠️ API路由目录不存在');
-    }
-
-    // 检查文件大小 - Cloudflare Pages限制25MB
-    console.log('🔍 检查文件大小...');
-    const maxFileSize = 25 * 1024 * 1024; // 25MB
-    let hasLargeFiles = false;
-    const largeFiles = [];
-
-    function checkDirectorySize(dirPath, relativePath = '') {
-      const files = fs.readdirSync(dirPath);
-      for (const file of files) {
-        const filePath = path.join(dirPath, file);
-        const relativeFilePath = path.join(relativePath, file);
-        const stats = fs.statSync(filePath);
-        
-        if (stats.isDirectory()) {
-          checkDirectorySize(filePath, relativeFilePath);
-        } else {
-          const sizeInMB = stats.size / (1024 * 1024);
-          if (stats.size > maxFileSize) {
-            console.warn(`⚠️ 文件过大: ${relativeFilePath} (${sizeInMB.toFixed(2)}MB)`);
-            largeFiles.push({ path: relativeFilePath, size: stats.size, sizeInMB });
-            hasLargeFiles = true;
-          } else if (sizeInMB > 10) {
-            console.log(`📊 大文件: ${relativeFilePath} (${sizeInMB.toFixed(2)}MB)`);
-          }
-        }
-      }
-    }
-
-    checkDirectorySize(nextDir);
-
-         if (hasLargeFiles) {
-       console.warn('⚠️ 发现超过25MB的文件，这会导致Cloudflare Pages部署失败');
-       console.warn('📋 大文件列表:');
-       largeFiles.forEach(file => {
-         console.warn(`  - ${file.path}: ${file.sizeInMB.toFixed(2)}MB`);
-       });
-       console.warn('');
-       console.warn('💡 解决方案:');
-       console.warn('1. 检查webpack配置中的代码分割设置');
-       console.warn('2. 考虑移除不必要的依赖');
-       console.warn('3. 使用动态导入减少初始包大小');
-       console.warn('4. 检查是否有重复的依赖包');
-       
-       // 尝试清理一些可能不需要的文件
-       console.log('🧹 尝试清理不必要的文件...');
-       const cacheDir = path.join(nextDir, 'cache');
-       if (fs.existsSync(cacheDir)) {
-         console.log('删除缓存目录...');
-         if (process.platform === 'win32') {
-           execSync(`if exist "${cacheDir}" rmdir /s /q "${cacheDir}"`, { stdio: 'inherit' });
-         } else {
-           execSync(`rm -rf "${cacheDir}"`, { stdio: 'inherit' });
-         }
-       }
-       
-       // 清理后重新检查文件大小
-       console.log('🔄 清理后重新检查文件大小...');
-       hasLargeFiles = false;
-       largeFiles.length = 0;
-       checkDirectorySize(nextDir);
-       
-       if (hasLargeFiles) {
-         console.error('❌ 清理后仍有超过25MB的文件，构建失败');
-         process.exit(1);
-       } else {
-         console.log('✅ 清理后所有文件大小都在25MB限制内');
-       }
-     } else {
-       console.log('✅ 所有文件大小都在25MB限制内');
-     }
-
-    // 计算总大小
-    function calculateDirectorySize(dirPath) {
-      let totalSize = 0;
-      const files = fs.readdirSync(dirPath);
-      for (const file of files) {
-        const filePath = path.join(dirPath, file);
-        const stats = fs.statSync(filePath);
-        if (stats.isDirectory()) {
-          totalSize += calculateDirectorySize(filePath);
-        } else {
-          totalSize += stats.size;
-        }
-      }
-      return totalSize;
-    }
-
-    const totalSize = calculateDirectorySize(nextDir);
-    const totalSizeInMB = totalSize / (1024 * 1024);
-    console.log(`📊 构建输出总大小: ${totalSizeInMB.toFixed(2)}MB`);
-
-  } else {
-    console.error('❌ Next.js构建目录不存在:', nextDir);
-    process.exit(1);
-  }
-
-  // 创建Cloudflare Pages所需的文件
-  console.log('🔧 创建Cloudflare Pages配置...');
+  // 2. 优化package.json中的脚本（临时）
+  console.log('📝 临时优化构建配置...');
   
-  // 创建 _worker.js 文件用于Cloudflare Pages
-  const workerContent = `
-// Cloudflare Pages Worker
-export default {
-  async fetch(request, env, ctx) {
-    // 这里可以添加自定义的Worker逻辑
-    // 默认情况下，Cloudflare Pages会自动处理Next.js应用
-    return new Response('Cloudflare Pages API Worker', {
-      status: 200,
-      headers: { 'Content-Type': 'text/plain' }
-    });
-  }
-};
-`;
-
-  fs.writeFileSync('_worker.js', workerContent);
-  console.log('✅ 创建了 _worker.js 文件');
-
-  // 创建 _routes.json 文件
-  const routesContent = {
-    version: 1,
-    include: ['/*'],
-    exclude: [
-      '/_next/*',
-      '/api/*'
-    ]
+  // 3. 运行Next.js构建，设置超时
+  console.log('🔨 运行Next.js静态构建（优化模式）...');
+  
+  const buildCommand = 'npx next build';
+  const buildOptions = {
+    stdio: 'inherit',
+    timeout: 300000, // 5分钟超时
+    env: {
+      ...process.env,
+      // 优化环境变量
+      NODE_OPTIONS: '--max-old-space-size=2048', // 增加内存限制
+      NEXT_PRIVATE_STANDALONE: 'true',
+      NEXT_PRIVATE_DEBUG_CACHE: 'false',
+    }
   };
 
-  fs.writeFileSync('_routes.json', JSON.stringify(routesContent, null, 2));
-  console.log('✅ 创建了 _routes.json 文件');
+  execSync(buildCommand, buildOptions);
 
-  console.log('🎉 Cloudflare Pages优化构建完成！');
-  console.log('📤 可以部署到Cloudflare Pages了');
-  console.log('');
-  console.log('📋 部署说明:');
-  console.log('1. 确保Cloudflare Pages项目配置为支持Next.js');
-  console.log('2. 设置所有必需的环境变量');
-  console.log('3. 构建命令: npm run build:pages:api:optimized');
-  console.log('4. 输出目录: .next (不是 out)');
-  console.log('5. 所有文件大小都在25MB限制内');
+  // 4. 验证输出
+  console.log('🔍 验证构建输出...');
+  
+  if (!fs.existsSync('out')) {
+    throw new Error('❌ 构建失败：out目录未生成');
+  }
+
+  // 检查关键文件
+  const criticalFiles = [
+    'out/index.html',
+    'out/_next',
+    'out/workspace/index.html'
+  ];
+
+  const missingFiles = criticalFiles.filter(file => !fs.existsSync(file));
+  if (missingFiles.length > 0) {
+    console.warn('⚠️  以下文件缺失:', missingFiles);
+  }
+
+  // 5. 统计构建结果
+  const outStats = getDirectoryStats('out');
+  console.log('📊 构建统计:');
+  console.log(`   - 总文件数: ${outStats.fileCount}`);
+  console.log(`   - 总大小: ${(outStats.totalSize / 1024 / 1024).toFixed(2)}MB`);
+  console.log(`   - HTML文件: ${outStats.htmlFiles}个`);
+  console.log(`   - JS文件: ${outStats.jsFiles}个`);
+  console.log(`   - CSS文件: ${outStats.cssFiles}个`);
+
+  // 6. 检查文件大小限制（Cloudflare Pages限制）
+  const maxFileSize = 25 * 1024 * 1024; // 25MB
+  const largeFiles = findLargeFiles('out', maxFileSize);
+  if (largeFiles.length > 0) {
+    console.warn('⚠️  发现超大文件（>25MB）:');
+    largeFiles.forEach(file => {
+      console.warn(`   - ${file.path}: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+    });
+  }
+
+  console.log('✅ Cloudflare Pages构建完成！');
+  console.log('📁 输出目录: out/');
 
 } catch (error) {
   console.error('❌ 构建失败:', error.message);
+  
+  // 提供调试信息
+  if (error.message.includes('timeout')) {
+    console.error('💡 构建超时建议:');
+    console.error('   1. 检查分享页面的API调用');
+    console.error('   2. 确保STATIC_EXPORT环境变量已设置');
+    console.error('   3. 考虑简化generateMetadata逻辑');
+  }
+  
   process.exit(1);
-} 
+}
+
+// 辅助函数：获取目录统计信息
+function getDirectoryStats(dirPath) {
+  let fileCount = 0;
+  let totalSize = 0;
+  let htmlFiles = 0;
+  let jsFiles = 0;
+  let cssFiles = 0;
+
+  function scanDirectory(currentPath) {
+    try {
+      const items = fs.readdirSync(currentPath);
+      
+      items.forEach(item => {
+        const itemPath = path.join(currentPath, item);
+        const stats = fs.statSync(itemPath);
+        
+        if (stats.isDirectory()) {
+          scanDirectory(itemPath);
+        } else {
+          fileCount++;
+          totalSize += stats.size;
+          
+          const ext = path.extname(item).toLowerCase();
+          if (ext === '.html') htmlFiles++;
+          else if (ext === '.js') jsFiles++;
+          else if (ext === '.css') cssFiles++;
+        }
+      });
+    } catch (error) {
+      // 忽略无法读取的目录
+    }
+  }
+
+  scanDirectory(dirPath);
+  return { fileCount, totalSize, htmlFiles, jsFiles, cssFiles };
+}
+
+// 辅助函数：查找大文件
+function findLargeFiles(dirPath, maxSize) {
+  const largeFiles = [];
+
+  function scanDirectory(currentPath) {
+    try {
+      const items = fs.readdirSync(currentPath);
+      
+      items.forEach(item => {
+        const itemPath = path.join(currentPath, item);
+        const stats = fs.statSync(itemPath);
+        
+        if (stats.isDirectory()) {
+          scanDirectory(itemPath);
+        } else if (stats.size > maxSize) {
+          largeFiles.push({
+            path: path.relative('out', itemPath),
+            size: stats.size
+          });
+        }
+      });
+    } catch (error) {
+      // 忽略无法读取的目录
+    }
+  }
+
+  scanDirectory(dirPath);
+  return largeFiles;
+}
