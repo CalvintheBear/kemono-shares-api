@@ -1,10 +1,59 @@
-import { createR2Client, generateUniqueFileName, validateImageFile } from '../../src/lib/r2-client-cloudflare';
+import { generateUniqueFileName, validateImageFile } from '../../src/lib/r2-client-cloudflare';
 
-// Cloudflare R2 类型定义
-interface R2Bucket {
-  put(key: string, value: ArrayBuffer, options?: any): Promise<void>;
-  get(key: string): Promise<any>;
-  delete(key: string): Promise<void>;
+// 使用环境变量创建 R2 客户端
+function createR2ClientFromEnv(env: any) {
+  // 检查必要的环境变量
+  const requiredVars = [
+    'CLOUDFLARE_R2_ACCOUNT_ID',
+    'CLOUDFLARE_R2_ACCESS_KEY_ID', 
+    'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
+    'CLOUDFLARE_R2_BUCKET_NAME'
+  ];
+  
+  const missingVars = requiredVars.filter(varName => !env[varName]);
+  if (missingVars.length > 0) {
+    throw new Error(`缺少必要的 R2 环境变量: ${missingVars.join(', ')}`);
+  }
+
+  return {
+    // 上传到主存储桶
+    async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
+      try {
+        // 构建上传 URL
+        const uploadUrl = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${env.CLOUDFLARE_R2_BUCKET_NAME}/${key}`;
+        
+        // 创建上传请求
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `AWS4-HMAC-SHA256 Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}`,
+            'Content-Type': contentType,
+            'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
+            'x-amz-date': new Date().toISOString().replace(/[:-]|\.\d{3}/g, ''),
+          },
+          body: data
+        });
+
+        if (!response.ok) {
+          throw new Error(`R2 上传失败: ${response.status} ${response.statusText}`);
+        }
+        
+        // 构建公共URL
+        const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
+          ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
+          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${key}`;
+        
+        return {
+          url: publicUrl,
+          key,
+          success: true
+        };
+      } catch (error) {
+        console.error('❌ 上传到主存储桶失败:', error);
+        throw new Error(`上传失败: ${error instanceof Error ? error.message : '未知错误'}`);
+      }
+    }
+  };
 }
 
 export async function onRequestPost({ 
@@ -12,17 +61,16 @@ export async function onRequestPost({
   env 
 }: { 
   request: Request; 
-  env: { 
-    R2_BUCKET: R2Bucket; 
-    R2_AFTERIMAGE_BUCKET: R2Bucket; 
-  } 
+  env: any 
 }) {
   try {
     // 调试：检查环境变量和绑定
     console.log('🔍 调试信息:');
-    console.log('- R2_BUCKET 存在:', !!env.R2_BUCKET);
-    console.log('- R2_AFTERIMAGE_BUCKET 存在:', !!env.R2_AFTERIMAGE_BUCKET);
-    console.log('- 环境变量:', Object.keys(env));
+    console.log('- R2_BUCKET 绑定存在:', !!env.R2_BUCKET);
+    console.log('- R2_AFTERIMAGE_BUCKET 绑定存在:', !!env.R2_AFTERIMAGE_BUCKET);
+    console.log('- CLOUDFLARE_R2_BUCKET_NAME:', env.CLOUDFLARE_R2_BUCKET_NAME);
+    console.log('- CLOUDFLARE_R2_ACCOUNT_ID:', env.CLOUDFLARE_R2_ACCOUNT_ID);
+    console.log('- CLOUDFLARE_R2_ACCESS_KEY_ID 存在:', !!env.CLOUDFLARE_R2_ACCESS_KEY_ID);
     
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -43,17 +91,17 @@ export async function onRequestPost({
       });
     }
 
-    // 检查 R2 绑定是否存在
-    if (!env.R2_BUCKET) {
-      console.error('❌ R2_BUCKET 绑定不存在');
-      return new Response(JSON.stringify({ error: 'R2 存储桶未配置' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+    // 尝试使用绑定，如果不存在则使用环境变量
+    let r2Client;
+    if (env.R2_BUCKET) {
+      // 使用绑定
+      const { createR2Client } = await import('../../src/lib/r2-client-cloudflare');
+      r2Client = createR2Client(env.R2_BUCKET, env.R2_AFTERIMAGE_BUCKET);
+    } else {
+      // 使用环境变量
+      console.log('⚠️ 使用环境变量创建 R2 客户端');
+      r2Client = createR2ClientFromEnv(env);
     }
-
-    // 创建 R2 客户端
-    const r2Client = createR2Client(env.R2_BUCKET, env.R2_AFTERIMAGE_BUCKET);
     
     // 生成唯一文件名
     const key = generateUniqueFileName(file.name);
