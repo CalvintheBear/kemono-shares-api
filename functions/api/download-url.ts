@@ -92,9 +92,15 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
   } catch (error) {
     console.error('❌ 获取下载URL失败:', error);
+    console.error('❌ 错误详情:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return new Response(JSON.stringify({ 
       error: '获取下载URL失败',
-      message: error instanceof Error ? error.message : '未知错误'
+      message: error instanceof Error ? error.message : '未知错误',
+      errorType: error instanceof Error ? error.name : 'Unknown'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

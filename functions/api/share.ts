@@ -13,17 +13,43 @@ export async function onRequestGet() {
 export async function onRequestPost({ request }: { request: Request }) {
   try {
     const body = await request.json();
+    const { generatedUrl, originalUrl, prompt, style, timestamp } = body;
     
-    // 这里可以添加分享逻辑
+    // 判断生成类型
+    let generationType: 'text2img' | 'img2img' | 'template' = 'text2img';
+    if (originalUrl && originalUrl !== null && !originalUrl.includes('placeholder.com')) {
+      if (style && style.startsWith('template_')) {
+        generationType = 'template';
+      } else {
+        generationType = 'img2img';
+      }
+    }
+    
+    // 创建分享数据
     const shareData = {
       id: `share_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
-      ...body,
-      createdAt: new Date().toISOString()
+      title: prompt ? prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '') : '生成的图片',
+      generatedUrl,
+      originalUrl: originalUrl || null,
+      prompt: prompt || '',
+      style: style || 'default',
+      timestamp: timestamp || Date.now(),
+      createdAt: new Date().toISOString(),
+      width: 800, // 默认宽度
+      height: 800, // 默认高度
+      generationType
     };
+    
+    console.log(`✅ 创建分享: ${shareData.id}, 类型: ${generationType}, 标题: ${shareData.title}`);
+    
+    // 在实际应用中，这里应该保存到 Cloudflare KV 或数据库
+    // 目前只是返回成功响应
     
     return new Response(JSON.stringify({
       success: true,
       shareId: shareData.id,
+      shareUrl: `/share/${shareData.id}`,
+      generationType,
       message: '分享创建成功'
     }), {
       status: 200,
