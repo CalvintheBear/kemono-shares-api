@@ -6,7 +6,7 @@ interface R2Bucket {
 }
 
 // Cloudflare Pages Functions 环境下的 R2 客户端
-export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket) {
+export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket, env: any) {
   return {
     // 上传到主存储桶
     async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
@@ -18,8 +18,10 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket)
           customMetadata: metadata,
         });
         
-        // 构建公共URL - 使用正确的域名
-        const publicUrl = `https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/${key}`;
+        // 构建公共URL - 使用环境变量中的正确域名
+        const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
+          ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
+          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${key}`;
         
         return {
           url: publicUrl,
@@ -42,8 +44,10 @@ export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket)
           customMetadata: metadata,
         });
         
-        // 构建公共URL - 使用正确的域名
-        const publicUrl = `https://pub-9a5ff316a26b8abb696af519e515d2de.r2.dev/${key}`;
+        // 构建公共URL - 使用环境变量中的正确域名
+        const publicUrl = env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL 
+          ? `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`
+          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/afterimages/${key}`;
         
         return {
           url: publicUrl,

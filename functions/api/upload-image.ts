@@ -215,8 +215,8 @@ export async function onRequestPost({
     let r2Client;
     if (env.UPLOAD_BUCKET) {
       // 使用绑定
-      const { createR2Client } = await import('../../src/lib/r2-client-cloudflare');
-      r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET);
+              const { createR2Client } = await import('../../src/lib/r2-client-cloudflare');
+        r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET, env);
       console.log('✅ 使用R2桶绑定');
     } else {
       // 使用环境变量

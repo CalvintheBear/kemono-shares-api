@@ -32,8 +32,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       // 示例：保存到 R2 afterimage 桶
       if (env.AFTERIMAGE_BUCKET && response.result_urls.length > 0) {
         try {
-          const { createR2Client } = await import('../../../src/lib/r2-client-cloudflare');
-          const r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET);
+                  const { createR2Client } = await import('../../../src/lib/r2-client-cloudflare');
+        const r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET, env);
           
           for (let i = 0; i < response.result_urls.length; i++) {
             const imageUrl = response.result_urls[i];
