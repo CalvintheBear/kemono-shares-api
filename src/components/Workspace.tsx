@@ -824,29 +824,48 @@ export default function WorkspaceRefactored() {
         console.log('[pollProgress] resultUrls字段:', responseData.response?.resultUrls)
         console.log('[pollProgress] result_urls字段:', responseData.response?.result_urls)
         
-        // 检查成功标志或状态
-        const isSuccess = status === 'SUCCESS' || successFlag === 1
+        // 检查成功标志或状态 - 修复成功判断逻辑
+        const isSuccess = (status === 'SUCCESS' || successFlag === 1) && generatedUrl
         const isFailed = status === 'FAILED' || status === 'GENERATE_FAILED' || successFlag === 3 || successFlag === 2 || errorMessage
+        
+        // 添加调试日志
+        console.log('[pollProgress] 成功判断详情:', {
+          status,
+          successFlag,
+          hasGeneratedUrl: !!generatedUrl,
+          isSuccess,
+          isFailed
+        })
 
         console.log('[pollProgress] 状态判断:', { isSuccess, isFailed, hasGeneratedUrl: !!generatedUrl })
         
         if (isSuccess && generatedUrl) {
-          console.log('[pollProgress] 生成成功，开始下载图片:', generatedUrl)
+          console.log('[pollProgress] 生成成功，图片URL:', generatedUrl)
           consecutiveFailures = 0 // 重置失败计数
           
-          const downloadResponse = await fetch('/api/download-url', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: generatedUrl })
-          })
-
+          // 检查是否是R2 URL，如果是则直接使用
           let finalImageUrl = generatedUrl
-          if (downloadResponse.ok) {
-            const downloadData = await downloadResponse.json()
-            finalImageUrl = downloadData.downloadUrl || generatedUrl
-            console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
+          if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
+            // 如果是KIE AI的临时URL，尝试下载到R2
+            try {
+              const downloadResponse = await fetch('/api/download-url', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: generatedUrl })
+              })
+
+              if (downloadResponse.ok) {
+                const downloadData = await downloadResponse.json()
+                finalImageUrl = downloadData.downloadUrl || generatedUrl
+                console.log('[pollProgress] 下载URL获取成功:', finalImageUrl)
+              } else {
+                console.log('[pollProgress] 下载URL获取失败，使用原始URL')
+              }
+            } catch (error) {
+              console.warn('[pollProgress] 下载URL处理失败:', error)
+            }
           } else {
-            console.log('[pollProgress] 下载URL获取失败，使用原始URL')
+            console.log('[pollProgress] 使用R2 URL:', finalImageUrl)
           }
 
           const completedResult = {
@@ -898,6 +917,13 @@ export default function WorkspaceRefactored() {
         } else {
           // 继续轮询，但检查是否应该停止
           consecutiveFailures = 0 // 重置失败计数
+          
+          // 如果状态是SUCCESS但没有URL，可能是回调正在处理中
+          if (status === 'SUCCESS' && !generatedUrl) {
+            console.log('[pollProgress] 状态为SUCCESS但无URL，等待回调处理完成...')
+            pollIntervalRef.current = setTimeout(loop, 1000) // 快速轮询等待回调
+            return
+          }
           
           if (!isMountedRef.current) {
             console.log('[pollProgress] 组件已卸载，停止轮询')
