@@ -146,6 +146,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     return new Response(JSON.stringify({
       success: true,
+      publicUrl: publicUrl, // 保持向后兼容
       url: publicUrl,
       key: key,
       fileName: finalFileName,
