@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import MasonryGallery from './MasonryGallery';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 
+
 interface ShareItem {
   id: string;
   title: string;
@@ -13,7 +14,6 @@ interface ShareItem {
   originalUrl: string;
   width: number;
   height: number;
-  generationType: 'text2img' | 'img2img' | 'template';
 }
 
 interface MasonryImage {
@@ -30,7 +30,7 @@ export default function ShareGallery() {
   const [hasMore, setHasMore] = useState(true);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'text2img' | 'img2img' | 'template'>('all');
+
   const lastRequestRef = useRef<number>(0);
 
   const ITEMS_PER_PAGE = 20;
@@ -60,11 +60,10 @@ export default function ShareGallery() {
 
     try {
       setIsFetching(true);
-      console.log('Fetching share items, offset:', offset, 'append:', append, 'filter:', activeFilter);
+      console.log('Fetching share items, offset:', offset, 'append:', append);
       
-      const filterParam = activeFilter !== 'all' ? `&filter=${activeFilter}` : '';
       const response = await fetch(
-        `/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc${filterParam}`
+        `/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc`
       );
 
       if (!response.ok) {
@@ -104,7 +103,7 @@ export default function ShareGallery() {
       setIsFetching(false);
       setLoading(false);
     }
-  }, [loading, isFetching, ITEMS_PER_PAGE, activeFilter]);
+  }, [loading, isFetching, ITEMS_PER_PAGE]);
 
   // Initial load
   useEffect(() => {
@@ -118,21 +117,7 @@ export default function ShareGallery() {
     await fetchShareItems(currentOffset, true);
   }, [hasMore, loading, isFetching, currentOffset, fetchShareItems]);
 
-  // Handle filter change
-  const handleFilterChange = (filter: 'all' | 'text2img' | 'img2img' | 'template') => {
-    if (filter === activeFilter) return;
-    
-    setActiveFilter(filter);
-    setImages([]);
-    setCurrentOffset(0);
-    setHasMore(true);
-    setLoading(true);
-    
-    // Reset and fetch new data
-    setTimeout(() => {
-      fetchShareItems(0, false);
-    }, 100);
-  };
+
 
   // Handle image click
   const handleImageClick = (image: MasonryImage) => {
@@ -141,52 +126,6 @@ export default function ShareGallery() {
 
   return (
     <div className="w-full">
-      {/* Filter Tabs */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2 justify-center">
-          <button
-            onClick={() => handleFilterChange('all')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              activeFilter === 'all'
-                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            全部作品
-          </button>
-          <button
-            onClick={() => handleFilterChange('text2img')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              activeFilter === 'text2img'
-                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            ✨ 文生图
-          </button>
-          <button
-            onClick={() => handleFilterChange('img2img')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              activeFilter === 'img2img'
-                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            🎨 图生图
-          </button>
-          <button
-            onClick={() => handleFilterChange('template')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              activeFilter === 'template'
-                ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            📋 模板生成
-          </button>
-        </div>
-      </div>
-
       {/* Gallery */}
       {(loading || isFetching) && images.length === 0 ? (
         <div className="flex justify-center py-20">
