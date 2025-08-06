@@ -13,6 +13,7 @@
     "build:api": "set STATIC_EXPORT=false && set CF_PAGES=false && next build",
     "build:pages": "node scripts/build-for-pages.js",
     "build:pages:api": "node scripts/build-for-cloudflare-pages.js",
+    "build:pages:api:optimized": "node scripts/build-for-cloudflare-pages-optimized.js",
     "build:railway": "set RAILWAY=true && next build",
     "start": "next start",
     "lint": "next lint",
