@@ -16,19 +16,24 @@ export async function onRequestGet({
       });
     }
     
-    // 这里可以添加分享数据获取逻辑
-    // 目前返回模拟响应
-    const shareData = {
-      id,
-      title: `分享 ${id}`,
-      description: '这是一个示例分享',
-      images: [
-        'https://example.com/image1.jpg',
-        'https://example.com/image2.jpg'
-      ],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    // 从全局存储中获取分享数据
+    let shareData = null;
+    
+    if (typeof globalThis !== 'undefined' && (globalThis as any).shareDataStore) {
+      shareData = (globalThis as any).shareDataStore.get(id);
+      console.log(`🔍 查找分享数据: ${id}, 找到: ${!!shareData}`);
+    }
+    
+    if (!shareData) {
+      console.log(`❌ 未找到分享数据: ${id}`);
+      return new Response(JSON.stringify({ 
+        error: '分享不存在',
+        message: `找不到ID为 ${id} 的分享`
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
     
     return new Response(JSON.stringify({
       success: true,

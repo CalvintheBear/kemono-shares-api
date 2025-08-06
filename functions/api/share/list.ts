@@ -12,73 +12,25 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
 
     console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}, sort=${sort}, order=${order}, filter=${filter}`);
 
-    // 在实际应用中，这里应该从 Cloudflare KV 或数据库中获取数据
-    // 目前使用模拟数据进行演示
+    // 从全局存储中获取分享数据
+    let shareItems: any[] = [];
     
-    const mockShareItems = [
-      {
-        id: 'share_1703123456789_abc123',
-        title: '可爱的动漫少女',
-        style: 'kawaii',
-        timestamp: '2023-12-21T10:30:45.789Z',
-        generatedUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/after/generated_task_4o_abc123.png',
-        originalUrl: null, // 文生图没有原图
-        width: 800,
-        height: 1200,
-        generationType: 'text2img',
-        prompt: '可爱的动漫少女，粉色头发，大眼睛，kawaii风格',
-        createdAt: '2023-12-21T10:30:45.789Z'
-      },
-      {
-        id: 'share_1703123456790_def456',
-        title: '动漫风格转换',
-        style: 'anime',
-        timestamp: '2023-12-21T10:25:30.456Z',
-        generatedUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/after/generated_task_4o_def456.png',
-        originalUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/before/upload_def456.jpg',
-        width: 800,
-        height: 600,
-        generationType: 'img2img',
-        prompt: '将人物转换为动漫风格',
-        createdAt: '2023-12-21T10:25:30.456Z'
-      },
-      {
-        id: 'share_1703123456791_ghi789',
-        title: '赛博朋克少女',
-        style: 'cyberpunk',
-        timestamp: '2023-12-21T10:20:15.123Z',
-        generatedUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/after/generated_task_4o_ghi789.png',
-        originalUrl: null,
-        width: 800,
-        height: 800,
-        generationType: 'text2img',
-        prompt: '赛博朋克风格的动漫少女，霓虹灯背景',
-        createdAt: '2023-12-21T10:20:15.123Z'
-      },
-      {
-        id: 'share_1703123456792_jkl012',
-        title: '模板生成',
-        style: 'template_kawaii',
-        timestamp: '2023-12-21T10:15:00.789Z',
-        generatedUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/after/generated_task_4o_jkl012.png',
-        originalUrl: 'https://pub-6b0b5d2c7c7d4c8a9b0c1d2e3f4g5h6i.r2.dev/before/upload_jkl012.jpg',
-        width: 800,
-        height: 1000,
-        generationType: 'template',
-        prompt: '使用kawaii模板生成可爱角色',
-        createdAt: '2023-12-21T10:15:00.789Z'
-      }
-    ];
+    if (typeof globalThis !== 'undefined' && (globalThis as any).shareDataStore) {
+      shareItems = Array.from((globalThis as any).shareDataStore.values());
+      console.log(`📊 从内存中获取到 ${shareItems.length} 个分享数据`);
+    } else {
+      console.log('📊 当前分享数据为空，需要实际的分享数据写入');
+    }
 
     // 应用过滤器
-    let filteredItems = mockShareItems;
+    let filteredItems = shareItems;
     if (filter) {
       if (filter === 'text2img') {
-        filteredItems = mockShareItems.filter(item => item.generationType === 'text2img');
+        filteredItems = shareItems.filter(item => item.generationType === 'text2img');
       } else if (filter === 'img2img') {
-        filteredItems = mockShareItems.filter(item => item.generationType === 'img2img');
+        filteredItems = shareItems.filter(item => item.generationType === 'img2img');
       } else if (filter === 'template') {
-        filteredItems = mockShareItems.filter(item => item.generationType === 'template');
+        filteredItems = shareItems.filter(item => item.generationType === 'template');
       }
     }
 

@@ -43,12 +43,19 @@ export async function onRequestPost({ request }: { request: Request }) {
     console.log(`✅ 创建分享: ${shareData.id}, 类型: ${generationType}, 标题: ${shareData.title}`);
     
     // 在实际应用中，这里应该保存到 Cloudflare KV 或数据库
-    // 目前只是返回成功响应
+    // 目前将数据存储到全局变量中（仅用于演示）
+    if (typeof globalThis !== 'undefined') {
+      if (!(globalThis as any).shareDataStore) {
+        (globalThis as any).shareDataStore = new Map();
+      }
+      (globalThis as any).shareDataStore.set(shareData.id, shareData);
+      console.log(`💾 分享数据已存储到内存，当前存储数量: ${(globalThis as any).shareDataStore.size}`);
+    }
     
     return new Response(JSON.stringify({
       success: true,
       shareId: shareData.id,
-      shareUrl: `/share/${shareData.id}`,
+      shareUrl: `https://2kawaii.com/share/${shareData.id}`,  // 添加完整域名
       generationType,
       message: '分享创建成功'
     }), {

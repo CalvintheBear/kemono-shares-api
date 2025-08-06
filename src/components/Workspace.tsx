@@ -660,7 +660,7 @@ export default function WorkspaceRefactored() {
 
     const newResult: GenerationResult = {
       id: `${Date.now()}`,
-      original_url: mode === 'text-to-image' ? 'https://via.placeholder.com/400x400/E3F2FD/2196F3?text=Text+to+Image' : imagePreview!,
+      original_url: mode === 'text-to-image' ? '' : imagePreview!, // 文生图不需要原图
       generated_url: '',
       prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
       timestamp: Date.now()
@@ -954,7 +954,7 @@ export default function WorkspaceRefactored() {
 
           const completedResult = {
             id: resultId,
-            original_url: mode === 'text-to-image' ? 'https://via.placeholder.com/400x400/E3F2FD/2196F3?text=Text+to+Image' : imagePreview!,
+            original_url: mode === 'text-to-image' ? '' : imagePreview!, // 文生图不需要原图
             generated_url: finalImageUrl,
             prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
             timestamp: Date.now()
