@@ -13,7 +13,7 @@ export async function onRequestGet() {
 export async function onRequestPost({ request }: { request: Request }) {
   try {
     const body = await request.json();
-    const { generatedUrl, originalUrl, prompt, style, timestamp } = body;
+    const { generatedUrl, originalUrl, prompt, style, timestamp, isR2Stored } = body;
     
     // 判断生成类型
     let generationType: 'text2img' | 'img2img' | 'template' = 'text2img';
@@ -24,6 +24,31 @@ export async function onRequestPost({ request }: { request: Request }) {
         generationType = 'img2img';
       }
     }
+    
+    // 验证图片URL
+    if (!generatedUrl || generatedUrl.trim() === '') {
+      return new Response(JSON.stringify({
+        success: false,
+        error: '图片URL不能为空'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // 检查URL类型并记录
+    const isR2Url = generatedUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
+                   generatedUrl.includes('.r2.dev') || 
+                   generatedUrl.includes('.r2.cloudflarestorage.com');
+    
+    const isTempUrl = generatedUrl.includes('tempfile.aiquickdraw.com');
+    
+    console.log(`[分享创建] URL类型分析:`, {
+      url: generatedUrl,
+      isR2Url,
+      isTempUrl,
+      isR2StoredParam: isR2Stored
+    });
     
     // 创建分享数据
     const shareData = {
@@ -37,7 +62,9 @@ export async function onRequestPost({ request }: { request: Request }) {
       createdAt: new Date().toISOString(),
       width: 800, // 默认宽度
       height: 800, // 默认高度
-      generationType
+      generationType,
+      isR2Stored: isR2Stored || isR2Url, // 标记是否使用R2永久存储
+      urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown')
     };
     
     console.log(`✅ 创建分享: ${shareData.id}, 类型: ${generationType}, 标题: ${shareData.title}`);

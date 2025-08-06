@@ -87,6 +87,24 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
 
   // 生成分享链接
   const generateShareUrl = useCallback(async () => {
+    // 验证图片URL是否有效
+    if (!generatedImageUrl || generatedImageUrl.trim() === '') {
+      console.error('❌ 无效的图片URL，无法创建分享')
+      setError('图片URL无效，无法创建分享')
+      return null
+    }
+    
+    // 检查是否是R2永久URL（推荐）
+    const isR2Url = generatedImageUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
+                   generatedImageUrl.includes('.r2.dev') || 
+                   generatedImageUrl.includes('.r2.cloudflarestorage.com')
+    
+    if (!isR2Url && generatedImageUrl.includes('tempfile.aiquickdraw.com')) {
+      console.warn('⚠️ 检测到临时URL，建议等待R2永久URL生成后再分享')
+      console.warn('当前URL:', generatedImageUrl)
+      // 可以选择继续或警告用户
+    }
+    
     // 每次生成都创建新分享，不复用旧链接
     if (shareUrl) {
       console.log('🔄 创建新的分享链接，不复用旧链接')
@@ -110,6 +128,9 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     try {
       // 创建新的请求Promise
       const requestPromise = (async () => {
+        console.log('[ShareButton] 创建分享，使用URL:', generatedImageUrl)
+        console.log('[ShareButton] URL类型:', isR2Url ? 'R2永久URL' : '临时URL')
+        
         const response = await fetch('/api/share', {
           method: 'POST',
           headers: {
@@ -120,7 +141,8 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
             originalUrl: originalImageUrl,
             prompt: prompt,
             style: style,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            isR2Stored: isR2Url // 标记是否使用R2永久URL
           })
         })
 
@@ -130,6 +152,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
           const newShareUrl = data.shareUrl
           setShareUrl(newShareUrl)
           console.log('✅ 分享链接生成成功:', newShareUrl)
+          console.log('✅ 分享数据:', data.data)
           return newShareUrl
         } else {
           throw new Error(data.error || '分享创建失败')

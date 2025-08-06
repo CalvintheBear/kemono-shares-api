@@ -858,12 +858,20 @@ export default function WorkspaceRefactored() {
           
           if (generatedUrl) {
             console.log('[pollProgress] 有generatedUrl:', generatedUrl)
-            // 检查是否是R2 URL，如果是则直接使用
-            finalImageUrl = generatedUrl
-            if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
-              // 如果是KIE AI的临时URL，先获取下载URL，然后下载并上传到R2
+            
+            // 检查是否已经是R2的永久URL
+            const isR2Url = generatedUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
+                           generatedUrl.includes('.r2.dev') || 
+                           generatedUrl.includes('.r2.cloudflarestorage.com')
+            
+            if (isR2Url) {
+              console.log('[pollProgress] 已经是R2永久URL，直接使用:', generatedUrl)
+              finalImageUrl = generatedUrl
+            } else if (generatedUrl.includes('tempfile.aiquickdraw.com')) {
+              // 如果是KIE AI的临时URL，必须转换为R2永久URL
+              console.log('[pollProgress] 检测到KIE临时URL，转换为R2永久URL...')
               try {
-                console.log('[pollProgress] 处理KIE临时URL，获取下载链接...')
+                // 1. 获取下载URL
                 const downloadResponse = await fetch('/api/download-url', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -875,13 +883,13 @@ export default function WorkspaceRefactored() {
                   const directUrl = downloadData.downloadUrl
                   console.log('[pollProgress] 获取到直接下载URL:', directUrl)
                   
-                  // 下载并上传到R2
-                  console.log('[pollProgress] 开始下载并上传到R2...')
+                  // 2. 下载并上传到R2，等待完成
+                  console.log('[pollProgress] 开始上传到R2获取永久URL...')
                   const uploadResponse = await fetch('/api/download-and-upload', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                      kieImageUrl: directUrl, 
+                      url: directUrl,  // 使用正确的参数名
                       taskId,
                       fileName: `generated_${taskId}.png`
                     })
@@ -889,20 +897,40 @@ export default function WorkspaceRefactored() {
                   
                   if (uploadResponse.ok) {
                     const uploadData = await uploadResponse.json()
-                    finalImageUrl = uploadData.url
-                    console.log('[pollProgress] 成功上传到R2:', finalImageUrl)
+                    if (uploadData.success && uploadData.publicUrl) {
+                      finalImageUrl = uploadData.publicUrl
+                      console.log('[pollProgress] ✅ 成功获取R2永久URL:', finalImageUrl)
+                      
+                      // 验证R2 URL可访问性
+                      try {
+                        const testResponse = await fetch(finalImageUrl, { method: 'HEAD' })
+                        if (testResponse.ok) {
+                          console.log('[pollProgress] ✅ R2 URL验证成功，可正常访问')
+                        } else {
+                          console.warn('[pollProgress] ⚠️ R2 URL验证失败，但继续使用')
+                        }
+                      } catch (testError) {
+                        console.warn('[pollProgress] ⚠️ R2 URL验证异常:', testError)
+                      }
+                    } else {
+                      console.warn('[pollProgress] ❌ R2上传失败，回退到临时URL')
+                      finalImageUrl = directUrl
+                    }
                   } else {
-                    console.log('[pollProgress] R2上传失败，使用直接下载URL')
+                    console.warn('[pollProgress] ❌ R2上传请求失败，回退到临时URL')
                     finalImageUrl = directUrl
                   }
                 } else {
-                  console.log('[pollProgress] 下载URL获取失败，使用原始URL')
+                  console.warn('[pollProgress] ❌ 下载URL获取失败，使用原始URL')
+                  finalImageUrl = generatedUrl
                 }
               } catch (error) {
-                console.warn('[pollProgress] 下载URL处理失败:', error)
+                console.error('[pollProgress] ❌ URL转换过程失败:', error)
+                finalImageUrl = generatedUrl
               }
             } else {
-              console.log('[pollProgress] 使用R2 URL:', finalImageUrl)
+              console.log('[pollProgress] 未知URL格式，直接使用:', generatedUrl)
+              finalImageUrl = generatedUrl
             }
           } else {
             console.log('[pollProgress] 没有generatedUrl，主动查询after桶...')
@@ -964,15 +992,34 @@ export default function WorkspaceRefactored() {
           console.log('[pollProgress] 设置完成结果:', completedResult)
           setCurrentResult(completedResult)
           
-          // 自动分享处理
-          try {
-            const shareResponse = await handleShare(completedResult)
-            if (shareResponse) {
-              setAutoShareUrl(shareResponse)
-              console.log('[pollProgress] 自动分享成功:', shareResponse)
+          // 自动分享处理 - 只有当获取到有效URL时才创建分享
+          if (finalImageUrl && finalImageUrl.trim() !== '') {
+            try {
+              // 检查是否是R2永久URL
+              const isR2Url = finalImageUrl.includes('pub-d00e7b41917848d1a8403c984cb62880.r2.dev') || 
+                             finalImageUrl.includes('.r2.dev') || 
+                             finalImageUrl.includes('.r2.cloudflarestorage.com')
+              
+              if (isR2Url) {
+                console.log('[pollProgress] 使用R2永久URL创建分享:', finalImageUrl)
+                const shareResponse = await handleShare(completedResult)
+                if (shareResponse) {
+                  setAutoShareUrl(shareResponse)
+                  console.log('[pollProgress] ✅ 自动分享成功（R2永久URL）:', shareResponse)
+                } else {
+                  console.log('[pollProgress] ⚠️ 自动分享创建失败')
+                }
+              } else {
+                console.log('[pollProgress] ⚠️ 非R2永久URL，暂不创建分享，等待URL转换完成')
+                console.log('[pollProgress] 当前URL:', finalImageUrl)
+                // 可以选择延迟分享，或者不自动分享
+                // setAutoShareUrl('') // 清空自动分享URL
+              }
+            } catch (shareError) {
+              console.error('[pollProgress] ❌ 自动分享处理失败:', shareError)
             }
-          } catch (shareError) {
-            console.warn('自动分享失败:', shareError)
+          } else {
+            console.warn('[pollProgress] ⚠️ 没有有效的图片URL，跳过自动分享')
           }
 
           setTimeout(() => {
