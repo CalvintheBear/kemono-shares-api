@@ -186,8 +186,8 @@ export async function onRequestPost({
   try {
     // 调试：检查环境变量和绑定
     console.log('🔍 调试信息:');
-    console.log('- R2_BUCKET 绑定存在:', !!env.R2_BUCKET);
-    console.log('- R2_AFTERIMAGE_BUCKET 绑定存在:', !!env.R2_AFTERIMAGE_BUCKET);
+    console.log('- UPLOAD_BUCKET 绑定存在:', !!env.UPLOAD_BUCKET);
+    console.log('- AFTERIMAGE_BUCKET 绑定存在:', !!env.AFTERIMAGE_BUCKET);
     console.log('- CLOUDFLARE_R2_BUCKET_NAME:', env.CLOUDFLARE_R2_BUCKET_NAME);
     console.log('- CLOUDFLARE_R2_ACCOUNT_ID:', env.CLOUDFLARE_R2_ACCOUNT_ID);
     console.log('- CLOUDFLARE_R2_ACCESS_KEY_ID 存在:', !!env.CLOUDFLARE_R2_ACCESS_KEY_ID);
@@ -213,10 +213,11 @@ export async function onRequestPost({
 
     // 尝试使用绑定，如果不存在则使用环境变量
     let r2Client;
-    if (env.R2_BUCKET) {
+    if (env.UPLOAD_BUCKET) {
       // 使用绑定
       const { createR2Client } = await import('../../src/lib/r2-client-cloudflare');
-      r2Client = createR2Client(env.R2_BUCKET, env.R2_AFTERIMAGE_BUCKET);
+      r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET);
+      console.log('✅ 使用R2桶绑定');
     } else {
       // 使用环境变量
       console.log('⚠️ 使用环境变量创建 R2 客户端');
