@@ -119,7 +119,7 @@ function createR2ClientFromEnv(env: any) {
         
         // 生成规范化的请求字符串
         const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
-        const canonicalRequestHash = await sha256Hash(new TextEncoder().encode(canonicalRequest));
+        const canonicalRequestHash = await sha256Hash(new TextEncoder().encode(canonicalRequest).buffer);
         
         // 生成待签名字符串
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
