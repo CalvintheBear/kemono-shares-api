@@ -3,8 +3,8 @@ export async function onRequestGet({ env }: { env: any }) {
   try {
     // 检查 R2 配置
     const r2Config = {
-      bucketConfigured: !!env.R2_BUCKET,
-      afterimageBucketConfigured: !!env.R2_AFTERIMAGE_BUCKET,
+      uploadBucketConfigured: !!env.UPLOAD_BUCKET,
+      afterimageBucketConfigured: !!env.AFTERIMAGE_BUCKET,
       timestamp: new Date().toISOString()
     };
     

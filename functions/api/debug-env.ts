@@ -4,8 +4,8 @@ export async function onRequestGet({ env }: { env: any }) {
     const debugInfo = {
       timestamp: new Date().toISOString(),
       envKeys: Object.keys(env),
-      r2BucketExists: !!env.R2_BUCKET,
-      r2AfterimageBucketExists: !!env.R2_AFTERIMAGE_BUCKET,
+      uploadBucketExists: !!env.UPLOAD_BUCKET,
+      afterimageBucketExists: !!env.AFTERIMAGE_BUCKET,
       nodeEnv: env.NODE_ENV,
       appUrl: env.NEXT_PUBLIC_APP_URL,
       kieApiKeyExists: !!env.KIE_AI_API_KEY,
