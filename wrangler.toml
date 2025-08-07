@@ -3,7 +3,7 @@ name = "kemono-shares-api"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# Pages配置 - 使用.next目录支持动态路由和API
+# Pages配置 - 动态导出使用.next目录
 pages_build_output_dir = ".next"
 
 # 生产环境变量
