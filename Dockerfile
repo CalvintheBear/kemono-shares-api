@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # 构建应用
-RUN npm run build:railway
+RUN npm install && next build
 
 # 生产阶段
 FROM base AS runner
