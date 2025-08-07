@@ -13,6 +13,10 @@ command = "npx @cloudflare/next-on-pages"
 [env.production]
 pages_build_output_dir = "./.vercel/output/static"
 
+# Functions配置 - 动态渲染代码
+[functions]
+directory = "./.vercel/output/functions"
+
 # 生产环境变量
 [env.production.vars]
 NODE_ENV = "production"

@@ -23,6 +23,7 @@
     "deploy:pages:static": "node scripts/deploy-cloudflare-pages-static.js",
     "deploy:api": "node scripts/deploy-with-api.js",
     "test:build": "node scripts/test-build-output.js",
+    "verify:cf-build": "node scripts/verify-cloudflare-build.js",
     "test:share": "node scripts/test-share-functionality.js",
     "test:r2-config": "node scripts/test-r2-config.js",
     "test:upload": "node scripts/test-upload.js",
