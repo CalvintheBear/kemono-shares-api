@@ -20,6 +20,7 @@
     "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache",
     "deploy:pages": "npm run build:pages",
     "deploy:pages:fixed": "node scripts/deploy-cloudflare-pages-fixed.js",
+    "deploy:pages:complete": "node scripts/deploy-with-routes-fix.js",
     "deploy:pages:static": "node scripts/deploy-cloudflare-pages-static.js",
     "deploy:api": "node scripts/deploy-with-api.js",
     "test:build": "node scripts/test-build-output.js",
