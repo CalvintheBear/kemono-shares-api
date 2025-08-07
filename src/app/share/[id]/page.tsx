@@ -1,13 +1,15 @@
 import SharePageClient from './SharePageClient'
 
-// 移除静态参数生成，支持动态路由
-// export function generateStaticParams() {
-//   return [
-//     { id: 'example' },
-//     { id: 'demo' },
-//     { id: 'test' }
-//   ]
-// }
+// 静态参数生成 - 为静态导出提供基础页面
+export function generateStaticParams() {
+  return [
+    { id: 'example' },
+    { id: 'demo' },
+    { id: 'test' },
+    { id: 'sample' },
+    { id: 'template' }
+  ]
+}
 
 interface PageProps {
   params: Promise<{
