@@ -213,16 +213,41 @@ export async function onRequestPost({
       });
     }
 
-    // 尝试使用绑定，如果不存在则使用环境变量
-    let r2Client;
+    // 简单重试封装
+    const retry = async (fn: () => Promise<any>, attempts = 3, baseDelayMs = 250) => {
+      let lastErr: any;
+      for (let i = 0; i < attempts; i++) {
+        try { return await fn(); } catch (e) {
+          lastErr = e;
+          await new Promise(r => setTimeout(r, baseDelayMs * Math.pow(2, i)));
+        }
+      }
+      throw lastErr;
+    };
+
+    // 优先使用 R2 绑定，其次才使用 S3 兼容签名
+    let r2Client: any;
     if (env.UPLOAD_BUCKET) {
-      // 使用绑定
-              const { createR2Client } = await import('../../src/lib/r2-client-cloudflare');
-        r2Client = createR2Client(env.UPLOAD_BUCKET, env.AFTERIMAGE_BUCKET, env);
       console.log('✅ 使用R2桶绑定');
+      r2Client = {
+        async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
+          await retry(async () => {
+            const putResult = await env.UPLOAD_BUCKET.put(key, data, {
+              httpMetadata: { contentType },
+              customMetadata: {
+                ...(metadata || {}),
+              },
+            });
+            if (!putResult) throw new Error('R2 put 返回空结果');
+          });
+          const publicBase = env.CLOUDFLARE_R2_PUBLIC_URL ? String(env.CLOUDFLARE_R2_PUBLIC_URL).trim() : '';
+          const accountId = String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim();
+          const url = publicBase ? `${publicBase}/${key}` : `https://pub-${accountId}.r2.dev/${key}`;
+          return { url, key, success: true };
+        }
+      };
     } else {
-      // 使用环境变量
-      console.log('⚠️ 使用环境变量创建 R2 客户端');
+      console.log('⚠️ 使用环境变量创建 R2 客户端 (S3 签名)');
       r2Client = createR2ClientFromEnv(env);
     }
     

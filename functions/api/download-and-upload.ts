@@ -114,25 +114,35 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     console.log(`📤 开始上传到R2: ${key}`);
     
     // 4. 使用R2 Binding上传到afterimage桶
-    try {
-      const uploadResult = await bucket.put(key, imageData, {
-        httpMetadata: { 
-          contentType: contentType 
-        },
-        customMetadata: {
-          originalName: finalFileName,
-          uploadedAt: new Date().toISOString(),
-          fileSize: imageData.byteLength.toString(),
-          taskId: taskId || '',
-          source: 'kie-download',
-          originalUrl: imageUrl
+    // 简单重试上传，防抖动/瞬断
+    const retry = async (fn: () => Promise<any>, attempts = 3, baseDelayMs = 250) => {
+      let lastErr: any;
+      for (let i = 0; i < attempts; i++) {
+        try { return await fn(); } catch (e) {
+          lastErr = e;
+          await new Promise(r => setTimeout(r, baseDelayMs * Math.pow(2, i)));
         }
-      });
-
-      if (!uploadResult) {
-        throw new Error('R2 上传返回空结果');
       }
+      throw lastErr;
+    };
 
+    try {
+      await retry(async () => {
+        const uploadResult = await bucket.put(key, imageData, {
+          httpMetadata: { 
+            contentType: contentType 
+          },
+          customMetadata: {
+            originalName: finalFileName,
+            uploadedAt: new Date().toISOString(),
+            fileSize: imageData.byteLength.toString(),
+            taskId: taskId || '',
+            source: 'kie-download',
+            originalUrl: imageUrl
+          }
+        });
+        if (!uploadResult) throw new Error('R2 上传返回空结果');
+      });
       console.log(`✅ R2上传成功，对象键: ${key}`);
     } catch (uploadError) {
       console.error(`❌ R2 上传失败:`, uploadError);
