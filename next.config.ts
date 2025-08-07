@@ -32,16 +32,16 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   
-  // 重定向配置
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/workspace',
-        permanent: false,
-      },
-    ]
-  },
+  // 移除重定向配置，让首页正常显示
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/',
+  //       destination: '/workspace',
+  //       permanent: false,
+  //     },
+  //   ]
+  // },
   
   // 环境变量配置
   env: {
@@ -60,4 +60,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig 
+export default nextConfig

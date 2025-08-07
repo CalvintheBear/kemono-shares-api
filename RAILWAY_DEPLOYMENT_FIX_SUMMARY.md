@@ -64,11 +64,20 @@ RUN npx next build
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "npm install && npx next build"
+  },
+  "deploy": {
+    "startCommand": "node server.js"
   }
 }
 ```
 
-### 5. 创建 Dockerfile
+### 5. 修复启动命令问题
+创建 `scripts/fix-standalone-package.js` 脚本：
+- 修复 standalone 目录中的 package.json
+- 将 start 脚本改为 `node server.js`
+- 清理不必要的依赖
+
+### 6. 创建 Dockerfile
 创建 `Dockerfile` 用于 Railway 部署：
 ```dockerfile
 # 使用官方 Node.js 20 镜像
@@ -109,7 +118,7 @@ ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]
 ```
 
-### 5. 创建 .dockerignore
+### 7. 创建 .dockerignore
 创建 `.dockerignore` 文件优化构建：
 - 排除不必要的文件和目录
 - 减少构建上下文大小
@@ -128,6 +137,8 @@ npm run build:railway
 📦 安装依赖...
 🔨 构建 Next.js 应用...
 ✅ Next.js 构建完成
+🔧 修复 standalone package.json...
+✅ standalone package.json 已修复
 📁 Next.js 构建文件已生成到: .next
 ✅ Standalone 输出已生成
 📋 Standalone 文件列表: [ '.next', 'node_modules', 'package.json', 'server.js' ]

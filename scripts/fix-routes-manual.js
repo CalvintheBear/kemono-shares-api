@@ -78,3 +78,4 @@ if (!fixed) {
   console.log('🎉 修复完成！');
   process.exit(0);
 }
+
