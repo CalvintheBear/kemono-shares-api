@@ -49,6 +49,12 @@ try {
   console.log('🔨 构建静态文件...');
   execSync('npx next build', { stdio: 'inherit' });
   
+  // 如果 out 未生成，执行 next export 生成静态导出
+  if (!fs.existsSync('out')) {
+    console.log('ℹ️ 未检测到 out 目录，执行 next export 生成静态导出...');
+    execSync('npx next export', { stdio: 'inherit' });
+  }
+  
   // 验证输出目录
   if (!fs.existsSync('out')) {
     throw new Error('❌ 构建失败：out 目录未生成');
@@ -99,7 +105,6 @@ try {
   const routesPath = path.join('out', '_routes.json');
   const routesContent = {
     version: 1,
-    // 仅在 /api/* 路由上触发 Pages Functions，其他保持静态
     include: ["/api/*"],
     exclude: [
       "/_next/static/*",

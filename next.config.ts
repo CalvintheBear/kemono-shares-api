@@ -1,15 +1,14 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // 移除静态导出配置，支持SSR
-  // output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
+  // 根据环境切换输出：静态导出优先，其次 Railway 的 standalone
+  output: process.env.STATIC_EXPORT === 'true' 
+    ? 'export' 
+    : (process.env.RAILWAY === 'true' ? 'standalone' : undefined),
   
-  // 使用默认配置，支持SSR
+  // 使用默认配置，支持SSR/静态导出
   trailingSlash: false,
   distDir: '.next',
-  
-  // 支持 Docker 部署的 standalone 输出
-  output: process.env.RAILWAY === 'true' ? 'standalone' : undefined,
   
   // 图片优化配置
   images: {
