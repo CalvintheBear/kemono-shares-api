@@ -28,6 +28,15 @@ try {
 
   console.log('✅ Next.js 构建完成');
 
+  // 修复 standalone package.json
+  console.log('🔧 修复 standalone package.json...');
+  try {
+    const { fixStandalonePackage } = require('./fix-standalone-package.js');
+    fixStandalonePackage();
+  } catch (error) {
+    console.warn('⚠️ 修复 standalone package.json 失败:', error.message);
+  }
+
   // 检查构建输出
   const nextDir = path.join(process.cwd(), '.next');
   if (fs.existsSync(nextDir)) {

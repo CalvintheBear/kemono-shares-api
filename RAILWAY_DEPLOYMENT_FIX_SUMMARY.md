@@ -13,6 +13,8 @@ npm error To see a list of scripts, run: npm run
 2. **缺少 Dockerfile**: Railway 使用 Docker 构建，但项目中没有 Dockerfile
 3. **缺少 standalone 配置**: Next.js 需要配置 standalone 输出模式以支持 Docker 部署
 4. **Docker 构建路径问题**: `.dockerignore` 排除了 `scripts/` 目录，导致构建脚本无法找到
+5. **依赖安装问题**: Docker 构建时只安装生产依赖，缺少构建所需的 devDependencies
+6. **启动命令问题**: standalone 模式下的 package.json 仍然包含 `next start` 脚本
 
 ## 解决方案
 
@@ -44,12 +46,16 @@ const nextConfig: NextConfig = {
 ```
 
 ### 4. 修复 Docker 构建问题
-由于 `.dockerignore` 排除了 `scripts/` 目录，修改构建命令为内联方式：
+由于 `.dockerignore` 排除了 `scripts/` 目录，以及依赖安装问题，修改构建命令：
 
 **Dockerfile 修改：**
 ```dockerfile
+# 安装所有依赖（包括 devDependencies）
+COPY package.json package-lock.json* ./
+RUN npm ci
+
 # 构建应用
-RUN npm install && next build
+RUN npx next build
 ```
 
 **railway.json 修改：**
@@ -57,7 +63,7 @@ RUN npm install && next build
 {
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm install && next build"
+    "buildCommand": "npm install && npx next build"
   }
 }
 ```
@@ -83,7 +89,7 @@ COPY . .
 ENV RAILWAY=true
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm install && next build
+RUN npx next build
 
 # 生产阶段
 FROM base AS runner
