@@ -20,11 +20,41 @@ interface ShareData {
 
 function SharePageContent() {
   const searchParams = useSearchParams()
-  const shareId = searchParams?.get('id')
+  const [shareId, setShareId] = useState<string | null>(null)
   
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // 获取分享ID的备用方案
+  useEffect(() => {
+    // 首先尝试从useSearchParams获取
+    const paramsId = searchParams?.get('id')
+    if (paramsId) {
+      setShareId(paramsId)
+      return
+    }
+
+    // 如果useSearchParams失败，从URL中解析
+    const urlParams = new URLSearchParams(window.location.search)
+    const urlId = urlParams.get('id')
+    if (urlId) {
+      setShareId(urlId)
+      return
+    }
+
+    // 如果都没有，尝试从路径中解析
+    const pathParts = window.location.pathname.split('/')
+    const lastPart = pathParts[pathParts.length - 1]
+    if (lastPart && lastPart !== 'share' && lastPart !== '') {
+      setShareId(lastPart)
+      return
+    }
+
+    // 如果都失败了，显示错误
+    setError('シェアIDが見つかりません')
+    setLoading(false)
+  }, [searchParams])
 
   // 辅助函数：判断是否为有效的图生图（有原图）
   const isValidImageToImage = (originalUrl: string | null): boolean => {
@@ -41,9 +71,7 @@ function SharePageContent() {
   useEffect(() => {
     const fetchShareData = async () => {
       if (!shareId) {
-        setError('シェアIDが見つかりません')
-        setLoading(false)
-        return
+        return // 等待shareId设置
       }
 
       try {
