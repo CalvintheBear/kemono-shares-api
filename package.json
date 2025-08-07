@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "postbuild": "npx @cloudflare/next-on-pages build",
-    "build:pages": "next build",
+    "build:pages": "npx @cloudflare/next-on-pages",
     "build:pages:static": "cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js",
     "build:pages:dynamic": "next build",
     "build:pages:export": "next build && next export",

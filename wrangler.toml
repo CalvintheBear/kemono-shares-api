@@ -7,14 +7,14 @@ type = "javascript"
 
 # Pages配置 - 动静态结合
 [build]
-command = "npm run build:pages:static"
+command = "npx @cloudflare/next-on-pages"
 
-# 静态资源目录 - 修复为正确的out目录
-pages_build_output_dir = "out"
+# 静态资源目录 - 使用.vercel/output/static
+pages_build_output_dir = "./.vercel/output/static"
 
 # Functions配置 - 动态渲染代码
 [functions]
-directory = "functions"
+directory = "./.vercel/output/functions"
 
 # 生产环境变量
 [env.production.vars]
