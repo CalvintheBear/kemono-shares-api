@@ -1,10 +1,18 @@
-# Cloudflare Pages 配置文件 - 动态导出版本
+# Cloudflare Pages 配置文件 - Next.js Functions 版本
 name = "kemono-shares-api"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# Pages配置 - 明确指定构建输出目录
-pages_build_output_dir = ".next"
+# Pages配置 - 使用.vercel/output结构
+[build]
+command = "npm run build:pages:functions"
+
+# 构建输出目录配置 - 静态文件
+pages_build_output_dir = ".vercel/output/static"
+
+# Functions配置 - 动态函数
+[functions]
+directory = ".vercel/output/functions"
 
 # 生产环境变量
 [env.production.vars]
