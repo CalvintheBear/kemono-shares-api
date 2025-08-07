@@ -1,11 +1,11 @@
 import SharePageClient from './SharePageClient'
 
-// 生成静态参数 - 为静态导出提供示例ID
-export function generateStaticParams() {
-  return [
-    { id: 'example' }
-  ];
-}
+// 移除静态参数生成，支持动态路由
+// export function generateStaticParams() {
+//   return [
+//     { id: 'example' }
+//   ];
+// }
 
 interface PageProps {
   params: Promise<{
@@ -13,7 +13,7 @@ interface PageProps {
   }>
 }
 
-// 简化的元数据 - 避免在静态导出时进行API调用
+// 动态元数据生成
 export async function generateMetadata({ params }: PageProps) {
   const { id: shareId } = await params
   
