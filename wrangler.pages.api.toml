@@ -1,10 +1,10 @@
 # Cloudflare Pages 配置文件 - 支持API路由
 name = "kemono-shares-api"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
 [build]
-command = "npm run build:pages:api:minimal"
+command = "npm run build:pages:api"
 output_directory = ".next"
 
 [build.environment]
