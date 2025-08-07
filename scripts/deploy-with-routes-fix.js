@@ -46,7 +46,6 @@ try {
       "/*"
     ],
     "exclude": [
-      "/_next/*",
       "/_next/static/*",
       "/api/*"
     ],

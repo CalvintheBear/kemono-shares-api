@@ -102,7 +102,7 @@ try {
     "include": ["/*"],
     "exclude": [
       "/api/*",
-      "/_next/*",
+      "/_next/static/*",
       "/static/*"
     ]
   };

@@ -152,7 +152,7 @@ export default {
     version: 1,
     include: ['/*'],
     exclude: [
-      '/_next/*',
+      '/_next/static/*',
       '/api/*'
     ]
   };
