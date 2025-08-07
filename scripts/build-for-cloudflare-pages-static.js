@@ -74,8 +74,8 @@ try {
   // 创建 _redirects 文件（如果需要）
   const redirectsPath = path.join('out', '_redirects');
   console.log('📝 创建 _redirects 文件...');
-  const redirectsContent = `# 分享详情页动态路由 - 指向客户端组件
-/share/* /share/[id]/page.js 200
+  const redirectsContent = `# 分享详情页动态路由 - 重定向到静态页面
+/share/* /share.html?id=:splat 200
 
 # 其他页面
 /* /index.html 200`;

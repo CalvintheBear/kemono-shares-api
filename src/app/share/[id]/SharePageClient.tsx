@@ -52,10 +52,23 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           ? `https://2kawaii.com/api/share?id=${shareId}`
           : `/api/share?id=${shareId}`
         
-        const response = await fetch(apiUrl)
+        console.log('正在获取分享数据:', apiUrl)
+        
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
         const data = await response.json()
+        console.log('分享数据响应:', data)
 
-        if (data.success) {
+        if (data.success && data.data) {
           setShareData(data.data)
         } else {
           setError(data.error || 'シェアデータの取得に失敗しました')
@@ -72,7 +85,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
   }, [shareId])
 
   const handleTryNow = () => {
-            window.location.href = 'https://2kawaii.com'
+    window.location.href = 'https://2kawaii.com'
   }
 
   const handleDownload = () => {
@@ -90,6 +103,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto"></div>
           <p className="mt-4 text-amber-700">読み込み中...</p>
+          <p className="mt-2 text-sm text-amber-600">シェアID: {shareId}</p>
         </div>
       </div>
     )
@@ -104,7 +118,8 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <div className="text-6xl mb-4">😔</div>
               <h1 className="text-2xl font-bold text-gray-800 mb-4">エラーが発生しました</h1>
-              <p className="text-gray-600 mb-6">{error || 'シェアデータが見つかりません'}</p>
+              <p className="text-gray-600 mb-2">{error || 'シェアデータが見つかりません'}</p>
+              <p className="text-sm text-gray-500 mb-6">シェアID: {shareId}</p>
               <button
                 onClick={handleTryNow}
                 className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
@@ -158,6 +173,11 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
                   height={400}
                   unoptimized
                   className="rounded-2xl shadow-lg max-w-full h-auto"
+                  onError={(e) => {
+                    console.error('图片加载失败:', shareData.generatedUrl)
+                    const target = e.target as HTMLImageElement
+                    target.style.display = 'none'
+                  }}
                 />
               </div>
             </div>
