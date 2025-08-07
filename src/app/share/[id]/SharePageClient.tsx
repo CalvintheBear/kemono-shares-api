@@ -52,7 +52,8 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           ? `https://2kawaii.com/api/share/${shareId}`
           : `/api/share/${shareId}`
         
-        console.log('正在获取分享数据:', apiUrl)
+        console.log('🔍 [前端] 正在获取分享数据:', apiUrl)
+        console.log('🔍 [前端] 分享ID:', shareId)
         
         const response = await fetch(apiUrl, {
           method: 'GET',
@@ -61,20 +62,30 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           },
         })
         
+        console.log('🔍 [前端] API响应状态:', response.status, response.statusText)
+        
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          const errorText = await response.text()
+          console.error('❌ [前端] API错误响应:', errorText)
+          throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`)
         }
         
         const data = await response.json()
-        console.log('分享数据响应:', data)
+        console.log('🔍 [前端] 分享数据响应:', data)
 
         if (data.success && data.data) {
+          console.log('✅ [前端] 成功获取分享数据:', {
+            id: data.data.id,
+            style: data.data.style,
+            generatedUrl: data.data.generatedUrl?.substring(0, 50) + '...'
+          })
           setShareData(data.data)
         } else {
+          console.error('❌ [前端] API返回错误:', data.error, data.debug)
           setError(data.error || 'シェアデータの取得に失敗しました')
         }
       } catch (err) {
-        console.error('分享数据获取失败:', err)
+        console.error('❌ [前端] 分享数据获取失败:', err)
         setError('シェアデータの取得に失敗しました')
       } finally {
         setLoading(false)
