@@ -23,7 +23,8 @@ try {
 
   // 部署到Cloudflare Pages
   console.log('🚀 部署到Cloudflare Pages...');
-  execSync('wrangler pages deploy out --project-name=kemono-shares-api', { stdio: 'inherit' });
+  // 强制指定 functions 目录，确保 Pages Functions 一起部署
+  execSync('wrangler pages deploy out --project-name=kemono-shares-api --branch=production --functions=functions', { stdio: 'inherit' });
 
   console.log('✅ 部署完成！');
   console.log('🌐 网站地址: https://2kawaii.com');

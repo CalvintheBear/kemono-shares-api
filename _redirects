@@ -1,9 +1,9 @@
-# 分享详情页动态路由 - 重定向到静态页面
-/share/* /share.html?id=:splat 200
+# Cloudflare Pages Functions 路由优先，避免拦截 /api/*
+# 如果需要静态兜底，请确保不覆盖 /api/* 路径
 
-# API路由 - 确保API正常工作
-/api/share/* /api/share/:splat 200
-/api/* /api/:splat 200
+# 分享详情页：若已由 Functions 提供 `/functions/api/share/[id].ts` 动态页，建议移除此规则
+# 保留静态兜底示例（不覆盖 /api/*）：
+# /share/* /share.html?id=:splat 200
 
-# 其他页面
-/* /index.html 200 
+# 其他页面兜底（不影响 /api/*）
+/*   /index.html   200

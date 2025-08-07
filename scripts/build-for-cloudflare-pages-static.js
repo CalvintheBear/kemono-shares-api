@@ -95,13 +95,13 @@ try {
   Access-Control-Allow-Headers: Content-Type, Authorization`;
   fs.writeFileSync(headersPath, headersContent);
 
-  // 创建 _routes.json 文件
+  // 创建 _routes.json 文件（确保 /api/* 会进入 Pages Functions）
   const routesPath = path.join('out', '_routes.json');
   const routesContent = {
-    "version": 1,
-    "include": ["/*"],
-    "exclude": [
-      "/api/*",
+    version: 1,
+    // 仅在 /api/* 路由上触发 Pages Functions，其他保持静态
+    include: ["/api/*"],
+    exclude: [
       "/_next/static/*",
       "/static/*"
     ]
