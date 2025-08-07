@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   distDir: '.next',
   
+  // 支持 Docker 部署的 standalone 输出
+  output: process.env.RAILWAY === 'true' ? 'standalone' : undefined,
+  
   // 图片优化配置
   images: {
     // 允许外部图片域名

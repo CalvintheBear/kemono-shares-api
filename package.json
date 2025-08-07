@@ -13,6 +13,7 @@
     "build:pages:static": "cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js",
     "build:pages:dynamic": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js",
     "build:pages:export": "next build && next export",
+    "build:railway": "node scripts/build-for-railway.js",
     "start": "next start",
     "lint": "next lint",
     "clean": "node scripts/clean-cache.js",
