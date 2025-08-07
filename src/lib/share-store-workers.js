@@ -274,7 +274,7 @@ export class ShareStoreWorkers {
   // 计算统计信息
   async calculateStats() {
     try {
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       if (!listData) {
         return {
           totalShares: 0,
@@ -319,7 +319,7 @@ export class ShareStoreWorkers {
   // 清理过期数据
   async cleanup() {
     try {
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       if (!listData) {
         return;
       }
@@ -337,20 +337,53 @@ export class ShareStoreWorkers {
           validIds.push(shareId);
         } else {
           // 删除过期数据
-          await this.kv.delete(this.getShareKey(shareId));
+          await this._kvDelete(this.getShareKey(shareId));
           this.cache.delete(shareId);
           cleanedCount++;
         }
       }
 
       // 更新列表
-      await this.kv.put(this.getListKey(), JSON.stringify(validIds), {
-        expirationTtl: 60 * 60 * 24 * 365
-      });
+      await this._kvPut(this.getListKey(), JSON.stringify(validIds), 60 * 60 * 24 * 365);
 
       console.log(`🧹 清理完成: 删除了${cleanedCount}个过期分享`);
     } catch (error) {
       console.error('❌ 清理失败:', error);
     }
+  }
+
+  // KV 封装：支持 binding 或 REST 回退
+  async _kvGet(key) {
+    if (this.kv) return await this.kv.get(key);
+    if (!this.useRest) return null;
+    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/storage/kv/namespaces/${this.namespaceId}/values/${encodeURIComponent(key)}`;
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${this.apiToken}` } });
+    if (res.status === 404) return null;
+    if (!res.ok) return null;
+    return await res.text();
+  }
+
+  async _kvPut(key, value, expirationTtlSeconds) {
+    if (this.kv) return await this.kv.put(key, value, { expirationTtl: expirationTtlSeconds });
+    if (!this.useRest) return;
+    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/storage/kv/namespaces/${this.namespaceId}/values/${encodeURIComponent(key)}?expiration_ttl=${expirationTtlSeconds}`;
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this.apiToken}`,
+        'Content-Type': 'text/plain'
+      },
+      body: value
+    });
+  }
+
+  async _kvDelete(key) {
+    if (this.kv) return await this.kv.delete(key);
+    if (!this.useRest) return;
+    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/storage/kv/namespaces/${this.namespaceId}/values/${encodeURIComponent(key)}`;
+    await fetch(url, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${this.apiToken}` }
+    });
   }
 } 
