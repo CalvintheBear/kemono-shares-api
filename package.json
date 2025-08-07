@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx @cloudflare/next-on-pages",
     "postbuild": "npx @cloudflare/next-on-pages build",
     "build:pages": "npx @cloudflare/next-on-pages",
     "build:pages:static": "cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js",
