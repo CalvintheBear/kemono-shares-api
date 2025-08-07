@@ -61,8 +61,8 @@ export async function downloadAndUploadToR2(kieImageUrl: string, fileName?: stri
     if (!response.ok) {
       throw new Error(`下载失败: ${response.status} ${response.statusText}`)
     }
-    // 获取图片数据为Buffer
-    const imageBuffer = Buffer.from(await response.arrayBuffer())
+    // 获取图片数据为ArrayBuffer
+    const imageBuffer = await response.arrayBuffer()
     // 生成文件名
     const timestamp = Date.now()
     const randomId = Math.random().toString(36).substring(2, 8)

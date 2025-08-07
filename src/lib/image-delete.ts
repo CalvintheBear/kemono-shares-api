@@ -1,5 +1,4 @@
-import { DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import { r2Client } from './r2-client';
+import { createR2Client, validateR2Config } from './r2-client-cloudflare'
 
 // 从URL中提取对象键
 function extractKeyFromUrl(imageUrl: string): string | null {
@@ -24,12 +23,17 @@ export async function checkImageExists(imageUrl: string): Promise<boolean> {
       return false;
     }
 
-    await r2Client.send(new HeadObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-      Key: key,
-    }));
+    if (!validateR2Config()) {
+      return false;
+    }
 
-    return true;
+    // 使用 HEAD 请求检查文件是否存在
+    const endpoint = `https://${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME;
+    const url = `${endpoint}/${bucketName}/${key}`;
+
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
   } catch (_error) {
     console.log(`文件不存在或无法访问: ${imageUrl}`);
     return false;
@@ -47,6 +51,13 @@ export async function deleteImageFromR2(imageUrl: string): Promise<{ success: bo
       };
     }
 
+    if (!validateR2Config()) {
+      return {
+        success: false,
+        message: 'R2配置无效'
+      };
+    }
+
     console.log(`🗑️ 开始删除图片: ${key}`);
 
     // 检查文件是否存在
@@ -58,11 +69,16 @@ export async function deleteImageFromR2(imageUrl: string): Promise<{ success: bo
       };
     }
 
-    // 删除文件
-    await r2Client.send(new DeleteObjectCommand({
-      Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-      Key: key,
-    }));
+    // 使用 DELETE 请求删除文件
+    const endpoint = `https://${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+    const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME;
+    const url = `${endpoint}/${bucketName}/${key}`;
+
+    const response = await fetch(url, { method: 'DELETE' });
+    
+    if (!response.ok) {
+      throw new Error(`删除失败: ${response.status} ${response.statusText}`);
+    }
 
     console.log(`✅ 图片删除成功: ${key}`);
 
@@ -104,11 +120,13 @@ export async function batchDeleteImages(imageUrls: string[]): Promise<Array<{ ur
   return Promise.all(deletePromises);
 }
 
-// 清理过期图片（可选功能）
+// 清理过期图片（简化版本，不依赖AWS SDK）
 export async function cleanupExpiredImages(expirationDays: number = 30): Promise<{ deleted: number; errors: number }> {
-  // 这个功能需要实现列表对象和检查修改时间的逻辑
-  // 由于R2 API的限制，这里只是框架代码
-  console.log(`🧹 清理过期图片功能待实现 (${expirationDays}天)`);
+  console.log(`🧹 开始清理过期图片（${expirationDays}天前）`);
+  
+  // 注意：这个功能在 Cloudflare Workers 环境中需要更复杂的实现
+  // 由于无法直接列出所有文件，这里只是占位符
+  console.log('⚠️ 清理过期图片功能在 Cloudflare Workers 环境中需要特殊实现');
   
   return {
     deleted: 0,

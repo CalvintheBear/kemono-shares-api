@@ -1,5 +1,4 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3'
-import { r2AfterimageClient, getAfterimagePublicUrl, validateAfterimageR2Config } from './r2-afterimage-client'
+import { createR2Client, validateAfterimageR2Config } from './r2-client-cloudflare'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
@@ -37,27 +36,25 @@ function _generateAfterimageFileName(originalName: string): string {
  * 上传生成图片到kemono-afterimage桶
  */
 export async function uploadAfterimageToR2(
-  buffer: Buffer,
+  buffer: ArrayBuffer,
   key: string,
   contentType: string = 'image/png'
 ): Promise<{ url: string; key: string; size: number }> {
   if (!validateAfterimageR2Config()) {
     throw new Error('Cloudflare R2 afterimage 配置无效')
   }
-  const bucketName = process.env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME!
-  console.log(`📤 开始上传生成图片到kemono-afterimage桶: ${key} (${(buffer.length / 1024).toFixed(2)}KB)`)
+  
+  console.log(`📤 开始上传生成图片到kemono-afterimage桶: ${key} (${(buffer.byteLength / 1024).toFixed(2)}KB)`)
+  
   try {
-    const command = new PutObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-      Body: buffer,
-      ContentType: contentType,
-      CacheControl: 'public, max-age=31536000', // 1年缓存
-    })
-    await r2AfterimageClient.send(command)
-    const url = getAfterimagePublicUrl(key)
-    console.log(`✅ 生成图片上传成功: ${url}`)
-    return { url, key, size: buffer.length }
+    // 创建R2客户端
+    const r2Client = createR2Client(null, null, process.env)
+    
+    // 上传到生成图片存储桶
+    const result = await r2Client.uploadToAfterimageBucket(key, buffer, contentType)
+    
+    console.log(`✅ 生成图片上传成功: ${result.url}`)
+    return result
   } catch (error) {
     console.error('❌ 生成图片上传失败:', error)
     throw new Error(`生成图片上传失败: ${error instanceof Error ? error.message : '未知错误'}`)
@@ -67,7 +64,7 @@ export async function uploadAfterimageToR2(
 /**
  * 批量上传生成图片
  */
-export async function batchUploadAfterimages(buffers: Buffer[]): Promise<Array<{ url: string; key: string; size: number }>> {
+export async function batchUploadAfterimages(buffers: ArrayBuffer[]): Promise<Array<{ url: string; key: string; size: number }>> {
   const results = []
   
   for (let i = 0; i < buffers.length; i++) {

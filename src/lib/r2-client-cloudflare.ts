@@ -1,114 +1,280 @@
-// Cloudflare R2 类型定义
-interface R2Bucket {
-  put(key: string, value: ArrayBuffer, options?: any): Promise<void>;
-  get(key: string): Promise<any>;
-  delete(key: string): Promise<void>;
+// Cloudflare Workers 兼容的 R2 客户端
+// 不使用 AWS SDK，直接使用 fetch API 和 Web Crypto API
+
+// 使用Web Crypto API进行哈希计算
+async function sha256Hash(data: ArrayBuffer | Uint8Array | string): Promise<string> {
+  let buffer: ArrayBuffer;
+  if (typeof data === 'string') {
+    buffer = new TextEncoder().encode(data);
+  } else if (data instanceof Uint8Array) {
+    buffer = data.buffer;
+  } else {
+    buffer = data;
+  }
+  
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// Cloudflare Pages Functions 环境下的 R2 客户端
-export function createR2Client(r2Bucket: R2Bucket, r2AfterimageBucket: R2Bucket, env: any) {
+// 使用Web Crypto API进行HMAC计算
+async function hmacSha256(key: ArrayBuffer | string, message: string): Promise<ArrayBuffer> {
+  let keyBuffer: ArrayBuffer;
+  if (typeof key === 'string') {
+    keyBuffer = new TextEncoder().encode(key);
+  } else {
+    keyBuffer = key;
+  }
+  
+  const messageBuffer = new TextEncoder().encode(message);
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyBuffer,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  
+  return await crypto.subtle.sign('HMAC', cryptoKey, messageBuffer);
+}
+
+// 生成AWS S3兼容的签名
+async function generateS3Signature(stringToSign: string, secretKey: string): Promise<string> {
+  const signature = await hmacSha256(secretKey, stringToSign);
+  const signatureArray = Array.from(new Uint8Array(signature));
+  return signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// 生成规范化的请求字符串
+function generateCanonicalRequest(method: string, uri: string, queryString: string, headers: Record<string, string>, payloadHash: string): string {
+  const canonicalHeaders = Object.keys(headers)
+    .sort()
+    .map(key => `${key.toLowerCase()}:${headers[key].trim()}`)
+    .join('\n') + '\n';
+  
+  const signedHeaders = Object.keys(headers)
+    .sort()
+    .map(key => key.toLowerCase())
+    .join(';');
+  
+  return [
+    method,
+    uri,
+    queryString,
+    canonicalHeaders,
+    signedHeaders,
+    payloadHash
+  ].join('\n');
+}
+
+// 生成待签名字符串
+function generateStringToSign(algorithm: string, requestDateTime: string, credentialScope: string, canonicalRequestHash: string): string {
+  return [
+    algorithm,
+    requestDateTime,
+    credentialScope,
+    canonicalRequestHash
+  ].join('\n');
+}
+
+// 创建R2客户端
+export function createR2Client(uploadBucket: any, afterimageBucket: any, env: any) {
   return {
     // 上传到主存储桶
     async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
-        await r2Bucket.put(key, data, {
-          httpMetadata: {
-            contentType,
+        // 使用 S3 兼容的 API 端点
+        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+        const bucketName = env.CLOUDFLARE_R2_BUCKET_NAME;
+        
+        // 构建上传 URL
+        const uploadUrl = `${endpoint}/${bucketName}/${key}`;
+        
+        // 计算payload hash
+        const payloadHash = await sha256Hash(data);
+        
+        // 准备签名
+        const now = new Date();
+        const requestDateTime = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+        const dateStamp = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const region = 'auto';
+        const service = 's3';
+        const algorithm = 'AWS4-HMAC-SHA256';
+        const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+        
+        // 准备headers
+        const headers: Record<string, string> = {
+          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+          'X-Amz-Date': requestDateTime,
+          'X-Amz-Content-Sha256': payloadHash,
+          'Content-Type': contentType,
+        };
+        
+        // 添加元数据
+        if (metadata) {
+          Object.entries(metadata).forEach(([key, value]) => {
+            headers[`x-amz-meta-${key}`] = value;
+          });
+        }
+        
+        // 生成规范化的请求字符串
+        const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
+        const canonicalRequestBytes = new TextEncoder().encode(canonicalRequest);
+        const canonicalRequestHash = await sha256Hash(canonicalRequestBytes);
+        
+        // 生成待签名字符串
+        const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
+        
+        // 生成签名
+        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+        const dateRegionKey = await hmacSha256(dateKey, region);
+        const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
+        const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
+        const signature = await generateS3Signature(stringToSign, signingKey.toString());
+        
+        // 构建Authorization header
+        const signedHeaders = Object.keys(headers)
+          .sort()
+          .map(key => key.toLowerCase())
+          .join(';');
+        
+        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+        
+        // 执行上传
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            ...headers,
+            'Authorization': authorization
           },
-          customMetadata: metadata,
+          body: new Uint8Array(data)
         });
         
-        // 构建公共URL - 使用环境变量中的正确域名
-        // 注意：您的配置中已经包含了完整的公共URL，不需要再添加桶名
-        const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
-          ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
-          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${env.CLOUDFLARE_R2_BUCKET_NAME}/${key}`;
+        if (!response.ok) {
+          throw new Error(`上传失败: ${response.status} ${response.statusText}`);
+        }
         
-        return {
-          url: publicUrl,
-          key,
-          success: true
-        };
+        const url = `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`;
+        return { url, key, size: data.byteLength };
       } catch (error) {
         console.error('❌ 上传到主存储桶失败:', error);
-        throw new Error(`上传失败: ${error instanceof Error ? error.message : '未知错误'}`);
+        throw error;
       }
     },
-
-    // 上传到 afterimage 存储桶
+    
+    // 上传到生成图片存储桶
     async uploadToAfterimageBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
-        await r2AfterimageBucket.put(key, data, {
-          httpMetadata: {
-            contentType,
+        // 使用 S3 兼容的 API 端点
+        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
+        const bucketName = env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME;
+        
+        // 构建上传 URL
+        const uploadUrl = `${endpoint}/${bucketName}/${key}`;
+        
+        // 计算payload hash
+        const payloadHash = await sha256Hash(data);
+        
+        // 准备签名
+        const now = new Date();
+        const requestDateTime = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+        const dateStamp = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const region = 'auto';
+        const service = 's3';
+        const algorithm = 'AWS4-HMAC-SHA256';
+        const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+        
+        // 准备headers
+        const headers: Record<string, string> = {
+          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+          'X-Amz-Date': requestDateTime,
+          'X-Amz-Content-Sha256': payloadHash,
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=31536000', // 1年缓存
+        };
+        
+        // 添加元数据
+        if (metadata) {
+          Object.entries(metadata).forEach(([key, value]) => {
+            headers[`x-amz-meta-${key}`] = value;
+          });
+        }
+        
+        // 生成规范化的请求字符串
+        const canonicalRequest = generateCanonicalRequest('PUT', `/${bucketName}/${key}`, '', headers, payloadHash);
+        const canonicalRequestBytes = new TextEncoder().encode(canonicalRequest);
+        const canonicalRequestHash = await sha256Hash(canonicalRequestBytes);
+        
+        // 生成待签名字符串
+        const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
+        
+        // 生成签名
+        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+        const dateRegionKey = await hmacSha256(dateKey, region);
+        const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
+        const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
+        const signature = await generateS3Signature(stringToSign, signingKey.toString());
+        
+        // 构建Authorization header
+        const signedHeaders = Object.keys(headers)
+          .sort()
+          .map(key => key.toLowerCase())
+          .join(';');
+        
+        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+        
+        // 执行上传
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: {
+            ...headers,
+            'Authorization': authorization
           },
-          customMetadata: metadata,
+          body: new Uint8Array(data)
         });
         
-        // 构建公共URL - 使用环境变量中的正确域名
-        // 注意：您的配置中已经包含了完整的公共URL，不需要再添加桶名
-        const publicUrl = env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL 
-          ? `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`
-          : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME}/${key}`;
+        if (!response.ok) {
+          throw new Error(`上传失败: ${response.status} ${response.statusText}`);
+        }
         
-        return {
-          url: publicUrl,
-          key,
-          success: true
-        };
+        const url = `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`;
+        return { url, key, size: data.byteLength };
       } catch (error) {
-        console.error('❌ 上传到 afterimage 存储桶失败:', error);
-        throw new Error(`上传失败: ${error instanceof Error ? error.message : '未知错误'}`);
-      }
-    },
-
-    // 从主存储桶获取文件
-    async getFromMainBucket(key: string) {
-      try {
-        const object = await r2Bucket.get(key);
-        return object;
-      } catch (error) {
-        console.error('❌ 从主存储桶获取文件失败:', error);
-        throw new Error(`获取失败: ${error instanceof Error ? error.message : '未知错误'}`);
-      }
-    },
-
-    // 从 afterimage 存储桶获取文件
-    async getFromAfterimageBucket(key: string) {
-      try {
-        const object = await r2AfterimageBucket.get(key);
-        return object;
-      } catch (error) {
-        console.error('❌ 从 afterimage 存储桶获取文件失败:', error);
-        throw new Error(`获取失败: ${error instanceof Error ? error.message : '未知错误'}`);
-      }
-    },
-
-    // 删除主存储桶中的文件
-    async deleteFromMainBucket(key: string) {
-      try {
-        await r2Bucket.delete(key);
-        return { success: true };
-      } catch (error) {
-        console.error('❌ 删除主存储桶文件失败:', error);
-        throw new Error(`删除失败: ${error instanceof Error ? error.message : '未知错误'}`);
-      }
-    },
-
-    // 删除 afterimage 存储桶中的文件
-    async deleteFromAfterimageBucket(key: string) {
-      try {
-        await r2AfterimageBucket.delete(key);
-        return { success: true };
-      } catch (error) {
-        console.error('❌ 删除 afterimage 存储桶文件失败:', error);
-        throw new Error(`删除失败: ${error instanceof Error ? error.message : '未知错误'}`);
+        console.error('❌ 上传到生成图片存储桶失败:', error);
+        throw error;
       }
     }
   };
 }
 
-// 生成唯一的文件名
+// 验证R2配置
+export function validateR2Config(): boolean {
+  const requiredVars = [
+    'CLOUDFLARE_R2_ACCOUNT_ID',
+    'CLOUDFLARE_R2_ACCESS_KEY_ID', 
+    'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
+    'CLOUDFLARE_R2_BUCKET_NAME',
+    'CLOUDFLARE_R2_PUBLIC_URL'
+  ];
+  
+  return requiredVars.every(varName => process.env[varName]);
+}
+
+// 验证生成图片R2配置
+export function validateAfterimageR2Config(): boolean {
+  const requiredVars = [
+    'CLOUDFLARE_R2_ACCOUNT_ID',
+    'CLOUDFLARE_R2_ACCESS_KEY_ID', 
+    'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
+    'CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME',
+    'CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL'
+  ];
+  
+  return requiredVars.every(varName => process.env[varName]);
+}
+
+// 生成唯一文件名
 export function generateUniqueFileName(originalName: string): string {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 15);
@@ -116,10 +282,14 @@ export function generateUniqueFileName(originalName: string): string {
   return `uploads/${timestamp}-${random}.${extension}`;
 }
 
-// 文件类型验证
+// 验证图片文件
 export function validateImageFile(file: File): { valid: boolean; error?: string } {
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+  if (!file) {
+    return { valid: false, error: '文件不存在' };
+  }
 
   if (!ALLOWED_TYPES.includes(file.type)) {
     return { 
