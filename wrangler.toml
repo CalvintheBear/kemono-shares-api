@@ -1,26 +1,10 @@
-# 📄 Cloudflare Pages 配置文件 - SSR + 静态资源支持
 name = "kemono-shares-api"
-account_id = "9a5ff316a26b8abb696af519e515d2de"
 compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
-type = "javascript"
 
-# ✅ 关键配置：指定输出目录（必须在根级别）
+# Pages 指定的构建输出目录
 pages_build_output_dir = ".vercel/output/static"
 
-# ✅ 使用 @cloudflare/next-on-pages 构建命令
-[build]
-command = "npm run build:pages:dynamic"
-cwd = "./"
-watch_dir = "./"
-
-# ✅ Functions 设置（动态渲染函数）
-[functions]
-directory = ".vercel/output/functions"
-
-# ✅ 生产环境配置
 [env.production]
-# ✅ 再次声明构建输出目录（有时环境优先级覆盖默认）
 pages_build_output_dir = ".vercel/output/static"
 
 [env.production.vars]
@@ -44,16 +28,15 @@ bucket_name = "kemono-uploadimage"
 binding = "AFTERIMAGE_BUCKET"
 bucket_name = "kemono-afterimage"
 
-# ✅ 预览环境配置
 [env.preview]
-pages_build_output_dir = "./.vercel/output/static"
+pages_build_output_dir = ".vercel/output/static"
 
 [env.preview.vars]
 NODE_ENV = "development"
 NEXT_PUBLIC_APP_URL = "https://dev.2kawaii.com"
 KIE_AI_API_KEY = "2800cbec975bf014d815f4e5353c826a"
 KIE_AI_API_KEY_2 = "6a77fe3ca6856170f6618d4f249cfc6a"
-KIE_AI_API_KEY_3 = "db092e9551f4631136cab1b141fdfd21"
+KIE_AI_API_KEY_3 = "db092e9551f4636cab1b141fdfd21"
 KIE_AI_API_KEY_4 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_5 = "c982688b5c6938943dd721ed1d576edb"
 
