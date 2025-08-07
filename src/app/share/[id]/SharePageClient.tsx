@@ -47,7 +47,12 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
       }
 
       try {
-        const response = await fetch(`/api/share?id=${shareId}`)
+        // 在静态导出模式下，使用完整的API URL
+        const apiUrl = process.env.NODE_ENV === 'production' 
+          ? `https://2kawaii.com/api/share?id=${shareId}`
+          : `/api/share?id=${shareId}`
+        
+        const response = await fetch(apiUrl)
         const data = await response.json()
 
         if (data.success) {
