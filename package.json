@@ -17,7 +17,7 @@
     "clean": "node scripts/clean-cache.js",
     "clean:cf": "node scripts/clean-cloudflare-cache.js",
     "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache",
-    "deploy:pages": "npm run build:pages:dynamic && wrangler pages deploy out --project-name=kemono-shares-api",
+    "deploy:pages": "npm run build:pages:dynamic && wrangler pages deploy .next --project-name=kemono-shares-api",
     "deploy:pages:static": "npm run build:pages:static && wrangler pages deploy out --project-name=kemono-shares-api",
     "deploy:pages:api": "wrangler pages deploy .next --config wrangler.pages.api.toml",
     "deploy:2kawaii": "wrangler pages deploy out --config wrangler.pages.2kawaii.toml",
