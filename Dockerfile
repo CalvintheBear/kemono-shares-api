@@ -7,9 +7,9 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# 安装依赖
+# 安装所有依赖（包括 devDependencies）
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci
 
 # 重新构建源码阶段
 FROM base AS builder
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # 构建应用
-RUN npm install && next build
+RUN npx next build
 
 # 生产阶段
 FROM base AS runner

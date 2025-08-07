@@ -12,6 +12,7 @@ npm error To see a list of scripts, run: npm run
 1. **缺少构建脚本**: `package.json` 中没有 `build:railway` 脚本
 2. **缺少 Dockerfile**: Railway 使用 Docker 构建，但项目中没有 Dockerfile
 3. **缺少 standalone 配置**: Next.js 需要配置 standalone 输出模式以支持 Docker 部署
+4. **Docker 构建路径问题**: `.dockerignore` 排除了 `scripts/` 目录，导致构建脚本无法找到
 
 ## 解决方案
 
@@ -42,7 +43,26 @@ const nextConfig: NextConfig = {
 }
 ```
 
-### 4. 创建 Dockerfile
+### 4. 修复 Docker 构建问题
+由于 `.dockerignore` 排除了 `scripts/` 目录，修改构建命令为内联方式：
+
+**Dockerfile 修改：**
+```dockerfile
+# 构建应用
+RUN npm install && next build
+```
+
+**railway.json 修改：**
+```json
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "npm install && next build"
+  }
+}
+```
+
+### 5. 创建 Dockerfile
 创建 `Dockerfile` 用于 Railway 部署：
 ```dockerfile
 # 使用官方 Node.js 20 镜像
@@ -62,12 +82,14 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV RAILWAY=true
 ENV NODE_ENV=production
-RUN npm run build:railway
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm install && next build
 
 # 生产阶段
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
@@ -122,7 +144,7 @@ npm run build:railway
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm run build:railway"
+    "buildCommand": "npm install && next build"
   },
   "deploy": {
     "startCommand": "npm start",
