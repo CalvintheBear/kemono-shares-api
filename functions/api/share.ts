@@ -4,9 +4,11 @@ import { ShareStoreWorkers } from '../../src/lib/share-store-workers.js';
 // Cloudflare Pages Functions 版本的 share API
 export async function onRequestGet({ request, env }: { request: Request; env: any }) {
   try {
-    // 检查KV绑定是否存在
-    if (!env.SHARE_DATA_KV) {
-      console.error('❌ GET: KV存储绑定 (SHARE_DATA_KV) 未配置！');
+    // 检查KV绑定是否存在（允许 REST 回退）
+    const hasBinding = !!env.SHARE_DATA_KV;
+    const canRest = !!(env.CLOUDFLARE_API_TOKEN && (env.CLOUDFLARE_ACCOUNT_ID || env.CLOUDFLARE_R2_ACCOUNT_ID) && (env.SHARE_KV_NAMESPACE_ID || env.SHARE_DATA_KV_NAMESPACE_ID));
+    if (!hasBinding && !canRest) {
+      console.error('❌ GET: KV存储绑定 (SHARE_DATA_KV) 未配置，且缺少 REST 回退所需变量！');
       return new Response(JSON.stringify({ 
         success: false, 
         error: '服务器配置错误: 存储服务不可用' 
@@ -32,7 +34,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     console.log(`[分享获取] 查询分享ID: ${shareId}`);
     
     // 初始化KV存储并获取分享数据
-    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env);
     const shareData = await shareStore.getShare(shareId);
       
     if (shareData) {
@@ -69,9 +71,11 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
 
 export async function onRequestPost({ request, env }: { request: Request; env: any }) {
   try {
-    // 1. 检查KV绑定是否存在
-    if (!env.SHARE_DATA_KV) {
-      console.error('❌ POST: KV存储绑定 (SHARE_DATA_KV) 未配置！');
+    // 1. 检查KV绑定是否存在（允许 REST 回退）
+    const hasBindingPost = !!env.SHARE_DATA_KV;
+    const canRestPost = !!(env.CLOUDFLARE_API_TOKEN && (env.CLOUDFLARE_ACCOUNT_ID || env.CLOUDFLARE_R2_ACCOUNT_ID) && (env.SHARE_KV_NAMESPACE_ID || env.SHARE_DATA_KV_NAMESPACE_ID));
+    if (!hasBindingPost && !canRestPost) {
+      console.error('❌ POST: KV存储绑定 (SHARE_DATA_KV) 未配置，且缺少 REST 回退所需变量！');
       return new Response(JSON.stringify({ 
         error: '服务器配置错误: 存储服务不可用' 
       }), {
@@ -136,10 +140,10 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     // 6. 初始化KV存储并创建分享
     console.log('🚀 初始化KV存储...');
-    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    const shareStorePost = new ShareStoreWorkers(hasBindingPost ? env.SHARE_DATA_KV : env);
     
     console.log(`💾 正在将分享数据存储到KV...`);
-    const createdShare = await shareStore.createShare(shareDataObject);
+    const createdShare = await shareStorePost.createShare(shareDataObject);
     
     console.log(`✅ 分享数据已成功存储到KV:`, createdShare);
     

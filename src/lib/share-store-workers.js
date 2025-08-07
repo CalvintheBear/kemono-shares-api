@@ -1,7 +1,13 @@
 // Cloudflare Workers 专用的分享数据存储实现
 export class ShareStoreWorkers {
-  constructor(kv) {
-    this.kv = kv;
+  constructor(kvOrEnv) {
+    // 既支持直接 KV 绑定，也支持传入 env 使用 REST 回退
+    this.kv = kvOrEnv && typeof kvOrEnv.get === 'function' ? kvOrEnv : null;
+    this.env = this.kv ? null : kvOrEnv;
+    this.apiToken = this.env?.CLOUDFLARE_API_TOKEN;
+    this.accountId = this.env?.CLOUDFLARE_ACCOUNT_ID || this.env?.CLOUDFLARE_R2_ACCOUNT_ID;
+    this.namespaceId = this.env?.SHARE_KV_NAMESPACE_ID || this.env?.SHARE_DATA_KV_NAMESPACE_ID;
+    this.useRest = !this.kv && !!(this.apiToken && this.accountId && this.namespaceId);
     this.cache = new Map();
     this.cacheTTL = 5 * 60 * 1000; // 5分钟缓存
   }
@@ -35,9 +41,7 @@ export class ShareStoreWorkers {
       };
 
       // 存储分享数据
-      await this.kv.put(this.getShareKey(shareId), JSON.stringify(shareData), {
-        expirationTtl: 60 * 60 * 24 * 30 // 30天过期
-      });
+      await this._kvPut(this.getShareKey(shareId), JSON.stringify(shareData), 60 * 60 * 24 * 30);
 
       // 更新分享列表
       await this.updateShareList(shareId, shareData);
@@ -70,7 +74,7 @@ export class ShareStoreWorkers {
       }
 
       // 从KV获取
-      const data = await this.kv.get(this.getShareKey(shareId));
+      const data = await this._kvGet(this.getShareKey(shareId));
       if (data) {
         const shareData = JSON.parse(data);
         
@@ -95,7 +99,7 @@ export class ShareStoreWorkers {
   async getShareList(limit = 20, offset = 0) {
     try {
       // 从KV获取列表
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       if (!listData) {
         return {
           items: [],
@@ -158,7 +162,7 @@ export class ShareStoreWorkers {
   async deleteShare(shareId) {
     try {
       // 从KV删除
-      await this.kv.delete(this.getShareKey(shareId));
+      await this._kvDelete(this.getShareKey(shareId));
       
       // 从列表移除
       await this.removeFromShareList(shareId);
@@ -180,7 +184,7 @@ export class ShareStoreWorkers {
   // 获取统计信息
   async getStats() {
     try {
-      const statsData = await this.kv.get(this.getStatsKey());
+      const statsData = await this._kvGet(this.getStatsKey());
       if (statsData) {
         return JSON.parse(statsData);
       }
@@ -201,7 +205,7 @@ export class ShareStoreWorkers {
   // 更新分享列表
   async updateShareList(shareId, _shareData) {
     try {
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       let shareIds = listData ? JSON.parse(listData) : [];
       
       // 避免重复添加
@@ -212,9 +216,7 @@ export class ShareStoreWorkers {
           shareIds = shareIds.slice(0, 1000);
         }
         
-        await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
-          expirationTtl: 60 * 60 * 24 * 365 // 1年过期
-        });
+        await this._kvPut(this.getListKey(), JSON.stringify(shareIds), 60 * 60 * 24 * 365);
       }
     } catch (error) {
       console.error('❌ 更新分享列表失败:', error);
@@ -224,14 +226,12 @@ export class ShareStoreWorkers {
   // 从列表移除分享
   async removeFromShareList(shareId) {
     try {
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       if (listData) {
         let shareIds = JSON.parse(listData);
         shareIds = shareIds.filter(id => id !== shareId);
         
-        await this.kv.put(this.getListKey(), JSON.stringify(shareIds), {
-          expirationTtl: 60 * 60 * 24 * 365
-        });
+        await this._kvPut(this.getListKey(), JSON.stringify(shareIds), 60 * 60 * 24 * 365);
       }
     } catch (error) {
       console.error('❌ 从列表移除分享失败:', error);
@@ -241,7 +241,7 @@ export class ShareStoreWorkers {
   // 更新统计信息
   async updateStats() {
     try {
-      const listData = await this.kv.get(this.getListKey());
+      const listData = await this._kvGet(this.getListKey());
       if (!listData) {
         return;
       }
@@ -265,9 +265,7 @@ export class ShareStoreWorkers {
         lastUpdated: new Date().toISOString()
       };
 
-      await this.kv.put(this.getStatsKey(), JSON.stringify(stats), {
-        expirationTtl: 60 * 60 * 24 * 7 // 7天过期
-      });
+      await this._kvPut(this.getStatsKey(), JSON.stringify(stats), 60 * 60 * 24 * 7);
     } catch (error) {
       console.error('❌ 更新统计信息失败:', error);
     }
@@ -304,9 +302,7 @@ export class ShareStoreWorkers {
         lastUpdated: new Date().toISOString()
       };
 
-      await this.kv.put(this.getStatsKey(), JSON.stringify(stats), {
-        expirationTtl: 60 * 60 * 24 * 7
-      });
+      await this._kvPut(this.getStatsKey(), JSON.stringify(stats), 60 * 60 * 24 * 7);
 
       return stats;
     } catch (error) {

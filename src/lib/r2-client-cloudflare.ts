@@ -85,8 +85,8 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
     async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
         // 使用 S3 兼容的 API 端点
-        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
-        const bucketName = env.CLOUDFLARE_R2_BUCKET_NAME;
+         const endpoint = `https://${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`;
+         const bucketName = String(env.CLOUDFLARE_R2_BUCKET_NAME || '').trim();
         
         // 构建上传 URL
         const uploadUrl = `${endpoint}/${bucketName}/${key}`;
@@ -105,7 +105,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
         
         // 准备headers
         const headers: Record<string, string> = {
-          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+           'Host': `${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
           'X-Amz-Date': requestDateTime,
           'X-Amz-Content-Sha256': payloadHash,
           'Content-Type': contentType,
@@ -127,7 +127,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
         
         // 生成签名
-        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+         const dateKey = await hmacSha256(`AWS4${String(env.CLOUDFLARE_R2_SECRET_ACCESS_KEY || '').trim()}`, dateStamp);
         const dateRegionKey = await hmacSha256(dateKey, region);
         const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
         const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
@@ -139,7 +139,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
           .map(key => key.toLowerCase())
           .join(';');
         
-        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+         const authorization = `${algorithm} Credential=${String(env.CLOUDFLARE_R2_ACCESS_KEY_ID || '').trim()}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
         
         // 执行上传
         const response = await fetch(uploadUrl, {
@@ -155,7 +155,8 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
           throw new Error(`上传失败: ${response.status} ${response.statusText}`);
         }
         
-        const url = `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`;
+         const publicBase = env.CLOUDFLARE_R2_PUBLIC_URL ? String(env.CLOUDFLARE_R2_PUBLIC_URL).trim() : '';
+         const url = publicBase ? `${publicBase}/${key}` : `https://pub-${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.dev/${key}`;
         return { url, key, size: data.byteLength };
       } catch (error) {
         console.error('❌ 上传到主存储桶失败:', error);
@@ -167,8 +168,8 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
     async uploadToAfterimageBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
         // 使用 S3 兼容的 API 端点
-        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
-        const bucketName = env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME;
+         const endpoint = `https://${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`;
+         const bucketName = String(env.CLOUDFLARE_R2_AFTERIMAGE_BUCKET_NAME || '').trim();
         
         // 构建上传 URL
         const uploadUrl = `${endpoint}/${bucketName}/${key}`;
@@ -187,7 +188,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
         
         // 准备headers
         const headers: Record<string, string> = {
-          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+           'Host': `${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
           'X-Amz-Date': requestDateTime,
           'X-Amz-Content-Sha256': payloadHash,
           'Content-Type': contentType,
@@ -210,7 +211,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
         
         // 生成签名
-        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+         const dateKey = await hmacSha256(`AWS4${String(env.CLOUDFLARE_R2_SECRET_ACCESS_KEY || '').trim()}`, dateStamp);
         const dateRegionKey = await hmacSha256(dateKey, region);
         const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
         const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
@@ -222,7 +223,7 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
           .map(key => key.toLowerCase())
           .join(';');
         
-        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+         const authorization = `${algorithm} Credential=${String(env.CLOUDFLARE_R2_ACCESS_KEY_ID || '').trim()}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
         
         // 执行上传
         const response = await fetch(uploadUrl, {
@@ -238,7 +239,8 @@ export function createR2Client(uploadBucket: any, afterimageBucket: any, env: an
           throw new Error(`上传失败: ${response.status} ${response.statusText}`);
         }
         
-        const url = `${env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL}/${key}`;
+         const afterBase = env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL ? String(env.CLOUDFLARE_R2_AFTERIMAGE_PUBLIC_URL).trim() : '';
+         const url = afterBase ? `${afterBase}/${key}` : `https://pub-${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.dev/${key}`;
         return { url, key, size: data.byteLength };
       } catch (error) {
         console.error('❌ 上传到生成图片存储桶失败:', error);

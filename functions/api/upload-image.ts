@@ -83,8 +83,8 @@ function createR2ClientFromEnv(env: any) {
     async uploadToMainBucket(key: string, data: ArrayBuffer, contentType: string, metadata?: Record<string, string>) {
       try {
         // 使用 S3 兼容的 API 端点
-        const endpoint = `https://${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
-        const bucketName = env.CLOUDFLARE_R2_BUCKET_NAME;
+        const endpoint = `https://${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`;
+        const bucketName = String(env.CLOUDFLARE_R2_BUCKET_NAME || '').trim();
         
         // 构建上传 URL
         const uploadUrl = `${endpoint}/${bucketName}/${key}`;
@@ -103,7 +103,7 @@ function createR2ClientFromEnv(env: any) {
         
         // 准备headers
         const headers: Record<string, string> = {
-          'Host': `${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+           'Host': `${String(env.CLOUDFLARE_R2_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
           'Content-Type': contentType,
           'X-Amz-Date': requestDateTime,
           'X-Amz-Content-Sha256': payloadHash,
@@ -126,7 +126,7 @@ function createR2ClientFromEnv(env: any) {
         const stringToSign = generateStringToSign(algorithm, requestDateTime, credentialScope, canonicalRequestHash);
         
         // 生成签名
-        const dateKey = await hmacSha256(`AWS4${env.CLOUDFLARE_R2_SECRET_ACCESS_KEY}`, dateStamp);
+         const dateKey = await hmacSha256(`AWS4${String(env.CLOUDFLARE_R2_SECRET_ACCESS_KEY || '').trim()}`, dateStamp);
         const dateRegionKey = await hmacSha256(dateKey, region);
         const dateRegionServiceKey = await hmacSha256(dateRegionKey, service);
         const signingKey = await hmacSha256(dateRegionServiceKey, 'aws4_request');
@@ -138,7 +138,7 @@ function createR2ClientFromEnv(env: any) {
           .map(key => key.toLowerCase())
           .join(';');
         
-        const authorization = `${algorithm} Credential=${env.CLOUDFLARE_R2_ACCESS_KEY_ID}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+         const authorization = `${algorithm} Credential=${String(env.CLOUDFLARE_R2_ACCESS_KEY_ID || '').trim()}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
         
         // 创建上传请求
         const response = await fetch(uploadUrl, {
@@ -157,9 +157,11 @@ function createR2ClientFromEnv(env: any) {
         }
         
         // 构建公共URL
-        const publicUrl = env.CLOUDFLARE_R2_PUBLIC_URL 
+         const publicUrl = (env.CLOUDFLARE_R2_PUBLIC_URL && String(env.CLOUDFLARE_R2_PUBLIC_URL).trim())
           ? `${env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`
           : `https://pub-${env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.dev/${key}`;
+         
+         
         
         console.log(`✅ R2 上传成功: ${publicUrl}`);
         
