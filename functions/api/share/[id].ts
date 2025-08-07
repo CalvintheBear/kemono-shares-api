@@ -1,10 +1,14 @@
 // Cloudflare Pages Functions 版本的 share/[id] API
+import { ShareStoreWorkers } from '../../../src/lib/share-store-workers.js';
+
 export async function onRequestGet({ 
   request, 
-  params 
+  params,
+  env 
 }: { 
   request: Request; 
-  params: { id: string } 
+  params: { id: string };
+  env: any;
 }) {
   try {
     const { id } = params;
@@ -15,38 +19,50 @@ export async function onRequestGet({
         headers: { 'Content-Type': 'application/json' }
       });
     }
-    
-    // 从全局存储中获取分享数据
-    let shareData = null;
-    
-    if (typeof globalThis !== 'undefined' && (globalThis as any).shareDataStore) {
-      shareData = (globalThis as any).shareDataStore.get(id);
-      console.log(`🔍 查找分享数据: ${id}, 找到: ${!!shareData}`);
-    }
-    
-    if (!shareData) {
-      console.log(`❌ 未找到分享数据: ${id}`);
+
+    // 检查KV绑定是否存在
+    if (!env.SHARE_DATA_KV) {
+      console.error('❌ GET: KV存储绑定 (SHARE_DATA_KV) 未配置！');
       return new Response(JSON.stringify({ 
-        error: '分享不存在',
-        message: `找不到ID为 ${id} 的分享`
+        success: false, 
+        error: '服务器配置错误: 存储服务不可用' 
       }), {
-        status: 404,
+        status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
     }
     
+    console.log(`[分享获取] 查询分享ID: ${id}`);
+    
+    // 初始化KV存储并获取分享数据
+    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    const shareData = await shareStore.getShare(id);
+      
+    if (shareData) {
+      console.log(`[分享获取] 找到分享数据:`, shareData);
+      return new Response(JSON.stringify({
+        success: true,
+        data: shareData
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    console.log(`[分享获取] 未找到分享ID: ${id}`);
     return new Response(JSON.stringify({
-      success: true,
-      share: shareData
+      success: false,
+      error: '分享不存在或已过期'
     }), {
-      status: 200,
+      status: 404,
       headers: { 'Content-Type': 'application/json' }
     });
     
   } catch (error) {
-    return new Response(JSON.stringify({ 
-      error: '获取分享数据失败',
-      message: error instanceof Error ? error.message : '未知错误'
+    console.error('[分享获取] 处理失败:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: '获取分享数据失败'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

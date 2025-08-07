@@ -49,8 +49,8 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
       try {
         // 在静态导出模式下，使用完整的API URL
         const apiUrl = process.env.NODE_ENV === 'production' 
-          ? `https://2kawaii.com/api/share?id=${shareId}`
-          : `/api/share?id=${shareId}`
+          ? `https://2kawaii.com/api/share/${shareId}`
+          : `/api/share/${shareId}`
         
         console.log('正在获取分享数据:', apiUrl)
         
