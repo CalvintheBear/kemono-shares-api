@@ -4,13 +4,6 @@
     "/*"
   ],
   "exclude": [
-    "/_next/static/*",
-    "/api/*"
-  ],
-  "routes": [
-    {
-      "src": "/share/(.*)",
-      "dest": "/share/[id]/page.html"
-    }
+    "/_next/static/*"
   ]
 }
