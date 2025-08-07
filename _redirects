@@ -1,1 +1,5 @@
+# 分享详情页动态路由
+/share/* /share/[id]/page.html 200
+
+# 其他页面
 /* /index.html 200 

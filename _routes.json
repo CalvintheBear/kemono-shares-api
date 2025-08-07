@@ -6,5 +6,11 @@
   "exclude": [
     "/_next/*",
     "/api/*"
+  ],
+  "routes": [
+    {
+      "src": "/share/(.*)",
+      "dest": "/share/[id]/page.html"
+    }
   ]
 }

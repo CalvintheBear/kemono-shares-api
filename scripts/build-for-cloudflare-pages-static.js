@@ -73,10 +73,13 @@ try {
 
   // 创建 _redirects 文件（如果需要）
   const redirectsPath = path.join('out', '_redirects');
-  if (!fs.existsSync(redirectsPath)) {
-    console.log('📝 创建 _redirects 文件...');
-    fs.writeFileSync(redirectsPath, '/* /index.html 200');
-  }
+  console.log('📝 创建 _redirects 文件...');
+  const redirectsContent = `# 分享详情页动态路由
+/share/* /share/[id]/page.html 200
+
+# 其他页面
+/* /index.html 200`;
+  fs.writeFileSync(redirectsPath, redirectsContent);
 
   // 创建 _headers 文件（如果需要）
   const headersPath = path.join('out', '_headers');
