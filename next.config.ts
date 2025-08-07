@@ -64,9 +64,10 @@ const nextConfig: NextConfig = {
   
   // Webpack配置
   webpack: (config: any, { dev, isServer }: { dev: boolean; isServer: boolean }) => {
+    // 为Cloudflare Pages优化 - 禁用可能产生大文件的缓存
+    config.cache = false;
+    
     if (!dev && !isServer) {
-      // 禁用缓存
-      config.cache = false;
       
       // Cloudflare Pages优化 - 确保文件大小不超过25MB
       const isCloudflarePages = process.env.CF_PAGES === 'true';
