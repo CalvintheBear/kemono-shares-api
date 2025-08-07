@@ -1,23 +1,26 @@
-# Cloudflare Pages 配置文件 - SSR + 静态资源
+# 📄 Cloudflare Pages 配置文件 - SSR + 静态资源支持
 name = "kemono-shares-api"
 account_id = "9a5ff316a26b8abb696af519e515d2de"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 type = "javascript"
 
-# Pages配置 - 使用@cloudflare/next-on-pages
+# ✅ 使用 @cloudflare/next-on-pages 构建命令
 [build]
-command = "npx @cloudflare/next-on-pages"
+command = "npx @cloudflare/next-on-pages@latest"
 
-# 生产环境配置
-[env.production]
+# ✅ 设置默认构建输出目录（推荐显式声明，避免环境识别不一致）
 pages_build_output_dir = "./.vercel/output/static"
 
-# Functions配置 - 动态渲染代码
+# ✅ Functions 设置（动态渲染函数）
 [functions]
 directory = "./.vercel/output/functions"
 
-# 生产环境变量
+# ✅ 生产环境配置
+[env.production]
+# ✅ 再次声明构建输出目录（有时环境优先级覆盖默认）
+pages_build_output_dir = "./.vercel/output/static"
+
 [env.production.vars]
 NODE_ENV = "production"
 NEXT_PUBLIC_APP_URL = "https://2kawaii.com"
@@ -25,14 +28,12 @@ KIE_AI_API_KEY = "2800cbec975bf014d815f4e5353c826a"
 KIE_AI_API_KEY_2 = "6a77fe3ca6856170f6618d4f249cfc6a"
 KIE_AI_API_KEY_3 = "db092e9551f4631136cab1b141fdfd21"
 KIE_AI_API_KEY_4 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_5=  "c982688b5c6938943dd721ed1d576edb"
+KIE_AI_API_KEY_5 = "c982688b5c6938943dd721ed1d576edb"
 
-# 生产环境 KV 命名空间绑定
 [[env.production.kv_namespaces]]
 binding = "SHARE_DATA_KV"
 id = "77b81f5b787b449e931fa6a51263b38c"
 
-# 生产环境 R2 存储桶绑定
 [[env.production.r2_buckets]]
 binding = "UPLOAD_BUCKET"
 bucket_name = "kemono-uploadimage"
@@ -41,7 +42,10 @@ bucket_name = "kemono-uploadimage"
 binding = "AFTERIMAGE_BUCKET"
 bucket_name = "kemono-afterimage"
 
-# 预览环境变量
+# ✅ 预览环境配置
+[env.preview]
+pages_build_output_dir = "./.vercel/output/static"
+
 [env.preview.vars]
 NODE_ENV = "development"
 NEXT_PUBLIC_APP_URL = "https://dev.2kawaii.com"
@@ -49,18 +53,16 @@ KIE_AI_API_KEY = "2800cbec975bf014d815f4e5353c826a"
 KIE_AI_API_KEY_2 = "6a77fe3ca6856170f6618d4f249cfc6a"
 KIE_AI_API_KEY_3 = "db092e9551f4631136cab1b141fdfd21"
 KIE_AI_API_KEY_4 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_5=  "c982688b5c6938943dd721ed1d576edb"
+KIE_AI_API_KEY_5 = "c982688b5c6938943dd721ed1d576edb"
 
-# 预览环境 KV 命名空间绑定
 [[env.preview.kv_namespaces]]
 binding = "SHARE_DATA_KV"
 id = "2d7d8b533f3049b89d808fbb569bb09c"
 
-# 预览环境 R2 存储桶绑定
 [[env.preview.r2_buckets]]
 binding = "UPLOAD_BUCKET"
 bucket_name = "kemono-uploadimage-dev"
 
 [[env.preview.r2_buckets]]
 binding = "AFTERIMAGE_BUCKET"
-bucket_name = "kemono-afterimage-dev" 
+bucket_name = "kemono-afterimage-dev"
