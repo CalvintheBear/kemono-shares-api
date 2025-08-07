@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:pages": "npm run build && npx @cloudflare/next-on-pages@latest",
+    "build:pages": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js",
     "build:pages:static": "cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js",
-    "build:pages:dynamic": "npm run build && npx @cloudflare/next-on-pages@latest",
+    "build:pages:dynamic": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js",
     "build:pages:export": "next build && next export",
     "start": "next start",
     "lint": "next lint",
@@ -19,6 +19,7 @@
     "clean:cf": "node scripts/clean-cloudflare-cache.js",
     "clean:build": "if exist .next rmdir /s /q .next && if exist .vercel rmdir /s /q .vercel && if exist cache rmdir /s /q cache",
     "deploy:pages": "npm run build:pages",
+    "deploy:pages:fixed": "node scripts/deploy-cloudflare-pages-fixed.js",
     "deploy:pages:static": "node scripts/deploy-cloudflare-pages-static.js",
     "deploy:api": "node scripts/deploy-with-api.js",
     "test:build": "node scripts/test-build-output.js",
@@ -30,7 +31,8 @@
     "test:afterimage-config": "node scripts/test-afterimage-config.js",
     "check:production": "node scripts/check-production-config.js",
     "validate:env": "node scripts/validate-env.js",
-    "diagnose:404": "node scripts/diagnose-404.js"
+    "diagnose:404": "node scripts/diagnose-404.js",
+    "fix:routes": "node scripts/fix-routes-overlap.js"
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.13",
