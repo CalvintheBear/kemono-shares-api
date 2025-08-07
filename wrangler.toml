@@ -6,14 +6,14 @@ type = "javascript"
 
 # Pages配置 - 动静态结合
 [build]
-command = "npm run build"
+command = "npm run build:pages:static"
 
-# 静态资源目录 - 包含Next.js静态页和public文件
-pages_build_output_dir = ".vercel/output/static"
+# 静态资源目录 - 修复为正确的out目录
+pages_build_output_dir = "out"
 
 # Functions配置 - 动态渲染代码
 [functions]
-directory = ".vercel/output/functions"
+directory = "functions"
 
 # 生产环境变量
 [env.production.vars]
@@ -23,12 +23,7 @@ KIE_AI_API_KEY = "2800cbec975bf014d815f4e5353c826a"
 KIE_AI_API_KEY_2 = "6a77fe3ca6856170f6618d4f249cfc6a"
 KIE_AI_API_KEY_3 = "db092e9551f4631136cab1b141fdfd21"
 KIE_AI_API_KEY_4 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_5 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_6 = "7f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_7 = "9f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_8 = "1f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_9 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_10 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
+KIE_AI_API_KEY_5=  "c982688b5c6938943dd721ed1d576edb"
 
 # 生产环境 KV 命名空间绑定
 [[env.production.kv_namespaces]]
@@ -52,12 +47,7 @@ KIE_AI_API_KEY = "2800cbec975bf014d815f4e5353c826a"
 KIE_AI_API_KEY_2 = "6a77fe3ca6856170f6618d4f249cfc6a"
 KIE_AI_API_KEY_3 = "db092e9551f4631136cab1b141fdfd21"
 KIE_AI_API_KEY_4 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_5 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_6 = "7f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_7 = "9f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_8 = "1f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_9 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_10 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
+KIE_AI_API_KEY_5=  "c982688b5c6938943dd721ed1d576edb"
 
 # 预览环境 KV 命名空间绑定
 [[env.preview.kv_namespaces]]

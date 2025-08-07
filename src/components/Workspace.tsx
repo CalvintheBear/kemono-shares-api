@@ -778,15 +778,21 @@ export default function WorkspaceRefactored() {
 
       if (response.ok) {
         const shareData = await response.json()
-        shareCreatedRef.current = true
-        console.log('自动分享创建成功:', shareData.shareUrl)
-        return shareData.shareUrl
+        if (shareData.success && shareData.shareUrl) {
+          shareCreatedRef.current = true
+          console.log('✅ 自动分享创建成功:', shareData.shareUrl)
+          return shareData.shareUrl
+        } else {
+          console.error('❌ 自动分享创建失败:', shareData.error || '未知错误')
+          return null
+        }
       } else {
-        console.error('自动分享创建失败:', response.statusText)
+        const errorText = await response.text()
+        console.error('❌ 自动分享创建失败:', response.status, response.statusText, errorText)
         return null
       }
     } catch (error) {
-      console.warn('自动分享处理失败:', error)
+      console.warn('❌ 自动分享处理失败:', error)
       return null
     }
   }

@@ -1,8 +1,12 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // 移除静态导出配置，支持API路由
-  // output: 'export',
+  // 根据环境变量决定是否静态导出
+  output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
+  
+  // 静态导出配置
+  trailingSlash: true,
+  distDir: process.env.STATIC_EXPORT === 'true' ? 'out' : '.next',
   
   // 图片优化配置
   images: {
@@ -25,8 +29,11 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   
-  // 重定向配置
+  // 重定向配置（仅在非静态导出时生效）
   async redirects() {
+    if (process.env.STATIC_EXPORT === 'true') {
+      return []
+    }
     return [
       {
         source: '/',
