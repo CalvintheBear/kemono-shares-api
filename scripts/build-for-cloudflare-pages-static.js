@@ -10,6 +10,14 @@ process.env.CF_PAGES = 'true';
 process.env.NODE_ENV = 'production';
 
 try {
+  // 首先运行专门的Cloudflare缓存清理
+  console.log('🧹 运行Cloudflare Pages缓存清理...');
+  try {
+    execSync('node scripts/clean-cloudflare-cache.js', { stdio: 'inherit' });
+  } catch (cleanError) {
+    console.warn('⚠️  缓存清理警告:', cleanError.message);
+  }
+  
   // 清理之前的构建
   console.log('🧹 清理之前的构建文件...');
   try {

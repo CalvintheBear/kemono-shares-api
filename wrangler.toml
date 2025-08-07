@@ -3,16 +3,8 @@ name = "kemono-shares-api"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# R2 存储桶配置
-[[r2_buckets]]
-binding = "UPLOAD_BUCKET"
-bucket_name = "kemono-uploadimage"
-preview_bucket_name = "kemono-uploadimage-dev"
-
-[[r2_buckets]]
-binding = "AFTERIMAGE_BUCKET"
-bucket_name = "kemono-afterimage"
-preview_bucket_name = "kemono-afterimage-dev"
+# Pages配置
+pages_build_output_dir = "out"
 
 # 生产环境变量
 [env.production.vars]
@@ -29,6 +21,20 @@ KIE_AI_API_KEY_8 = "1f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_9 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_10 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
 
+# 生产环境 KV 命名空间绑定
+[[env.production.kv_namespaces]]
+binding = "SHARE_DATA_KV"
+id = "77b81f5b787b449e931fa6a51263b38c"
+
+# 生产环境 R2 存储桶绑定
+[[env.production.r2_buckets]]
+binding = "UPLOAD_BUCKET"
+bucket_name = "kemono-uploadimage"
+
+[[env.production.r2_buckets]]
+binding = "AFTERIMAGE_BUCKET"
+bucket_name = "kemono-afterimage"
+
 # 预览环境变量
 [env.preview.vars]
 NODE_ENV = "development"
@@ -42,4 +48,18 @@ KIE_AI_API_KEY_6 = "7f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_7 = "9f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_8 = "1f06398cf9d8dc02a24c8b8b8b8b8b8b"
 KIE_AI_API_KEY_9 = "3f06398cf9d8dc02a24c8b8b8b8b8b8b"
-KIE_AI_API_KEY_10 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b" 
+KIE_AI_API_KEY_10 = "5f06398cf9d8dc02a24c8b8b8b8b8b8b"
+
+# 预览环境 KV 命名空间绑定
+[[env.preview.kv_namespaces]]
+binding = "SHARE_DATA_KV"
+id = "2d7d8b533f3049b89d808fbb569bb09c"
+
+# 预览环境 R2 存储桶绑定
+[[env.preview.r2_buckets]]
+binding = "UPLOAD_BUCKET"
+bucket_name = "kemono-uploadimage-dev"
+
+[[env.preview.r2_buckets]]
+binding = "AFTERIMAGE_BUCKET"
+bucket_name = "kemono-afterimage-dev" 
