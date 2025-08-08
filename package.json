@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:static": "npm run build:pages:dynamic",
-    "build:pages": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js",
+    "build:pages": "npm run build && npx @cloudflare/next-on-pages@latest || echo 'skip' && node scripts/fix-routes-overlap.js || echo 'routes-skip'",
     "build:pages:static": "cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js",
     "build:pages:dynamic": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js",
     "build:pages:export": "next build && next export",

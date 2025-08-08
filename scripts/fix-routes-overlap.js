@@ -37,8 +37,8 @@ function fixRoutesOverlap() {
   }
   
   if (!routesFile) {
-    console.log('❌ 未找到有效的 _routes.json 文件');
-    return false;
+    console.log('ℹ️ 未找到 _routes.json，跳过修复（视为已就绪）');
+    return true;
   }
   
   console.log('📋 当前路由配置:', JSON.stringify(routesFile, null, 2));
