@@ -147,9 +147,9 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`✅ 分享数据已成功存储到KV:`, createdShare);
     
-    // 基于请求来源构建可用的分享URL，避免硬编码域名
+    // 基于请求来源构建可用的分享URL（使用查询参数形式，避免 Next 静态路由冲突）
     const origin = new URL(request.url).origin;
-    const shareUrl = `${origin}/share/${createdShare.id}`;
+    const shareUrl = `${origin}/share?id=${createdShare.id}`;
     return new Response(JSON.stringify({
       success: true,
       shareId: createdShare.id,
