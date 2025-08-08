@@ -20,29 +20,32 @@ interface ShareData {
 
 function SharePageContent() {
   const searchParams = useSearchParams()
-  const [shareId, setShareId] = useState<string | null>(null)
+  const [shareId, setShareId] = useState<string | null>(() => {
+    // 在首帧同步解析路径，避免直接渲染到画廊
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const paramId = urlParams.get('id')
+      if (paramId) return paramId
+      const parts = window.location.pathname.split('/')
+      const last = parts[parts.length - 1]
+      if (last && last !== 'share') return last
+    }
+    return null
+  })
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   // 解析是否为详情模式
   useEffect(() => {
+    // 若 searchParams 有 id，则覆盖为最新值
     const paramsId = searchParams?.get('id')
-    if (paramsId) {
+    if (paramsId && paramsId !== shareId) {
       setShareId(paramsId)
       return
     }
-    // 路由兜底：从路径解析 /share/:id
-    if (typeof window !== 'undefined') {
-      const pathParts = window.location.pathname.split('/')
-      const lastPart = pathParts[pathParts.length - 1]
-      if (lastPart && lastPart !== 'share') {
-        setShareId(lastPart)
-      } else {
-        setShareId(null)
-      }
-    }
-  }, [searchParams])
+    // 否则维持首帧已解析的路径ID，不清空
+  }, [searchParams, shareId])
 
   const isDetailMode = useMemo(() => !!shareId, [shareId])
 
