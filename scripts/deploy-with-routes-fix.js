@@ -52,7 +52,7 @@ try {
     "routes": [
       {
         "src": "/share/(.*)",
-        "dest": "/share/[id]/page.html"
+        "dest": "/share/index.html?id=$1"
       }
     ]
   };
