@@ -62,9 +62,13 @@ export default function ShareGallery() {
       setIsFetching(true);
       console.log('Fetching share items, offset:', offset, 'append:', append);
       
-      const response = await fetch(
-        `/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc`
-      );
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const apiUrl = `${origin}/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

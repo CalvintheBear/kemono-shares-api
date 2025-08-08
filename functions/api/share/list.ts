@@ -5,9 +5,11 @@ import { ShareStoreWorkers } from '../../../src/lib/share-store-workers.js';
 // 用于获取分享列表，支持分页
 export async function onRequestGet({ request, env }: { request: Request; env: any }) {
   try {
-    // 1. 检查KV绑定是否存在
-    if (!env.SHARE_DATA_KV) {
-      console.error('❌ GET List: KV存储绑定 (SHARE_DATA_KV) 未配置！');
+    // 1. 检查KV绑定是否存在（允许 REST 回退）
+    const hasBinding = !!env.SHARE_DATA_KV;
+    const canRest = !!(env.CLOUDFLARE_API_TOKEN && (env.CLOUDFLARE_ACCOUNT_ID || env.CLOUDFLARE_R2_ACCOUNT_ID) && (env.SHARE_KV_NAMESPACE_ID || env.SHARE_DATA_KV_NAMESPACE_ID));
+    if (!hasBinding && !canRest) {
+      console.error('❌ GET List: KV存储绑定未配置，且缺少 REST 回退所需变量');
       return new Response(JSON.stringify({ 
         success: false, 
         error: '服务器配置错误: 存储服务不可用' 
@@ -24,7 +26,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}`);
 
     // 2. 初始化KV存储
-    const shareStore = new ShareStoreWorkers(env.SHARE_DATA_KV);
+    const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env);
     
     // 3. 从KV获取分享列表
     console.log('📊 正在从KV获取分享列表...');

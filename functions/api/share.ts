@@ -147,10 +147,13 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`✅ 分享数据已成功存储到KV:`, createdShare);
     
+    // 基于请求来源构建可用的分享URL，避免硬编码域名
+    const origin = new URL(request.url).origin;
+    const shareUrl = `${origin}/share/${createdShare.id}`;
     return new Response(JSON.stringify({
       success: true,
       shareId: createdShare.id,
-      shareUrl: `https://2kawaii.com/share/${createdShare.id}`,
+      shareUrl,
       data: createdShare,
       message: '分享创建成功'
     }), {
