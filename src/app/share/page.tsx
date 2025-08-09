@@ -195,7 +195,7 @@ function SharePageContent() {
             チャットGPT 画像生成 | AI画像生成 お題一覧
           </h1>
           <p className="text-gray-700 mt-2 text-sm">
-            ai画像生成 サイト 無料 登録不要・写真加工アプリ無料の代わりにブラウザだけで1-3分。ジブリ風・VTuber・chibiほか最新作例を毎日更新。
+            ai画像生成 サイト 無料 登録不要・写真加工アプリ無料の代わりにブラウザだけで1-3分。最新作例を毎日更新。
           </p>
         </div>
         <ShareGallery />

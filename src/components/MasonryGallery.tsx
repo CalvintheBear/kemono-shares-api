@@ -56,16 +56,15 @@ export default function MasonryGallery({
   // Calculate column count based on container width
   const columnCount = useMemo(() => {
     if (typeof window === 'undefined') return 3;
-    
+
     const width = containerRef.current?.clientWidth || window.innerWidth;
-    
-    // PC端放大图片：减少列数以增大香图尺寸
-    if (width >= BREAKPOINTS['2xl']) return 4;
-    if (width >= BREAKPOINTS.xl) return 4;
-    if (width >= BREAKPOINTS.lg) return 3;
-    if (width >= BREAKPOINTS.md) return 3; // 平板/大号手机横屏 3列
-    if (width >= BREAKPOINTS.sm) return 2; // 小屏 2列
-    return 1;
+
+    // PC：5-6 列；移动端：3 列
+    if (width >= BREAKPOINTS['2xl']) return 6; // ≥1536px
+    if (width >= BREAKPOINTS.xl) return 5;     // ≥1280px
+    if (width >= BREAKPOINTS.lg) return 5;     // ≥1024px
+    // ≤1024 一律 3 列
+    return 3;
   }, [containerRef]);
 
   // Distribute images across columns using Pinterest's algorithm

@@ -1517,13 +1517,13 @@ export default function WorkspaceRefactored() {
                 <button
                   key={template.id}
                   onClick={() => handleMobileTemplateSelect(template)}
-                  className={`flex-none min-w-[4.75rem] max-w-[4.75rem] w-[4.75rem] h-32 p-1.5 rounded-[14px] border-2 transition-all transform hover:scale-105 flex flex-col items-center ${
+                  className={`flex-none min-w-[4.75rem] max-w-[4.75rem] w-[4.75rem] h-28 p-1.5 rounded-[14px] border-2 transition-all transform hover:scale-105 flex flex-col items-center justify-between ${
                     selectedTemplate?.id === template.id
                       ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
                       : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
                   }`}
                 >
-                  <div className="flex-1 flex items-center justify-center mb-1">
+                  <div className="h-16 flex items-center justify-center mb-1">
                     <Image
                       src={template.afterImage}
                       alt={template.name}
@@ -1532,7 +1532,7 @@ export default function WorkspaceRefactored() {
                       className="w-14 h-14 object-cover rounded-[10px] shadow-sm"
                     />
                   </div>
-                  <p className="text-[11px] font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words">{template.name}</p>
+                  <p className="text-[11px] font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words min-h-[28px]">{template.name}</p>
                 </button>
               ))}
             </div>
