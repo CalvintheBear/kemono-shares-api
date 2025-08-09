@@ -67,6 +67,14 @@ const templates: Template[] = [
     category: '可愛い壁紙'
   },
   {
+    id: '22',
+    name: '証明写真加工',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-after',
+    prompt: '画像生成AI 無料で韓国風証明写真を作成！自然な美肌補正、清潔な背景の可愛い証明写真をチャットGPT 画像生成で無料作成。登録不要で即座にダウンロード可能、SNSプロフィルや身分証明写真としても使える',
+    category: '証明写真加工'
+  },
+  {
     id: '17',
     name: 'irasutoya',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-beforer',
@@ -175,8 +183,8 @@ const templates: Template[] = [
   {
     id: '1',
     name: '擬人化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after',
     prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
     category: '擬人化'
   },

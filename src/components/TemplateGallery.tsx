@@ -21,9 +21,9 @@ const templates = [
   {
     id: '1',
     name: '擬人化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after',
-    prompt: '画像生成AI 無料でペットやキャラクターを擬人化！猫 擬人化、犬 擬人化、ボケモン擬人化、サンリオ 擬人化も簡単に作成。チャットGPT 画像生成 無料で可愛いアイコンやLINEスタンプとして使えるアニメキャラに変身させましょう',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after',
+    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
     category: '擬人化'
   },
   {
