@@ -1972,14 +1972,6 @@ export default function WorkspaceRefactored() {
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 rounded-[36px] blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
                   <div className="relative bg-white/80 backdrop-blur-lg rounded-[36px] shadow-2xl border-2 border-dashed border-pink-300/30 hover:border-pink-400 transition-all group-hover:shadow-xl overflow-hidden">
-                    {!imagePreview && (
-                      <div className="py-10 text-center select-none">
-                        <div className="text-6xl mb-4">▶️</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">ASMR Video Generator</h3>
-                        <p className="text-gray-600 text-sm">Choose an ASMR type and enter a prompt to generate relaxing video content</p>
-                        <p className="text-gray-400 text-xs mt-2">High-quality audio included</p>
-                      </div>
-                    )}
                     {mode === 'text-to-image' ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4 animate-pulse">✍️✨</div>

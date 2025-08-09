@@ -14,9 +14,9 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`🔗 获取下载URL: ${url}, taskId: ${taskId}`);
     
-    // 获取 Kie.ai API 密钥
-    const kieApiKey = env.KIE_AI_API_KEY;
-    if (!kieApiKey) {
+    // 密钥池回退
+    const keyPool = [env.KIE_AI_API_KEY, env.KIE_AI_API_KEY_2, env.KIE_AI_API_KEY_3, env.KIE_AI_API_KEY_4, env.KIE_AI_API_KEY_5].filter((k: string | undefined) => !!k) as string[]
+    if (keyPool.length === 0) {
       return new Response(JSON.stringify({ error: 'Kie.ai API 密钥未配置' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -49,14 +49,25 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     console.log(`📤 发送请求到KIE AI:`, JSON.stringify(requestBody, null, 2));
     
     // 调用 KIE AI 下载URL API
-    const response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${kieApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
+    let response: Response | null = null
+    const start = Math.floor(Math.random() * keyPool.length)
+    for (let i = 0; i < keyPool.length; i++) {
+      const key = keyPool[(start + i) % keyPool.length]
+      try {
+        response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        })
+        if (response.ok) break
+      } catch {}
+    }
+    if (!response) {
+      return new Response(JSON.stringify({ error: '获取下载URL失败' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+    }
     
     if (!response.ok) {
       const errorText = await response.text();

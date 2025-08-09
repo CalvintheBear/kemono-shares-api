@@ -94,6 +94,9 @@ export default function Home() {
       {/* 英雄区域 */}
       <HomeHero />
 
+      {/* 今日最新作品（CTA 下方） */}
+      <HomeLatestShares />
+
       {/* 12个模板样式展示 - 优化移动端间距 */}
       <div className="pt-6 pb-12 lg:pt-8 lg:pb-20">
         <TemplateGallery />
@@ -391,8 +394,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 今日最新作品 */}
-      <HomeLatestShares />
+      {/* 今日最新作品（底部备份） -- 移动到上方 */}
 
       <Footer />
       <MobileBottomNav />

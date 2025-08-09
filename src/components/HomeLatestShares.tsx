@@ -54,9 +54,9 @@ export default function HomeLatestShares() {
   }, [items, loading])
 
   return (
-    <section className="py-10 lg:py-16 px-3 sm:px-4 lg:px-6 bg-[#fff7ea]">
+    <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-[#fff7ea]">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-6">今日最新作品</h2>
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-6">本日の最新作品</h2>
         <p className="text-center text-amber-700 text-sm mb-6">30分ごとに更新・最新12作品</p>
         {content}
       </div>

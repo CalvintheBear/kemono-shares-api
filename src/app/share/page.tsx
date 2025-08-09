@@ -25,9 +25,13 @@ function SharePageContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 不再通过 query/id 解析详情，/share 仅做画廊
+  // 支持通过 query 参数 id 渲染详情（用于静态导出回退 /share.html?id=...）
+  useEffect(() => {
+    const id = searchParams?.get('id')
+    if (id) setShareId(id)
+  }, [searchParams])
 
-  const isDetailMode = false
+  const isDetailMode = !!shareId
 
   // 获取详情数据
   useEffect(() => {

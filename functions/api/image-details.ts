@@ -13,9 +13,9 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     
     console.log(`🔍 查询图片详情: ${taskId}`);
     
-    // 获取 Kie.ai API 密钥
-    const kieApiKey = env.KIE_AI_API_KEY;
-    if (!kieApiKey) {
+    // 密钥池回退
+    const keyPool = [env.KIE_AI_API_KEY, env.KIE_AI_API_KEY_2, env.KIE_AI_API_KEY_3, env.KIE_AI_API_KEY_4, env.KIE_AI_API_KEY_5].filter((k: string | undefined) => !!k) as string[]
+    if (keyPool.length === 0) {
       return new Response(JSON.stringify({ error: 'Kie.ai API 密钥未配置' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -24,13 +24,24 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     
     // 根据 Kie.ai 文档，使用正确的API端点
     // GET https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=xxx
-    const response = await fetch(`https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=${taskId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${kieApiKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    let response: Response | null = null
+    const start = Math.floor(Math.random() * keyPool.length)
+    for (let i = 0; i < keyPool.length; i++) {
+      const key = keyPool[(start + i) % keyPool.length]
+      try {
+        response = await fetch(`https://api.kie.ai/api/v1/gpt4o-image/record-info?taskId=${taskId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        if (response.ok) break
+      } catch {}
+    }
+    if (!response) {
+      return new Response(JSON.stringify({ error: '查询任务状态失败' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+    }
     
     if (!response.ok) {
       console.error(`❌ Kie.ai API 查询失败: ${response.status} ${response.statusText}`);

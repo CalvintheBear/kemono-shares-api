@@ -13,14 +13,22 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`🎨 开始生成图片: ${prompt}, style: ${style}, size: ${size}, mode: ${mode}, fileUrl: ${fileUrl}`);
     
-    // 获取 Kie.ai API 密钥
-    const kieApiKey = env.KIE_AI_API_KEY;
-    if (!kieApiKey) {
+    // 获取 Kie.ai API 密钥池（最多5个）并做并发分流（随机挑选），遇到失败再顺序回退
+    const keyPool = [
+      env.KIE_AI_API_KEY,
+      env.KIE_AI_API_KEY_2,
+      env.KIE_AI_API_KEY_3,
+      env.KIE_AI_API_KEY_4,
+      env.KIE_AI_API_KEY_5,
+    ].filter((k: string | undefined) => !!k) as string[];
+    if (keyPool.length === 0) {
       return new Response(JSON.stringify({ error: 'Kie.ai API 密钥未配置' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
       });
     }
+    // 随机起点，提升并发分流效果
+    let start = Math.floor(Math.random() * keyPool.length);
     
     // 验证尺寸格式 - KIE AI API 只支持比例格式
     const supportedSizes = ['1:1', '3:2', '2:3'];
@@ -83,20 +91,40 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log('📤 发送请求到 Kie.ai:', JSON.stringify(requestBody, null, 2));
     
-    // 调用 Kie.ai 4o Image API
-    const response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/generate', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${kieApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
+    // 调用 Kie.ai 4o Image API（带密钥池回退）
+    let response: Response | null = null;
+    let lastErrText = '';
+    for (let i = 0; i < keyPool.length; i++) {
+      const key = keyPool[(start + i) % keyPool.length];
+      try {
+        response = await fetch('https://api.kie.ai/api/v1/gpt4o-image/generate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+        if (response.ok) {
+          console.log(`[KEY OK] 使用密钥#${(start + i) % keyPool.length + 1}`);
+          break;
+        } else {
+          lastErrText = await response.text();
+          console.warn(`[KEY FAIL] 密钥#${(start + i) % keyPool.length + 1} 响应 ${response.status} ${response.statusText}`);
+        }
+      } catch (e) {
+        lastErrText = e instanceof Error ? e.message : String(e);
+        console.warn(`[KEY ERROR] 密钥#${(start + i) % keyPool.length + 1} 调用异常:`, lastErrText);
+      }
+    }
+    if (!response) {
+      return new Response(JSON.stringify({ error: '图片生成失败', details: lastErrText }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    }
     
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`❌ Kie.ai API 调用失败: ${response.status} ${response.statusText}`, errorText);
-      return new Response(JSON.stringify({ 
+      return new Response(JSON.stringify({
         error: '图片生成失败',
         status: response.status,
         message: response.statusText,
