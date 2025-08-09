@@ -2050,6 +2050,11 @@ export default function WorkspaceRefactored() {
                 }
               </h3>
               {isGenerating && null}
+
+              {/* 注意事項（常時表示）*/}
+              <div className="mt-2 text-center text-xs text-amber-600">
+                現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
+              </div>
             </div>
 
             {!currentResult && (
