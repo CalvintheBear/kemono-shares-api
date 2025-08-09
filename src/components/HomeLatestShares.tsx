@@ -8,6 +8,7 @@ interface Item { id: string; generatedUrl: string; style?: string }
 export default function HomeLatestShares() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -27,6 +28,11 @@ export default function HomeLatestShares() {
     return () => { alive = false }
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 300)
+    return () => clearTimeout(timer)
+  }, [])
+
   const content = useMemo(() => {
     if (loading) {
       return (
@@ -37,11 +43,11 @@ export default function HomeLatestShares() {
     }
     if (!items || items.length === 0) {
       return (
-        <div className="text-center text-sm text-gray-500 py-10">まだ作品がありません。少し待ってね…</div>
+        <div className={`text-center text-sm text-gray-500 py-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>まだ作品がありません。少し待ってね…</div>
       )
     }
     return (
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className={`grid grid-cols-3 gap-2 sm:gap-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         {items.slice(0, 12).map((it) => (
           <a key={it.id} href={`/share?id=${encodeURIComponent(it.id)}`} className="block rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition lg:w-2/3 lg:mx-auto">
             <div className="relative w-full" style={{ aspectRatio: '4 / 3' }}>
@@ -51,13 +57,13 @@ export default function HomeLatestShares() {
         ))}
       </div>
     )
-  }, [items, loading])
+  }, [items, loading, isVisible])
 
   return (
     <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-[#fff7ea]">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-6">本日の最新作品</h2>
-        <p className="text-center text-amber-700 text-sm mb-6">30分ごとに更新</p>
+        <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
+        <p className={`text-center text-amber-700 text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>30分ごとに更新</p>
         {content}
       </div>
     </section>
