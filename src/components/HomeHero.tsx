@@ -26,11 +26,6 @@ export default function HomeHero() {
         }`}>
           登録不要・商用利用可能・高画質なAI画像生成ツール
         </p>
-        <p className={`text-base sm:text-lg lg:text-xl text-amber-700 opacity-90 mb-6 lg:mb-8 leading-relaxed transition-all duration-1000 delay-700 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}>
-          ジブリ風・VTuber・美少女・chibiLINE・スタンプ・可愛い壁紙など20+スタイルから即選べる
-        </p>
         
         {/* 两排并列居中的按钮 */}
         <div className={`flex flex-col gap-4 justify-center items-center transition-all duration-1000 delay-900 ${
