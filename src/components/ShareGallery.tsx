@@ -125,8 +125,8 @@ export default function ShareGallery() {
 
   // Handle image click
   const handleImageClick = (image: MasonryImage) => {
-    // 直接进入SSR详情页路由
-    window.open(`/share/${encodeURIComponent(image.id)}`, '_blank');
+    // 为适配 Cloudflare Pages 静态导出回退，统一采用 query 形式
+    window.open(`/share?id=${encodeURIComponent(image.id)}`, '_blank');
   };
 
   return (

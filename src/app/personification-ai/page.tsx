@@ -224,7 +224,7 @@ export default function PersonificationPage() {
                 今すぐ擬人化キャラを作る 🎭
               </Link>
               <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                ギャラリーを見る 🖼️
+                お題一覧 🖼️
               </Link>
             </div>
           </section>

@@ -43,7 +43,7 @@ export default function HomeLatestShares() {
     return (
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]"><div className="grid grid-cols-1 gap-4">
         {items.map((it) => (
-          <a key={it.id} href={`/share/${encodeURIComponent(it.id)}`} className="block break-inside-avoid rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition">
+          <a key={it.id} href={`/share?id=${encodeURIComponent(it.id)}`} className="block break-inside-avoid rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition">
             <div className="relative w-full" style={{ aspectRatio: '4 / 3' }}>
               <Image src={it.generatedUrl} alt={it.style || 'AI生成画像'} fill sizes="(min-width:1024px) 33vw, 50vw" className="object-cover" unoptimized />
             </div>

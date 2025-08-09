@@ -54,7 +54,7 @@ export default function HomeHero() {
                 animation: 'sizeAlternate2 2s ease-in-out infinite'
               }}
             >
-              ギャラリーを見る 🖼️
+              お題一覧 🖼️
             </Link>
           </div>
         </div>

@@ -216,7 +216,7 @@ export default function PrivacyPage() {
                     今すぐ始める
                   </Link>
                   <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
-                    ギャラリーを見る
+                    お題一覧
                   </Link>
                 </div>
               </div>

@@ -51,7 +51,7 @@ export default function Header() {
                 href="/share" 
                 className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-2 sm:px-4 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
               >
-                ギャラリー
+                お題一覧
               </Link>
             </div>
             
@@ -75,7 +75,7 @@ export default function Header() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
               {/* 其他链接 */}
               <Link href="/workspace" className="block w-full text-center bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">体験</Link>
-              <Link href="/share" className="block w-full text-center bg-gradient-to-r from-blue-400 to-purple-400 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">ギャラリー</Link>
+              <Link href="/share" className="block w-full text-center bg-gradient-to-r from-blue-400 to-purple-400 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">お題一覧</Link>
               <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">利用規約</Link>

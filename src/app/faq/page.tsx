@@ -264,7 +264,7 @@ export default function FAQPage() {
                 href="/share"
                 className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
               >
-                ギャラリーを見る
+                お題一覧
               </Link>
             </div>
           </div>

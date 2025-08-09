@@ -191,8 +191,12 @@ function SharePageContent() {
       <Header />
         <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 py-8 pt-24">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">AI画像生成 ギャラリー</h1>
-          <p className="text-gray-600 mt-2">最新の共有作品を表示します</p>
+          <h1 className="text-3xl font-bold text-amber-800 font-cute">
+            チャットGPT 画像生成 | AI画像生成 お題一覧
+          </h1>
+          <p className="text-gray-700 mt-2 text-sm">
+            ai画像生成 サイト 無料 登録不要・写真加工アプリ無料の代わりにブラウザだけで1-3分。ジブリ風・VTuber・chibiほか最新作例を毎日更新。
+          </p>
         </div>
         <ShareGallery />
       </main>
