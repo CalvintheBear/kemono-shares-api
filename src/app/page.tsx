@@ -5,17 +5,18 @@ import FAQ from "@/components/FAQ";
 import Link from "next/link";
 import HomeHero from "@/components/HomeHero";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import HomeLatestShares from "@/components/HomeLatestShares";
 import Image from 'next/image'
 
 
 
 // ホームページSEOメタデータ
 export const metadata = {
-  title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-  description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風・chibi等20+スタイル対応。商用利用OK。",
+  title: "AI画像生成 無料 登録不要 | gpt4o image で写真をアニメ風に即変換 - 2kawaii",
+  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
   openGraph: {
-    title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-    description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風・chibi等20+スタイル対応。",
+    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
     url: "https://2kawaii.com",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -31,8 +32,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI画像生成 無料 登録不要 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-    description: "GPT-4o Imageで完全無料・登録不要！プロンプト自動生成で写真を1-3分でアニメ風に即変換。ジブリ風・VTuber風等20+スタイル対応。",
+    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
@@ -105,13 +106,13 @@ export default function Home() {
             AI画像変換の使い方 - 3ステップで簡単操作
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-            <div className="text-center card-kawaii p-4 sm:p-6 lg:p-8 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              <div className="w-32 sm:w-48 lg:w-56 h-32 sm:h-48 lg:h-56 mx-auto mb-4 lg:mb-6">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choose_model_and_choose_template" 
                   alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
-                  width={200}
-                  height={200}
+                  width={224}
+                  height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
                   title="AI画像変換 モデル選択とテンプレート選択ガイド"
@@ -120,13 +121,13 @@ export default function Home() {
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. モデルとテンプレートを選択</h3>
               <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルとアニメスタイルテンプレートを選択してください</p>
             </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-upload_image_and_click_start" 
                   alt="AI画像変換 画像アップロードと開始 - 無料ツール" 
-                  width={200}
-                  height={200}
+                  width={224}
+                  height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
                   title="AI画像変換 画像アップロードと開始"
@@ -135,13 +136,13 @@ export default function Home() {
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. 画像をアップロードして開始</h3>
               <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">写真をアップロードして「開始」ボタンをクリックするとAI変換が始まります</p>
             </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.6s'}}>
-              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.6s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
                   alt="AI画像変換成功 - 最終画像取得 ダウンロード可能 商用利用" 
-                  width={200}
-                  height={200}
+                  width={224}
+                  height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
                   title="AI画像変換成功 - 最終画像取得"
@@ -389,6 +390,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* 今日最新作品 */}
+      <HomeLatestShares />
 
       <Footer />
       <MobileBottomNav />

@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   distDir: '.next',
   
+  // i18n 设置（仅日语）
+  i18n: {
+    locales: ['ja'],
+    defaultLocale: 'ja',
+    localeDetection: false,
+  },
+  
   // 图片优化配置
   images: {
     // 允许外部图片域名

@@ -85,7 +85,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     }
 
     const body = await request.json();
-    const { generatedUrl, originalUrl, prompt, style, timestamp, isR2Stored } = body;
+    const { generatedUrl, originalUrl, prompt, style, timestamp, isR2Stored, seoTags } = body;
     
     // 2. 判断生成类型
     let generationType: 'text2img' | 'img2img' | 'template' = 'text2img';
@@ -133,7 +133,9 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       height: 800,
       generationType,
       isR2Stored: isR2Stored || isR2Url,
-      urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown')
+      urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown'),
+      // 可选SEO标签/关键词
+      seoTags: Array.isArray(seoTags) ? seoTags.slice(0, 20) : undefined
     };
     
     console.log(`✅ 创建分享对象: ${shareDataObject.id}, 类型: ${generationType}`);

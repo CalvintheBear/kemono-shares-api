@@ -20,34 +20,14 @@ interface ShareData {
 
 function SharePageContent() {
   const searchParams = useSearchParams()
-  const [shareId, setShareId] = useState<string | null>(() => {
-    // 在首帧同步解析路径，避免直接渲染到画廊
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const paramId = urlParams.get('id')
-      if (paramId) return paramId
-      const parts = window.location.pathname.split('/')
-      const last = parts[parts.length - 1]
-      if (last && last !== 'share') return last
-    }
-    return null
-  })
+  const [shareId, setShareId] = useState<string | null>(null)
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 解析是否为详情模式
-  useEffect(() => {
-    // 若 searchParams 有 id，则覆盖为最新值
-    const paramsId = searchParams?.get('id')
-    if (paramsId && paramsId !== shareId) {
-      setShareId(paramsId)
-      return
-    }
-    // 否则维持首帧已解析的路径ID，不清空
-  }, [searchParams, shareId])
+  // 不再通过 query/id 解析详情，/share 仅做画廊
 
-  const isDetailMode = useMemo(() => !!shareId, [shareId])
+  const isDetailMode = false
 
   // 获取详情数据
   useEffect(() => {
@@ -82,6 +62,10 @@ function SharePageContent() {
     window.location.href = 'https://2kawaii.com'
   }
 
+  const navToHome = () => (window.location.href = '/')
+  const navToGallery = () => (window.location.href = '/share')
+  const navToWorkspace = () => (window.location.href = '/workspace')
+
   const handleDownload = () => {
     if (shareData) {
       const link = document.createElement('a')
@@ -91,7 +75,19 @@ function SharePageContent() {
     }
   }
 
-  // 详情模式渲染
+  const renderSeoTags = () => {
+    const tags: string[] = (shareData as any)?.seoTags || []
+    if (!tags || tags.length === 0) return null
+    return (
+      <div className="flex flex-wrap gap-2 mt-3">
+        {tags.slice(0, 10).map((t, i) => (
+          <span key={i} className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">#{t}</span>
+        ))}
+      </div>
+    )
+  }
+
+  // 详情模式渲染（已弃用）
   if (isDetailMode) {
     if (loading) {
       return (
@@ -132,6 +128,7 @@ function SharePageContent() {
     return (
       <div className="min-h-screen bg-[#fff7ea]">
         <Header />
+        {/* 详情页动态SEO已迁移到 /share/[id]/generateMetadata */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-8 text-center">
@@ -146,8 +143,8 @@ function SharePageContent() {
                 <Image
                   src={shareData.generatedUrl}
                   alt="AI生成画像"
-                  width={600}
-                  height={400}
+                  width={1200}
+                  height={800}
                   unoptimized
                   className="rounded-2xl shadow-lg max-w-full h-auto"
                   onError={(e) => {
@@ -163,11 +160,17 @@ function SharePageContent() {
                 <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
               </div>
               <p className="text-gray-700 text-sm leading-relaxed">{shareData.prompt}</p>
+              {renderSeoTags()}
             </div>
             <div className="p-6 bg-gray-50 rounded-xl">
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                 <button onClick={handleDownload} className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 min-w-[140px]">📥 ダウンロード</button>
                 <button onClick={handleTryNow} className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 min-w-[140px]">✨ 自分も試してみる</button>
+              </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button onClick={navToHome} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 ホームへ</button>
+                <button onClick={navToGallery} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ ギャラリーへ</button>
+                <button onClick={navToWorkspace} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ ワークスペースへ</button>
               </div>
             </div>
           </div>
@@ -178,11 +181,11 @@ function SharePageContent() {
     )
   }
 
-  // 画廊模式渲染
+  // 画廊模式渲染（详情页已迁移到 /share/[id]）
   return (
     <div className="min-h-screen bg-[#fff7ea]">
       <Header />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+        <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 py-8 pt-24">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">AI画像生成 ギャラリー</h1>
           <p className="text-gray-600 mt-2">最新の共有作品を表示します</p>

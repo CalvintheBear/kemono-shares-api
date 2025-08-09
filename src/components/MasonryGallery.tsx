@@ -29,9 +29,9 @@ interface ColumnData {
 const BREAKPOINTS = {
   sm: 480,
   md: 640,
-  lg: 768,
-  xl: 1024,
-  '2xl': 1280,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536,
 };
 
 const GUTTER_SIZE = 16;
@@ -59,11 +59,12 @@ export default function MasonryGallery({
     
     const width = containerRef.current?.clientWidth || window.innerWidth;
     
-    if (width >= BREAKPOINTS['2xl']) return 6;
-    if (width >= BREAKPOINTS.xl) return 5;
-    if (width >= BREAKPOINTS.lg) return 4;
-    if (width >= BREAKPOINTS.md) return 3;
-    if (width >= BREAKPOINTS.sm) return 2;
+    // PC端放大图片：减少列数以增大香图尺寸
+    if (width >= BREAKPOINTS['2xl']) return 4;
+    if (width >= BREAKPOINTS.xl) return 4;
+    if (width >= BREAKPOINTS.lg) return 3;
+    if (width >= BREAKPOINTS.md) return 3; // 平板/大号手机横屏 3列
+    if (width >= BREAKPOINTS.sm) return 2; // 小屏 2列
     return 1;
   }, [containerRef]);
 

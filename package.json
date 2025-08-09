@@ -36,7 +36,8 @@
     "check:production": "node scripts/check-production-config.js",
     "validate:env": "node scripts/validate-env.js",
     "diagnose:404": "node scripts/diagnose-404.js",
-    "fix:routes": "node scripts/fix-routes-overlap.js"
+    "fix:routes": "node scripts/fix-routes-overlap.js",
+    "postbuild:sitemap": "next-sitemap"
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.13",

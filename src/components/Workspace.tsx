@@ -308,7 +308,7 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
     return (
       <button
         onClick={onClick}
-        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 flex items-center gap-1.5 relative ${
+        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 flex items-center gap-1.5 relative ${
           isSelected
             ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-md'
             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -355,6 +355,7 @@ export default function WorkspaceRefactored() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [prompt, setPrompt] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
@@ -363,6 +364,7 @@ export default function WorkspaceRefactored() {
   const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
   const [enhancePrompt, setEnhancePrompt] = useState(false)
   const [generationError, setGenerationError] = useState<string>('')
+  const [stopReason, setStopReason] = useState<null | 'TIMEOUT' | 'MAX_FAILURES' | 'URL_TIMEOUT' | 'NETWORK'>(null)
   const [autoShareUrl, setAutoShareUrl] = useState<string>('')
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
@@ -376,6 +378,28 @@ export default function WorkspaceRefactored() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pollIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const clearPollTimer = () => {
+    if (pollIntervalRef.current) {
+      clearTimeout(pollIntervalRef.current)
+      pollIntervalRef.current = null
+    }
+  }
+
+  const stopWithReason = (reason: 'TIMEOUT' | 'MAX_FAILURES' | 'URL_TIMEOUT' | 'NETWORK', message: string) => {
+    clearPollTimer()
+    setStopReason(reason)
+    setGenerationError(message)
+    setIsGenerating(false)
+  }
+
+  const handleRetry = () => {
+    clearPollTimer()
+    setStopReason(null)
+    setGenerationError('')
+    setCurrentResult(null)
+    // 保持现有的 fileUrl/prompt/mode，直接重新生成
+    generateImage()
+  }
   const isMountedRef = useRef(true)
   const templateScrollRef = useRef<HTMLDivElement>(null)
   const hasInitializedRef = useRef(false)
@@ -400,6 +424,18 @@ export default function WorkspaceRefactored() {
     
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // 移动端进入时自动滚动到核心区域
+  useEffect(() => {
+    if (!isMobile) return
+    const timer = setTimeout(() => {
+      const el = document.getElementById('workspace-mobile-core')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [isMobile])
 
   // 保持输入框焦点（仅在真正失焦时重新聚焦，避免干扰输入法）
   useEffect(() => {
@@ -504,6 +540,7 @@ export default function WorkspaceRefactored() {
 
     try {
       setIsUploading(true)
+      setUploadProgress(0)
       
       // 直接使用客户端上传，不依赖API路由
       const url = await uploadImageDirectly(file)
@@ -526,22 +563,37 @@ export default function WorkspaceRefactored() {
       const formData = new FormData()
       formData.append('file', file)
       
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        body: formData
+      const xhr = new XMLHttpRequest()
+      const promise = new Promise<string>((resolve, reject) => {
+        xhr.open('POST', '/api/upload-image', true)
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100)
+            setUploadProgress(percent)
+          }
+        }
+        xhr.onload = () => {
+          try {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const data = JSON.parse(xhr.responseText)
+              if (data.success && data.fileUrl) {
+                resolve(data.fileUrl)
+              } else {
+                reject(new Error(data.error || '上传响应格式错误'))
+              }
+            } else {
+              reject(new Error(`上传失败: ${xhr.status}`))
+            }
+          } catch (err) {
+            reject(err)
+          }
+        }
+        xhr.onerror = () => reject(new Error('网络错误'))
+        xhr.send(formData)
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `上传失败: ${response.status}`)
-      }
-
-      const data = await response.json()
-      if (data.success && data.fileUrl) {
-        return data.fileUrl
-      } else {
-        throw new Error(data.error || '上传响应格式错误')
-      }
+      const fileUrl = await promise
+      return fileUrl
     } catch (error) {
       console.warn('R2上传失败，尝试其他方式:', error)
       throw error
@@ -772,7 +824,15 @@ export default function WorkspaceRefactored() {
           prompt: result.prompt,
           style: selectedTemplate?.name || 'カスタム',
           timestamp: Date.now(),
-          isR2Stored: isR2Url // 标记是否使用R2永久URL
+          isR2Stored: isR2Url, // 标记是否使用R2永久URL
+          // 默认SEO标签（参考 seo优化任务.md 的高优先级关键词）
+          seoTags: [
+            'チャットgpt 画像生成',
+            '画像生成ai 無料',
+            'プロンプト',
+            'ai画像生成 サイト 無料 登録不要',
+            'gpt4o image'
+          ]
         })
       })
 
@@ -829,6 +889,8 @@ export default function WorkspaceRefactored() {
         const kieApiData = data.data?.data || data.data || data
         const responseData = kieApiData
         const status = responseData.status || 'GENERATING'
+        const progressRaw = responseData.progress || responseData.progressPercent || responseData.percentage || 0
+        const progress = Math.max(0, Math.min(100, Math.floor(progressRaw)))
         const generatedUrl = responseData.response?.result_urls?.[0] || responseData.response?.resultUrls?.[0] || null
         const successFlag = responseData.successFlag
         const errorMessage = responseData.errorMessage || responseData.error || null
@@ -839,7 +901,7 @@ export default function WorkspaceRefactored() {
         console.log('[pollProgress] data.data.data:', data.data?.data)
         console.log('[pollProgress] 解析后的 kieApiData:', kieApiData)
         console.log('[pollProgress] === 状态信息 ===')
-        console.log('[pollProgress] 状态检查:', { status, successFlag, generatedUrl, errorMessage })
+        console.log('[pollProgress] 状态检查:', { status, successFlag, generatedUrl, errorMessage, progress })
         console.log('[pollProgress] 完整响应数据:', responseData)
         console.log('[pollProgress] response字段:', responseData.response)
         console.log('[pollProgress] resultUrls字段:', responseData.response?.resultUrls)
@@ -940,14 +1002,13 @@ export default function WorkspaceRefactored() {
                   finalImageUrl = r2UrlData.url
                   console.log('[pollProgress] 从after桶获取URL成功:', finalImageUrl)
                 } else {
-                  console.log('[pollProgress] after桶中未找到图片，等待回调处理...')
+                    console.log('[pollProgress] after桶中未找到图片，等待回调处理...')
                   // 增加等待计数，避免无限轮询
                   errorCount++
                   if (errorCount > 15) { // 等待30秒后停止
-                    console.log('[pollProgress] 等待after桶超时，停止轮询')
-                    setGenerationError('图片生成完成但无法获取URL，请稍后刷新页面查看')
-                    setIsGenerating(false)
-                    return
+                      console.log('[pollProgress] 等待after桶超时，停止轮询')
+                      stopWithReason('URL_TIMEOUT', '画像は生成されましたがURLの反映に時間がかかっています。少し待ってから「再試行」してください。')
+                      return
                   }
                   pollIntervalRef.current = setTimeout(loop, 2000)
                   return
@@ -957,8 +1018,7 @@ export default function WorkspaceRefactored() {
                 errorCount++
                 if (errorCount > 15) {
                   console.log('[pollProgress] 查询after桶失败次数过多，停止轮询')
-                  setGenerationError('无法获取生成的图片URL，请稍后刷新页面查看')
-                  setIsGenerating(false)
+                  stopWithReason('URL_TIMEOUT', '生成結果の取得に時間がかかっています。少し待ってから「再試行」してください。')
                   return
                 }
                 pollIntervalRef.current = setTimeout(loop, 2000)
@@ -969,8 +1029,7 @@ export default function WorkspaceRefactored() {
               errorCount++
               if (errorCount > 15) {
                 console.log('[pollProgress] 查询after桶错误次数过多，停止轮询')
-                setGenerationError('查询图片状态时出错，请稍后刷新页面查看')
-                setIsGenerating(false)
+                stopWithReason('URL_TIMEOUT', '生成結果の確認中にエラーが発生しました。少し待ってから「再試行」してください。')
                 return
               }
               pollIntervalRef.current = setTimeout(loop, 2000)
@@ -1044,6 +1103,13 @@ export default function WorkspaceRefactored() {
         } else {
           // 继续轮询，但检查是否应该停止
           consecutiveFailures = 0 // 重置失败计数
+          // 更新UI中的进度（仅在生成中）
+          if (typeof progress === 'number' && !Number.isNaN(progress)) {
+            setCurrentResult(prev => {
+              if (!prev) return prev
+              return { ...prev, progress }
+            })
+          }
           
           // 如果状态是SUCCESS但没有URL，可能是回调正在处理中
           if (status === 'SUCCESS' && !generatedUrl) {
@@ -1060,9 +1126,8 @@ export default function WorkspaceRefactored() {
           // 检查是否超时
           if (Date.now() - startTime >= timeout) {
             console.log('[pollProgress] 轮询超时')
-            setGenerationError('タイムアウトしました')
             setCurrentResult(null)
-            setIsGenerating(false)
+            stopWithReason('TIMEOUT', 'お待たせしています。処理が5分を超えたため中断しました。時間をおいて「再試行」してください。')
             return
           }
           
@@ -1076,9 +1141,8 @@ export default function WorkspaceRefactored() {
         
         if (errorCount >= 3 || consecutiveFailures >= 5) {
           console.log('[轮询] 达到最大错误次数或连续失败次数，停止轮询')
-          setGenerationError('ネットワークエラー')
           setCurrentResult(null)
-          setIsGenerating(false)
+          stopWithReason('MAX_FAILURES', 'ネットワーク状態が不安定です。少し待ってから「再試行」してください。')
           return
         } else {
           if (!isMountedRef.current) {
@@ -1161,9 +1225,9 @@ export default function WorkspaceRefactored() {
           <div className="absolute top-3/4 right-1/4 text-xl animate-float-delayed">💫</div>
         </div>
 
-        {/* 中间结果展示区 */}
+        {/* 中间结果展示区 - 限高自适应，避免小屏溢出 */}
         <div className="flex-1 mb-16 overflow-y-auto relative z-10">
-          <div className="p-4 space-y-4">
+          <div id="workspace-mobile-core" className="p-4 space-y-4">
             
             {/* 顶部装饰标题 */}
             <div className="text-center mb-4">
@@ -1192,11 +1256,11 @@ export default function WorkspaceRefactored() {
             </div>
 
             {!currentResult ? (
-              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-280px)]">
+              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)]">
                 {mode === 'text-to-image' ? (
                   <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-blue-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
+                  <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-blue-200/50 p-4 sm:p-6 text-center w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <div className="text-6xl sm:text-7xl mb-6 animate-bounce">✍️✨</div>
                       <h3 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3">
                         🎨 文生图モード開始！
@@ -1223,7 +1287,7 @@ export default function WorkspaceRefactored() {
                 ) : imagePreview ? (
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-200 via-orange-200 to-yellow-200 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
-                    <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-4 border border-white/50">
+                    <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-3 sm:p-4 border border-white/50 max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <Image
                         src={imagePreview}
                         alt="アップロード画像"
@@ -1245,7 +1309,7 @@ export default function WorkspaceRefactored() {
                   </div>
                 ) : (
                   <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-6 sm:p-8 text-center w-full max-w-full mx-auto">
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-4 sm:p-6 text-center w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <div className="text-6xl sm:text-7xl mb-6 animate-bounce">📸✨</div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
                         📱 可愛い写真をアップロード
@@ -1277,7 +1341,7 @@ export default function WorkspaceRefactored() {
                 <div className="space-y-6">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-amber-200/50 overflow-hidden">
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-amber-200/50 overflow-hidden max-h-[65vh] sm:max-h-[70vh] overflow-y-auto">
                       <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 p-3">
                         <p className="text-white font-bold text-center">🎉 変身完了！魔法が成功しました！</p>
                       </div>
@@ -1360,7 +1424,7 @@ export default function WorkspaceRefactored() {
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-200/50 p-8 text-center max-w-sm mx-auto">
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-200/50 p-6 text-center max-w-sm mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <div className="relative mb-4">
                         <div className="animate-spin rounded-full h-16 w-16 border-4 border-pink-200"></div>
                         <div className="absolute inset-0 animate-spin rounded-full h-16 w-16 border-4 border-pink-500 border-t-transparent"></div>
@@ -1387,7 +1451,7 @@ export default function WorkspaceRefactored() {
 
       {/* 底部固定编辑区 */}
       <div className="fixed bottom-16 left-0 right-0 bg-white shadow-lg z-40 border-t border-gray-200">
-        <div className="flex items-center justify-between p-3">
+        <div className="flex items-center justify-between p-2 sm:p-3">
           <div className="flex-shrink-0">
             <input
               ref={fileInputRef}
@@ -1404,7 +1468,7 @@ export default function WorkspaceRefactored() {
             </button>
           </div>
 
-          <div className="flex-1 mx-3">
+          <div className="flex-1 mx-2 sm:mx-3">
             {/* 始终渲染输入框，避免条件渲染导致的卸载重建 */}
             <input
               ref={promptMobileInputRef}
@@ -1444,16 +1508,16 @@ export default function WorkspaceRefactored() {
         </div>
 
         {mode === 'template-mode' && (
-          <div className="px-3 pb-3">
+          <div className="px-2 sm:px-3 pb-2 sm:pb-3">
             <div 
               ref={templateScrollRef}
-              className="flex gap-3 overflow-x-auto pb-2 touch-pan-x"
+              className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 touch-pan-x"
             >
               {templates.map((template) => (
                 <button
                   key={template.id}
                   onClick={() => handleMobileTemplateSelect(template)}
-                  className={`flex-none min-w-[5.5rem] max-w-[5.5rem] w-[5.5rem] h-36 p-1.5 rounded-[16px] border-2 transition-all transform hover:scale-105 flex flex-col items-center ${
+                  className={`flex-none min-w-[4.75rem] max-w-[4.75rem] w-[4.75rem] h-32 p-1.5 rounded-[14px] border-2 transition-all transform hover:scale-105 flex flex-col items-center ${
                     selectedTemplate?.id === template.id
                       ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
                       : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
@@ -1463,20 +1527,20 @@ export default function WorkspaceRefactored() {
                     <Image
                       src={template.afterImage}
                       alt={template.name}
-                      width={64}
-                      height={64}
-                      className="w-16 h-16 object-cover rounded-[12px] shadow-sm"
+                      width={56}
+                      height={56}
+                      className="w-14 h-14 object-cover rounded-[10px] shadow-sm"
                     />
                   </div>
-                  <p className="text-xs font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words">{template.name}</p>
+                  <p className="text-[11px] font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words">{template.name}</p>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        <div className="flex items-center justify-between p-3 border-t border-gray-100">
-          <div className="flex gap-2">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-gray-100 overflow-x-auto">
+          <div className="flex gap-1.5 sm:gap-2">
             {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
               <SizeButton
                 key={size}
@@ -1488,13 +1552,13 @@ export default function WorkspaceRefactored() {
             ))}
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             <button
               onClick={() => {
                 setMode('template-mode')
                 if (!selectedTemplate) setPrompt('')
               }}
-              className={`px-3 py-2 rounded-lg text-sm font-medium ${
+              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
                 mode === 'template-mode' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
@@ -1507,7 +1571,7 @@ export default function WorkspaceRefactored() {
                 setSelectedTemplate(null)
                 localStorage.removeItem('selectedTemplateId')
               }}
-              className={`px-3 py-2 rounded-lg text-sm font-medium ${
+              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
                 mode === 'image-to-image' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
@@ -1524,7 +1588,7 @@ export default function WorkspaceRefactored() {
                 localStorage.removeItem('savedFileUrl')
                 localStorage.removeItem('savedMode')
               }}
-              className={`px-3 py-2 rounded-lg text-sm font-medium ${
+              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
                 mode === 'text-to-image' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
               }`}
             >
@@ -1762,8 +1826,10 @@ export default function WorkspaceRefactored() {
 
             {isUploading && (
               <div className="mt-4 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 mx-auto"></div>
-                <p className="mt-2 text-sm text-amber-600 font-cute">写真を準備中... 📤</p>
+                <div className="w-full max-w-xs mx-auto bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div className="bg-pink-500 h-2" style={{ width: `${uploadProgress}%` }} />
+                </div>
+                <p className="mt-2 text-sm text-amber-600 font-cute">アップロード中... {uploadProgress}%</p>
               </div>
             )}
 
@@ -1868,7 +1934,11 @@ export default function WorkspaceRefactored() {
 
             {generationError && (
               <div className="mt-6 p-6 bg-gradient-to-r from-red-50/80 to-pink-50/80 backdrop-blur-sm border border-pink-200/50 rounded-[24px] shadow-lg overflow-hidden">
-                <p className="text-pink-800 font-cute">{generationError}</p>
+                <p className="text-pink-800 font-cute mb-3">{generationError}</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <button onClick={handleRetry} className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow hover:shadow-md transition">再試行</button>
+                  <button onClick={() => setGenerationError('')} className="bg-white border border-amber-200 text-amber-700 px-4 py-2 rounded-full font-bold shadow-sm hover:shadow transition">閉じる</button>
+                </div>
               </div>
             )}
           </div>
@@ -1878,21 +1948,38 @@ export default function WorkspaceRefactored() {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="bg-white/80 backdrop-blur-xl rounded-[36px] shadow-2xl p-8 card-kawaii border border-white/40 overflow-hidden">
-            <h3 className="text-2xl font-bold text-amber-800 mb-6 font-cute text-center">
-              {isGenerating 
-                ? (mode === 'text-to-image' ? '画像生成中、1-3分お待ちください...' : '変身中、1-3分お待ちください...') 
-                : currentResult?.status === 'SUCCESS' 
-                  ? (mode === 'text-to-image' ? '画像生成完了！🎉' : '変身完了！🎉') 
-                  : '結果プレビュー ✨'
-              }
-            </h3>
+            <div className="mb-4 text-center">
+              <h3 className="text-2xl font-bold text-amber-800 font-cute">
+                {isGenerating 
+                  ? (mode === 'text-to-image' ? '画像生成中...' : '変身中...') 
+                  : currentResult?.status === 'SUCCESS' 
+                    ? (mode === 'text-to-image' ? '画像生成完了！🎉' : '変身完了！🎉') 
+                    : '結果プレビュー ✨'
+                }
+              </h3>
+              {isGenerating && (
+                <div className="mt-3">
+                  <div className="w-full max-w-md mx-auto bg-amber-100 rounded-full h-3 overflow-hidden">
+                    <div className="bg-gradient-to-r from-pink-500 to-orange-500 h-3 transition-all" style={{ width: `${Math.max(5, Math.min(95, (currentResult as any)?.progress || 8))}%` }} />
+                  </div>
+                  <p className="mt-2 text-sm text-amber-700">進捗: {Math.max(5, Math.min(95, (currentResult as any)?.progress || 8))}%（目安 1-3分）</p>
+                </div>
+              )}
+            </div>
 
             {!currentResult && (
               <div className="space-y-6">
                 <div className="relative group">
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 rounded-[36px] blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-                  <div className="relative bg-white/80 backdrop-blur-lg rounded-[36px] shadow-2xl border-2 border-dashed border-pink-300/30 hover:border-pink-400 transition-all cursor-pointer group-hover:shadow-xl overflow-hidden"
-                  >
+                  <div className="relative bg-white/80 backdrop-blur-lg rounded-[36px] shadow-2xl border-2 border-dashed border-pink-300/30 hover:border-pink-400 transition-all group-hover:shadow-xl overflow-hidden">
+                    {!imagePreview && (
+                      <div className="py-10 text-center select-none">
+                        <div className="text-6xl mb-4">▶️</div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">ASMR Video Generator</h3>
+                        <p className="text-gray-600 text-sm">Choose an ASMR type and enter a prompt to generate relaxing video content</p>
+                        <p className="text-gray-400 text-xs mt-2">High-quality audio included</p>
+                      </div>
+                    )}
                     {mode === 'text-to-image' ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4 animate-pulse">✍️✨</div>
@@ -2076,8 +2163,8 @@ export default function WorkspaceRefactored() {
             AI画像変換の使い方 - 3ステップで簡単操作
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-            <div className="text-center card-kawaii p-4 sm:p-6 lg:p-8 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              <div className="w-32 sm:w-48 lg:w-56 h-32 sm:h-48 lg:h-56 mx-auto mb-4 lg:mb-6">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choose_model_and_choose_template" 
                   alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
@@ -2091,8 +2178,8 @@ export default function WorkspaceRefactored() {
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. モデルとテンプレートを選択</h3>
               <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルとアニメスタイルテンプレートを選択してください</p>
             </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.4s'}}>
-              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-upload_image_and_click_start" 
                   alt="AI画像変換 画像アップロードと開始 - 無料ツール" 
@@ -2106,8 +2193,8 @@ export default function WorkspaceRefactored() {
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. 画像をアップロードして開始</h3>
               <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">写真をアップロードして「開始」ボタンをクリックするとAI変換が始まります</p>
             </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up" style={{animationDelay: '0.6s'}}>
-              <div className="w-48 sm:w-56 lg:w-64 h-48 sm:h-56 lg:h-64 mx-auto mb-6 lg:mb-8">
+            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.6s'}}>
+              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
                   src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
                   alt="AI画像変換成功 - 最終画像取得 ダウンロード可能 商用利用" 

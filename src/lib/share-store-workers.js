@@ -37,7 +37,9 @@ export class ShareStoreWorkers {
         style: data.style,
         timestamp: data.timestamp || Date.now(),
         createdAt: new Date().toISOString(),
-        isR2Stored: data.isR2Stored || false
+        isR2Stored: data.isR2Stored || false,
+        // 存储可选seo标签（数组）
+        seoTags: Array.isArray(data.seoTags) ? data.seoTags.slice(0, 20) : []
       };
 
       // 存储分享数据

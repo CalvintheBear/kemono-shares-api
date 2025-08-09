@@ -125,8 +125,8 @@ export default function ShareGallery() {
 
   // Handle image click
   const handleImageClick = (image: MasonryImage) => {
-    // 使用查询参数形式，避免静态导出环境对 /share/:id 的回退
-    window.open(`/share?id=${encodeURIComponent(image.id)}`, '_blank');
+    // 直接进入SSR详情页路由
+    window.open(`/share/${encodeURIComponent(image.id)}`, '_blank');
   };
 
   return (

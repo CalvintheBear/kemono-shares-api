@@ -39,15 +39,14 @@ export default function Header() {
           
           {/* CTA Button and Mobile Menu - Now on the right */}
           <div className="flex items-center space-x-2 sm:space-x-4 order-3">
-            {/* 移动端按钮 - 优化显示 */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
-                             <Link 
-                 href="/workspace" 
-                 className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-3 sm:px-5 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
-               >
-                 体験
-               </Link>
-              
+            {/* 桌面端显示CTA，移动端移入侧边栏 */}
+            <div className="hidden md:flex items-center space-x-2">
+              <Link 
+                href="/workspace" 
+                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-3 sm:px-5 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
+              >
+                体験
+              </Link>
               <Link 
                 href="/share" 
                 className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-2 sm:px-4 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
@@ -75,6 +74,8 @@ export default function Header() {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
               {/* 其他链接 */}
+              <Link href="/workspace" className="block w-full text-center bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">体験</Link>
+              <Link href="/share" className="block w-full text-center bg-gradient-to-r from-blue-400 to-purple-400 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">ギャラリー</Link>
               <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">FAQ</Link>
               <Link href="/privacy" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">プライバシー</Link>
               <Link href="/terms" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">利用規約</Link>
