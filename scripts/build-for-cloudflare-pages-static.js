@@ -47,7 +47,29 @@ try {
 
   // 构建静态文件
   console.log('🔨 构建静态文件...');
+  // 在export模式下，Next不允许动态段 /share/[id]。临时移走该目录，构建后再还原，由 _redirects 提供回退。
+  const shareIdDir = path.join('src','app','share','[id]');
+  const shareIdBackup = path.join('src','app','share','__id_backup__');
+  let movedShareDir = false;
+  try {
+    if (fs.existsSync(shareIdDir)) {
+      fs.renameSync(shareIdDir, shareIdBackup);
+      movedShareDir = true;
+      console.log('🧩 临时移除动态路由 /share/[id] 用于静态导出');
+    }
+  } catch (e) {
+    console.warn('⚠️ 无法移动 /share/[id] 目录：', e.message);
+  }
   execSync('npx next build', { stdio: 'inherit' });
+  // 还原目录
+  try {
+    if (movedShareDir && fs.existsSync(shareIdBackup)) {
+      fs.renameSync(shareIdBackup, shareIdDir);
+      console.log('🔁 已还原动态路由 /share/[id] 目录');
+    }
+  } catch (e) {
+    console.warn('⚠️ 还原 /share/[id] 目录失败：', e.message);
+  }
   
   // 如果 out 未生成，执行 next export 生成静态导出
   if (!fs.existsSync('out')) {

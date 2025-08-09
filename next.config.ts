@@ -10,12 +10,14 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   distDir: '.next',
   
-  // i18n 设置（仅日语）
-  i18n: {
-    locales: ['ja'],
-    defaultLocale: 'ja',
-    localeDetection: false,
-  },
+  // i18n 设置（仅日语）: 在 export 模式下禁用（Next.js 不支持）
+  ...(process.env.STATIC_EXPORT === 'true' ? {} : {
+    i18n: {
+      locales: ['ja'],
+      defaultLocale: 'ja',
+      localeDetection: false,
+    }
+  }),
   
   // 图片优化配置
   images: {

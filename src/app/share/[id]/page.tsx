@@ -170,4 +170,7 @@ export default function ShareDetailPage() {
   )
 }
 
+// 为静态导出提供空参数，避免 next export 报错（Cloudflare Pages 使用 _redirects 处理该路由）
+// 移除 generateStaticParams，转移到独立文件，避免与 'use client' 冲突
+
 
