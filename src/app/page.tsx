@@ -387,9 +387,6 @@ export default function Home() {
             <Link href="/workspace" className="btn-kawaii text-base sm:text-lg px-6 sm:px-8 lg:px-10 py-3 lg:py-4 animate-glow-pulse">
               無料で始める 🎀
             </Link>
-            <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm sm:text-base px-5 sm:px-6 lg:px-8 py-2 lg:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              お題一覧 🖼️
-            </Link>
           </div>
         </div>
       </section>

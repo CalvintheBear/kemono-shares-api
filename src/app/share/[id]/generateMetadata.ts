@@ -28,8 +28,8 @@ export default async function generateMetadata(
     }
   } catch {}
 
-  const titleBase = 'AI画像生成 無料 | 作品詳細 - 2kawaii'
-  const descBase = 'GPT-4oで生成されたAI画像の詳細ページ。プロンプト付きで学べるギャラリー。'
+  const titleBase = 'AI画像生成 無料 | 作品詳細・AI プロンプト付き - 2kawaii'
+  const descBase = 'GPT-4oで生成されたAI画像の詳細ページ。AI プロンプト付きで学べるギャラリー。'
 
   if (!data) {
     return {
@@ -44,8 +44,8 @@ export default async function generateMetadata(
   }
 
   const shortPrompt = data.prompt?.slice(0, 50) || ''
-  const title = `${data.style} | チャットGPT 画像生成 プロンプト | ${shortPrompt}`
-  const description = `チャットGPT 画像生成 プロンプト: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
+  const title = `${data.style} | チャットGPT・ai プロンプト | ${shortPrompt}`
+  const description = `チャットGPT・AI プロンプト: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
 
   return {
     title,

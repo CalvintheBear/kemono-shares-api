@@ -26,9 +26,17 @@ function SharePageContent() {
   const [error, setError] = useState<string | null>(null)
 
   // 支持通过 query 参数 id 渲染详情（用于静态导出回退 /share.html?id=...）
+  // 修复: 从详情返回到 /share 时需要清空 shareId，否则会停留在详情页
   useEffect(() => {
     const id = searchParams?.get('id')
-    if (id) setShareId(id)
+    if (id) {
+      setShareId(id)
+    } else {
+      setShareId(null)
+      setShareData(null)
+      setError(null)
+      setLoading(false)
+    }
   }, [searchParams])
 
   const isDetailMode = !!shareId
@@ -192,10 +200,10 @@ function SharePageContent() {
         <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 py-8 pt-24">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-amber-800 font-cute">
-            チャットGPT 画像生成 | AI画像生成 お題一覧
+            AI画像生成 お題一覧 | チャットGPT・ai プロンプト ギャラリー
           </h1>
           <p className="text-gray-700 mt-2 text-sm">
-            ai画像生成 サイト 無料 登録不要・写真加工アプリ無料の代わりにブラウザだけで1-3分。最新作例を毎日更新。
+            AI プロンプトで作られた最新のチャットGPT 画像生成作例を毎日更新。AI画像生成 サイト 無料・登録不要、1-3分で完成。
           </p>
         </div>
         <ShareGallery />

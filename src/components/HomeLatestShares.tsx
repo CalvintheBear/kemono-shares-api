@@ -65,6 +65,14 @@ export default function HomeLatestShares() {
         <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
         <p className={`text-center text-amber-700 text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>30分ごとに更新</p>
         {content}
+        <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <a
+            href="/share"
+            className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold shadow hover:shadow-md transition-colors bg-amber-100 text-amber-800 hover:bg-amber-200"
+          >
+            お題一覧 🖼️
+          </a>
+        </div>
       </div>
     </section>
   )
