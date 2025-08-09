@@ -1919,8 +1919,39 @@ export default function WorkspaceRefactored() {
               >
                 {isGenerating ? (
                   <>
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                    <span className="relative inline-flex items-center justify-center mr-3">
+                      <svg
+                        className="cat-bounce h-6 w-6 lg:h-7 lg:w-7"
+                        viewBox="0 0 16 16"
+                        aria-hidden="true"
+                        shapeRendering="crispEdges"
+                      >
+                        {/* ears */}
+                        <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
+                        <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
+                        {/* head */}
+                        <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
+                        {/* eyes */}
+                        <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
+                        <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
+                        {/* mouth */}
+                        <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
+                      </svg>
+                    </span>
                     {mode === 'text-to-image' ? '画像を生成しているよ... ✨' : '魔法をかけているよ... ✨'}
+                    <style jsx>{`
+                      .cat-bounce {
+                        animation: squishy-bounce 1.2s ease-in-out infinite;
+                        transform-origin: center bottom;
+                      }
+                      @keyframes squishy-bounce {
+                        0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+                        20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
+                        40% { transform: translateY(-6px) scaleX(0.94) scaleY(1.06); }
+                        60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
+                        80% { transform: translateY(-2px) scaleX(0.98) scaleY(1.02); }
+                      }
+                    `}</style>
                   </>
                 ) : (
                   <>
@@ -1957,14 +1988,7 @@ export default function WorkspaceRefactored() {
                     : '結果プレビュー ✨'
                 }
               </h3>
-              {isGenerating && (
-                <div className="mt-3">
-                  <div className="w-full max-w-md mx-auto bg-amber-100 rounded-full h-3 overflow-hidden">
-                    <div className="bg-gradient-to-r from-pink-500 to-orange-500 h-3 transition-all" style={{ width: `${Math.max(5, Math.min(95, (currentResult as any)?.progress || 8))}%` }} />
-                  </div>
-                  <p className="mt-2 text-sm text-amber-700">進捗: {Math.max(5, Math.min(95, (currentResult as any)?.progress || 8))}%（目安 1-3分）</p>
-                </div>
-              )}
+              {isGenerating && null}
             </div>
 
             {!currentResult && (
