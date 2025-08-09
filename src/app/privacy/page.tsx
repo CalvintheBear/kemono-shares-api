@@ -198,7 +198,7 @@ export default function PrivacyPage() {
                 本プライバシーポリシーに関するお問い合わせは、以下のメールアドレスまでお願いいたします。
               </p>
               <p className="mt-2 font-semibold text-amber-700">
-                メール: privacy@2kawaii.com
+                メール: <a href="mailto:support@2kawaii.com" className="underline hover:text-amber-800">support@2kawaii.com</a>
               </p>
             </section>
 

@@ -34,6 +34,14 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link href="/faq" className="text-amber-600 hover:text-amber-800 transition-colors">ヘルプセンター</Link></li>
               <li><Link href="/faq" className="text-amber-600 hover:text-amber-800 transition-colors">お問い合わせ</Link></li>
+              <li>
+                <a
+                  href="mailto:support@2kawaii.com"
+                  className="text-amber-600 hover:text-amber-800 transition-colors"
+                >
+                  📧 support@2kawaii.com
+                </a>
+              </li>
               <li><Link href="/privacy" className="text-amber-600 hover:text-amber-800 transition-colors">プライバシー</Link></li>
               <li><Link href="/terms" className="text-amber-600 hover:text-amber-800 transition-colors">利用規約</Link></li>
             </ul>
