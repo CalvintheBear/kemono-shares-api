@@ -1341,12 +1341,12 @@ export default function WorkspaceRefactored() {
                 <div className="space-y-6">
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-amber-200/50 overflow-hidden max-h-[65vh] sm:max-h-[70vh] overflow-y-auto">
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-amber-200/50 overflow-hidden max-h-[58vh] sm:max-h-[62vh] overflow-y-auto">
                       <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 p-3">
                         <p className="text-white font-bold text-center">🎉 変身完了！魔法が成功しました！</p>
                       </div>
                       
-                      <div className="pt-16 p-4">
+                      <div className="pt-12 p-4">
                         {mode === 'text-to-image' ? (
                           <div className="text-center">
                             <div className="relative inline-block">
@@ -1383,11 +1383,40 @@ export default function WorkspaceRefactored() {
                             </div>
                           </div>
                         )}
+
+                        {/* 注意事項（PC&モバイル共通表示）*/}
+                        <div className="mt-3 text-center text-[11px] sm:text-xs text-amber-600">
+                          現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
+                        </div>
+
+                        {/* Sticky actions inside the result panel for mobile users */}
+                        <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-3 border-t border-amber-100">
+                          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch">
+                            <a
+                              href={currentResult.generated_url}
+                              download={`anime-magic-${Date.now()}.png`}
+                              className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="ダウンロード"
+                            >
+                              <span className="text-lg">📥</span>
+                              ダウンロード
+                            </a>
+                            <ShareButton
+                              generatedImageUrl={currentResult.generated_url}
+                              originalImageUrl={currentResult.original_url}
+                              prompt={currentResult.prompt}
+                              style={selectedTemplate?.name || 'カスタム'}
+                              existingShareUrl={autoShareUrl}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 border border-green-200 text-center"
+                  <div className="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 border border-green-200 text-center"
                     role="alert"
                   >
                     <div className="text-2xl mb-2">🎊</div>
@@ -1425,12 +1454,32 @@ export default function WorkspaceRefactored() {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full blur-xl opacity-30 animate-pulse"></div>
                     <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-200/50 p-6 text-center max-w-sm mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
-                      <div className="relative mb-4">
-                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-pink-200"></div>
-                        <div className="absolute inset-0 animate-spin rounded-full h-16 w-16 border-4 border-pink-500 border-t-transparent"></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-2xl">✨</span>
-                        </div>
+                      <div className="relative mb-4 flex items-center justify-center">
+                        <span className="relative inline-flex items-center justify-center">
+                          <svg
+                            className="cat-bounce h-12 w-12"
+                            viewBox="0 0 16 16"
+                            aria-hidden="true"
+                            shapeRendering="crispEdges"
+                          >
+                            <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
+                            <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
+                            <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
+                            <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
+                            <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
+                            <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
+                          </svg>
+                        </span>
+                        <style jsx>{`
+                          .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
+                          @keyframes squishy-bounce {
+                            0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+                            20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
+                            40% { transform: translateY(-10px) scaleX(0.94) scaleY(1.06); }
+                            60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
+                            80% { transform: translateY(-4px) scaleX(0.98) scaleY(1.02); }
+                          }
+                        `}</style>
                       </div>
                       
                       <h3 className="text-lg font-bold text-amber-800 mb-2">🎨 魔法の変身中...</h3>
@@ -1499,7 +1548,31 @@ export default function WorkspaceRefactored() {
               className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-3 rounded-full shadow-lg disabled:opacity-50"
             >
               {isGenerating ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                <span className="relative inline-flex items-center justify-center">
+                  <svg
+                    className="cat-bounce h-6 w-6"
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                    shapeRendering="crispEdges"
+                  >
+                    <rect x="3" y="3" width="2" height="2" fill="#FFFFFF" />
+                    <rect x="11" y="3" width="2" height="2" fill="#FFFFFF" />
+                    <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#FFFFFF" />
+                    <rect x="6" y="7" width="1" height="1" fill="#FF5F9F" />
+                    <rect x="9" y="7" width="1" height="1" fill="#FF5F9F" />
+                    <rect x="7" y="9" width="2" height="1" fill="#FF5F9F" />
+                  </svg>
+                  <style jsx>{`
+                    .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
+                    @keyframes squishy-bounce {
+                      0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+                      20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
+                      40% { transform: translateY(-6px) scaleX(0.94) scaleY(1.06); }
+                      60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
+                      80% { transform: translateY(-2px) scaleX(0.98) scaleY(1.02); }
+                    }
+                  `}</style>
+                </span>
               ) : (
                 <PaperAirplaneIcon className="w-6 h-6" />
               )}
@@ -1865,27 +1938,7 @@ export default function WorkspaceRefactored() {
                   rows={4}
                 />
                 
-                {mode === 'text-to-image' && (
-                  <div className="mt-3">
-                    <p className="text-sm text-blue-600 font-cute mb-2">💡 おすすめの呪文:</p>
-                    <div className="grid grid-cols-1 gap-2">
-                      {[
-                        'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
-                        'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
-                        '新世紀エヴァンゲリオンの効果，デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
-                        'LINEスタンプ風、可愛いアイコン、シンプルで分かりやすい、コミュニケーション用、親しみやすいキャラクター、カラフルで明るい、メッセージアプリ風、スタンプ感のあるデザイン'
-                      ].map((template, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setPrompt(template)}
-                          className="text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors font-cute text-blue-700"
-                        >
-                          {template}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* おすすめの呪文ブロックはPCでは非表示にしました */}
               </div>
 
               {mode === 'template-mode' && selectedTemplate && (
@@ -2147,7 +2200,31 @@ export default function WorkspaceRefactored() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+                    <span className="relative inline-flex items-center justify-center">
+                      <svg
+                        className="cat-bounce h-10 w-10"
+                        viewBox="0 0 16 16"
+                        aria-hidden="true"
+                        shapeRendering="crispEdges"
+                      >
+                        <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
+                        <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
+                        <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
+                        <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
+                        <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
+                        <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
+                      </svg>
+                      <style jsx>{`
+                        .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
+                        @keyframes squishy-bounce {
+                          0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+                          20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
+                          40% { transform: translateY(-8px) scaleX(0.94) scaleY(1.06); }
+                          60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
+                          80% { transform: translateY(-3px) scaleX(0.98) scaleY(1.02); }
+                        }
+                      `}</style>
+                    </span>
                     <p className="mt-4 text-amber-600 font-cute">
                       2kawaiiのGPT-4o Image で画像生成中... 1-3分で完成！✨
                     </p>
