@@ -118,7 +118,7 @@ export default function ShareDetailPage() {
       </head>
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-brand text-white p-8 text-center">
+          <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <h1 className="text-3xl font-bold">AI画像変換結果・プロンプト生成</h1>
             </div>

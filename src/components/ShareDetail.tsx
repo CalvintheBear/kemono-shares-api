@@ -58,7 +58,7 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Hero Section */}
-          <div className="bg-brand text-white p-8 text-center">
+          <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
               <h1 className="text-3xl font-bold">変換完了！</h1>
