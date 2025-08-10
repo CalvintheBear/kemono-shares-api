@@ -69,7 +69,7 @@ export default function ComparisonPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after" 
                     alt="擬人化スタイルサンプル" 
                     className="mx-auto rounded-lg shadow-lg w-32 h-32 object-cover"
                     width={128}

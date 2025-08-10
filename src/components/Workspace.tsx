@@ -1373,7 +1373,7 @@ export default function WorkspaceRefactored() {
       </div>
 
       {/* 底部固定编辑区 */}
-      <div className="fixed bottom-16 left-0 right-0 bg-surface shadow-lg z-40 border-t border-border">
+      <div className="fixed bottom-16 left-0 right-0 bg-white shadow-lg z-40 border-t border-border">
         <div className="flex items-center justify-between p-2 sm:p-3">
           <div className="flex-shrink-0">
             <input
@@ -1398,7 +1398,7 @@ export default function WorkspaceRefactored() {
               type="text"
               value={prompt}
               onChange={handlePromptChange}
-              className={`w-full p-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
+              className={`w-full p-2 bg-white border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
                 mode === 'template-mode' ? 'hidden' : ''
               }`}
               placeholder="プロンプトを入力..."
