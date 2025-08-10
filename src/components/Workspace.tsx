@@ -316,7 +316,7 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
     return (
       <button
         onClick={onClick}
-        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+        className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${
           isSelected
             ? 'btn-primary text-white'
             : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
@@ -1464,8 +1464,8 @@ export default function WorkspaceRefactored() {
           </div>
         )}
 
-        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-border overflow-x-auto">
-          <div className="flex gap-1.5 sm:gap-2">
+        <div className="p-2 sm:p-3 border-t border-border">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
               <SizeButton
                 key={size}
@@ -1477,13 +1477,13 @@ export default function WorkspaceRefactored() {
             ))}
           </div>
 
-          <div className="flex gap-1.5 sm:gap-2">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-2">
             <button
               onClick={() => {
                 setMode('template-mode')
                 if (!selectedTemplate) setPrompt('')
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`w-full px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 mode === 'template-mode' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
@@ -1496,7 +1496,7 @@ export default function WorkspaceRefactored() {
                 setSelectedTemplate(null)
                 localStorage.removeItem('selectedTemplateId')
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`w-full px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 mode === 'image-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
@@ -1513,7 +1513,7 @@ export default function WorkspaceRefactored() {
                 localStorage.removeItem('savedFileUrl')
                 localStorage.removeItem('savedMode')
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`w-full px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 mode === 'text-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
