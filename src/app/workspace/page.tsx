@@ -114,7 +114,7 @@ export default function WorkspacePage() {
             <div className="text-center card p-6 sm:p-8 lg:p-10 h-full flex flex-col">
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step1" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
                   alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
                   width={224}
                   height={224}

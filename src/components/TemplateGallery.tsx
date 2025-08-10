@@ -206,7 +206,7 @@ const templates = [
 ]
 
 export default function TemplateGallery() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
+  const [selectedCategory, setSelectedCategory] = useState<string>(templates[0].category)
   const [isClient, setIsClient] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -322,7 +322,7 @@ export default function TemplateGallery() {
                     href="/workspace"
                     className="btn-primary px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg"
                     onClick={() => {
-                      localStorage.setItem('selectedTemplate', selectedTemplate.id)
+                      localStorage.setItem('selectedTemplateId', selectedTemplate.id)
                     }}
                   >
                     このスタイルで変身

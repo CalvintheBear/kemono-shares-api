@@ -46,7 +46,7 @@ export default function MobileBottomNav() {
       color: 'text-brand'
     },
     {
-      name: 'ギャラリー',
+      name: 'お題一覧',
       href: '/share',
       icon: PhotoIcon,
       iconSolid: PhotoSolidIcon,

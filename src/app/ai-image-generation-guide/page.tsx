@@ -183,7 +183,7 @@ export default function AIGuidePage() {
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step1" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
                     alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}

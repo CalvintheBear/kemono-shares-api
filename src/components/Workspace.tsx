@@ -440,32 +440,37 @@ export default function WorkspaceRefactored() {
   }, [isMobile, mode])
 
   // 初始化状态恢复
-  useEffect(() => {
-    const savedFileUrl = localStorage.getItem('savedFileUrl')
-    const savedMode = localStorage.getItem('savedMode')
-    
-    if (savedFileUrl && savedMode === 'image-to-image') {
-      setFileUrl(savedFileUrl)
-      setMode(savedMode as 'text-to-image' | 'image-to-image' | 'template-mode')
-    }
-  }, [])
+ // 初始化状态恢复
+useEffect(() => {
+  if (hasInitializedRef.current) return;
 
-  useEffect(() => {
-    // 只在组件真正初始化时运行一次
-    if (hasInitializedRef.current) return
-    
-    const savedTemplateId = localStorage.getItem('selectedTemplateId')
-    if (savedTemplateId) {
-      const foundTemplate = templates.find(t => t.id === savedTemplateId)
-      if (foundTemplate) {
-        setSelectedTemplate(foundTemplate)
-        setPrompt(foundTemplate.prompt)
-        setMode('template-mode')
-      }
-    }
+  const savedTemplateId =
+    typeof window !== 'undefined' ? localStorage.getItem('selectedTemplateId') : null;
 
-    hasInitializedRef.current = true
-  }, [])
+  if (savedTemplateId) {
+    const foundTemplate = templates.find(t => t.id === savedTemplateId);
+    if (foundTemplate) {
+      setSelectedTemplate(foundTemplate);
+      setPrompt(foundTemplate.prompt);
+      setMode('template-mode');
+      hasInitializedRef.current = true;
+      return;
+    }
+  }
+
+  // 默认选择第一行模板
+  const first = templates[0];
+  if (first) {
+    setSelectedTemplate(first);
+    setPrompt(first.prompt);
+    setMode('template-mode');
+    try {
+      localStorage.setItem('selectedTemplateId', first.id);
+    } catch {}
+  }
+
+  hasInitializedRef.current = true;
+}, []);
 
   // 清理定时器
   useEffect(() => {
@@ -1228,6 +1233,17 @@ export default function WorkspaceRefactored() {
               現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
             </div>
 
+            {/* モバイル用エラーパネル */}
+            {generationError && (
+              <div className="mx-auto max-w-md bg-surface border border-border rounded-lg p-3 mb-3 text-center">
+                <p className="text-red-600 text-sm mb-3">{generationError}</p>
+                <div className="flex justify-center gap-2">
+                  <button onClick={handleRetry} className="btn-primary px-4 py-2 rounded-full text-white text-sm">再試行</button>
+                  <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full text-sm">閉じる</button>
+                </div>
+              </div>
+            )}
+
             {!currentResult ? (
               <div className="flex flex-col items-center justify-center">
                 {mode === 'text-to-image' ? (
@@ -1299,7 +1315,7 @@ export default function WorkspaceRefactored() {
                   <div className="relative">
                     <div className="relative card overflow-hidden max-h-[58vh] sm:max-h-[62vh] overflow-y-auto">
                       <div className="pt-4 p-4">
-                        {mode === 'text-to-image' ? (
+                        {(!currentResult.original_url || currentResult.original_url.trim() === '') ? (
                           <div className="text-center">
                             <div className="relative inline-block">
                               <OptimizedImage
@@ -1357,7 +1373,31 @@ export default function WorkspaceRefactored() {
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="relative">
                     <div className="relative card max-w-sm mx-auto text-center">
-                      <div className="text-6xl mb-4">🎨</div>
+                      <span className="relative inline-flex items-center justify-center mb-3">
+                        <svg
+                          className="cat-bounce h-10 w-10"
+                          viewBox="0 0 16 16"
+                          aria-hidden="true"
+                          shapeRendering="crispEdges"
+                        >
+                          <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
+                          <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
+                          <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
+                          <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
+                          <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
+                          <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
+                        </svg>
+                        <style jsx>{`
+                          .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
+                          @keyframes squishy-bounce {
+                            0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
+                            20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
+                            40% { transform: translateY(-8px) scaleX(0.94) scaleY(1.06); }
+                            60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
+                            80% { transform: translateY(-3px) scaleX(0.98) scaleY(1.02); }
+                          }
+                        `}</style>
+                      </span>
                       <h3 className="text-lg font-bold text-text mb-2">画像生成中...</h3>
                       <p className="text-sm text-text-muted mb-4">AIが画像を生成しています</p>
                       <div className="bg-surface rounded-lg p-4">
@@ -1986,7 +2026,7 @@ export default function WorkspaceRefactored() {
               <div className="space-y-6">
                 {(currentResult as GenerationResult).generated_url ? (
                   <div className="space-y-6">
-                    {mode === 'text-to-image' ? (
+                    {(!(currentResult as GenerationResult).original_url || (currentResult as GenerationResult).original_url.trim() === '') ? (
                       <div className="text-center">
                         <a href={(currentResult as GenerationResult).generated_url} target="_blank" rel="noopener noreferrer">
                           <OptimizedImage
@@ -2047,10 +2087,6 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
                         aria-hidden="true"
                         shapeRendering="crispEdges"
                       >
-                        <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
-                        <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
-                        <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
-                        <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
                         <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
                         <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
                       </svg>
@@ -2083,7 +2119,10 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
     <div className="min-h-screen bg-[var(--bg)]">
       {isMobile ? MobileLayout() : DesktopLayout()}
       <MobileBottomNav />
-
+{/* 選べる変身スタイル セクション（ページ底部） */}
+<div className="pt-6 pb-12 lg:pt-8 lg:pb-20">
+  <TemplateGallery />
+</div>
 
       {/* 内部リンク戦略：長尾キーワードセクション - 优化移动端 */}
       <section className="py-12 lg:py-16 px-3 sm:px-4 lg:px-6 bg-surface">
