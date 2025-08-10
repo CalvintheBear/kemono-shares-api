@@ -316,14 +316,14 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
     return (
       <button
         onClick={onClick}
-        className={`shrink-0 px-2 py-1 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${
+        className={`min-w-0 px-2 py-1 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
           isSelected
             ? 'btn-primary text-white'
             : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
         }`}
       >
         {getSizeIcon(size, true)}
-        <span className="font-medium">{size}</span>
+        <span className="font-medium hidden sm:inline">{size}</span>
       </button>
     )
   }
@@ -1464,8 +1464,8 @@ export default function WorkspaceRefactored() {
           </div>
         )}
 
-        <div className="p-2 sm:p-3 border-t border-border overflow-x-auto">
-          <div className="flex items-center justify-between gap-2 min-w-[540px]">
+        <div className="p-2 sm:p-3 border-t border-border">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 sm:gap-2">
               {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
                 <SizeButton
