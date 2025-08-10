@@ -19,13 +19,28 @@ export default function HomeLatestShares() {
         const json = await res.json()
         if (!alive) return
         if (json.success && Array.isArray(json.data?.items)) {
-          setItems(json.data.items)
+          const latest: Item[] = json.data.items || []
+          setItems((prev) => {
+            if (latest.length === 0) return prev
+            if (latest.length < 12 && prev.length > 0) {
+              const existingIds = new Set(latest.map((it) => it.id))
+              const filler: Item[] = []
+              for (const it of prev) {
+                if (!existingIds.has(it.id)) filler.push(it)
+                if (latest.length + filler.length >= 12) break
+              }
+              return [...latest, ...filler].slice(0, 12)
+            }
+            return latest.slice(0, 12)
+          })
         }
       } catch {}
       setLoading(false)
     }
     fetchLatest()
-    return () => { alive = false }
+    // 每10分钟轮询一次
+    const interval = setInterval(fetchLatest, 10 * 60 * 1000)
+    return () => { alive = false; clearInterval(interval) }
   }, [])
 
   useEffect(() => {
@@ -63,7 +78,7 @@ export default function HomeLatestShares() {
     <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-surface animate-fade-in">
       <div className="max-w-7xl mx-auto">
         <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-text font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
-        <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>30分ごとに更新</p>
+        <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>10分ごとに更新</p>
         {content}
         <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <a
