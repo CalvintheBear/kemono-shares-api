@@ -316,19 +316,14 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
     return (
       <button
         onClick={onClick}
-        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105 flex items-center gap-1.5 relative ${
+        className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
           isSelected
-            ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-md'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ? 'btn-primary text-white'
+            : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
         }`}
       >
         {getSizeIcon(size, true)}
         <span className="font-medium">{size}</span>
-        
-        {/* 选中状态的指示器 */}
-        {isSelected && (
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border border-pink-500"></div>
-        )}
       </button>
     )
   }
@@ -336,25 +331,17 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
   return (
     <button
       onClick={onClick}
-      className={`p-3 rounded-xl border-2 font-cute transition-all transform hover:scale-105 flex flex-col items-center justify-center gap-2 relative overflow-hidden ${
+      className={`p-3 rounded-md border transition-colors flex flex-col items-center justify-center gap-2 ${
         isSelected
-          ? 'border-pink-500 bg-gradient-to-r from-pink-100 to-orange-100 text-pink-700 shadow-md'
-          : 'border-pink-200 bg-white text-amber-700 hover:border-pink-400 hover:shadow-sm'
+          ? 'btn-primary text-white'
+          : 'border-border bg-surface text-text-muted hover:bg-surface'
       }`}
     >
-      {/* 选中状态的装饰效果 */}
-      {isSelected && (
-        <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-pink-500"></div>
-      )}
-      
       <div className="w-8 h-8 flex items-center justify-center">
         {getSizeIcon(size, false)}
       </div>
       <div className="text-xs font-medium">{size}</div>
-      <div className="text-xs text-gray-500">{getSizeLabel(size)}</div>
-      
-      {/* 悬停时的光效 */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full transition-transform duration-700 group-hover:translate-x-full"></div>
+      <div className="text-xs text-text-muted">{getSizeLabel(size)}</div>
     </button>
   )
 }
@@ -433,17 +420,7 @@ export default function WorkspaceRefactored() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // 移动端进入时自动滚动到核心区域
-  useEffect(() => {
-    if (!isMobile) return
-    const timer = setTimeout(() => {
-      const el = document.getElementById('workspace-mobile-core')
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }, 400)
-    return () => clearTimeout(timer)
-  }, [isMobile])
+  // 取消移动端进入自动滚动
 
   // 保持输入框焦点（仅在真正失焦时重新聚焦，避免干扰输入法）
   useEffect(() => {
@@ -1218,36 +1195,20 @@ export default function WorkspaceRefactored() {
   // 移动端布局组件
   const MobileLayout = () => {
     return (
-      <div className="min-h-screen bg-[#fff7ea] flex flex-col">
-        {/* 背景装饰层 */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-4 w-32 h-32 bg-gradient-to-br from-pink-200/30 to-purple-200/30 rounded-full blur-xl animate-pulse"></div>
-          <div className="absolute top-20 right-8 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full blur-xl animate-bounce"></div>
-          <div className="absolute bottom-32 left-8 w-20 h-20 bg-gradient-to-br from-blue-200/30 to-teal-200/30 rounded-full blur-xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/3 right-16 w-16 h-16 bg-gradient-to-br from-green-200/30 to-emerald-200/30 rounded-full blur-xl animate-bounce delay-500"></div>
-          
-          {/* 浮动装饰图案 */}
-          <div className="absolute top-1/4 left-1/4 text-2xl animate-float">🌸</div>
-          <div className="absolute top-1/2 right-1/3 text-xl animate-float-delayed">✨</div>
-          <div className="absolute bottom-1/4 left-1/3 text-2xl animate-float">🎀</div>
-          <div className="absolute top-3/4 right-1/4 text-xl animate-float-delayed">💫</div>
-        </div>
-
+      <div className="min-h-screen bg-[var(--bg)] flex flex-col">
         {/* 中间结果展示区 - 限高自适应，避免小屏溢出 */}
-        <div className="flex-1 mb-16 overflow-y-auto relative z-10">
-          <div id="workspace-mobile-core" className="p-4 space-y-4">
+        <div className="flex-1 mb-16 overflow-visible relative z-10">
+          <div id="workspace-mobile-core" className="p-3 space-y-3">
             
-            {/* 顶部装饰标题 */}
+            {/* 顶部标题 */}
             <div className="text-center mb-4">
-              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-                <span className="text-lg">🎨</span>
-                <span className="text-sm font-bold text-gray-700">魔法の変身スタジオ</span>
-                <span className="text-lg">✨</span>
+              <div className="inline-flex items-center gap-2">
+                <span className="text-sm font-bold text-text">AI画像変換</span>
               </div>
             </div>
 
-            {/* 滚动到guides的按钮 */}
-            <div className="text-center mb-4">
+            {/* 移动端“使い方ガイドを見る”按钮，滚动到 guides-section */}
+            <div className="text-center mb-3">
               <button
                 onClick={() => {
                   const guidesSection = document.getElementById('guides-section')
@@ -1255,90 +1216,78 @@ export default function WorkspaceRefactored() {
                     guidesSection.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm font-medium"
+                className="inline-flex items-center gap-2 btn-primary text-sm"
               >
-                <span>📖</span>
                 <span>使い方ガイドを見る</span>
                 <span>↓</span>
               </button>
             </div>
 
+            {/* モバイル常時表示の注意事項 */}
+            <div className="mx-auto max-w-md text-center text-[11px] text-text-muted -mt-1 mb-2 px-2">
+              現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
+            </div>
+
             {!currentResult ? (
-              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-300px)]">
+              <div className="flex flex-col items-center justify-center">
                 {mode === 'text-to-image' ? (
-                  <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 rounded-3xl blur-2xl opacity-30 animate-pulse pointer-events-none"></div>
-                  <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-blue-200/50 p-4 sm:p-6 text-center w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
-                      <div className="text-6xl sm:text-7xl mb-6 animate-bounce">✍️✨</div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-blue-800 mb-3">
-                        🎨 文生图モード開始！
-                      </h3>
-                      <p className="text-blue-700 mb-6 font-cute text-base sm:text-lg">
-                        テキストだけで、可愛い画像を作れるよ！
-                      </p>
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 sm:p-6 mb-6 border border-blue-100">
-                        <p className="text-sm sm:text-base text-blue-700 mb-2">💡 コツ：</p>
-                        <ul className="text-sm text-blue-600 space-y-1 text-left">
-                          <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
-                          <li>• 背景や服装の色も指定できる</li>
-                          <li>• 日本語でも英語でもOK！</li>
-                        </ul>
+                  <div className="w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto">
+                    <div className="relative card w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
+                      <div className="text-center p-4">
+                        <h3 className="text-xl font-bold text-[var(--text)] mb-3">
+                        テキストからイラストモード、始まるよ！
+                        </h3>
+                        <p className="text-[var(--text-muted)] mb-6">
+                          テキストだけで、画像を作れるよ！
+                        </p>
+                        <div className="bg-[var(--surface)] rounded-lg p-4 mb-6">
+                          <p className="text-sm text-[var(--text)] mb-2">コツ：</p>
+                          <ul className="text-sm text-[var(--text-muted)] space-y-1 text-left">
+                            <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
+                            <li>• 背景や服装の色も指定できる</li>
+                            <li>• 日本語でも英語でもOK！</li>
+                          </ul>
+                        </div>
                       </div>
-                      <div className="mt-6 flex justify-center space-x-4">
-                        <span className="text-2xl sm:text-3xl">🌈</span>
-                        <span className="text-2xl sm:text-3xl">🎨</span>
-                        <span className="text-2xl sm:text-3xl">✨</span>
-                      </div>
-                      <div className="mt-4 text-lg text-blue-500 font-bold">テキストを入力して画像を生成！</div>
                     </div>
                   </div>
                 ) : imagePreview ? (
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-200 via-orange-200 to-yellow-200 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
-                    <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-3 sm:p-4 border border-white/50 max-h-[65vh] sm:max-h-[70vh] overflow-auto">
-                      <Image
-                        src={imagePreview}
-                        alt="アップロード画像"
-                        width={300}
-                        height={300}
-                        className="max-w-full h-auto rounded-2xl shadow-lg"
-                      />
-                      <div className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded-full shadow-lg">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="mt-4 text-center">
-                        <h3 className="text-lg font-bold text-gray-800 mb-1">✨ 画像準備完了！</h3>
-                        <p className="text-sm text-gray-600">綺麗な写真がアップロードされました</p>
-                        <p className="text-xs text-pink-500 mt-1">魔法の変身を開始できますよ！</p>
+                  <div className="relative">
+                    <div className="relative card max-h-[65vh] sm:max-h-[70vh] overflow-auto">
+                      <div className="p-3">
+                        <Image
+                          src={imagePreview}
+                          alt="アップロード画像"
+                          width={300}
+                          height={300}
+                          className="max-w-full h-auto rounded-lg"
+                        />
+                        <div className="mt-4 text-center">
+                          <h3 className="text-lg font-bold text-text mb-1">画像準備完了！</h3>
+                          <p className="text-sm text-text-muted">写真がアップロードされました</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="relative w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl border border-pink-200/50 p-4 sm:p-6 text-center w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
-                      <div className="text-6xl sm:text-7xl mb-6 animate-bounce">📸✨</div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3">
-                        📱 可愛い写真をアップロード
-                      </h3>
-                      <p className="text-gray-600 mb-6 font-cute text-base sm:text-lg">
-                        あなたの写真を、可愛いアニメ風に変身させましょう！
-                      </p>
-                      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 mb-6 border border-pink-100">
-                        <p className="text-sm sm:text-base text-gray-700 mb-2">📌 コツ：</p>
-                        <ul className="text-sm text-gray-600 space-y-1 text-left">
-                          <li>• 明るくて顔がはっきりしている写真がおすすめ</li>
-                          <li>• 背景がシンプルだと綺麗に変身できるよ</li>
-                          <li>• 10MBまでのアップロードOK！</li>
-                        </ul>
+                  <div className="w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className="relative card w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
+                      <div className="text-center p-4">
+                        <h3 className="text-xl font-bold text-text mb-3">
+                          写真をアップロード
+                        </h3>
+                        <p className="text-text-muted mb-6">
+                          写真をアニメ風に変身させましょう！
+                        </p>
+                        <div className="bg-surface rounded-lg p-4 mb-6">
+                          <p className="text-sm text-text mb-2">コツ：</p>
+                          <ul className="text-sm text-text-muted space-y-1 text-left">
+                            <li>• 明るくて顔がはっきりしている写真がおすすめ</li>
+                            <li>• 背景がシンプルだと綺麗に変身できるよ</li>
+                            <li>• 10MBまでのアップロードOK！</li>
+                          </ul>
+                        </div>
                       </div>
-                      <div className="mt-6 flex justify-center space-x-4">
-                        <span className="text-2xl sm:text-3xl">🌸</span>
-                        <span className="text-2xl sm:text-3xl">✨</span>
-                        <span className="text-2xl sm:text-3xl">🎀</span>
-                      </div>
-                      <div className="mt-4 text-lg text-pink-500 font-bold">タップして画像をアップロード</div>
                     </div>
                   </div>
                 )}
@@ -1347,14 +1296,9 @@ export default function WorkspaceRefactored() {
             <div className="space-y-4">
               {currentResult.generated_url ? (
                 <div className="space-y-6">
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-300 via-orange-300 to-yellow-300 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-amber-200/50 overflow-hidden max-h-[58vh] sm:max-h-[62vh] overflow-y-auto">
-                      <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 p-3">
-                        <p className="text-white font-bold text-center">🎉 変身完了！魔法が成功しました！</p>
-                      </div>
-                      
-                      <div className="pt-12 p-4">
+                  <div className="relative">
+                    <div className="relative card overflow-hidden max-h-[58vh] sm:max-h-[62vh] overflow-y-auto">
+                      <div className="pt-4 p-4">
                         {mode === 'text-to-image' ? (
                           <div className="text-center">
                             <div className="relative inline-block">
@@ -1363,16 +1307,13 @@ export default function WorkspaceRefactored() {
                                 alt="生成された画像"
                                 width={400}
                                 height={400}
-                                className="w-full h-auto rounded-2xl shadow-lg"
+                                className="w-full h-auto rounded-lg"
                               />
-                              <div className="absolute top-2 right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                ✨ AI 生成
-                              </div>
                             </div>
                             
-                            <div className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-4 border border-amber-100">
-                              <h4 className="text-sm font-bold text-gray-800 mb-2">💭 魔法の呪文：</h4>
-                              <p className="text-xs text-gray-600 leading-relaxed">{currentResult.prompt.substring(0, 100)}...</p>
+                            <div className="mt-4 bg-surface rounded-lg p-4">
+                              <h4 className="text-sm font-bold text-text mb-2">プロンプト：</h4>
+                              <p className="text-xs text-text-muted leading-relaxed">{currentResult.prompt.substring(0, 100)}...</p>
                             </div>
                           </div>
                         ) : (
@@ -1383,32 +1324,20 @@ export default function WorkspaceRefactored() {
                               beforeAlt="変身前"
                               afterAlt="変身后"
                             />
-                            
-                            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4 border border-orange-100 text-center">
-                              <div className="text-2xl mb-2">🔄 → ✨</div>
-                              <p className="text-sm font-bold text-gray-800">ビフォーアフター完成！</p>
-                              <p className="text-xs text-gray-600">あなたの写真が可愛いアニメキャラに大変身！</p>
-                            </div>
                           </div>
                         )}
 
-                        {/* 注意事項（PC&モバイル共通表示）*/}
-                        <div className="mt-3 text-center text-[11px] sm:text-xs text-amber-600">
-                          現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
-                        </div>
-
                         {/* Sticky actions inside the result panel for mobile users */}
-                        <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm -mx-4 px-4 py-3 border-t border-amber-100">
+                        <div className="sticky bottom-0 left-0 right-0 bg-surface border-t border-border -mx-4 px-4 py-3">
                           <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch">
                             <a
                               href={currentResult.generated_url}
                               download={`anime-magic-${Date.now()}.png`}
-                              className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                              className="w-full sm:w-auto btn-primary py-3 px-6 flex items-center justify-center gap-2"
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label="ダウンロード"
                             >
-                              <span className="text-lg">📥</span>
                               ダウンロード
                             </a>
                             <ShareButton
@@ -1423,79 +1352,16 @@ export default function WorkspaceRefactored() {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 border border-green-200 text-center"
-                    role="alert"
-                  >
-                    <div className="text-2xl mb-2">🎊</div>
-                    <h4 className="font-bold text-green-800 mb-1">🎉 おめでとう！</h4>
-                    <p className="text-sm text-green-700 mb-3">あなたの魔法の変身が完成しました！</p>
-                    
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center"
-                      role="group"
-                      aria-label="画像操作"
-                    >
-                      <a
-                        href={currentResult.generated_url}
-                        download={`anime-magic-${Date.now()}.png`}
-                        className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="ダウンロード"
-                      >
-                        <span className="text-lg">📥</span>
-                        ダウンロード
-                      </a>
-                      
-                      <ShareButton
-                        generatedImageUrl={currentResult.generated_url}
-                        originalImageUrl={currentResult.original_url}
-                        prompt={currentResult.prompt}
-                        style={selectedTemplate?.name || 'カスタム'}
-                        existingShareUrl={autoShareUrl}
-                      />
-                    </div>
-                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-purple-200/50 p-6 text-center max-w-sm mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
-                      <div className="relative mb-4 flex items-center justify-center">
-                        <span className="relative inline-flex items-center justify-center">
-                          <svg
-                            className="cat-bounce h-12 w-12"
-                            viewBox="0 0 16 16"
-                            aria-hidden="true"
-                            shapeRendering="crispEdges"
-                          >
-                            <rect x="3" y="3" width="2" height="2" fill="#F6BBD0" />
-                            <rect x="11" y="3" width="2" height="2" fill="#F6BBD0" />
-                            <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#F6BBD0" />
-                            <rect x="6" y="7" width="1" height="1" fill="#2B2B2B" />
-                            <rect x="9" y="7" width="1" height="1" fill="#2B2B2B" />
-                            <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
-                          </svg>
-                        </span>
-                        <style jsx>{`
-                          .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
-                          @keyframes squishy-bounce {
-                            0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
-                            20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
-                            40% { transform: translateY(-10px) scaleX(0.94) scaleY(1.06); }
-                            60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
-                            80% { transform: translateY(-4px) scaleX(0.98) scaleY(1.02); }
-                          }
-                        `}</style>
-                      </div>
-                      
-                      <h3 className="text-lg font-bold text-amber-800 mb-2">🎨 魔法の変身中...</h3>
-                      <p className="text-sm text-amber-600 mb-4">AIが一生懸命画像を作っています！</p>
-                      
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
-                        <p className="text-sm text-amber-700">💡 ヒント: 1-3分程度で完成します</p>
-                        <p className="text-xs text-amber-600 mt-2">🌸 少しお待ちくださいね...</p>
+                    <div className="relative card max-w-sm mx-auto text-center">
+                      <div className="text-6xl mb-4">🎨</div>
+                      <h3 className="text-lg font-bold text-text mb-2">画像生成中...</h3>
+                      <p className="text-sm text-text-muted mb-4">AIが画像を生成しています</p>
+                      <div className="bg-surface rounded-lg p-4">
+                        <p className="text-sm text-text-muted">1-3分で完了します</p>
                       </div>
                     </div>
                   </div>
@@ -1507,7 +1373,7 @@ export default function WorkspaceRefactored() {
       </div>
 
       {/* 底部固定编辑区 */}
-      <div className="fixed bottom-16 left-0 right-0 bg-white shadow-lg z-40 border-t border-gray-200">
+      <div className="fixed bottom-16 left-0 right-0 bg-surface shadow-lg z-40 border-t border-border">
         <div className="flex items-center justify-between p-2 sm:p-3">
           <div className="flex-shrink-0">
             <input
@@ -1519,7 +1385,7 @@ export default function WorkspaceRefactored() {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-3 rounded-full shadow-lg"
+              className="btn-primary p-3 rounded-full"
             >
               <PhotoIcon className="w-6 h-6" />
             </button>
@@ -1532,13 +1398,13 @@ export default function WorkspaceRefactored() {
               type="text"
               value={prompt}
               onChange={handlePromptChange}
-              className={`w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-pink-500 focus:outline-none ${
+              className={`w-full p-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
                 mode === 'template-mode' ? 'hidden' : ''
               }`}
               placeholder="プロンプトを入力..."
             />
             {/* 模板模式的显示文本 */}
-            <div className={`text-sm font-medium text-gray-700 truncate ${
+            <div className={`text-sm font-medium text-text truncate ${
               mode === 'template-mode' ? '' : 'hidden'
             }`}>
               {selectedTemplate ? selectedTemplate.name : 'テンプレートを選択'}
@@ -1553,33 +1419,11 @@ export default function WorkspaceRefactored() {
                 (mode === 'image-to-image' && (!fileUrl || !prompt.trim())) ||
                 (mode === 'text-to-image' && !prompt.trim())
               }
-              className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-3 rounded-full shadow-lg disabled:opacity-50"
+              className="btn-primary p-3 rounded-full disabled:opacity-50"
             >
               {isGenerating ? (
-                <span className="relative inline-flex items-center justify-center">
-                  <svg
-                    className="cat-bounce h-6 w-6"
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
-                    shapeRendering="crispEdges"
-                  >
-                    <rect x="3" y="3" width="2" height="2" fill="#FFFFFF" />
-                    <rect x="11" y="3" width="2" height="2" fill="#FFFFFF" />
-                    <rect x="4" y="4" width="8" height="8" rx="1" ry="1" fill="#FFFFFF" />
-                    <rect x="6" y="7" width="1" height="1" fill="#FF5F9F" />
-                    <rect x="9" y="7" width="1" height="1" fill="#FF5F9F" />
-                    <rect x="7" y="9" width="2" height="1" fill="#FF5F9F" />
-                  </svg>
-                  <style jsx>{`
-                    .cat-bounce { animation: squishy-bounce 1.2s ease-in-out infinite; transform-origin: center bottom; }
-                    @keyframes squishy-bounce {
-                      0%, 100% { transform: translateY(0) scaleX(1) scaleY(1); }
-                      20% { transform: translateY(0) scaleX(1.12) scaleY(0.88); }
-                      40% { transform: translateY(-6px) scaleX(0.94) scaleY(1.06); }
-                      60% { transform: translateY(0) scaleX(1.06) scaleY(0.94); }
-                      80% { transform: translateY(-2px) scaleX(0.98) scaleY(1.02); }
-                    }
-                  `}</style>
+                <span className="inline-flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 </span>
               ) : (
                 <PaperAirplaneIcon className="w-6 h-6" />
@@ -1598,10 +1442,10 @@ export default function WorkspaceRefactored() {
                 <button
                   key={template.id}
                   onClick={() => handleMobileTemplateSelect(template)}
-                  className={`flex-none min-w-[4.75rem] max-w-[4.75rem] w-[4.75rem] h-28 p-1.5 rounded-[14px] border-2 transition-all transform hover:scale-105 flex flex-col items-center justify-between ${
+                  className={`flex-none min-w-[4.75rem] max-w-[4.75rem] w-[4.75rem] h-28 p-1.5 rounded-lg border transition-colors focus:outline-none focus:ring-2 focus:ring-brand active:border-brand active:shadow-sm ${
                     selectedTemplate?.id === template.id
-                      ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
-                      : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
+                      ? 'border-brand bg-surface shadow-sm'
+                      : 'border-border bg-white hover:border-brand'
                   }`}
                 >
                   <div className="h-16 flex items-center justify-center mb-1">
@@ -1610,17 +1454,17 @@ export default function WorkspaceRefactored() {
                       alt={template.name}
                       width={56}
                       height={56}
-                      className="w-14 h-14 object-cover rounded-[10px] shadow-sm"
+                      className="w-14 h-14 object-cover rounded"
                     />
                   </div>
-                  <p className="text-[11px] font-bold text-amber-800 font-cute leading-snug px-0.5 text-center break-words min-h-[28px]">{template.name}</p>
+                  <p className="text-[11px] font-bold text-text leading-snug px-0.5 text-center break-words min-h-[28px]">{template.name}</p>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-gray-100 overflow-x-auto">
+        <div className="flex items-center justify-between p-2 sm:p-3 border-t border-border overflow-x-auto">
           <div className="flex gap-1.5 sm:gap-2">
             {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
               <SizeButton
@@ -1639,8 +1483,8 @@ export default function WorkspaceRefactored() {
                 setMode('template-mode')
                 if (!selectedTemplate) setPrompt('')
               }}
-              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
-                mode === 'template-mode' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-700'
+              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                mode === 'template-mode' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
               簡単
@@ -1652,8 +1496,8 @@ export default function WorkspaceRefactored() {
                 setSelectedTemplate(null)
                 localStorage.removeItem('selectedTemplateId')
               }}
-              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
-                mode === 'image-to-image' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700'
+              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                mode === 'image-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
               図→図
@@ -1669,8 +1513,8 @@ export default function WorkspaceRefactored() {
                 localStorage.removeItem('savedFileUrl')
                 localStorage.removeItem('savedMode')
               }}
-              className={`px-2.5 py-2 rounded-lg text-xs sm:text-sm font-medium ${
-                mode === 'text-to-image' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                mode === 'text-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
               }`}
             >
               文→図
@@ -1685,41 +1529,25 @@ export default function WorkspaceRefactored() {
   // 桌面布局组件
   const DesktopLayout = () => {
     return (
-      <div className={`max-w-7xl mx-auto bg-white rounded-[40px] shadow-2xl border border-white/50 p-6 lg:p-8 transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        {/* 背景装饰层 */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-20 left-20 w-48 h-48 bg-gradient-to-br from-pink-200/20 to-purple-200/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-40 right-32 w-36 h-36 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl animate-bounce"></div>
-          <div className="absolute bottom-40 left-32 w-32 h-32 bg-gradient-to-br from-blue-200/20 to-teal-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-br from-green-200/20 to-emerald-200/20 rounded-full blur-3xl animate-bounce delay-500"></div>
-          
-          {/* 浮动装饰图案 */}
-          <div className="absolute top-1/4 left-1/4 text-3xl animate-float">🌸</div>
-          <div className="absolute top-1/3 right-1/3 text-2xl animate-float-delayed">✨</div>
-          <div className="absolute bottom-1/3 left-1/3 text-3xl animate-float">🎀</div>
-          <div className="absolute bottom-1/4 right-1/4 text-2xl animate-float-delayed">💫</div>
-        </div>
+      <div className="max-w-7xl mx-auto bg-[var(--bg)] rounded-lg shadow border border-[var(--border)] p-6 lg:p-8">
 
         <div className="flex flex-col lg:flex-row gap-8 relative z-10">
-          <div className={`lg:w-1/2 space-y-8 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="bg-white/80 backdrop-blur-xl rounded-[36px] shadow-2xl p-5 card-kawaii border border-white/40 overflow-hidden">
-              <div className={`mb-4 transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="flex justify-center space-x-3 mb-3 relative">
-                {/* 装饰性小图标 */}
-                <div className="absolute -top-3 -left-3 text-2xl animate-bounce">🌟</div>
-                <div className="absolute -top-2 -right-3 text-xl animate-pulse">💫</div>
+          <div className="lg:w-1/2 space-y-8">
+            <div className="bg-[var(--surface)] rounded-lg p-5 card border border-[var(--border)]">
+              <div className="mb-4">
+              <div className="flex justify-center space-x-3 mb-3">
                 <button
                   onClick={() => {
                   setMode('template-mode')
                   if (!selectedTemplate) setPrompt('')
                 }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'template-mode'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
-                      : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
+                      ? 'btn-primary text-white'
+                      : 'btn-outline'
                   }`}
                 >
-                  ✨ 簡単
+                  簡単
                 </button>
                 <button
                   onClick={() => {
@@ -1728,13 +1556,13 @@ export default function WorkspaceRefactored() {
                     setSelectedTemplate(null)
                     localStorage.removeItem('selectedTemplateId')
                   }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'image-to-image'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
-                      : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
+                      ? 'btn-primary text-white'
+                      : 'btn-outline'
                   }`}
                 >
-                  🎨 図→図
+                  図→図
                 </button>
                 <button
                   onClick={() => {
@@ -1747,13 +1575,13 @@ export default function WorkspaceRefactored() {
                     localStorage.removeItem('savedFileUrl')
                     localStorage.removeItem('savedMode')
                   }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all transform hover:scale-105 ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'text-to-image'
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md'
-                      : 'bg-white border-2 border-amber-300 text-amber-600 hover:bg-amber-50'
+                      ? 'btn-primary text-white'
+                      : 'btn-outline'
                   }`}
                 >
-                  ✍️ 文→図
+                  文→図
                 </button>
               </div>
             </div>
@@ -1767,24 +1595,21 @@ export default function WorkspaceRefactored() {
                     guidesSection.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-sm font-medium"
+                className="inline-flex items-center gap-2 btn-primary text-sm"
               >
-                <span>📖</span>
                 <span>使い方ガイドを見る</span>
                 <span>↓</span>
               </button>
             </div>
 
             {mode === 'template-mode' && (
-              <div className={`mb-4 transition-all duration-1000 delay-700 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}>
+              <div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handlePreviousPage}
                     disabled={currentPage === 0}
                     title="前のページ"
-                    className="flex-shrink-0 p-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-xl transform hover:scale-110"
+                    className="flex-shrink-0 p-2 rounded-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronLeftIcon className="w-4 h-4" />
                   </button>
@@ -1796,10 +1621,10 @@ export default function WorkspaceRefactored() {
                         <button
                           key={template.id}
                           onClick={() => handleTemplateSelect(template)}
-                          className={`p-1.5 h-36 rounded-[16px] border-2 transition-all transform hover:scale-105 flex flex-col ${
+                          className={`p-1.5 h-36 rounded-lg border transition-colors flex flex-col focus:outline-none focus:ring-2 focus:ring-brand active:border-brand active:shadow-sm ${
                             selectedTemplate?.id === template.id
-                              ? 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 shadow-lg'
-                              : 'border-amber-200 bg-white/80 hover:border-amber-400 hover:shadow-md backdrop-blur-sm'
+                              ? 'border-brand bg-surface shadow-sm'
+                              : 'border-border bg-white hover:border-brand hover:shadow-sm'
                           }`}
                         >
                           <div className="flex-1 flex items-center justify-center mb-1">
@@ -1808,10 +1633,10 @@ export default function WorkspaceRefactored() {
                               alt={template.name}
                               width={128}
                               height={128}
-                              className="w-full max-w-28 aspect-square object-cover rounded-[12px] shadow-sm"
+                              className="w-full max-w-28 aspect-square object-cover rounded shadow-sm"
                             />
                           </div>
-                          <p className="text-xs font-bold text-amber-800 font-cute leading-tight px-0.5 text-center h-8 flex items-center justify-center">{template.name}</p>
+                          <p className="text-xs font-bold text-text leading-tight px-0.5 text-center h-8 flex items-center justify-center">{template.name}</p>
                         </button>
                       ))}
                   </div>
@@ -1820,15 +1645,15 @@ export default function WorkspaceRefactored() {
                     onClick={handleNextPage}
                     disabled={currentPage >= Math.ceil(templates.length / templatesPerPage) - 1}
                     title="次のページ"
-                    className="flex-shrink-0 p-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-xl transform hover:scale-110"
+                    className="flex-shrink-0 p-2 rounded-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronRightIcon className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div className="flex justify-center mt-2">
-                  <span className="text-xs text-amber-700 font-cute bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-md">
-                    ページ {currentPage + 1} / {Math.ceil(templates.length / templatesPerPage)} 🌸
+                  <span className="text-xs text-text-muted bg-surface px-3 py-1 rounded-full border border-border">
+                    ページ {currentPage + 1} / {Math.ceil(templates.length / templatesPerPage)}
                   </span>
                 </div>
               </div>
@@ -1836,7 +1661,7 @@ export default function WorkspaceRefactored() {
 
             {mode !== 'text-to-image' && (
               <div
-                className={`border-2 border-dashed border-pink-300/30 rounded-[28px] p-8 text-center hover:border-pink-400 cursor-pointer bg-white/50 backdrop-blur-lg hover:bg-white/70 transform hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-1000 delay-900 ${
+                className={`border-2 border-dashed border-border rounded-[28px] p-8 text-center hover:border-brand cursor-pointer bg-surface/50 backdrop-blur-lg hover:bg-surface/70 transform hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-1000 delay-900 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
                 onDrop={handleDrop}
@@ -1869,33 +1694,33 @@ export default function WorkspaceRefactored() {
                         localStorage.removeItem('savedFileUrl')
                         localStorage.removeItem('savedMode')
                       }}
-                      className="text-pink-600 hover:text-pink-800 text-sm bg-white px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all"
+                      className="text-text-muted hover:text-text text-sm bg-surface px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all"
                     >
                       🗑️ 別の写真にするね
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-4 animate-bounce-slow">
-                    <PhotoIcon className="w-16 h-16 mx-auto text-pink-400 animate-pulse" />
-                    <p className="text-lg text-amber-700 font-cute">写真をドロップしてね！ 📸</p>
-                    <p className="text-sm text-amber-600 font-cute">またはここをクリックして選んでね ✨</p>
-                    <p className="text-xs text-amber-500">10MBまでの画像OK！</p>
+                    <PhotoIcon className="w-16 h-16 mx-auto text-text-muted animate-pulse" />
+                    <p className="text-lg text-text-muted">写真をドロップしてね！ 📸</p>
+                    <p className="text-sm text-text-muted">またはここをクリックして選んでね ✨</p>
+                    <p className="text-xs text-text">10MBまでの画像OK！</p>
                   </div>
                 )}
               </div>
             )}
 
             {mode === 'text-to-image' && (
-              <div className={`border-2 border-dashed border-blue-300/30 rounded-[28px] p-6 text-center bg-gradient-to-br from-blue-50/50 to-purple-50/50 backdrop-blur-lg shadow-lg overflow-hidden transition-all duration-1000 delay-900 ${
+              <div className={`border-2 border-dashed border-border rounded-[28px] p-6 text-center bg-surface backdrop-blur-lg shadow-lg overflow-hidden transition-all duration-1000 delay-900 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}>
                 <div className="space-y-4">
                   <div className="text-6xl mb-4 animate-pulse">✍️✨</div>
-                  <h3 className="text-xl font-bold text-blue-700 mb-2 font-cute">🎨 文生图モード開始！</h3>
-                  <p className="text-blue-600 font-cute mb-3">テキストだけで、可愛い画像を作れるよ！</p>
-                  <div className="bg-blue-50 rounded-2xl p-4 mx-2 border border-blue-100">
-                    <p className="text-sm text-blue-700 mb-2">💡 おすすめの使い方：</p>
-                    <ul className="text-xs text-blue-600 space-y-1 text-left">
+                  <h3 className="text-xl font-bold text-text mb-2">🎨 テキストからイラストモード、始まるよ！</h3>
+                  <p className="text-text-muted mb-3">テキストだけで、可愛い画像を作れるよ！</p>
+                  <div className="bg-surface rounded-2xl p-4 mx-2 border border-border">
+                    <p className="text-sm text-text mb-2">💡 おすすめの使い方：</p>
+                    <ul className="text-xs text-text-muted space-y-1 text-left">
                       <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
                       <li>• 背景や服装の色も指定できる</li>
                       <li>• 日本語でも英語でもOK！</li>
@@ -1910,7 +1735,7 @@ export default function WorkspaceRefactored() {
                 <div className="w-full max-w-xs mx-auto bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div className="bg-pink-500 h-2" style={{ width: `${uploadProgress}%` }} />
                 </div>
-                <p className="mt-2 text-sm text-amber-600 font-cute">アップロード中... {uploadProgress}%</p>
+                <p className="mt-2 text-sm text-text-muted">アップロード中... {uploadProgress}%</p>
               </div>
             )}
 
@@ -1918,7 +1743,7 @@ export default function WorkspaceRefactored() {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}>
               <div>
-                <label className="block text-lg font-bold text-amber-800 mb-3 font-cute">📐 画像サイズを選んでね ✨</label>
+                <label className="block text-lg font-bold text-text mb-3">📐 画像サイズを選んでね ✨</label>
                 <div className="grid grid-cols-3 gap-5">
                   {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
                     <SizeButton
@@ -1936,12 +1761,12 @@ export default function WorkspaceRefactored() {
               <div className={`${
                 (mode === 'image-to-image' || mode === 'text-to-image') ? '' : 'hidden'
               }`}>
-                <label className="block text-lg font-bold text-amber-800 mb-3 font-cute">魔法の呪文を書いてね ✨</label>
+                <label className="block text-lg font-bold text-text mb-3">プロンプトを書いてね ✨</label>
                 <textarea
                   ref={promptDesktopTextareaRef}
                   value={prompt}
                   onChange={handlePromptChange}
-                  className="w-full p-4 border-2 border-pink-300 rounded-2xl focus:ring-2 focus:ring-pink-500 focus:border-transparent focus:outline-none font-cute text-amber-800"
+                  className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text"
                   placeholder="プロンプトを入力..."
                   rows={4}
                 />
@@ -1950,21 +1775,21 @@ export default function WorkspaceRefactored() {
               </div>
 
               {mode === 'template-mode' && selectedTemplate && (
-                <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-4 rounded-2xl shadow-lg">
-                  <h4 className="font-bold text-amber-900 mb-2 font-cute text-base">🎀 選択中の魔法：{selectedTemplate.name}</h4>
-                  <p className="text-xs text-amber-700 font-cute leading-relaxed">{selectedTemplate.prompt}</p>
+                <div className="bg-surface p-4 rounded-2xl shadow-lg">
+                  <h4 className="font-bold text-text mb-2 text-base">🎀 選択中の魔法：{selectedTemplate.name}</h4>
+                  <p className="text-xs text-text-muted leading-relaxed">{selectedTemplate.prompt}</p>
                 </div>
               )}
 
-              <div className="flex items-center bg-white p-4 rounded-2xl shadow-md">
+              <div className="flex items-center bg-surface p-4 rounded-2xl shadow-md">
                 <input
                   type="checkbox"
                   id="enhancePrompt"
                   checked={enhancePrompt}
                   onChange={(e) => setEnhancePrompt(e.target.checked)}
-                  className="rounded border-pink-300 text-pink-500 focus:ring-pink-500 h-5 w-5"
+                  className="rounded border-border text-brand focus:ring-brand h-5 w-5"
                 />
-                <label htmlFor="enhancePrompt" className="ml-3 text-sm font-cute text-amber-800">
+                <label htmlFor="enhancePrompt" className="ml-3 text-sm text-text">
                   プロンプト効果を強化する
                 </label>
               </div>
@@ -1976,7 +1801,7 @@ export default function WorkspaceRefactored() {
                   (mode === 'image-to-image' && (!fileUrl || !prompt.trim())) ||
                   (mode === 'text-to-image' && !prompt.trim())
                 }
-                className="w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white py-4 px-6 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg"
+                className="w-full btn-primary py-4 px-6 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isGenerating ? (
                   <>
@@ -2025,11 +1850,11 @@ export default function WorkspaceRefactored() {
 
 
             {generationError && (
-              <div className="mt-6 p-6 bg-gradient-to-r from-red-50/80 to-pink-50/80 backdrop-blur-sm border border-pink-200/50 rounded-[24px] shadow-lg overflow-hidden">
+              <div className="mt-6 p-6 bg-surface backdrop-blur-sm border border-border rounded-[24px] shadow-lg overflow-hidden">
                 <p className="text-pink-800 font-cute mb-3">{generationError}</p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <button onClick={handleRetry} className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow hover:shadow-md transition">再試行</button>
-                  <button onClick={() => setGenerationError('')} className="bg-white border border-amber-200 text-amber-700 px-4 py-2 rounded-full font-bold shadow-sm hover:shadow transition">閉じる</button>
+                  <button onClick={handleRetry} className="btn-primary text-white px-4 py-2 rounded-full font-bold shadow hover:shadow-md transition">再試行</button>
+                  <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full font-bold shadow-sm hover:shadow transition">閉じる</button>
                 </div>
               </div>
             )}
@@ -2039,9 +1864,9 @@ export default function WorkspaceRefactored() {
         <div className={`lg:w-1/2 space-y-8 transition-all duration-1000 delay-500 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <div className="bg-white/80 backdrop-blur-xl rounded-[36px] shadow-2xl p-8 card-kawaii border border-white/40 overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-xl rounded-[36px] shadow-2xl p-8 card border border-white/40 overflow-hidden">
             <div className="mb-4 text-center">
-              <h3 className="text-2xl font-bold text-amber-800 font-cute">
+              <h3 className="text-2xl font-bold text-text">
                 {isGenerating 
                   ? (mode === 'text-to-image' ? '画像生成中...' : '変身中...') 
                   : currentResult?.status === 'SUCCESS' 
@@ -2052,7 +1877,7 @@ export default function WorkspaceRefactored() {
               {isGenerating && null}
 
               {/* 注意事項（常時表示）*/}
-              <div className="mt-2 text-center text-xs text-amber-600">
+              <div className="mt-2 text-center text-xs text-text">
                 現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
               </div>
             </div>
@@ -2060,16 +1885,16 @@ export default function WorkspaceRefactored() {
             {!currentResult && (
               <div className="space-y-6">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 rounded-[36px] blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-surface rounded-[36px] blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
                   <div className="relative bg-white/80 backdrop-blur-lg rounded-[36px] shadow-2xl border-2 border-dashed border-pink-300/30 hover:border-pink-400 transition-all group-hover:shadow-xl overflow-hidden">
                     {mode === 'text-to-image' ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4 animate-pulse">✍️✨</div>
-                        <h3 className="text-xl font-bold text-blue-700 mb-2 font-cute">🎨 文生图モード開始！</h3>
-                        <p className="text-blue-600 font-cute mb-3">テキストだけで、可愛い画像を作れるよ！</p>
-                        <div className="bg-blue-50 rounded-2xl p-4 mx-4 border border-blue-100">
-                          <p className="text-sm text-blue-700 mb-2">💡 おすすめの使い方：</p>
-                          <ul className="text-xs text-blue-600 space-y-1 text-left">
+                        <h3 className="text-xl font-bold text-text mb-2">🎨 テキストからイラストモード、始まるよ！</h3>
+                        <p className="text-text-muted mb-3">テキストだけで、可愛い画像を作れるよ！</p>
+                        <div className="bg-surface rounded-2xl p-4 mx-4 border border-border">
+                          <p className="text-sm text-text mb-2">💡 おすすめの使い方：</p>
+                          <ul className="text-xs text-text-muted space-y-1 text-left">
                             <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
                             <li>• 背景や服装の色も指定できる</li>
                             <li>• 日本語でも英語でもOK！</li>
@@ -2099,7 +1924,7 @@ export default function WorkspaceRefactored() {
                           </div>
                         </div>
                         
-                        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 mx-4 border border-green-100"
+                        <div className="bg-surface rounded-2xl p-4 mx-4 border border-border"
                           role="alert"
                         >
                           <h4 className="text-sm font-bold text-green-800 mb-1">✅ 画像準備完了！</h4>
@@ -2119,7 +1944,7 @@ export default function WorkspaceRefactored() {
                           あなたの写真を、可愛いアニメ風に変身させましょう！
                         </p>
                         
-                        <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 mx-8 mb-4 border border-pink-100"
+                        <div className="bg-surface rounded-2xl p-4 mx-8 mb-4 border border-border"
                           role="note"
                         >
                           <p className="text-sm text-gray-700 mb-2">📌 コツ：</p>
@@ -2134,7 +1959,7 @@ export default function WorkspaceRefactored() {
                         </div>
                         
                         <button
-                          className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-bold"
+                          className="btn-primary text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-bold"
                           aria-label="画像ファイルを選択"
                         >
                           📁 画像を選択する
@@ -2171,7 +1996,7 @@ export default function WorkspaceRefactored() {
                             style={{ cursor: 'pointer' }}
                           />
                         </a>
-                        <p className="text-sm text-blue-700 font-cute mt-3">✨ 生成された画像</p>
+                        <p className="text-sm text-text font-cute mt-3">✨ 生成された画像</p>
                       </div>
                     ) : (
                       <BeforeAfterSlider
@@ -2182,18 +2007,18 @@ export default function WorkspaceRefactored() {
                       />
                     )}
 
-                    <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 border border-green-200">
+                    <div className="bg-[var(--surface)] rounded-lg p-6 border border-[var(--border)]">
                       <div className="text-center mb-4">
                         <div className="text-2xl mb-2">🎊</div>
-                        <h4 className="font-bold text-green-800 mb-1">🎉 おめでとう！</h4>
-                        <p className="text-sm text-green-700">あなたの魔法の変身が完成しました！</p>
+                        <h4 className="font-bold text-[var(--text)] mb-1">🎉 おめでとう！</h4>
+                        <p className="text-sm text-[var(--text-muted)]">あなたの魔法の変身が完成しました！</p>
                       </div>
                       
                       <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                         <a
                           href={(currentResult as GenerationResult).generated_url}
                           download={`anime-magic-${Date.now()}.png`}
-                          className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px]"
+className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-center justify-center space-x-2 min-w-[140px]"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -2238,7 +2063,7 @@ export default function WorkspaceRefactored() {
                         }
                       `}</style>
                     </span>
-                    <p className="mt-4 text-amber-600 font-cute">
+                    <p className="mt-4 text-text-muted">
                       2kawaiiのGPT-4o Image で画像生成中... 1-3分で完成！✨
                     </p>
                   </div>
@@ -2253,193 +2078,14 @@ export default function WorkspaceRefactored() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen bg-[var(--bg)]">
       {isMobile ? MobileLayout() : DesktopLayout()}
       <MobileBottomNav />
-      
-      {/* 選べる変身スタイル セクション */}
-      <div className="pt-6 pb-12 lg:pt-8 lg:pb-20">
-        <TemplateGallery />
-      </div>
 
-      {/* AI画像変換の使い方 - 3ステップで簡単操作 セクション */}
-      <section id="guides-section" className="py-12 lg:py-20 px-3 sm:px-4 lg:px-6 bg-[#fff7ea]">
-        <div className="max-w-7xl mx-auto px-2">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-8 lg:mb-12 animate-fade-in-up">
-            AI画像変換の使い方 - 3ステップで簡単操作
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
-              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
-                <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-choose_model_and_choose_template" 
-                  alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
-                  width={200}
-                  height={200}
-                  unoptimized
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換 モデル選択とテンプレート選択ガイド"
-                />
-              </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">1. モデルとテンプレートを選択</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルとアニメスタイルテンプレートを選択してください</p>
-            </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
-              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
-                <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-upload_image_and_click_start" 
-                  alt="AI画像変換 画像アップロードと開始 - 無料ツール" 
-                  width={200}
-                  height={200}
-                  unoptimized
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換 画像アップロードと開始"
-                />
-              </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">2. 画像をアップロードして開始</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">写真をアップロードして「開始」ボタンをクリックするとAI変換が始まります</p>
-            </div>
-            <div className="text-center card-kawaii p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.6s'}}>
-              <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
-                <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
-                  alt="AI画像変換成功 - 最終画像取得 ダウンロード可能 商用利用" 
-                  width={200}
-                  height={200}
-                  unoptimized
-                  className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換成功 - 最終画像取得"
-                />
-              </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-800 mb-4 lg:mb-6 font-cute">3. 成功！最終画像を取得</h3>
-              <p className="text-amber-700 text-sm sm:text-base lg:text-lg leading-relaxed">AI変換が完了！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 内部リンク戦略：長尾キーワードセクション - 优化移动端 */}
-      <section className="py-12 lg:py-16 px-3 sm:px-4 lg:px-6 bg-gradient-to-r from-amber-50 to-orange-50">
+      <section className="py-12 lg:py-16 px-3 sm:px-4 lg:px-6 bg-surface">
         <div className="max-w-7xl mx-auto px-2">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-center text-amber-800 font-cute mb-8">
-            関連コンテンツ
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
-            <Link href="/ai-image-generation-guide" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
-                    alt="AI画像生成 初心者ガイド" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">AI画像生成 初心者ガイド</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">写真をアニメ風に変換する完全ガイド</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/line-sticker-creation" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after" 
-                    alt="LINEスタンプ作り方" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">LINEスタンプ作り方</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">写真を可愛いLINEスタンプに無料変換</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/chibi-character-maker" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
-                    alt="Chibiキャラクター作成" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">Chibiキャラクター作成</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">可愛いchibiキャラをAIで作る</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/ai-image-conversion-free" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%8E%9A%E6%B6%82-after" 
-                    alt="AI画像変換 無料比較" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">AI画像変換 無料比較</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">無料AI画像変換ツールを徹底比較</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/personification-ai" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA-after" 
-                    alt="擬人化 AI 活用術" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">擬人化 AI 活用術</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">ペットやオブジェクトを擬人化する方法</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link href="/anime-icon-creation" className="card-kawaii p-3 sm:p-4 hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0">
-                  <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E5%A4%B4%E5%83%8F-afterr" 
-                    alt="アイコン作成 無料" 
-                    width={60}
-                    height={60}
-                    className="w-15 h-15 object-cover rounded-lg shadow-md"
-                    unoptimized
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm sm:text-base font-bold text-amber-800 mb-1">アイコン作成 無料</h3>
-                  <p className="text-amber-700 text-xs sm:text-sm">SNS用アニメアイコンを無料で作成</p>
-                </div>
-              </div>
-            </Link>
-          </div>
         </div>
       </section>
     </div>

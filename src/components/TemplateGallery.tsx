@@ -19,6 +19,14 @@ interface _Template {
 // 新分类的模板数据，每个分类包含before/after图片
 const templates = [
   {
+    id: '9',
+    name: 'chibi',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
+    prompt: '画像生成AI 無料でちびキャラクターを作成！チャットGPT 画像生成でQ版デフォルメの可愛いキャラを無料で作れる。癒し系アニメスタイル、プロンプト付き。登録不要で即座にダウンロード可能、可愛いアイコンやLINEスタンプとしても使える',
+    category: 'chibi'
+  },
+  {
     id: '1',
     name: '擬人化',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
@@ -98,14 +106,7 @@ const templates = [
     prompt: '画像生成AI 無料で萌えキャラクターを作成！チャットGPT 画像生成で可愛いロリータ少女を無料で作れる。ちびキャラも簡単に、プロンプト付き。登録不要で即座にダウンロード可能、可愛いアイコンやLINEスタンプとしても使える',
     category: '萌え化'
   },
-  {
-    id: '9',
-    name: 'chibi',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
-    prompt: '画像生成AI 無料でちびキャラクターを作成！チャットGPT 画像生成でQ版デフォルメの可愛いキャラを無料で作れる。癒し系アニメスタイル、プロンプト付き。登録不要で即座にダウンロード可能、可愛いアイコンやLINEスタンプとしても使える',
-    category: 'chibi'
-  },
+  
   {
     id: '10',
     name: 'ジブリ風',
@@ -227,11 +228,11 @@ export default function TemplateGallery() {
   const selectedTemplate = templates.find(t => t.category === selectedCategory)
 
   return (
-    <div className={`px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out ${
+    <div className={`px-4 sm:px-6 lg:px-8 transition-all duration-1000 ease-out animate-fade-in ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
     }`}>
       <div className="max-w-7xl mx-auto">
-        <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-amber-800 font-cute mb-12 lg:mb-16 transition-all duration-1000 delay-300 ${
+        <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-text font-cute mb-12 lg:mb-16 transition-all duration-1000 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           選べる変身スタイル
@@ -245,10 +246,10 @@ export default function TemplateGallery() {
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm sm:text-base font-medium transition-all duration-300 ${
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-md text-sm sm:text-base font-medium transition-colors ${
                 selectedCategory === category
-                  ? 'bg-gradient-to-r from-pink-400 to-orange-400 text-white shadow-lg scale-110'
-                  : 'bg-white/80 text-amber-700 border border-amber-200 hover:bg-amber-50'
+                  ? 'btn-primary text-white'
+                  : 'bg-surface text-text-muted border border-border hover:bg-surface'
               }`}
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}
             >
@@ -259,10 +260,10 @@ export default function TemplateGallery() {
 
         {/* 分类展示内容 */}
         {selectedTemplate && (
-          <div className={`card-kawaii p-6 sm:p-8 lg:p-10 max-w-5xl mx-auto transition-all duration-1000 delay-700 ${
+          <div className={`card p-6 sm:p-8 lg:p-10 max-w-5xl mx-auto transition-all duration-1000 delay-700 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-800 font-cute text-center mb-8 lg:mb-10">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text font-cute text-center mb-8 lg:mb-10">
               {selectedTemplate.name} - 変身前後の比較
             </h3>
             
@@ -285,18 +286,18 @@ export default function TemplateGallery() {
               
               {/* 箭头 */}
               <div className="text-center animate-fade-in" style={{animationDelay: '1s'}}>
-                <div className="text-3xl sm:text-4xl lg:text-5xl text-amber-600 font-bold animate-pulse">
+                <div className="text-3xl sm:text-4xl lg:text-5xl text-brand font-bold animate-pulse">
                   →
                 </div>
-                <p className="text-sm sm:text-base text-amber-700 mt-3 sm:mt-4 font-cute">
+                <p className="text-sm sm:text-base text-text-muted mt-3 sm:mt-4 font-cute">
                   AI変身
                 </p>
               </div>
               
               {/* 变身后 */}
               <div className="text-center animate-fade-in-right" style={{animationDelay: '0.8s'}}>
-                <p className="text-sm sm:text-base text-amber-700 mb-3 sm:mb-4 font-bold">変身後</p>
-                <div className="bg-white rounded-lg overflow-hidden border-2 border-amber-300 shadow-lg inline-block">
+                <p className="text-sm sm:text-base text-text mb-3 sm:mb-4 font-bold">変身後</p>
+                <div className="bg-surface rounded-lg overflow-hidden border-2 border-border shadow-lg inline-block">
                   {isClient && (
                     <OptimizedImage
                       src={selectedTemplate.afterImage}
@@ -319,7 +320,7 @@ export default function TemplateGallery() {
                 {isClient && (
                   <Link
                     href="/workspace"
-                    className="btn-kawaii px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg"
+                    className="btn-primary px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg"
                     onClick={() => {
                       localStorage.setItem('selectedTemplate', selectedTemplate.id)
                     }}

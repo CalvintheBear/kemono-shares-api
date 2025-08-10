@@ -54,18 +54,18 @@ export const metadata: Metadata = {
 
 export default function ComparisonPage() {
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       <Header />
       
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-8 text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
               AI画像変換 無料比較 - 2025年最新版 人気サービス徹底比較
             </h1>
             
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">人気のアニメスタイル</h3>
+              <h3 className="text-xl font-bold text-text mb-4 text-center">人気のアニメスタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
                   <Image 
@@ -75,7 +75,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">擬人化</p>
+                  <p className="text-xs text-text-muted mt-2">擬人化</p>
                 </div>
                 
                 <div className="text-center">
@@ -86,7 +86,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">ジブリ風</p>
+                  <p className="text-xs text-text-muted mt-2">ジブリ風</p>
                 </div>
                 
                 <div className="text-center">
@@ -97,7 +97,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">VTuber</p>
+                  <p className="text-xs text-text-muted mt-2">VTuber</p>
                 </div>
                 
                 <div className="text-center">
@@ -108,11 +108,11 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">ブルーアーカイブ</p>
+                  <p className="text-xs text-text-muted mt-2">ブルーアーカイブ</p>
                 </div>
               </div>
               
-              <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">リアル系スタイル</h3>
+              <h3 className="text-xl font-bold text-text mb-4 text-center">リアル系スタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div className="text-center">
                   <Image 
@@ -122,7 +122,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">証明写真</p>
+                  <p className="text-xs text-text-muted mt-2">証明写真</p>
                 </div>
                 
                 <div className="text-center">
@@ -133,7 +133,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">厚塗</p>
+                  <p className="text-xs text-text-muted mt-2">厚塗</p>
                 </div>
                 
                 <div className="text-center">
@@ -144,7 +144,7 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">3D CG</p>
+                  <p className="text-xs text-text-muted mt-2">3D CG</p>
                 </div>
                 
                 <div className="text-center">
@@ -155,35 +155,35 @@ export default function ComparisonPage() {
                     width={128}
                     height={128}
                   />
-                  <p className="text-xs text-amber-700 mt-2">乙女ゲーム</p>
+                  <p className="text-xs text-text-muted mt-2">乙女ゲーム</p>
                 </div>
               </div>
             </div>
           
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">無料AI画像変換ツール徹底比較</h2>
-            <p className="text-amber-700 leading-relaxed mb-4">
+            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換ツール徹底比較</h2>
+            <p className="text-text-muted leading-relaxed mb-4">
               2025年最新の無料AI画像変換ツールを徹底比較！写真をアニメ風に変換できる人気サービスの機能、品質、使いやすさを詳しく分析しました。
               あなたに最適なAI画像生成ツールを見つけましょう。
             </p>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-6">無料AI画像変換サービス比較表</h2>
+            <h2 className="text-2xl font-bold text-text mb-6">無料AI画像変換サービス比較表</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-amber-200">
-                    <th className="py-3 px-4 font-bold text-amber-800">サービス名</th>
-                    <th className="py-3 px-4 font-bold text-amber-800">無料利用</th>
-                    <th className="py-3 px-4 font-bold text-amber-800">登録必要</th>
-                    <th className="py-3 px-4 font-bold text-amber-800">商用利用</th>
-                    <th className="py-3 px-4 font-bold text-amber-800">上手难度</th>
-                    <th className="py-3 px-4 font-bold text-amber-800">画質</th>
+                  <tr className="border-b border-border">
+                    <th className="py-3 px-4 font-bold text-text">サービス名</th>
+                    <th className="py-3 px-4 font-bold text-text">無料利用</th>
+                    <th className="py-3 px-4 font-bold text-text">登録必要</th>
+                    <th className="py-3 px-4 font-bold text-text">商用利用</th>
+                    <th className="py-3 px-4 font-bold text-text">上手难度</th>
+                    <th className="py-3 px-4 font-bold text-text">画質</th>
                   </tr>
                 </thead>
-                <tbody className="text-amber-700">
-                  <tr className="border-b border-amber-100">
+                <tbody className="text-text-muted">
+                  <tr className="border-b border-border">
                     <td className="py-3 px-4 font-semibold">2kawaii</td>
                     <td className="py-3 px-4">✅ 完全無料</td>
                     <td className="py-3 px-4">❌ 不要</td>
@@ -191,7 +191,7 @@ export default function ComparisonPage() {
                     <td className="py-3 px-4">⭐ 超簡単</td>
                     <td className="py-3 px-4">⭐⭐⭐⭐</td>
                   </tr>
-                  <tr className="border-b border-amber-100">
+                  <tr className="border-b border-border">
                     <td className="py-3 px-4">Canva</td>
                     <td className="py-3 px-4">🆓 一部無料</td>
                     <td className="py-3 px-4">✅ 必要</td>
@@ -199,7 +199,7 @@ export default function ComparisonPage() {
                     <td className="py-3 px-4">⭐⭐ 簡単</td>
                     <td className="py-3 px-4">⭐⭐⭐</td>
                   </tr>
-                  <tr className="border-b border-amber-100">
+                  <tr className="border-b border-border">
                     <td className="py-3 px-4">Midjourney</td>
                     <td className="py-3 px-4">🎁 25回無料</td>
                     <td className="py-3 px-4">✅ 必要</td>
@@ -207,7 +207,7 @@ export default function ComparisonPage() {
                     <td className="py-3 px-4">⭐⭐⭐ 普通</td>
                     <td className="py-3 px-4">⭐⭐⭐⭐</td>
                   </tr>
-                  <tr className="border-b border-amber-100">
+                  <tr className="border-b border-border">
                     <td className="py-3 px-4">Stable Diffusion</td>
                     <td className="py-3 px-4">🆓 基本無料</td>
                     <td className="py-3 px-4">✅ 必要</td>
@@ -221,8 +221,8 @@ export default function ComparisonPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">無料AI画像変換の選び方</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換の選び方</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
                               <li><strong>完全無料を求めるなら</strong>：2kawaii - 登録不要で即利用可能</li>
               <li><strong>高画質を重視するなら</strong>：Stable Diffusion - 細部まで美麗な変換</li>
                               <li><strong>商用利用を前提なら</strong>：2kawaii - 商用利用完全OK</li>
@@ -232,8 +232,8 @@ export default function ComparisonPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">おすすめの無料AI画像変換順位</h2>
-            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">おすすめの無料AI画像変換順位</h2>
+            <ol className="list-decimal list-inside space-y-3 text-text-muted">
                               <li><strong>🏆 2kawaii</strong> - 完全無料・登録不要・商用利用可能・高速処理</li>
               <li><strong>🥈 Stable Diffusion</strong> - 高画質・カスタマイズ性高い・技術者向け</li>
               <li><strong>🥉 Midjourney</strong> - 芸術的・高品質・制限あり</li>
@@ -242,8 +242,8 @@ export default function ComparisonPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">無料AI画像変換の注意点</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換の注意点</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li>無料プランには利用回数制限がある場合があります</li>
               <li>商用利用にはライセンス確認が必要なサービスがあります</li>
               <li>AI画像変換の品質はサービスによって異なります</li>
@@ -264,36 +264,36 @@ export default function ComparisonPage() {
 
           {/* 関連コンテンツ */}
           <section className="card-kawaii p-8 mt-12">
-            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <h2 className="text-2xl font-bold text-text mb-6 text-center">関連コンテンツ</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
-                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+                <h3 className="font-bold text-text mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-text-muted text-sm">写真をアニメ風に変換する完全ガイド</p>
               </Link>
               
               <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
-                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+                <h3 className="font-bold text-text mb-2">LINEスタンプ作り方</h3>
+                <p className="text-text-muted text-sm">写真を可愛いLINEスタンプに無料変換</p>
               </Link>
               
               <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
-                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+                <h3 className="font-bold text-text mb-2">Chibiキャラクター作成</h3>
+                <p className="text-text-muted text-sm">可愛いchibiキャラをAIで作る</p>
               </Link>
               
               <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
-                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+                <h3 className="font-bold text-text mb-2">AI画像変換 無料比較</h3>
+                <p className="text-text-muted text-sm">無料AI画像変換ツールを徹底比較</p>
               </Link>
               
               <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
-                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+                <h3 className="font-bold text-text mb-2">擬人化 AI 活用術</h3>
+                <p className="text-text-muted text-sm">ペットやオブジェクトを擬人化する方法</p>
               </Link>
               
               <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
-                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+                <h3 className="font-bold text-text mb-2">アイコン作成 無料</h3>
+                <p className="text-text-muted text-sm">SNS用アニメアイコンを無料で作成</p>
               </Link>
             </div>
           </section>

@@ -47,11 +47,11 @@ export default function HomeLatestShares() {
       )
     }
     return (
-      <div className={`grid grid-cols-3 gap-2 sm:gap-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className={`grid grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         {items.slice(0, 12).map((it) => (
-          <a key={it.id} href={`/share?id=${encodeURIComponent(it.id)}`} className="block rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition lg:w-2/3 lg:mx-auto">
+          <a key={it.id} href={`/share?id=${encodeURIComponent(it.id)}`} className="block rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition">
             <div className="relative w-full" style={{ aspectRatio: '4 / 3' }}>
-              <Image src={it.generatedUrl} alt={it.style || 'AI生成画像'} fill sizes="(max-width: 640px) 33vw, (min-width:1024px) 22vw, 33vw" className="object-cover" unoptimized />
+              <Image src={it.generatedUrl} alt={it.style || 'AI生成画像'} fill sizes="(min-width: 1024px) 16.67vw, 25vw" className="object-cover" unoptimized />
             </div>
           </a>
         ))}
@@ -60,15 +60,15 @@ export default function HomeLatestShares() {
   }, [items, loading, isVisible])
 
   return (
-    <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-[#fff7ea]">
+    <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-surface animate-fade-in">
       <div className="max-w-7xl mx-auto">
-        <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-amber-800 font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
-        <p className={`text-center text-amber-700 text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>30分ごとに更新</p>
+        <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-text font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
+        <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>30分ごとに更新</p>
         {content}
         <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <a
             href="/share"
-            className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold shadow hover:shadow-md transition-colors bg-amber-100 text-amber-800 hover:bg-amber-200"
+            className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold shadow hover:shadow-md transition-colors bg-surface text-text hover:bg-surface-hover"
           >
             お題一覧 🖼️
           </a>

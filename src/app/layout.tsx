@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Quicksand, Comic_Neue } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { structuredData } from "./structured-data";
 
-
-const quicksand = Quicksand({
-  variable: "--font-quicksand",
+const notoSans = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
-
-const comicNeue = Comic_Neue({
-  variable: "--font-comic-neue",
-  subsets: ["latin"],
-  weight: ["300", "400", "700"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -87,7 +80,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${quicksand.variable} ${comicNeue.variable} antialiased font-sans`}
+        className={`${notoSans.variable} antialiased font-sans bg-bg text-text`}
       >
         {children}
       </body>

@@ -135,8 +135,8 @@ export default function ShareGallery() {
       {(loading || isFetching) && images.length === 0 ? (
         <div className="flex justify-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">ギャラリーを読み込み中...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand mx-auto mb-4"></div>
+            <p className="text-text-muted">ギャラリーを読み込み中...</p>
           </div>
         </div>
       ) : images.length > 0 ? (
@@ -158,23 +158,23 @@ function EmptyGallery({ onRefresh }: { onRefresh: () => void }) {
   return (
     <div className="text-center py-20">
       <div className="text-8xl mb-6">🎨</div>
-      <h3 className="text-2xl font-bold text-gray-700 mb-4">
+      <h3 className="text-2xl font-bold text-text mb-4">
         ギャラリーはまだ空です
       </h3>
-      <p className="text-gray-600 mb-8">
+      <p className="text-text-muted mb-8">
         あなたが最初の作品を作ってみませんか？
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <button
           onClick={() => window.location.href = '/workspace'}
-          className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105 flex items-center gap-2"
+          className="btn-primary px-8 py-3 flex items-center gap-2"
         >
           <SparklesIcon className="w-5 h-5" />
           今すぐ始める
         </button>
         <button
           onClick={onRefresh}
-          className="border border-gray-300 text-gray-700 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300"
+          className="btn-outline px-8 py-3"
         >
           更新
         </button>

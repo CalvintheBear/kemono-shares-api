@@ -54,13 +54,13 @@ export const metadata: Metadata = {
 
 export default function LineStickerCreationPage() {
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       <Header />
       
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-8 text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
               LINEスタンプ作り方 - AIで写真を可愛いスタンプに無料変換
             </h1>
             
@@ -74,7 +74,7 @@ export default function LineStickerCreationPage() {
                   height={192}
                   unoptimized
                 />
-                <p className="text-sm text-amber-700 mt-2">LINEスタンプ</p>
+                <p className="text-sm text-text-muted mt-2">LINEスタンプ</p>
               </div>
               
               <div className="text-center">
@@ -86,21 +86,21 @@ export default function LineStickerCreationPage() {
                   height={192}
                   unoptimized
                 />
-                <p className="text-sm text-amber-700 mt-2">LINEアイコン</p>
+                <p className="text-sm text-text-muted mt-2">LINEアイコン</p>
               </div>
             </div>
           
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">AIでLINEスタンプを作る方法</h2>
-            <p className="text-amber-700 leading-relaxed mb-4">
+            <h2 className="text-2xl font-bold text-text mb-4">AIでLINEスタンプを作る方法</h2>
+            <p className="text-text-muted leading-relaxed mb-4">
               最新のAI画像生成技術を使えば、プロのイラストレーターに頼らずとも、自分だけのオリジナルLINEスタンプを簡単に作成できます。
               写真をアップロードするだけで、かわいらしいアニメ風スタンプが生成され、LINEクリエイターズに登録して販売も可能です。
             </p>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプ作成の手順</h2>
-            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">LINEスタンプ作成の手順</h2>
+            <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>写真を準備する</strong>：正面を向いている明るい写真がおすすめ</li>
               <li><strong>スタンプスタイルを選択する</strong>：chibi風、美少女風、かわいい系など</li>
               <li><strong>AI画像生成を実行する</strong>：1-3分で8種類の表情スタンプが完成</li>
@@ -110,11 +110,11 @@ export default function LineStickerCreationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">人気のLINEスタンプスタイル</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">人気のLINEスタンプスタイル</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">キャラクタータイプ</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">キャラクタータイプ</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>ケモノミミ - 可愛い動物の耳と尻尾</li>
                   <li>人間化 - リアルな人間スタイル</li>
                   <li>イラスト - アニメイラスト風</li>
@@ -125,8 +125,8 @@ export default function LineStickerCreationPage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">表情バリエーション</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">表情バリエーション</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>笑顔 - 基本のハッピー表情</li>
                   <li>驚き - 「えっ！」なリアクション</li>
                   <li>泣き顔 - かわいい泣き虫スタンプ</li>
@@ -137,8 +137,8 @@ export default function LineStickerCreationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプ作成の特徴</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">LINEスタンプ作成の特徴</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li><strong>完全無料</strong>：登録不要・隠れた課金なし</li>
               <li><strong>商用利用OK</strong>：LINEクリエイターズ販売可能</li>
               <li><strong>高品質</strong>：1:1、2:3、3:2のサイズ比率で自動生成</li>
@@ -148,8 +148,8 @@ export default function LineStickerCreationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEスタンプの活用シーン</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">LINEスタンプの活用シーン</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li><strong>友達とのチャット</strong>：日常会話に使えるスタンプ</li>
               <li><strong>ビジネス用</strong>：企業・ブランドのスタンプ制作</li>
               <li><strong>SNSプロモーション</strong>：インフルエンサー用スタンプ</li>
@@ -161,8 +161,8 @@ export default function LineStickerCreationPage() {
 
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">LINEクリエイターズ登録ガイド</h2>
-            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">LINEクリエイターズ登録ガイド</h2>
+            <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>LINE Creators Marketにアクセス</strong>：creators.line.me</li>
               <li><strong>アカウント登録</strong>：LINEアカウントで簡単登録</li>
               <li><strong>スタンプセットを作成</strong>：8枚以上の画像をアップロード</li>
@@ -173,19 +173,19 @@ export default function LineStickerCreationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">よくある質問</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">よくある質問</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="font-bold text-amber-800">Q: LINEスタンプは本当に無料で作れますか？</h3>
-                <p className="text-amber-700 text-sm">A: はい、AI画像生成は完全無料です。LINEクリエイターズへの登録も無料です。</p>
+                <h3 className="font-bold text-text">Q: LINEスタンプは本当に無料で作れますか？</h3>
+                <p className="text-text-muted text-sm">A: はい、AI画像生成は完全無料です。LINEクリエイターズへの登録も無料です。</p>
               </div>
               <div>
-                <h3 className="font-bold text-amber-800">Q: 商用利用は可能ですか？</h3>
-                <p className="text-amber-700 text-sm">A: はい、作成したスタンプはLINEクリエイターズで販売可能です。</p>
+                <h3 className="font-bold text-text">Q: 商用利用は可能ですか？</h3>
+                <p className="text-text-muted text-sm">A: はい、作成したスタンプはLINEクリエイターズで販売可能です。</p>
               </div>
               <div>
-                <h3 className="font-bold text-amber-800">Q: どんな写真でも使えますか？</h3>
-                <p className="text-amber-700 text-sm">A: 自分の写真または著作権フリーの画像であれば利用可能です。</p>
+                <h3 className="font-bold text-text">Q: どんな写真でも使えますか？</h3>
+                <p className="text-text-muted text-sm">A: 自分の写真または著作権フリーの画像であれば利用可能です。</p>
               </div>
             </div>
           </section>
@@ -203,36 +203,36 @@ export default function LineStickerCreationPage() {
 
           {/* 関連コンテンツ */}
           <section className="card-kawaii p-8 mt-12">
-            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <h2 className="text-2xl font-bold text-text mb-6 text-center">関連コンテンツ</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
-                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+                <h3 className="font-bold text-text mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-text-muted text-sm">写真をアニメ風に変換する完全ガイド</p>
               </Link>
               
               <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
-                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+                <h3 className="font-bold text-text mb-2">LINEスタンプ作り方</h3>
+                <p className="text-text-muted text-sm">写真を可愛いLINEスタンプに無料変換</p>
               </Link>
               
               <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
-                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+                <h3 className="font-bold text-text mb-2">Chibiキャラクター作成</h3>
+                <p className="text-text-muted text-sm">可愛いchibiキャラをAIで作る</p>
               </Link>
               
               <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
-                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+                <h3 className="font-bold text-text mb-2">AI画像変換 無料比較</h3>
+                <p className="text-text-muted text-sm">無料AI画像変換ツールを徹底比較</p>
               </Link>
               
               <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
-                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+                <h3 className="font-bold text-text mb-2">擬人化 AI 活用術</h3>
+                <p className="text-text-muted text-sm">ペットやオブジェクトを擬人化する方法</p>
               </Link>
               
               <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
-                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+                <h3 className="font-bold text-text mb-2">アイコン作成 無料</h3>
+                <p className="text-text-muted text-sm">SNS用アニメアイコンを無料で作成</p>
               </Link>
             </div>
           </section>

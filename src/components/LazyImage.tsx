@@ -191,10 +191,10 @@ export default function LazyImage({
     <div className={`relative overflow-hidden ${className}`}>
       {/* 加载状态 */}
       {isLoading && !placeholderLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-100 to-orange-100 animate-pulse flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-surface to-orange-100 animate-pulse flex items-center justify-center z-10">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-2"></div>
-            <div className="text-2xl text-amber-400">🎨</div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-border mx-auto mb-2"></div>
+            <div className="text-2xl text-text-muted">🎨</div>
           </div>
         </div>
       )}

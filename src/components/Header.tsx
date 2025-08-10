@@ -9,47 +9,47 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-gray-100 border-b border-gray-300 z-50 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Domain - Now on the left */}
-          <div className="flex items-center order-1">
+          {/* Logo and Domain */}
+          <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-amber-800 font-cute hover:text-amber-900 transition-colors">
+              <Link href="/" className="flex items-center space-x-2 text-xl font-bold text-text font-sans hover:text-brand transition-colors">
                 <Image 
                   src="/favicon.ico" 
                   alt="Kemono Mimi" 
-                  width={32} 
-                  height={32} 
-                  className="w-8 h-8"
+                  width={28} 
+                  height={28} 
+                  className="w-7 h-7"
                 />
-                                 <span>2kawaii.com</span>
+                <span>2kawaii.com</span>
               </Link>
             </div>
           </div>
           
-          {/* Desktop Navigation - Centered */}
-          <nav className="hidden md:block order-2 flex-1">
-            <div className="flex items-baseline justify-center space-x-8">
-              <Link href="/faq" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
-              <Link href="/privacy" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">プライバシー</Link>
-              <Link href="/terms" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">利用規約</Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:block">
+            <div className="flex items-center space-x-8">
+              <Link href="/faq" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
+              <Link href="/privacy" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">プライバシー</Link>
+              <Link href="/terms" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">利用規約</Link>
             </div>
           </nav>
           
-          {/* CTA Button and Mobile Menu - Now on the right */}
-          <div className="flex items-center space-x-2 sm:space-x-4 order-3">
-            {/* 桌面端显示CTA，移动端移入侧边栏 */}
+          {/* CTA Button and Mobile Menu */}
+          <div className="flex items-center space-x-2">
+            {/* Desktop CTA */}
             <div className="hidden md:flex items-center space-x-2">
               <Link 
                 href="/workspace" 
-                className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-3 sm:px-5 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
+                className="btn-primary text-sm whitespace-nowrap"
               >
                 体験
               </Link>
               <Link 
                 href="/share" 
-                className="bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-medium transition-all duration-300 px-2 sm:px-4 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap"
+                className="btn-outline text-sm whitespace-nowrap"
               >
                 お題一覧
               </Link>
@@ -58,7 +58,7 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-text-muted hover:text-text hover:bg-surface focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand"
             >
               {mobileMenuOpen ? (
                 <XMarkIcon className="block h-6 w-6" />
@@ -72,13 +72,12 @@ export default function Header() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-              {/* 其他链接 */}
-              <Link href="/workspace" className="block w-full text-center bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">体験</Link>
-              <Link href="/share" className="block w-full text-center bg-gradient-to-r from-blue-400 to-purple-400 text-white px-4 py-3 rounded-2xl font-semibold shadow hover:shadow-md transition">お題一覧</Link>
-              <Link href="/faq" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">FAQ</Link>
-              <Link href="/privacy" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">プライバシー</Link>
-              <Link href="/terms" className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium">利用規約</Link>
+            <div className="px-2 pt-2 pb-3 space-y-2 sm:px-3 bg-gray-100 border-t border-gray-300">
+              <Link href="/workspace" className="btn-primary block w-full text-center text-sm">体験</Link>
+              <Link href="/share" className="btn-outline block w-full text-center text-sm">お題一覧</Link>
+              <Link href="/faq" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">FAQ</Link>
+              <Link href="/privacy" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">プライバシー</Link>
+              <Link href="/terms" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">利用規約</Link>
             </div>
           </div>
         )}

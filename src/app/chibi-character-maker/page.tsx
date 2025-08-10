@@ -54,13 +54,13 @@ export const metadata: Metadata = {
 
 export default function ChibiMakerPage() {
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       <Header />
       
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-8 text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
               Chibiキャラクター作成 - AIで可愛いchibiキャラを無料作成
             </h1>
             
@@ -74,7 +74,7 @@ export default function ChibiMakerPage() {
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
                   unoptimized
                 />
-                <p className="text-sm text-amber-700 mt-2">Chibiキャラクター</p>
+                <p className="text-sm text-text-muted mt-2">Chibiキャラクター</p>
               </div>
               
               <div className="text-center">
@@ -86,21 +86,21 @@ export default function ChibiMakerPage() {
                   className="mx-auto rounded-lg shadow-lg w-48 h-48 object-cover"
                   unoptimized
                 />
-                <p className="text-sm text-amber-700 mt-2">SDキャラクター</p>
+                <p className="text-sm text-text-muted mt-2">SDキャラクター</p>
               </div>
             </div>
           
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">AIでChibiキャラを作る方法</h2>
-            <p className="text-amber-700 leading-relaxed mb-4">
+            <h2 className="text-2xl font-bold text-text mb-4">AIでChibiキャラを作る方法</h2>
+            <p className="text-text-muted leading-relaxed mb-4">
               頭が大きくて体が小さく、可愛らしいchibiキャラクターは、AI画像生成技術で簡単に作成できます。
               あなたの写真をアップロードするだけで、かわいいchibiキャラクターが生成されます。
             </p>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">Chibiキャラ作成の特徴</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">Chibiキャラ作成の特徴</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li>頭が大きくて可愛らしいデフォルメ表現</li>
               <li>簡略化された特徴で個性を表現</li>
               <li>スタンプやアイコンとして使いやすい</li>
@@ -109,8 +109,8 @@ export default function ChibiMakerPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">Chibiキャラの使い道</h2>
-            <ul className="list-disc list-inside space-y-2 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">Chibiキャラの使い道</h2>
+            <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li>LINEスタンプ作成</li>
               <li>SNSプロフィール画像</li>
               <li>スマホ壁紙</li>
@@ -131,36 +131,36 @@ export default function ChibiMakerPage() {
 
           {/* 関連コンテンツ */}
           <section className="card-kawaii p-8 mt-12">
-            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <h2 className="text-2xl font-bold text-text mb-6 text-center">関連コンテンツ</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
-                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+                <h3 className="font-bold text-text mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-text-muted text-sm">写真をアニメ風に変換する完全ガイド</p>
               </Link>
               
               <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
-                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+                <h3 className="font-bold text-text mb-2">LINEスタンプ作り方</h3>
+                <p className="text-text-muted text-sm">写真を可愛いLINEスタンプに無料変換</p>
               </Link>
               
               <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
-                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+                <h3 className="font-bold text-text mb-2">Chibiキャラクター作成</h3>
+                <p className="text-text-muted text-sm">可愛いchibiキャラをAIで作る</p>
               </Link>
               
               <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
-                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+                <h3 className="font-bold text-text mb-2">AI画像変換 無料比較</h3>
+                <p className="text-text-muted text-sm">無料AI画像変換ツールを徹底比較</p>
               </Link>
               
               <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
-                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+                <h3 className="font-bold text-text mb-2">擬人化 AI 活用術</h3>
+                <p className="text-text-muted text-sm">ペットやオブジェクトを擬人化する方法</p>
               </Link>
               
               <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
-                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+                <h3 className="font-bold text-text mb-2">アイコン作成 無料</h3>
+                <p className="text-text-muted text-sm">SNS用アニメアイコンを無料で作成</p>
               </Link>
             </div>
           </section>

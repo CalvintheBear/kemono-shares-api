@@ -36,26 +36,26 @@ export default function MobileBottomNav() {
       href: '/',
       icon: HomeIcon,
       iconSolid: HomeSolidIcon,
-      color: 'text-amber-600'
+      color: 'text-brand'
     },
     {
       name: 'ワークスペース',
       href: '/workspace',
       icon: SparklesIcon,
       iconSolid: SparklesSolidIcon,
-      color: 'text-amber-600'
+      color: 'text-brand'
     },
     {
       name: 'ギャラリー',
       href: '/share',
       icon: PhotoIcon,
       iconSolid: PhotoSolidIcon,
-      color: 'text-amber-600'
+      color: 'text-brand'
     }
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-amber-200 shadow-lg z-50 md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50 md:hidden">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
           const isActive = currentPath === item.href || 
@@ -70,8 +70,8 @@ export default function MobileBottomNav() {
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center flex-1 py-2 px-1 transition-colors duration-200 ${
-                isActive ? item.color : 'text-gray-400'
-              } hover:text-amber-600`}
+                isActive ? item.color : 'text-text-muted'
+              } hover:text-brand`}
             >
               <Icon className="w-6 h-6 mb-1" />
               <span className="text-xs font-medium">{item.name}</span>

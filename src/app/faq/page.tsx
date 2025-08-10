@@ -156,7 +156,7 @@ export default function FAQPage() {
   // サーバーコンポーネントとして動作
 
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       {/* JSON-LD 構造化データ埋め込み */}
       <script
         type="application/ld+json"
@@ -183,10 +183,10 @@ export default function FAQPage() {
       
       <main className="max-w-6xl mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl lg:text-5xl font-bold text-amber-800 mb-4 font-cute">
+          <h1 className="text-4xl lg:text-5xl font-bold text-text mb-4 font-cute">
             よくある質問
           </h1>
-          <p className="text-lg text-amber-700 font-cute max-w-2xl mx-auto">
+          <p className="text-lg text-text-muted font-cute max-w-2xl mx-auto">
             2kawaii.comのサービスについて、よくいただくご質問にお答えします。
             お困りごとがあれば、まずこちらをご確認ください。
           </p>
@@ -197,10 +197,10 @@ export default function FAQPage() {
             <div key={index} className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 overflow-hidden">
               <div className="w-full px-6 py-4 text-left">
                 <div className="flex-1 pr-4 mb-4">
-                  <p className="font-semibold text-amber-800 font-cute">{faq.question}</p>
-                  <p className="text-xs text-amber-600 mt-1">{faq.category}</p>
+                  <p className="font-semibold text-text font-cute">{faq.question}</p>
+                  <p className="text-xs text-text-muted mt-1">{faq.category}</p>
                 </div>
-                <div className="px-0 py-4 border-t border-amber-100">
+                <div className="px-0 py-4 border-t border-border">
                   <p className="text-gray-700 leading-relaxed font-cute">{faq.answer}</p>
                 </div>
               </div>
@@ -211,21 +211,21 @@ export default function FAQPage() {
         {/* 追加情報 */}
         <div className="mt-12 bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-8 text-center"
         >
-          <h2 className="text-2xl font-bold text-amber-800 mb-4 font-cute">
+          <h2 className="text-2xl font-bold text-text mb-4 font-cute">
             ご質問が解決しませんでしたか？
           </h2>
-          <p className="text-amber-700 mb-6 font-cute">
+          <p className="text-text-muted mb-6 font-cute">
             その他のご質問やお困りごとがございましたら、お気軽にお問い合わせください。
           </p>
           <div className="space-y-4"
           >
             <a
                               href="mailto:support@2kawaii.com"
-              className="inline-block bg-gradient-to-r from-pink-500 to-amber-600 text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+              className="inline-block bg-gradient-to-r from-pink-500 btn-primary text-white px-8 py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
             >
               📧 メールでお問い合わせ
             </a>
-            <p className="text-sm text-amber-600"
+            <p className="text-sm text-text-muted"
             >
               通常24時間以内にご返信いたします
             </p>
@@ -237,8 +237,8 @@ export default function FAQPage() {
         >
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/50"
           >
-            <h3 className="text-lg font-bold text-amber-800 mb-3 font-cute">📖 重要なリンク</h3>
-            <ul className="space-y-2 text-amber-700"
+            <h3 className="text-lg font-bold text-text mb-3 font-cute">📖 重要なリンク</h3>
+            <ul className="space-y-2 text-text-muted"
             >
               <li><Link href="/privacy" className="hover:text-pink-600 transition-colors">プライバシーポリシー</Link></li>
               <li><Link href="/terms" className="hover:text-pink-600 transition-colors">利用規約</Link></li>
@@ -248,15 +248,15 @@ export default function FAQPage() {
           
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/50"
           >
-            <h3 className="text-lg font-bold text-amber-800 mb-3 font-cute">🚀 今すぐ始める</h3>
-            <p className="text-amber-700 text-sm mb-3"
+            <h3 className="text-lg font-bold text-text mb-3 font-cute">🚀 今すぐ始める</h3>
+            <p className="text-text-muted text-sm mb-3"
             >
               まずは無料でお試しください！簡単3ステップであなたの写真をアニメに。
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/workspace"
-                className="inline-block bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
+                className="inline-block bg-gradient-to-r btn-primary to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold hover:shadow-md transition-all"
               >
                 今すぐ変換する
               </Link>

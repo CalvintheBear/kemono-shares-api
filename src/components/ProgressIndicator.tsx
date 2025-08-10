@@ -43,9 +43,9 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
   if (!isActive) return null
 
   return (
-    <div className="card-kawaii p-6 mb-8 animate-scale-in progress-indicator">
+    <div className="card p-6 mb-8 animate-scale-in progress-indicator">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gradient font-cute mb-2">
+        <h3 className="text-2xl font-bold text-text font-cute mb-2">
           処理の進捗
         </h3>
         <p className="text-gray-600">
@@ -62,7 +62,7 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
               <div className={`
                 w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold transition-all duration-500
                 ${index <= currentStep 
-                  ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg scale-110' 
+                  ? 'btn-primary text-white shadow-lg scale-110' 
                   : 'bg-gray-200 text-gray-400'
                 }
                 ${index === currentStep ? 'animate-pulse' : ''}
@@ -74,7 +74,7 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
               <div className="mt-3 text-center">
                 <h4 className={`
                   font-cute font-bold text-sm
-                  ${index <= currentStep ? 'text-pink-600' : 'text-gray-400'}
+                  ${index <= currentStep ? 'text-text' : 'text-gray-400'}
                 `}>
                   {step.title}
                 </h4>
@@ -92,7 +92,7 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
         {/* 连接线 */}
         <div className="absolute top-8 left-8 right-8 h-1 bg-gray-200 rounded-full">
           <div 
-            className="h-full bg-gradient-to-r from-pink-500 to-orange-500 rounded-full transition-all duration-1000 ease-out"
+            className="h-full bg-brand rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
           />
         </div>
@@ -100,9 +100,9 @@ export default function ProgressIndicator({ currentStep, isActive }: ProgressInd
 
       {/* 当前步骤详情 */}
       <div className="text-center">
-        <div className="inline-flex items-center space-x-2 bg-pink-50 px-4 py-2 rounded-full">
-          <div className="w-3 h-3 bg-pink-500 rounded-full animate-pulse"></div>
-          <span className="text-pink-700 font-medium">
+        <div className="inline-flex items-center space-x-2 bg-surface px-4 py-2 rounded-full border border-border">
+          <div className="w-3 h-3 bg-brand rounded-full animate-pulse"></div>
+          <span className="text-text font-medium">
             {steps[currentStep]?.title || '処理中'}
           </span>
         </div>

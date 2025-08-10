@@ -300,7 +300,7 @@ export default function ShareButton({ generatedImageUrl, originalImageUrl, promp
     <div className="relative inline-block" ref={buttonRef}>
       <button
         onClick={handleButtonClick}
-        className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-orange-400 active:scale-95"
+        className="w-full sm:w-auto bg-gradient-to-r from-orange-500 btn-primary text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center space-x-2 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-orange-400 active:scale-95"
         type="button"
         tabIndex={0}
         aria-haspopup="true"

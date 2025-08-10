@@ -79,17 +79,17 @@ export default function FAQ() {
   }, [])
 
   return (
-    <section id="faq" className={`px-4 sm:px-6 lg:px-8 bg-[#fff7ea] transition-all duration-1000 ease-out ${
+    <section id="faq" className={`px-4 sm:px-6 lg:px-8 bg-surface transition-all duration-1000 ease-out animate-fade-in ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
     }`}>
       <div className="max-w-6xl mx-auto">
         <div className={`text-center mb-12 lg:mb-16 transition-all duration-1000 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-amber-800 font-cute mb-6 lg:mb-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text font-cute mb-6 lg:mb-8">
             AI画像変換 よくある質問
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-amber-700 leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-text-muted leading-relaxed">
             AI画像変換・写真アニメ化についてのよくある質問をまとめました
           </p>
         </div>
@@ -100,15 +100,15 @@ export default function FAQ() {
           {faqData.map((faq, index) => (
             <div 
               key={faq.id} 
-              className="card-kawaii overflow-hidden shadow-lg transition-all duration-300 animate-fade-in-up"
+              className="card overflow-hidden shadow-lg transition-all duration-300 animate-fade-in-up"
               style={{ animationDelay: `${0.7 + index * 0.1}s` }}
             >
-              <div className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left hover:bg-amber-50 transition-colors duration-200">
-                <h3 className="font-semibold text-amber-800 font-cute pr-4 text-sm sm:text-base lg:text-lg leading-relaxed mb-3">
+              <div className="w-full px-6 sm:px-8 py-4 sm:py-6 text-left hover:bg-surface transition-colors duration-200">
+                <h3 className="font-semibold text-text font-cute pr-4 text-sm sm:text-base lg:text-lg leading-relaxed mb-3">
                   {faq.question}
                 </h3>
                 <div className="px-0 sm:px-0 pb-2 sm:pb-2">
-                  <p className="text-sm sm:text-base text-amber-700 leading-relaxed">
+                  <p className="text-sm sm:text-base text-text-muted leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>

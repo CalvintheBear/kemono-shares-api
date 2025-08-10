@@ -51,14 +51,14 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
   if (!shareData) return null
 
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       <MobileBottomNav />
       <Header />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Hero Section */}
-          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-8 text-center">
+          <div className="bg-brand text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
               <h1 className="text-3xl font-bold">変換完了！</h1>
@@ -72,45 +72,45 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
           {/* Image Comparison */}
           <div className="p-8">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+              <h2 className="text-2xl font-bold text-[var(--text)] mb-4 text-center">
                 変身前後の比較
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-2">変身前</p>
+                  <p className="text-sm text-[var(--text-muted)] mb-2">変身前</p>
                   <Image
                     src={shareData.original}
                     alt="Original"
                     width={300}
                     height={300}
-                    className="rounded-2xl shadow-lg mx-auto"
+                    className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-2">変身后</p>
+                  <p className="text-sm text-[var(--text-muted)] mb-2">変身后</p>
                   <Image
                     src={shareData.generated}
                     alt="Generated"
                     width={300}
                     height={300}
-                    className="rounded-2xl shadow-lg mx-auto"
+                    className="rounded-lg shadow-lg mx-auto"
                   />
                 </div>
               </div>
             </div>
 
             {/* Style Information */}
-            <div className="bg-gray-50 rounded-xl p-6 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-3">変換スタイル</h3>
+            <div className="bg-[var(--surface)] rounded-lg p-6 mb-8">
+              <h3 className="text-lg font-bold text-[var(--text)] mb-3">変換スタイル</h3>
               <div className="flex items-center space-x-2 mb-4">
-                <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-[var(--surface)] text-[var(--text)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--border)]">
                   {shareData.style}
                 </span>
-                <span className="text-gray-500 text-sm">
+                <span className="text-[var(--text-muted)] text-sm">
                   {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}
                 </span>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">
+              <p className="text-[var(--text)] text-sm leading-relaxed">
                 {shareData.prompt}
               </p>
             </div>
@@ -120,13 +120,13 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
               <button
                 onClick={handleDownload}
                 disabled={isDownloading}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary py-3 px-8 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isDownloading ? 'ダウンロード中...' : '📥 ダウンロード'}
               </button>
               <button
                 onClick={handleTryNow}
-                className="bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                className="btn-primary py-3 px-8 font-bold"
               >
                 ✨ 自分も試してみる
               </button>

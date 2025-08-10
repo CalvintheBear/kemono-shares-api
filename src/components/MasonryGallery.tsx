@@ -169,7 +169,7 @@ export default function MasonryGallery({
       {/* Loading indicator for infinite scroll */}
       {(isLoading || loading) && (
         <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
         </div>
       )}
 
@@ -217,7 +217,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
 
   return (
     <div
-      className="relative rounded-lg overflow-hidden bg-gray-100 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer group"
+      className="image-container relative overflow-hidden cursor-pointer"
       style={{
         width: `${columnWidth}px`,
         height: `${displayHeight}px`,
@@ -226,13 +226,13 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
     >
       {/* Loading placeholder */}
       {!isLoaded && !isError && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+        <div className="absolute inset-0 bg-border animate-pulse" />
       )}
 
       {/* Error state */}
       {isError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <span className="text-gray-500 text-sm">Failed to load</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-surface">
+          <span className="text-text-muted text-sm">Failed to load</span>
         </div>
       )}
 
@@ -250,7 +250,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
       />
 
       {/* Overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300">
         <div className="absolute bottom-4 left-4 right-4 text-white">
           <p className="text-sm font-medium truncate">{image.alt || 'Image'}</p>
         </div>

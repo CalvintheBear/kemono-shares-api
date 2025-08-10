@@ -48,7 +48,7 @@ export default function StyleGallery() {
   return (
     <div className="py-16 px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-amber-800 font-cute mb-12">
+        <h2 className="text-3xl font-bold text-center text-text font-cute mb-12">
           選べる変身スタイル
         </h2>
         
@@ -62,10 +62,10 @@ export default function StyleGallery() {
                 setCurrentImageIndex(0)
               }}
               className={`
-                flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all
+                flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                 ${selectedStyle === style.id 
-                  ? 'bg-gradient-to-r from-pink-400 to-orange-400 text-white shadow-lg scale-105' 
-                  : 'bg-white/80 text-amber-700 hover:bg-amber-50 border border-amber-200'
+                  ? 'btn-primary text-white' 
+                  : 'bg-surface text-text-muted border border-border hover:bg-surface'
                 }
               `}
             >
@@ -77,7 +77,7 @@ export default function StyleGallery() {
 
         {/* 当前选中样式的描述 */}
         <div className="text-center mb-8">
-          <p className="text-lg text-amber-700 font-cute">
+          <p className="text-lg text-text-muted font-cute">
             {styleTypes.find(s => s.id === selectedStyle)?.description}
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function StyleGallery() {
             {/* 左箭头 */}
             <button
               onClick={prevImages}
-              className="p-2 rounded-full bg-white/80 text-amber-700 hover:bg-amber-50 shadow-lg transition-all hover:scale-110"
+              className="p-2 rounded-md bg-surface text-text-muted border border-border hover:bg-surface transition-all hover:scale-110"
               aria-label="前の画像"
             >
               <ChevronLeftIcon className="w-6 h-6" />
@@ -99,11 +99,11 @@ export default function StyleGallery() {
               {getVisibleImages().map((image, index) => (
                 <div
                   key={`${selectedStyle}-${image.id}-${index}`}
-                  className="card-kawaii p-2 hover:scale-105 transition-transform duration-300"
+                  className="card p-2 hover:scale-105 transition-transform duration-300"
                 >
-                  <div className="bg-gradient-to-br from-pink-100 to-orange-100 rounded-lg overflow-hidden relative group inline-block">
+                  <div className="bg-surface rounded-lg overflow-hidden relative group inline-block border border-border">
                     {/* 占位背景 */}
-                    <div className="w-64 h-64 flex items-center justify-center text-6xl bg-gradient-to-br from-pink-100 to-orange-100">
+                    <div className="w-64 h-64 flex items-center justify-center text-6xl bg-surface border border-border">
                       {styleTypes.find(s => s.id === selectedStyle)?.emoji}
                     </div>
                     
@@ -125,7 +125,7 @@ export default function StyleGallery() {
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                     
                     {/* 图片标签 */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent p-4">
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-4">
                       <p className="text-white text-sm font-medium">
                         サンプル {image.id + 1}
                       </p>
@@ -134,7 +134,7 @@ export default function StyleGallery() {
                     {/* 放大镜图标 (悬停时显示) */}
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="bg-white/90 rounded-full p-2">
-                        <svg className="w-4 h-4 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                       </div>
@@ -147,7 +147,7 @@ export default function StyleGallery() {
             {/* 右箭头 */}
             <button
               onClick={nextImages}
-              className="p-2 rounded-full bg-white/80 text-amber-700 hover:bg-amber-50 shadow-lg transition-all hover:scale-110"
+              className="p-2 rounded-md bg-surface text-text-muted border border-border hover:bg-surface transition-all hover:scale-110"
               aria-label="次の画像"
             >
               <ChevronRightIcon className="w-6 h-6" />
@@ -163,8 +163,8 @@ export default function StyleGallery() {
                 className={`
                   w-2 h-2 rounded-full transition-all
                   ${currentImageIndex === index 
-                    ? 'bg-amber-500 w-6' 
-                    : 'bg-amber-200 hover:bg-amber-300'
+                    ? 'bg-brand w-6' 
+                    : 'bg-border hover:bg-text-muted'
                   }
                 `}
                 aria-label={`画像グループ ${index + 1} に移動`}
@@ -175,7 +175,7 @@ export default function StyleGallery() {
 
         {/* 提示信息 */}
         <div className="text-center mt-8">
-          <p className="text-sm text-amber-500">
+          <p className="text-sm text-text-muted">
             ← → ボタンまたは下の点をクリックして他のサンプルを見る
           </p>
         </div>

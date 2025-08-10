@@ -54,18 +54,18 @@ export const metadata: Metadata = {
 
 export default function AIGuidePage() {
   return (
-    <div className="min-h-screen bg-[#fff7ea]">
+    <div className="min-h-screen">
       <Header />
       
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-amber-800 mb-8 text-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
               AI画像生成 初心者ガイド - 写真をアニメ風に変換する完全ガイド
             </h1>
             
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">人気のアニメスタイル</h3>
+              <h3 className="text-xl font-bold text-text mb-4 text-center">人気のアニメスタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
                 <div className="text-center">
                   <Image 
@@ -76,7 +76,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">萌え化</p>
+                  <p className="text-xs text-text-muted mt-2">萌え化</p>
                 </div>
                 
                 <div className="text-center">
@@ -88,7 +88,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">ジブリ風</p>
+                  <p className="text-xs text-text-muted mt-2">ジブリ風</p>
                 </div>
                 
                 <div className="text-center">
@@ -100,7 +100,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">VTuber</p>
+                  <p className="text-xs text-text-muted mt-2">VTuber</p>
                 </div>
                 
                 <div className="text-center">
@@ -112,11 +112,11 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">ブルーアーカイブ</p>
+                  <p className="text-xs text-text-muted mt-2">ブルーアーカイブ</p>
                 </div>
               </div>
               
-              <h3 className="text-xl font-bold text-amber-800 mb-4 text-center">リアル系スタイル</h3>
+              <h3 className="text-xl font-bold text-text mb-4 text-center">リアル系スタイル</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div className="text-center">
                   <Image 
@@ -127,7 +127,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">写真 アニメ風</p>
+                  <p className="text-xs text-text-muted mt-2">写真 アニメ風</p>
                 </div>
                 
                 <div className="text-center">
@@ -139,7 +139,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">厚塗</p>
+                  <p className="text-xs text-text-muted mt-2">厚塗</p>
                 </div>
                 
                 <div className="text-center">
@@ -151,7 +151,7 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">3D CG</p>
+                  <p className="text-xs text-text-muted mt-2">3D CG</p>
                 </div>
                 
                 <div className="text-center">
@@ -163,14 +163,14 @@ export default function AIGuidePage() {
                     height={128}
                     unoptimized
                   />
-                  <p className="text-xs text-amber-700 mt-2">乙女ゲーム</p>
+                  <p className="text-xs text-text-muted mt-2">乙女ゲーム</p>
                 </div>
               </div>
             </div>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">AI画像生成とは？</h2>
-            <p className="text-amber-700 leading-relaxed mb-4">
+            <h2 className="text-2xl font-bold text-text mb-4">AI画像生成とは？</h2>
+            <p className="text-text-muted leading-relaxed mb-4">
               AI画像生成は、人工知能を使って写真をアニメ風に変換する技術です。
               最新のAI技術により、あなたの写真を可愛いアニメキャラクターに変身させることができます。
             </p>
@@ -178,12 +178,12 @@ export default function AIGuidePage() {
 
           {/* 使い方ガイド - 3ステップで簡単操作 */}
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-8 text-center">AI画像変換の使い方 - 3ステップで簡単操作</h2>
+            <h2 className="text-2xl font-bold text-text mb-8 text-center">AI画像変換の使い方 - 3ステップで簡単操作</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step1" 
                     alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -192,13 +192,13 @@ export default function AIGuidePage() {
                     title="AI画像変換 写真アップロードガイド"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-amber-800 mb-4">1. 写真をアップロード</h3>
-                <p className="text-amber-700 text-sm leading-relaxed">JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
+                <h3 className="text-lg font-bold text-text mb-4">1. 写真をアップロード</h3>
+                <p className="text-text-muted text-sm leading-relaxed">JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/Vtuber-after" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step2" 
                     alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -207,13 +207,13 @@ export default function AIGuidePage() {
                     title="AI画像変換 アニメスタイル選択"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-amber-800 mb-4">2. アニメスタイルを選択</h3>
-                <p className="text-amber-700 text-sm leading-relaxed">ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
+                <h3 className="text-lg font-bold text-text mb-4">2. アニメスタイルを選択</h3>
+                <p className="text-text-muted text-sm leading-relaxed">ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
                     alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -222,15 +222,15 @@ export default function AIGuidePage() {
                     title="AI画像変換完了"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-amber-800 mb-4">3. AI画像生成完了</h3>
-                <p className="text-amber-700 text-sm leading-relaxed">最新のAI技術で1-3分で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
+                <h3 className="text-lg font-bold text-text mb-4">3. AI画像生成完了</h3>
+                <p className="text-text-muted text-sm leading-relaxed">最新のAI技術で1-3分で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
               </div>
             </div>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">AI画像生成の基本的な使い方</h2>
-            <ol className="list-decimal list-inside space-y-3 text-amber-700">
+            <h2 className="text-2xl font-bold text-text mb-4">AI画像生成の基本的な使い方</h2>
+            <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li>高品質な写真を用意する（正面を向いている写真がおすすめ）</li>
               <li>お好みのアニメスタイルを選択する（ジブリ風、VTuber風、美少女など）</li>
               <li>AI画像生成を開始する（1-3分で完了）</li>
@@ -239,11 +239,11 @@ export default function AIGuidePage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-amber-800 mb-4">豊富なアニメスタイル選択</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">豊富なアニメスタイル選択</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">🐱 ケモノミミ</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">🐱 ケモノミミ</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>可愛い動物の耳と尻尾</li>
                   <li>ファンタジーな獣人スタイル</li>
                   <li>萌え系ケモノキャラクター</li>
@@ -251,8 +251,8 @@ export default function AIGuidePage() {
               </div>
               
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">👤 人間化</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">👤 人間化</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>リアルな人間スタイル</li>
                   <li>自然な人間の特徴</li>
                   <li>写実的な人物表現</li>
@@ -260,8 +260,8 @@ export default function AIGuidePage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">🎨 イラスト</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">🎨 イラスト</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>アニメイラスト風</li>
                   <li>美しい絵画スタイル</li>
                   <li>アート性の高い表現</li>
@@ -269,8 +269,8 @@ export default function AIGuidePage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">💖 萌え化</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">💖 萌え化</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>萌えキャラスタイル</li>
                   <li>可愛らしい特徴</li>
                   <li>アニメ萌え系</li>
@@ -278,8 +278,8 @@ export default function AIGuidePage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">🌸 ジブリ風</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">🌸 ジブリ風</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>ジブリアニメ風</li>
                   <li>優しく温かみのある雰囲気</li>
                   <li>自然で美しい表現</li>
@@ -287,8 +287,8 @@ export default function AIGuidePage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-amber-800 mb-3">👧 娘化</h3>
-                <ul className="list-disc list-inside text-amber-700 text-sm space-y-1">
+                <h3 className="text-lg font-bold text-text mb-3">👧 娘化</h3>
+                <ul className="list-disc list-inside text-text-muted text-sm space-y-1">
                   <li>美少女キャラ化</li>
                   <li>可愛い女の子スタイル</li>
                   <li>萌え系美少女</li>
@@ -310,36 +310,36 @@ export default function AIGuidePage() {
 
           {/* 関連コンテンツ */}
           <section className="card-kawaii p-8 mt-12">
-            <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">関連コンテンツ</h2>
+            <h2 className="text-2xl font-bold text-text mb-6 text-center">関連コンテンツ</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link href="/ai-image-generation-guide" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像生成 初心者ガイド</h3>
-                <p className="text-amber-700 text-sm">写真をアニメ風に変換する完全ガイド</p>
+                <h3 className="font-bold text-text mb-2">AI画像生成 初心者ガイド</h3>
+                <p className="text-text-muted text-sm">写真をアニメ風に変換する完全ガイド</p>
               </Link>
               
               <Link href="/line-sticker-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">LINEスタンプ作り方</h3>
-                <p className="text-amber-700 text-sm">写真を可愛いLINEスタンプに無料変換</p>
+                <h3 className="font-bold text-text mb-2">LINEスタンプ作り方</h3>
+                <p className="text-text-muted text-sm">写真を可愛いLINEスタンプに無料変換</p>
               </Link>
               
               <Link href="/chibi-character-maker" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">Chibiキャラクター作成</h3>
-                <p className="text-amber-700 text-sm">可愛いchibiキャラをAIで作る</p>
+                <h3 className="font-bold text-text mb-2">Chibiキャラクター作成</h3>
+                <p className="text-text-muted text-sm">可愛いchibiキャラをAIで作る</p>
               </Link>
               
               <Link href="/ai-image-conversion-free" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">AI画像変換 無料比較</h3>
-                <p className="text-amber-700 text-sm">無料AI画像変換ツールを徹底比較</p>
+                <h3 className="font-bold text-text mb-2">AI画像変換 無料比較</h3>
+                <p className="text-text-muted text-sm">無料AI画像変換ツールを徹底比較</p>
               </Link>
               
               <Link href="/personification-ai" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">擬人化 AI 活用術</h3>
-                <p className="text-amber-700 text-sm">ペットやオブジェクトを擬人化する方法</p>
+                <h3 className="font-bold text-text mb-2">擬人化 AI 活用術</h3>
+                <p className="text-text-muted text-sm">ペットやオブジェクトを擬人化する方法</p>
               </Link>
               
               <Link href="/anime-icon-creation" className="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="font-bold text-amber-800 mb-2">アイコン作成 無料</h3>
-                <p className="text-amber-700 text-sm">SNS用アニメアイコンを無料で作成</p>
+                <h3 className="font-bold text-text mb-2">アイコン作成 無料</h3>
+                <p className="text-text-muted text-sm">SNS用アニメアイコンを無料で作成</p>
               </Link>
             </div>
           </section>
