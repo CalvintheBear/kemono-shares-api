@@ -179,27 +179,37 @@ function SharePageContent() {
               <p className="text-sm opacity-75 mt-2">シェアID: {shareData.id}</p>
             </div>
             <div className="p-8">
-              <div className="flex justify-center">
-                <Image
-                  src={shareData.generatedUrl}
-                  alt="AI生成画像"
-                  width={1200}
-                  height={800}
-                  unoptimized
-                  className="rounded-2xl shadow-lg max-w-full h-auto"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.style.display = 'none'
-                  }}
-                />
-              </div>
+          <div className="flex justify-center">
+            <Image
+              src={shareData.generatedUrl}
+              alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
+              width={1200}
+              height={800}
+              unoptimized
+              className="rounded-2xl shadow-lg max-w-full h-auto"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+              }}
+            />
+          </div>
             </div>
             <div className="bg-gray-50 rounded-xl p-6 mb-8">
               <div className="flex items-center space-x-2 mb-4">
                 <span className="bg-surface text-text px-3 py-1 rounded-full text-sm font-medium border border-border">{shareData.style}</span>
                 <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">{shareData.prompt}</p>
+            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{shareData.prompt}</p>
+            {shareData.prompt && (
+              <div className="mt-4 text-gray-700 text-sm leading-relaxed">
+                <h2 className="text-base font-semibold mb-2">作品のポイント</h2>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>スタイル: {shareData.style}</li>
+                  <li>テーマ: {(shareData.prompt || '').slice(0, 40)}...</li>
+                  <li>生成プロセス: GPT-4o Image による自動プロンプト最適化</li>
+                </ul>
+              </div>
+            )}
               {renderSeoTags()}
             </div>
             <div className="p-6 bg-gray-50 rounded-xl">

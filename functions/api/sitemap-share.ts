@@ -10,13 +10,22 @@ export async function onRequestGet({ env }: { env: any }) {
     }
 
     const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env)
-    const list = await shareStore.getShareList(200, 0)
+    const urlObj = new URL((env as any).request?.url || 'https://2kawaii.com')
+    const page = parseInt(urlObj.searchParams.get('page') || '1')
+    const pageSize = 500
+    const offset = (page - 1) * pageSize
+    const list = await shareStore.getShareList(pageSize, offset)
     const items = Array.isArray(list?.items) ? list.items : []
     const origin = env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
 
-    const urls = items.map((it: any) => `  <url><loc>${origin}/share/${it.id}</loc><changefreq>daily</changefreq><priority>0.5</priority></url>`).join('\n')
+    const urls = items.map((it: any) => `  <url>
+    <loc>${origin}/share/${it.id}</loc>
+    <lastmod>${new Date(it.createdAt || it.timestamp || Date.now()).toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+  </url>`).join('\n')
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls}
 </urlset>`
     return new Response(xml, { status: 200, headers: { 'Content-Type': 'application/xml; charset=utf-8' } })

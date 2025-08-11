@@ -35,6 +35,7 @@ export default async function generateMetadata(
     return {
       title: titleBase,
       description: descBase,
+      robots: { index: false, follow: false },
       openGraph: {
         title: titleBase,
         description: descBase,

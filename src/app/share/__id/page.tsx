@@ -132,7 +132,7 @@ export default function ShareDetailPage() {
             <div className="flex justify-center">
               <Image
                 src={shareData.generatedUrl}
-                alt="AI生成画像"
+                alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
                 width={1200}
                 height={800}
                 unoptimized
@@ -145,7 +145,20 @@ export default function ShareDetailPage() {
               <span className="bg-surface text-text px-3 py-1 rounded-full text-sm font-medium border border-border">{shareData.style}</span>
               <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
             </div>
-            <p className="text-gray-700 text-sm leading-relaxed">{shareData.prompt}</p>
+            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+              {shareData.prompt}
+            </p>
+            {/* 基于 prompt 的摘要，提升文本密度 */}
+            {shareData.prompt && (
+              <div className="mt-4 text-gray-700 text-sm leading-relaxed">
+                <h2 className="text-base font-semibold mb-2">作品のポイント</h2>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>スタイル: {shareData.style}</li>
+                  <li>テーマ: {(shareData.prompt || '').slice(0, 40)}...</li>
+                  <li>生成プロセス: GPT-4o Image による自動プロンプト最適化</li>
+                </ul>
+              </div>
+            )}
             {Array.isArray(shareData.seoTags) && shareData.seoTags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
                 {shareData.seoTags.slice(0, 10).map((t, i) => (
