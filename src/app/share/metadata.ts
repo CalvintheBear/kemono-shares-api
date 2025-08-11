@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: "AI画像生成 ギャラリー | チャットGPT・ai プロンプト 作例集 - 2kawaii",
-  description: "AI プロンプトで作られたチャットGPT 画像生成の最新作例を毎日公開。AI画像生成 サイト 無料・登録不要、1-3分で完成。ジブリ風・VTuber・chibiなど多彩なスタイル。",
+  description: "AI プロンプトで作られたチャットGPT 画像生成の最新作例を毎日公開。AI画像生成 サイト 無料・登録不要、2-5分で完成。ジブリ風・VTuber・chibiなど多彩なスタイル。",
   openGraph: {
     title: "AI画像生成 ギャラリー | チャットGPT・ai プロンプト 作例集 - 2kawaii",
-    description: "AI プロンプトを活用したチャットGPT 画像生成の作例集。無料・登録不要、1-3分で完成。ジブリ風・VTuber・chibiなど。",
+    description: "AI プロンプトを活用したチャットGPT 画像生成の作例集。無料・登録不要、2-5分で完成。ジブリ風・VTuber・chibiなど。",
     url: "https://2kawaii.com/share",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -22,11 +22,15 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI画像生成 ギャラリー | チャットGPT・ai プロンプト 作例集",
-    description: "AI プロンプト × チャットGPT 画像生成の作例が充実。無料・登録不要、1-3分で完成。",
+    description: "AI プロンプト × チャットGPT 画像生成の作例が充実。無料・登録不要、2-5分で完成。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-gallery.jpg"],
   },
   alternates: {
     canonical: "https://2kawaii.com/share",
+    languages: {
+      ja: "https://2kawaii.com/share",
+      "x-default": "https://2kawaii.com/share",
+    },
   },
   robots: {
     index: true,

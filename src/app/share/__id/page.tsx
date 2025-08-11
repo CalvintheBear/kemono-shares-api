@@ -115,6 +115,9 @@ export default function ShareDetailPage() {
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
         {shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
+        {/* hreflang for detail page */}
+        <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
+        <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
       </head>
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">

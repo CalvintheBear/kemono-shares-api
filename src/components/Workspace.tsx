@@ -54,8 +54,8 @@ const templates: Template[] = [
     id: '9',
     name: 'chibi',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
-    prompt: 'ちびキャラクター、Q版デフォルメ、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
+    prompt: 'ちびキャラクター、Q版デフォルメ、ベクターアイコン風、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系。',
     category: 'chibi'
   },
   {
@@ -1401,7 +1401,7 @@ useEffect(() => {
                       <h3 className="text-lg font-bold text-text mb-2">画像生成中...</h3>
                       <p className="text-sm text-text-muted mb-4">AIが画像を生成しています</p>
                       <div className="bg-surface rounded-lg p-4">
-                        <p className="text-sm text-text-muted">1-3分で完了します</p>
+                        <p className="text-sm text-text-muted">2-5分で完了します</p>
                       </div>
                     </div>
                   </div>
@@ -2102,7 +2102,7 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
                       `}</style>
                     </span>
                     <p className="mt-4 text-text-muted">
-                      2kawaiiのGPT-4o Image で画像生成中... 1-3分で完成！✨
+                      2kawaiiのGPT-4o Image で画像生成中... 2-5分で完成！✨
                     </p>
                   </div>
                 )}

@@ -56,9 +56,10 @@ function copyStaticFiles() {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FuryCode - AI Anime Image Generator</title>
+    <title>2kawaii - AI画像変換</title>
     <link rel="icon" href="/favicon.ico">
     <link rel="stylesheet" href="/_next/static/css/app/layout.css">
+    <meta name="description" content="AI画像変換ツール。写真をアニメ風に変換。">
 </head>
 <body>
     <div id="__next"></div>

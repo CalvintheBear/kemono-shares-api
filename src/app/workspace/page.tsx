@@ -6,7 +6,7 @@ import Image from 'next/image'
 // 追加SEOメタデータ
 export const metadata = {
   title: "AI画像生成 無料 登録不要 | gpt4o image でアニメ風に即変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。ジブリ風・VTuber・chibi対応。",
+  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。ジブリ風・VTuber・chibi対応。",
   openGraph: {
     title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
     description: "ai画像生成 サイト 無料 登録不要。プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
@@ -26,7 +26,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。",
+    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-workspace.jpg"],
   },
   alternates: {
@@ -65,7 +65,7 @@ const structuredData = {
     'プロンプト自動生成',
     '写真をアニメ風に即変換',
     'ジブリ風・VTuber風・chibi対応',
-    '1-3分で高速生成',
+    '2-5分で高速生成',
     '商用利用可能'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/workspace-screenshot.jpg',

@@ -10,17 +10,9 @@ Allow: /conversion
 Allow: /personification
 Allow: /icon
 
-# APIエンドポイントを許可（搜索引擎がクロール可能に）
-Allow: /api/generate-image
-Allow: /api/upload-image
-Allow: /api/image-details
-Allow: /api/download-url
-
-# 不要なディレクトリを禁止
-Disallow: /api/test-env
-Disallow: /api/temp-file
-Disallow: *.js
-Disallow: *.json
+# 静的リソースのクロールを許可（JS/CSSのブロックは推奨されません）
+# ここでは特別なブロックを設けません
 
 # サイトマップの場所を指定
 Sitemap: https://2kawaii.com/sitemap.xml
+Sitemap: https://2kawaii.com/api/sitemap-share

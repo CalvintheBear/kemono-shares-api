@@ -101,29 +101,23 @@ if (fs.existsSync('.next/server/pages')) {
   copyStaticFiles('.next/server/pages', 'out');
 }
 
-// Create fallback files
+// Create fallback files (Japanese-only, neutral meta)
 const fallbackHTML = `<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FuryCode - AI Anime Image Generator</title>
-    <meta name="description" content="Transform your photos into beautiful anime art with AI">
+    <title>2kawaii - AI画像変換</title>
+    <meta name="description" content="AI画像変換ツール。写真をアニメ風に変換。">
     <link rel="icon" href="/favicon.ico">
     <script src="/_next/static/chunks/main-app-*.js" defer></script>
     <script src="/_next/static/chunks/webpack-*.js" defer></script>
 </head>
 <body>
     <div id="__next"><div style="text-align:center;padding:50px;font-family:Arial,sans-serif;">
-        <h1>FuryCode - AI Anime Image Generator</h1>
-        <p>Loading... Please wait.</p>
+        <h1>2kawaii - AI画像変換</h1>
+        <p>読み込み中...</p>
     </div></div>
-    <script>
-        // Redirect to Japanese version
-        if (window.location.pathname === '/') {
-            window.location.href = '/ja';
-        }
-    </script>
 </body>
 </html>`;
 
@@ -144,9 +138,8 @@ filesToCreate.forEach(file => {
   fs.writeFileSync(filePath, fallbackHTML);
 });
 
-// Create _redirects file for Cloudflare Pages
+// Create _redirects file for Cloudflare Pages (no locale redirects)
 const redirects = `# Handle SPA routing
-/    /ja    302
 /*    /index.html    200
 
 # Static assets

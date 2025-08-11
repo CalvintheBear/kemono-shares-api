@@ -13,13 +13,13 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換 - 2kawaii",
-  description: "【完全無料】GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが1-3分で完成。LINEスタンプ・SNSアイコン・可愛い壁紙に最適。商用利用OK。",
+  description: "【完全無料】GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが2-5分で完成。LINEスタンプ・SNSアイコン・可愛い壁紙に最適。商用利用OK。",
   alternates: {
     canonical: "https://2kawaii.com/chibi-character-maker",
   },
   openGraph: {
     title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換",
-    description: "GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが1-3分で完成。LINEスタンプに最適。",
+    description: "GPT-4oで写真を可愛いchibiキャラに即変換！頭大きく体小さいSDキャラが2-5分で完成。LINEスタンプに最適。",
     url: "https://2kawaii.com/chibi-character-maker",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "chibi キャラ作成 | GPT-4oで写真をSDキャラに無料変換",
-    description: "GPT-4oで写真を可愛いchibiキャラに即変換！1-3分で完成。",
+    description: "GPT-4oで写真を可愛いchibiキャラに即変換！2-5分で完成。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-chibi.jpg"],
   },
   robots: {
@@ -67,7 +67,7 @@ export default function ChibiMakerPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="text-center">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after" 
                   alt="Chibiキャラクターサンプル" 
                   width={192}
                   height={192}

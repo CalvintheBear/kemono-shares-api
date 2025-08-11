@@ -90,9 +90,12 @@ function SharePageContent() {
   const renderSeoTags = () => {
     const tags: string[] = (shareData as any)?.seoTags || []
     if (!tags || tags.length === 0) return null
+    // 仅展示日文标签，减少中文/英文对检索的影响
+    const jaTags = tags.filter(t => /[\u3040-\u30FF\u4E00-\u9FFF]/.test(t)).slice(0, 10)
+    if (jaTags.length === 0) return null
     return (
       <div className="flex flex-wrap gap-2 mt-3">
-        {tags.slice(0, 10).map((t, i) => (
+        {jaTags.map((t, i) => (
           <span key={i} className="text-xs bg-surface text-text px-2 py-1 rounded-full border border-border">#{t}</span>
         ))}
       </div>
@@ -137,9 +140,34 @@ function SharePageContent() {
         </div>
       )
     }
+    // 动态SEO：为 /share?id=... 注入基础头部元信息
+    const seoTitle = shareData
+      ? `${shareData.style} | チャットGPT 画像生成 プロンプト | ${(shareData.prompt || '').slice(0, 32)}`
+      : 'AI画像生成 無料 | GPT-4o 画像変換 - 2kawaii'
+    const seoDesc = shareData
+      ? `チャットGPT 画像生成 プロンプト: ${(shareData.prompt || '').slice(0, 120)}`
+      : 'AI画像生成 ギャラリー | GPT-4oで写真をアニメ風に変換。プロンプト付き。'
+
     return (
       <div className="min-h-screen">
         <Header />
+        <head>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDesc} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDesc} />
+          {shareData?.generatedUrl && (
+            <meta property="og:image" content={shareData.generatedUrl} />
+          )}
+          {/* 统一 canonical 指向 /share/<id>，避免参数与路径重复 */}
+          {shareId && (
+            <>
+              <link rel="canonical" href={`https://2kawaii.com/share/${shareId}`} />
+              <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
+              <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
+            </>
+          )}
+        </head>
         {/* 详情页动态SEO已迁移到 /share/[id]/generateMetadata */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -203,7 +231,7 @@ function SharePageContent() {
             AI画像生成 お題一覧 | チャットGPT・ai プロンプト ギャラリー
           </h1>
           <p className="text-gray-700 mt-2 text-sm">
-            AI プロンプトで作られた最新のチャットGPT 画像生成作例を毎日更新。AI画像生成 サイト 無料・登録不要、1-3分で完成。
+            AI プロンプトで作られた最新のチャットGPT 画像生成作例を毎日更新。AI画像生成 サイト 無料・登録不要、2-5分で完成。
           </p>
         </div>
         <ShareGallery />

@@ -15,7 +15,10 @@ module.exports = {
       changefreq: 'daily',
       priority: 0.7,
       lastmod: new Date().toISOString(),
-      alternateRefs: [],
+      alternateRefs: [
+        { href: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}${path}`, hreflang: 'ja' },
+        { href: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}${path}`, hreflang: 'x-default' }
+      ],
     }
   },
 }

@@ -13,7 +13,7 @@ import Image from 'next/image'
 // ホームページSEOメタデータ
 export const metadata = {
   title: "AI画像生成 無料 登録不要 | gpt4o image で写真をアニメ風に即変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
+  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
   openGraph: {
     title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
     description: "ai画像生成 サイト 無料 登録不要。プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
@@ -33,11 +33,15 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。",
+    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
     canonical: "https://2kawaii.com",
+    languages: {
+      ja: "https://2kawaii.com",
+      "x-default": "https://2kawaii.com",
+    },
   },
   robots: {
     index: true,
@@ -72,7 +76,7 @@ const structuredData = {
     'プロンプト自動生成',
     '写真をアニメ風に即変換',
     'ジブリ風・chibi・VTuber対応',
-    '1-3分で高速生成',
+    '2-5分で高速生成',
     '商用利用可能'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/homepage-screenshot.jpg',
@@ -269,7 +273,7 @@ export default function Home() {
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after" 
                     alt="Chibiキャラクター作成" 
                     width={60}
                     height={60}

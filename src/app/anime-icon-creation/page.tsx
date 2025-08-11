@@ -94,7 +94,7 @@ export default function IconCreationPage() {
               <li><strong>完全無料</strong>：登録不要・隠れた課金なし</li>
               <li><strong>商用利用OK</strong>：ビジネス用アイコンとしても使用可能</li>
               <li><strong>高画質</strong>：最新AI技術で美麗なアイコンを生成</li>
-              <li><strong>高速処理</strong>：1-3分でアイコン完成</li>
+              <li><strong>高速処理</strong>：2-5分でアイコン完成</li>
               <li><strong>多様なスタイル</strong>：20種類以上のアニメスタイルから選択</li>
               <li><strong>SNS対応</strong>：各種SNS推奨サイズで自動生成</li>
             </ul>
@@ -133,7 +133,7 @@ export default function IconCreationPage() {
               <li><strong>写真をアップロード</strong>：JPEG/PNG形式、正面を向いた写真推奨</li>
               <li><strong>アイコンスタイルを選択</strong>：美少女、美少年、chibi、VTuber風など</li>
               <li><strong>背景を選択</strong>：透明背景、単色背景、グラデーション背景</li>
-              <li><strong>AI画像生成</strong>：1-3分で高品質アイコン完成</li>
+              <li><strong>AI画像生成</strong>：2-5分で高品質アイコン完成</li>
               <li><strong>ダウンロード</strong>：各種SNSサイズで自動生成されたアイコンを保存</li>
             </ol>
           </section>

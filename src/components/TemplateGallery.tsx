@@ -22,7 +22,7 @@ const templates = [
     id: '9',
     name: 'chibi',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-afterr',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
     prompt: '画像生成AI 無料でちびキャラクターを作成！チャットGPT 画像生成でQ版デフォルメの可愛いキャラを無料で作れる。癒し系アニメスタイル、プロンプト付き。登録不要で即座にダウンロード可能、可愛いアイコンやLINEスタンプとしても使える',
     category: 'chibi'
   },

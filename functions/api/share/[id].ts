@@ -77,7 +77,7 @@ export async function onRequestGet({
         data: shareData
       }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json', 'X-Robots-Tag': 'noindex, nofollow' }
       });
     }
     
@@ -101,7 +101,7 @@ export async function onRequestGet({
       }
     }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'X-Robots-Tag': 'noindex, nofollow' }
     });
     
   } catch (error) {
@@ -115,7 +115,7 @@ export async function onRequestGet({
       }
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', 'X-Robots-Tag': 'noindex, nofollow' }
     });
   }
 }

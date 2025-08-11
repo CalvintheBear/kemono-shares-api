@@ -12,9 +12,13 @@ const notoSans = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: "AI画像生成 無料 登録不要 | gpt4o image で写真をアニメ風に変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。チャットgpt 画像生成・画像生成ai 無料に対応。",
+  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。チャットgpt 画像生成・画像生成ai 無料に対応。",
   alternates: {
     canonical: "https://2kawaii.com",
+    languages: {
+      ja: "https://2kawaii.com",
+      "x-default": "https://2kawaii.com",
+    },
   },
   verification: {
     google: "your-google-verification-code",
@@ -39,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、1-3分でアニメ風に変換。",
+    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。",
     images: ["https://2kawaii.com/og-image.jpg"],
   },
 };
@@ -73,7 +77,6 @@ export default function RootLayout({
               structuredData.website,
               structuredData.organization,
               structuredData.softwareApplication,
-              structuredData.faq,
               structuredData.breadcrumb
             ])
           }}

@@ -3,16 +3,16 @@ export const structuredData = {
   website: {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "AI画像変換 無料 - FuryCode",
+    "name": "AI画像変換 無料 - 2kawaii",
     "alternateName": "写真をアニメ風に変換するAIツール",
-    "url": "https://furycode.vercel.app",
+    "url": "https://2kawaii.com",
     "description": "登録不要で写真をアニメ風に無料変換できるAI画像生成ツール。ジブリ風、VTuber風、美少女など20種類以上のスタイルから選択可能。",
     "inLanguage": "ja",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://furycode.vercel.app/search?q={search_term_string}"
+      "urlTemplate": "https://2kawaii.com/search?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     }
@@ -22,9 +22,9 @@ export const structuredData = {
   organization: {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "FuryCode AI画像変換",
-    "url": "https://furycode.vercel.app",
-    "logo": "https://furycode.vercel.app/logo.png",
+    "name": "2kawaii AI画像変換",
+    "url": "https://2kawaii.com",
+    "logo": "https://2kawaii.com/logo.png",
     "description": "AI画像生成技術を使って写真をアニメ風に変換する無料ツール",
     "sameAs": [
       "https://twitter.com/furycode_ai",
@@ -43,10 +43,10 @@ export const structuredData = {
   softwareApplication: {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "AI画像変換ツール - FuryCode",
+    "name": "AI画像変換ツール - 2kawaii",
     "applicationCategory": "GraphicsApplication",
     "description": "写真をアニメ風に変換する無料AI画像生成ツール",
-    "url": "https://furycode.vercel.app",
+    "url": "https://2kawaii.com",
     "operatingSystem": "Web",
     "offers": {
       "@type": "Offer",
@@ -61,7 +61,7 @@ export const structuredData = {
       "商用利用可能",
       "登録不要"
     ],
-    "screenshot": "https://furycode.vercel.app/screenshot.jpg"
+    "screenshot": "https://2kawaii.com/screenshot.jpg"
   },
 
   // FAQ structured data
@@ -105,13 +105,13 @@ export const structuredData = {
         "@type": "ListItem",
         "position": 1,
         "name": "ホーム",
-        "item": "https://furycode.vercel.app"
+        "item": "https://2kawaii.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "AI画像変換",
-        "item": "https://furycode.vercel.app/workspace"
+        "item": "https://2kawaii.com/workspace"
       }
     ]
   }
