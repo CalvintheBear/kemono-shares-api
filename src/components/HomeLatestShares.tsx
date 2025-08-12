@@ -1,7 +1,8 @@
+
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
+import MasonryGallery from './MasonryGallery'
 
 interface Item { id: string; generatedUrl: string; style?: string }
 
@@ -61,15 +62,26 @@ export default function HomeLatestShares() {
         <div className={`text-center text-sm text-gray-500 py-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>まだ作品がありません。少し待ってね…</div>
       )
     }
+    const images = items.slice(0, 12).map((it) => ({
+      id: it.id,
+      url: it.generatedUrl,
+      // 先给一个大致的比例，组件会在图片加载完成后用实际尺寸自适应
+      width: 800,
+      height: 600,
+      alt: it.style || 'AI生成画像',
+    }))
+
     return (
-      <div className={`grid grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        {items.slice(0, 12).map((it) => (
-          <a key={it.id} href={`/share?id=${encodeURIComponent(it.id)}`} className="block rounded-xl overflow-hidden bg-white shadow hover:shadow-lg transition">
-            <div className="relative w-full" style={{ aspectRatio: '4 / 3' }}>
-              <Image src={it.generatedUrl} alt={it.style || 'AI生成画像'} fill sizes="(min-width: 1024px) 16.67vw, 25vw" className="object-cover" unoptimized />
-            </div>
-          </a>
-        ))}
+      <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <MasonryGallery
+          images={images}
+          hasMore={false}
+          loading={false}
+          onLoadMore={async () => {}}
+          onImageClick={(img) => {
+            window.location.href = `/share?id=${encodeURIComponent(img.id)}`
+          }}
+        />
       </div>
     )
   }, [items, loading, isVisible])
