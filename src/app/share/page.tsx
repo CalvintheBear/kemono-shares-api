@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MobileBottomNav from '@/components/MobileBottomNav'
@@ -20,15 +20,20 @@ interface ShareData {
 
 function SharePageContent() {
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [shareId, setShareId] = useState<string | null>(null)
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 支持通过 query 参数 id 渲染详情（用于静态导出回退 /share.html?id=...）
+  // 支持通过 query 参数或路径段渲染详情（Cloudflare 内部重写不会改变地址栏 query，这里兜底从 pathname 提取）
   // 修复: 从详情返回到 /share 时需要清空 shareId，否则会停留在详情页
   useEffect(() => {
-    const id = searchParams?.get('id')
+    let id = searchParams?.get('id') || null
+    if (!id && typeof pathname === 'string') {
+      const m = pathname.match(/^\/share\/([^\/?#]+)/)
+      if (m && m[1]) id = decodeURIComponent(m[1])
+    }
     if (id) {
       setShareId(id)
     } else {
@@ -37,7 +42,7 @@ function SharePageContent() {
       setError(null)
       setLoading(false)
     }
-  }, [searchParams])
+  }, [searchParams, pathname])
 
   const isDetailMode = !!shareId
 

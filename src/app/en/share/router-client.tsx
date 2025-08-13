@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import ShareGallery from '@/components/ShareGallery'
 import Image from 'next/image'
 
@@ -22,9 +22,14 @@ function Content() {
   const [shareData, setShareData] = useState<ShareData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
-    const id = searchParams?.get('id')
+    let id = searchParams?.get('id') || null
+    if (!id && typeof pathname === 'string') {
+      const m = pathname.match(/^\/en\/share\/([^\/?#]+)/)
+      if (m && m[1]) id = decodeURIComponent(m[1])
+    }
     if (id) {
       setShareId(id)
     } else {
@@ -32,7 +37,7 @@ function Content() {
       setShareData(null)
       setError(null)
     }
-  }, [searchParams])
+  }, [searchParams, pathname])
 
   const isDetailMode = !!shareId
 
