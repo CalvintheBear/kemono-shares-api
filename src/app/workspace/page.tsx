@@ -1,6 +1,7 @@
 import Workspace from "@/components/Workspace";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import Image from 'next/image'
 
 // 追加SEOメタデータ
@@ -160,7 +161,9 @@ export default function WorkspacePage() {
         </div>
       </section>
 
-      {/* 页脚 */}
+      {/* 页脚固定在底部 */}
+      <Footer />
+      <MobileBottomNav />
     </div>
   );
 } 

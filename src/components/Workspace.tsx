@@ -2160,8 +2160,7 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
         <div className="max-w-7xl mx-auto px-2">
         </div>
       </section>
-      <Footer />
-      <MobileBottomNav />
+      
     </div>
   )
 }

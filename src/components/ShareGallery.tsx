@@ -36,6 +36,7 @@ export default function ShareGallery() {
   const isEnglish = pathname?.startsWith('/en/') || pathname === '/en';
 
   const lastRequestRef = useRef<number>(0);
+  const inFlightRef = useRef<boolean>(false);
 
   const ITEMS_PER_PAGE = 20;
 
@@ -60,10 +61,14 @@ export default function ShareGallery() {
     }
     lastRequestRef.current = now;
 
-    if (loading || isFetching) return;
+    if (inFlightRef.current) {
+      return;
+    }
 
     try {
+      inFlightRef.current = true;
       setIsFetching(true);
+      if (!append && offset === 0) setLoading(true);
       console.log('Fetching share items, offset:', offset, 'append:', append);
       
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
@@ -108,15 +113,20 @@ export default function ShareGallery() {
       if (!append) setImages([]);
       setHasMore(false);
     } finally {
+      inFlightRef.current = false;
       setIsFetching(false);
       setLoading(false);
     }
-  }, [loading, isFetching, ITEMS_PER_PAGE, isEnglish]);
+  }, [ITEMS_PER_PAGE, isEnglish]);
 
   // Initial load
   useEffect(() => {
+    // 当语言（路径）变化时重置并重新加载
+    setImages([]);
+    setHasMore(true);
+    setCurrentOffset(0);
     fetchShareItems(0, false);
-  }, [fetchShareItems]);
+  }, [isEnglish]);
 
   // Load more handler for infinite scroll
   const handleLoadMore = useCallback(async () => {
@@ -127,11 +137,11 @@ export default function ShareGallery() {
 
 
 
-  // Handle image click
+  // Handle image click - use query param fallback to be compatible with static export
   const handleImageClick = (image: MasonryImage) => {
     const id = encodeURIComponent(image.id)
-    const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
-    window.open(target, '_blank')
+    const target = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
+    window.location.href = target
   };
 
   return (

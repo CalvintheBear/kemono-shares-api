@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Link from 'next/link'
 import MobileBottomNav from '@/components/MobileBottomNav'
-import ShareGallery from '@/components/ShareGallery'
+import EnShareClientRouter from './router-client'
 
 // Share page SEO metadata for English - aligned with Japanese structure
 export const metadata: Metadata = {
@@ -54,26 +53,7 @@ export default function SharePage() {
   return (
     <div className="min-h-screen">
       <Header />
-      
-      <main className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl lg:text-5xl font-bold text-text mb-4 font-cute">
-            AI Image Generation Gallery
-          </h1>
-          <p className="text-lg text-text-muted font-cute max-w-2xl mx-auto">
-            Browse our gallery of AI-generated anime images. Get inspired for your own creations!
-          </p>
-        </div>
-
-        <div className="text-center mb-8">
-          <Link href="/en/workspace" className="btn-primary text-xl px-8 py-4">
-            Create Your Own Anime Image
-          </Link>
-        </div>
-        
-        <ShareGallery />
-      </main>
-
+      <EnShareClientRouter />
       <Footer />
       <MobileBottomNav />
     </div>

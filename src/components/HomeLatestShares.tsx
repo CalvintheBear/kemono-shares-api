@@ -68,7 +68,11 @@ export default function HomeLatestShares() {
       <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <HomeMasonry
           images={images}
-          onImageClick={(img) => { window.location.href = `/share?id=${encodeURIComponent(img.id)}` }}
+          onImageClick={(img) => {
+            const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+            const id = encodeURIComponent(img.id)
+            window.location.href = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
+          }}
         />
       </div>
     )

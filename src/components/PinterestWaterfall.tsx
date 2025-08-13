@@ -35,7 +35,8 @@ export default function PinterestWaterfall({
             className="pinterest-item group cursor-pointer mb-4"
             onClick={() => {
               const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/')
-              const target = isEnglish ? `/en/share/${item.id}` : `/share/${item.id}`
+              const id = encodeURIComponent(item.id)
+              const target = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
               window.location.href = target
             }}
           >
