@@ -7,6 +7,7 @@ import { useAppStore } from '@/store/useAppStore'
 import { ImageSize } from '@/store/useAppStore'
 import ShareButton from './ShareButton'
 import MobileBottomNav from './MobileBottomNav'
+import Footer from './Footer'
 import TemplateGallery from './TemplateGallery'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -2149,8 +2150,7 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
   return (
     <div className="min-h-screen bg-[var(--bg)]">
       {isMobile ? MobileLayout() : DesktopLayout()}
-      <MobileBottomNav />
-{/* 選べる変身スタイル セクション（ページ底部） */}
+{/* 選べる変身スタイル セクション（页面底部） */}
 <div className="pt-6 pb-12 lg:pt-8 lg:pb-20">
   <TemplateGallery />
 </div>
@@ -2160,6 +2160,8 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
         <div className="max-w-7xl mx-auto px-2">
         </div>
       </section>
+      <Footer />
+      <MobileBottomNav />
     </div>
   )
 }

@@ -138,6 +138,36 @@ try {
   };
   fs.writeFileSync(routesPath, JSON.stringify(routesContent, null, 2));
 
+  // 注入 hreflang 到关键页面（确保静态导出 HTML 也包含 alternate）
+  try {
+    const injectAlternates = (filePath, jaHref, enHref) => {
+      if (!fs.existsSync(filePath)) return;
+      let html = fs.readFileSync(filePath, 'utf8');
+      if (html.includes('rel="alternate"')) return; // 已存在则跳过
+      const links = [
+        `<link rel="alternate" hrefLang="ja" href="${jaHref}" />`,
+        `<link rel="alternate" hrefLang="en" href="${enHref}" />`,
+        `<link rel="alternate" hrefLang="x-default" href="${jaHref}" />`,
+      ].join('');
+      html = html.replace(/<\/head>/i, `${links}</head>`);
+      fs.writeFileSync(filePath, html, 'utf8');
+    };
+    const origin = process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com';
+    const pairs = [
+      ['workspace.html', `${origin}/workspace`, `${origin}/en/workspace`],
+      ['ai-image-generation-guide.html', `${origin}/ai-image-generation-guide`, `${origin}/en/ai-image-generation-guide`],
+      ['line-sticker-creation.html', `${origin}/line-sticker-creation`, `${origin}/en/line-sticker-creation`],
+      ['chibi-character-maker.html', `${origin}/chibi-character-maker`, `${origin}/en/chibi-character-maker`],
+      ['ai-image-conversion-free.html', `${origin}/ai-image-conversion-free`, `${origin}/en/ai-image-conversion-free`],
+      ['personification-ai.html', `${origin}/personification-ai`, `${origin}/en/personification-ai`],
+    ];
+    for (const [file, ja, en] of pairs) {
+      injectAlternates(path.join('out', file), ja, en);
+    }
+  } catch (e) {
+    console.warn('⚠️ 注入 hreflang 失败:', e.message);
+  }
+
   console.log('✅ 构建完成！');
   console.log('📁 输出目录：out/');
   console.log('📊 目录内容：');

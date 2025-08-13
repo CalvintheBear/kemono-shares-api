@@ -33,7 +33,11 @@ export default function PinterestWaterfall({
           <div
             key={item.id}
             className="pinterest-item group cursor-pointer mb-4"
-            onClick={() => window.location.href = `/share/${item.id}`}
+            onClick={() => {
+              const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/')
+              const target = isEnglish ? `/en/share/${item.id}` : `/share/${item.id}`
+              window.location.href = target
+            }}
           >
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <div className="relative">

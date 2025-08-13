@@ -12,7 +12,7 @@
     "postbuild": "node scripts/build-for-cloudflare-pages-static.js && npx next-sitemap",
     "build:static": "npm run build:pages:dynamic",
     "build:pages": "npm run build && npx @cloudflare/next-on-pages@latest || echo 'skip' && node scripts/fix-routes-overlap.js || echo 'routes-skip' && npx next-sitemap",
-    "build:pages:static": "npx cross-env STATIC_EXPORT=true next build && node scripts/build-for-cloudflare-pages-static.js && npx next-sitemap",
+    "build:pages:static": "node scripts/build-for-cloudflare-pages-static.js && npx next-sitemap",
     "build:pages:dynamic": "npm run build && npx @cloudflare/next-on-pages@latest && node scripts/fix-routes-overlap.js && npx next-sitemap",
     "build:pages:export": "next build && next export",
     "build:railway": "node scripts/build-for-railway.js",

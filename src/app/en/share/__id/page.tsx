@@ -175,12 +175,7 @@ export default async function ShareDetailPage({ params }: { params: { id: string
               <div className="border-t border-border pt-4">
                 <p className="text-sm text-text-muted mb-2 font-cute">Language:</p>
                 <div className="flex gap-3">
-                  <Link
-                    href={`/share/${id}`}
-                    className="text-sm text-pink-600 hover:text-pink-800 font-cute"
-                  >
-                    Japanese
-                  </Link>
+                  <Link href={`/share/${id}`} prefetch className="text-sm text-pink-600 hover:text-pink-800 font-cute">Japanese</Link>
                   <span className="text-sm text-text-muted">•</span>
                   <span className="text-sm text-text font-cute">English</span>
                 </div>

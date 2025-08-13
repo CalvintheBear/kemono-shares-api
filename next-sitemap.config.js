@@ -2,7 +2,7 @@
 module.exports = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com',
   generateRobotsTxt: true,
-  exclude: [],
+  exclude: ['/robots.txt', '/icon', '/icon.ico'],
   robotsTxtOptions: {
     policies: [{ userAgent: '*', allow: '/' }],
     additionalSitemaps: [
@@ -11,10 +11,10 @@ module.exports = {
   },
   transform: async (config, path) => {
     const origin = process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
-    // Normalize to generate reciprocal hreflang for both languages
     const isEn = path === '/en' || path.startsWith('/en/')
-    const jaPath = isEn ? (path === '/en' ? '/' : path.replace(/^\/en/, '')) : path
-    const enPath = isEn ? path : (path === '/' ? '/en' : `/en${path}`)
+    const basePath = isEn ? (path === '/en' ? '' : path.replace(/^\/en/, '')) : path
+    const jaHref = `${origin}${basePath || '/'}`
+    const enHref = `${origin}/en${basePath || ''}`
 
     return {
       loc: path,
@@ -22,9 +22,9 @@ module.exports = {
       priority: 0.7,
       lastmod: new Date().toISOString(),
       alternateRefs: [
-        { href: `${origin}${jaPath}`, hreflang: 'ja' },
-        { href: `${origin}${enPath}`, hreflang: 'en' },
-        { href: `${origin}${jaPath}`, hreflang: 'x-default' }
+        { href: jaHref, hreflang: 'ja' },
+        { href: enHref, hreflang: 'en' },
+        { href: jaHref, hreflang: 'x-default' },
       ],
     }
   },
