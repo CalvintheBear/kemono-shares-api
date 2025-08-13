@@ -12,7 +12,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-  description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes. ChatGPT image generation support.",
+  description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. ChatGPT image generation support.",
   alternates: {
     canonical: "https://2kawaii.com/en",
     languages: {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
     type: "website",
     url: "https://2kawaii.com/en",
     siteName: "AI Image Converter Tool",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
     images: ["https://2kawaii.com/og-image.jpg"],
   },
   robots: {

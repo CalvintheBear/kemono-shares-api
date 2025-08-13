@@ -137,7 +137,7 @@ export default function PersonificationAIPage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>Prepare pet photos</strong>: Bright, front-facing photos are recommended</li>
               <li><strong>Select anthropomorphism style</strong>: Choose from beautiful girl, beautiful boy, chibi style, etc.</li>
-              <li><strong>Run AI image generation</strong>: Completed in 2-5 minutes</li>
+              <li><strong>Run AI image generation</strong>: Completed in seconds</li>
               <li><strong>Check the results</strong>: Regenerate with different styles if not satisfied</li>
               <li><strong>Download and use</strong>: Can be used for SNS and merchandise creation</li>
             </ol>
@@ -229,7 +229,7 @@ export default function PersonificationAIPage() {
               <ol className="list-decimal list-inside space-y-2 text-text-muted text-sm">
                 <li>Prepare photos of subjects to anthropomorphize (pets, characters, objects)</li>
                 <li>Select preferred anthropomorphism style (beautiful girl, beautiful boy, chibi, etc.)</li>
-                <li>Run AI image generation (2-5 minutes)</li>
+                <li>Run AI image generation (seconds)</li>
                 <li>Download completed anthropomorphic character</li>
                 <li>Use for SNS and creative activities</li>
               </ol>

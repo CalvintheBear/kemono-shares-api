@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "AI Image Generation Gallery | Free Anime Conversion Showcase - 2kawaii",
-    description: "Browse our gallery of AI-generated anime images. See examples of photos converted to anime style using GPT-4o.",
+  description: "Browse our gallery of AI-generated anime images. See examples of photos converted to anime style using GPT-4o and Flux Kontext.",
     url: "https://2kawaii.com/en/share",
     siteName: "2kawaii AI Image Gallery",
     images: [{

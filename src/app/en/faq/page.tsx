@@ -5,10 +5,10 @@ import Link from 'next/link'
 
 // FAQ page SEO metadata for English - aligned with Japanese structure
 export const metadata = {
-  title: "FAQ Free AI Image Generator | GPT-4o Photo to Anime Conversion Questions Answered - 2kawaii",
+  title: "FAQ Free AI Image Generator | GPT-4o & Flux Kontext Photo to Anime Conversion - 2kawaii",
   description: "2kawaii.com AI image generation service FAQ. Free photo to anime conversion, commercial use allowed, no registration required, 2-5 minute fast generation, privacy protection - detailed answers to common questions.",
   openGraph: {
-    title: "FAQ Free AI Image Generator | GPT-4o Photo to Anime Conversion Questions Answered",
+    title: "FAQ Free AI Image Generator | GPT-4o & Flux Kontext Photo to Anime Conversion",
     description: "2kawaii.com AI image generation service FAQ. Free, commercial use allowed, no registration required.",
     url: "https://2kawaii.com/en/faq",
     siteName: "2kawaii AI Image Generator",
@@ -25,7 +25,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FAQ Free AI Image Generator | GPT-4o Photo to Anime Conversion Questions Answered",
+    title: "FAQ Free AI Image Generator | GPT-4o & Flux Kontext Photo to Anime Conversion",
     description: "2kawaii.com AI image generation service FAQ. Free, commercial use allowed, no registration required.",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-faq.jpg"],
   },
@@ -70,7 +70,7 @@ const faqData: FAQItem[] = [
   {
     category: "How to Use",
     question: "How do I use it?",
-    answer: "1. Choose your favorite style template in simple mode or enter a custom prompt in manual mode. 2. Upload the image you want to convert. 3. Select the image size. 4. Press the 'Transform' button and it's completed in 2-5 minutes!"
+    answer: "1. Choose your favorite style template in simple mode or enter a custom prompt in manual mode. 2. Upload the image you want to convert. 3. Select the image size. 4. Press the 'Transform' button and it's completed in seconds!"
   },
   {
     category: "How to Use",
@@ -85,7 +85,7 @@ const faqData: FAQItem[] = [
   {
     category: "Technical Questions",
     question: "How does AI convert images?",
-    answer: "We use the latest GPT-4o Vision AI technology to analyze image features and generate new anime images based on the selected style. This process is completely automatic and users can get high-quality results in 2-5 minutes."
+    answer: "We use the latest GPT-4o Image and Flux Kontext models to analyze image features and generate new anime images based on the selected style. This process is automatic and usually completes in seconds."
   },
   {
     category: "Technical Questions",
@@ -110,7 +110,7 @@ const faqData: FAQItem[] = [
   {
     category: "Troubleshooting",
     question: "Can generation take a long time?",
-    answer: "It usually completes in 2-5 minutes, but during server congestion it may take up to 5 minutes. If it doesn't complete after 5 minutes, please refresh the page and try again."
+    answer: "It usually completes in seconds, but during server congestion it may take longer. If it doesn't complete within a minute, please refresh the page and try again."
   },
   {
     category: "Copyright",

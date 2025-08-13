@@ -103,7 +103,7 @@ export default function LineStickerCreationPage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>写真を準備する</strong>：正面を向いている明るい写真がおすすめ</li>
               <li><strong>スタンプスタイルを選択する</strong>：chibi風、美少女風、かわいい系など</li>
-              <li><strong>AI画像生成を実行する</strong>：2-5分で8種類の表情スタンプが完成</li>
+              <li><strong>AI画像生成を実行する</strong>：数秒で8種類の表情スタンプが完成</li>
               <li><strong>LINEクリエイターズに登録する</strong>：申請して販売開始</li>
               <li><strong>スタンプを公開する</strong>：友達やフォロワーにシェア</li>
             </ol>
@@ -142,7 +142,7 @@ export default function LineStickerCreationPage() {
               <li><strong>完全無料</strong>：登録不要・隠れた課金なし</li>
               <li><strong>商用利用OK</strong>：LINEクリエイターズ販売可能</li>
               <li><strong>高品質</strong>：1:1、2:3、3:2のサイズ比率で自動生成</li>
-              <li><strong>高速処理</strong>：2-5分で8種類の表情完成</li>
+              <li><strong>高速処理</strong>：数秒で8種類の表情完成</li>
               <li><strong>著作権クリア</strong>：オリジナル作品として安心利用</li>
             </ul>
           </section>

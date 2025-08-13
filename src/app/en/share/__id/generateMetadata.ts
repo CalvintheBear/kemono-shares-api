@@ -9,6 +9,7 @@ interface ShareData {
   timestamp: number
   createdAt: string
   seoTags?: string[]
+  model?: string
 }
 
 export default async function generateMetadata(
@@ -29,7 +30,7 @@ export default async function generateMetadata(
   } catch {}
 
   const titleBase = 'AI Image Generation Free | Work Details with AI Prompt - 2kawaii'
-  const descBase = 'Detail page for AI-generated images using GPT-4o. Gallery with AI prompts for learning.'
+  const descBase = 'Detail page for AI-generated images using GPT-4o Image and Flux Kontext. Gallery with AI prompts for learning.'
 
   if (!data) {
     return {
@@ -46,8 +47,14 @@ export default async function generateMetadata(
   }
 
   const shortPrompt = data.prompt?.slice(0, 50) || ''
-  const title = `${data.style} | ChatGPT AI Prompt | ${shortPrompt}`
-  const description = `ChatGPT AI Prompt: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
+  const modelLabel = (() => {
+    const m = (data as any).model
+    if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext'
+    if (m === 'gpt4o-image') return 'GPT-4o Image'
+    return 'GPT-4o / Flux Kontext'
+  })()
+  const title = `${data.style} | ${modelLabel} | ChatGPT AI Prompt | ${shortPrompt}`
+  const description = `${modelLabel} — ChatGPT AI Prompt: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
 
   return {
     title,

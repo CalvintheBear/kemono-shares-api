@@ -90,7 +90,7 @@ export default function IconCreationPage() {
               <li><strong>Completely Free</strong>: No registration required, no hidden fees</li>
               <li><strong>Commercial Use OK</strong>: Can be used as business icons</li>
               <li><strong>High Quality</strong>: Generate beautiful icons with latest AI technology</li>
-              <li><strong>Fast Processing</strong>: Icons completed in 2-5 minutes</li>
+              <li><strong>Fast Processing</strong>: Icons completed in seconds</li>
               <li><strong>Diverse Styles</strong>: Choose from 20+ anime styles</li>
               <li><strong>SNS Compatible</strong>: Automatically generated in recommended sizes for various SNS</li>
             </ul>
@@ -129,7 +129,7 @@ export default function IconCreationPage() {
               <li><strong>Upload photo</strong>: JPEG/PNG format, front-facing photos recommended</li>
               <li><strong>Select icon style</strong>: Choose from beautiful girl, beautiful boy, chibi, VTuber style, etc.</li>
               <li><strong>Select background</strong>: Transparent, solid color, or gradient backgrounds</li>
-              <li><strong>AI image generation</strong>: High-quality icons completed in 2-5 minutes</li>
+              <li><strong>AI image generation</strong>: High-quality icons completed in seconds</li>
               <li><strong>Download</strong>: Save icons automatically generated in various SNS sizes</li>
             </ol>
           </section>

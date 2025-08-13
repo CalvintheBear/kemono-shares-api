@@ -13,13 +13,13 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-  description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4oで写真を2-5分でアニメ風に即変換。ジブリ風・VTuber・chibiなど20+スタイル対応。商用利用OK。",
+  description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4o / Flux Kontext で写真を数秒でアニメ風に即変換。ジブリ風・VTuber・chibiなど20+スタイル対応。商用利用OK。",
   alternates: {
     canonical: "https://2kawaii.com/ai-image-generation-guide",
   },
   openGraph: {
     title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-    description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4oで2-5分で完成。",
+    description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4o / Flux Kontext で数秒で完成。",
     url: "https://2kawaii.com/ai-image-conversion-free",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -226,7 +226,7 @@ export default function ComparisonPage() {
                               <li><strong>完全無料を求めるなら</strong>：2kawaii - 登録不要で即利用可能</li>
               <li><strong>高画質を重視するなら</strong>：Stable Diffusion - 細部まで美麗な変換</li>
                               <li><strong>商用利用を前提なら</strong>：2kawaii - 商用利用完全OK</li>
-                              <li><strong>スピードを重視するなら</strong>：2kawaii - 2-5分で完了</li>
+                              <li><strong>スピードを重視するなら</strong>：2kawaii - 数秒で完了</li>
                               <li><strong>日本語対応が必要なら</strong>：2kawaii - 完全日本語対応</li>
             </ul>
           </section>

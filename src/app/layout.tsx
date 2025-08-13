@@ -11,8 +11,8 @@ const notoSans = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "AI画像生成 無料 登録不要 | gpt4o image で写真をアニメ風に変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。チャットgpt 画像生成・画像生成ai 無料に対応。",
+  title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext で写真をアニメ風に変換 - 2kawaii",
+  description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で数秒でアニメ風に変換。チャットgpt 画像生成・画像生成ai 無料に対応。",
   alternates: {
     canonical: "https://2kawaii.com",
     languages: {
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     yandex: "your-yandex-verification-code",
   },
   openGraph: {
-    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
+    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
     type: "website",
     url: "https://2kawaii.com",
     siteName: "AI画像変換ツール",
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。",
+    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、数秒でアニメ風に変換。",
     images: ["https://2kawaii.com/og-image.jpg"],
   },
 };

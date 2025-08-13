@@ -45,7 +45,7 @@ export const structuredData = {
     "@type": "SoftwareApplication",
     "name": "AI画像変換ツール - 2kawaii",
     "applicationCategory": "GraphicsApplication",
-    "description": "写真をアニメ風に変換する無料AI画像生成ツール",
+    "description": "写真をアニメ風に変換する無料AI画像生成ツール（GPT-4o / Flux Kontext 対応・数秒で高速生成）",
     "url": "https://2kawaii.com",
     "operatingSystem": "Web",
     "offers": {

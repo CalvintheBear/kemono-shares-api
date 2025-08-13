@@ -156,7 +156,14 @@ export default function ShareDetailPage() {
                 <ul className="list-disc pl-5 space-y-1">
                   <li>スタイル: {shareData.style}</li>
                   <li>テーマ: {(shareData.prompt || '').slice(0, 40)}...</li>
-                  <li>生成プロセス: GPT-4o Image による自動プロンプト最適化</li>
+                  <li>
+                    生成プロセス: {(() => {
+                      const m: any = (shareData as any).model
+                      if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext による自動最適化'
+                      if (m === 'gpt4o-image') return 'GPT-4o Image による自動プロンプト最適化'
+                      return 'GPT-4o / Flux Kontext による自動最適化'
+                    })()}
+                  </li>
                 </ul>
               </div>
             )}

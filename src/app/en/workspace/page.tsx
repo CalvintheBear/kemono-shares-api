@@ -7,10 +7,10 @@ import Image from 'next/image'
 // Additional SEO metadata for English workspace
 export const metadata = {
   title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-  description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes. Studio Ghibli, VTuber, chibi styles supported.",
+  description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles supported.",
   openGraph: {
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes. Studio Ghibli, VTuber, chibi styles supported.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles supported.",
     url: "https://2kawaii.com/en/workspace",
     siteName: "2kawaii AI Image Generator",
     images: [
@@ -27,7 +27,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-workspace.jpg"],
   },
   alternates: {
@@ -55,8 +55,8 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: '2kawaii GPT-4o Image Generator',
-  description: 'Free AI tool that automatically generates prompts and converts photos to anime style instantly using GPT-4o Image',
+  name: '2kawaii Image Generator (GPT-4o / Flux Kontext)',
+  description: 'Free AI tool supporting GPT-4o Image and Flux Kontext to convert photos to anime style in seconds',
   url: 'https://2kawaii.com/en/workspace',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
@@ -71,7 +71,7 @@ const structuredData = {
     'Automatic prompt generation',
     'Convert photos to anime style instantly',
     'Studio Ghibli, chibi, VTuber styles supported',
-    'Fast generation in 2-5 minutes',
+    'Generation completed in seconds',
     'Commercial use allowed'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/workspace-screenshot.jpg',
@@ -96,12 +96,12 @@ export default function WorkspacePage() {
         <div className="max-w-7xl mx-auto">
           {/* Page title area */}
           <div className="text-center mb-8 sm:mb-10">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black font-cute mb-4">
-              Start AI Image Conversion!
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black font-cute mb-2">
+              Photo → Anime in Seconds (GPT‑4o / Flux Kontext)
             </h1>
-            <p className="text-lg sm:text-xl text-black max-w-2xl mx-auto">
-              Just upload your photo and select your favorite style~
-            </p>
+            <h2 className="text-lg sm:text-xl text-black max-w-2xl mx-auto">
+              Upload your image, pick model and aspect ratio. Fast, high‑quality, no signup.
+            </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full mx-auto mt-4"></div>
           </div>
 
@@ -114,7 +114,7 @@ export default function WorkspacePage() {
       <section id="guides-section" className="py-12 lg:py-20 px-3 sm:px-4 lg:px-6 bg-[var(--bg)]">
         <div className="max-w-7xl mx-auto px-2">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-[var(--text)] mb-8 lg:mb-12">
-            How to Use AI Image Conversion - 3 Simple Steps
+            How it works (3 steps) — AI image conversion in seconds
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
             <div className="text-center card p-6 sm:p-8 lg:p-10 h-full flex flex-col">

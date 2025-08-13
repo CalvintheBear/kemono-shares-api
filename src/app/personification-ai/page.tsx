@@ -13,7 +13,7 @@ export function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: "チャットgpt 擬人化 | GPT-4oでペット・キャラを美少女に無料変換",
-  description: "【GPT-4o】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを2-5分で可愛いアニメキャラに。無料で商用利用可能。",
+  description: "【GPT-4o / Flux Kontext】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを数秒で可愛いアニメキャラに。無料で商用利用可能。",
   alternates: {
     canonical: "https://2kawaii.com/personification-ai",
   },
@@ -119,7 +119,7 @@ export default function PersonificationPage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>ペットの写真を準備する</strong>：正面を向いた明るい写真がおすすめ</li>
               <li><strong>擬人化スタイルを選択する</strong>：美少女系、美少年系、chibi系など</li>
-              <li><strong>AI画像生成を実行する</strong>：2-5分で完成</li>
+              <li><strong>AI画像生成を実行する</strong>：数秒で完成</li>
               <li><strong>仕上がりを確認する</strong>：気に入らなければ別スタイルで再生成</li>
               <li><strong>ダウンロードして活用する</strong>：SNSやグッズ制作に活用可能</li>
             </ol>
@@ -211,7 +211,7 @@ export default function PersonificationPage() {
               <ol className="list-decimal list-inside space-y-2 text-text-muted text-sm">
                 <li>擬人化したい対象の写真を準備（ペット、キャラクター、モノ）</li>
                 <li>好みの擬人化スタイルを選択（美少女、美少年、chibiなど）</li>
-                <li>AI画像生成を実行（2-5分）</li>
+                <li>AI画像生成を実行（数秒）</li>
                 <li>完成した擬人化キャラをダウンロード</li>
                 <li>SNSや創作活動で活用</li>
               </ol>

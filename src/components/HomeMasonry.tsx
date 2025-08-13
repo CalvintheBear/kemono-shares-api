@@ -74,8 +74,8 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 								className="relative overflow-hidden rounded-xl bg-white shadow cursor-pointer"
 								onClick={() => onImageClick?.(image)}
 							>
-								<Image
-									src={image.url}
+            <Image
+              src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=70&fm=webp`}
 									alt={image.alt || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'AI generated image' : 'AI生成画像')}
 									fill
 									sizes={`${columnWidth}px`}

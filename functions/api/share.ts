@@ -85,7 +85,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     }
 
     const body = await request.json();
-    const { generatedUrl, originalUrl, prompt, style, timestamp, isR2Stored, seoTags } = body;
+    const { generatedUrl, originalUrl, prompt, style, timestamp, isR2Stored, seoTags, model } = body;
     
     // 2. 判断生成类型
     let generationType: 'text2img' | 'img2img' | 'template' = 'text2img';
@@ -132,6 +132,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       width: 800,
       height: 800,
       generationType,
+      model: typeof model === 'string' ? model : undefined,
       isR2Stored: isR2Stored || isR2Url,
       urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown'),
       // 可选SEO标签/关键词

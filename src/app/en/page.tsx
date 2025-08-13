@@ -11,10 +11,10 @@ import Image from 'next/image'
 // Homepage SEO metadata for English - aligned with Japanese structure
 export const metadata = {
   title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-  description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes. Studio Ghibli, VTuber, chibi styles and 20+ templates supported.",
+  description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles and 20+ templates supported.",
   openGraph: {
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes. Studio Ghibli, VTuber, chibi styles supported.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles supported.",
     url: "https://2kawaii.com/en",
     siteName: "2kawaii AI Image Generator",
     images: [
@@ -31,7 +31,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. GPT-4o image automatically generates prompts and converts photos to anime style in 2-5 minutes.",
+    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
@@ -75,7 +75,7 @@ const structuredData = {
     'Automatic prompt generation',
     'Convert photos to anime style instantly',
     'Studio Ghibli, chibi, VTuber styles supported',
-    'Fast generation in 2-5 minutes',
+    'Generation completed in seconds',
     'Commercial use allowed'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/homepage-screenshot.jpg',

@@ -222,7 +222,7 @@ export default function AIConversionFreePage() {
               <li><strong>For completely free use</strong>: 2kawaii - No registration, immediate use</li>
               <li><strong>For high quality focus</strong>: Stable Diffusion - Beautiful detailed conversion</li>
               <li><strong>For commercial use</strong>: 2kawaii - Fully commercial use allowed</li>
-              <li><strong>For speed priority</strong>: 2kawaii - Completed in 2-5 minutes</li>
+              <li><strong>For speed priority</strong>: 2kawaii - Completed in seconds</li>
               <li><strong>For English support needed</strong>: 2kawaii - Full English support</li>
             </ul>
           </section>

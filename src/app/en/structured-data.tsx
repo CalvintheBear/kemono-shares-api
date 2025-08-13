@@ -40,7 +40,7 @@ export const structuredData = {
     '@type': 'SoftwareApplication',
     name: 'AI Image Converter - 2kawaii',
     applicationCategory: 'GraphicsApplication',
-    description: 'Turn photos into anime-style images for free.',
+    description: 'Turn photos into anime-style images for free (supports GPT-4o / Flux Kontext, completed in seconds).',
     url: 'https://2kawaii.com/en',
     operatingSystem: 'Web',
     offers: {

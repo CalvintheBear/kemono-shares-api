@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { PhotoIcon, PaperAirplaneIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
 import { useAppStore } from '@/store/useAppStore'
-import { ImageSize } from '@/store/useAppStore'
+import { ImageSize, ModelType } from '@/store/useAppStore'
 import ShareButton from './ShareButton'
 import MobileBottomNav from './MobileBottomNav'
 import Footer from './Footer'
@@ -13,6 +13,24 @@ import Link from 'next/link'
 import Image from 'next/image'
 import OptimizedImage from './OptimizedImage'
 
+
+// 比例小图标（用于尺寸按钮与折叠摘要）
+const renderRatioIcon = (ratio: ImageSize, maxSide: number) => {
+  const [wStr, hStr] = (ratio || '1:1').split(':')
+  const w = Math.max(1, parseInt(wStr, 10) || 1)
+  const h = Math.max(1, parseInt(hStr, 10) || 1)
+  const scale = Math.min(maxSide / w, maxSide / h)
+  const dw = Math.round(w * scale)
+  const dh = Math.round(h * scale)
+  const vw = dw + 4
+  const vh = dh + 4
+  return (
+    <svg width={vw} height={vh} viewBox={`0 0 ${vw} ${vh}`} aria-hidden="true">
+      <rect x="2" y="2" width={dw} height={dh} rx="2" ry="2" fill="currentColor" opacity="0.2" />
+      <rect x="2" y="2" width={dw} height={dh} rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  )
+}
 
 interface Template {
   id: string
@@ -239,73 +257,22 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false, isEnglish = f
   isMobile?: boolean
   isEnglish?: boolean
 }) => {
-  const getSizeIcon = (size: ImageSize, isMobile: boolean = false) => {
-    if (isMobile) {
-      switch (size) {
-        case '1:1':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-3 h-3 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        case '3:2':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-4 h-2.5 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        case '2:3':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-2.5 h-4 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        default:
-          return null
-      }
-    } else {
-      // 桌面端使用更精美的图标
-      switch (size) {
-        case '1:1':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-4 h-4 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        case '3:2':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-5 h-3 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        case '2:3':
-          return (
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className="w-3 h-5 border-2 border-current rounded-sm bg-current opacity-20"></div>
-                <div className="absolute -top-1 -right-1 text-xs"></div>
-              </div>
-            </div>
-          )
-        default:
-          return null
-      }
-    }
+  const getSizeIcon = (ratio: ImageSize, isMobileLocal: boolean = false) => {
+    const [wStr, hStr] = (ratio || '1:1').split(':')
+    const w = Math.max(1, parseInt(wStr, 10) || 1)
+    const h = Math.max(1, parseInt(hStr, 10) || 1)
+    const maxSide = isMobileLocal ? 18 : 24
+    const scale = Math.min(maxSide / w, maxSide / h)
+    const dw = Math.round(w * scale)
+    const dh = Math.round(h * scale)
+    const vw = dw + 4
+    const vh = dh + 4
+    return (
+      <svg width={vw} height={vh} viewBox={`0 0 ${vw} ${vh}`} aria-hidden="true">
+        <rect x="2" y="2" width={dw} height={dh} rx="2" ry="2" fill="currentColor" opacity="0.2" />
+        <rect x="2" y="2" width={dw} height={dh} rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" />
+      </svg>
+    )
   }
 
   const getSizeLabel = (size: ImageSize) => {
@@ -325,14 +292,15 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false, isEnglish = f
     return (
       <button
         onClick={onClick}
-        className={`min-w-0 px-2 py-1 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 ${
+        className={`min-w-0 px-2 py-1 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${
           isSelected
             ? 'btn-primary text-white'
             : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
         }`}
+        aria-label={`${isEnglish ? 'Size' : 'サイズ'} ${size}`}
       >
         {getSizeIcon(size, true)}
-        <span className="font-medium hidden sm:inline">{size}</span>
+        <span className="font-medium">{size}</span>
       </button>
     )
   }
@@ -346,9 +314,7 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false, isEnglish = f
           : 'border-border bg-surface text-text-muted hover:bg-surface'
       }`}
     >
-      <div className="w-8 h-8 flex items-center justify-center">
-        {getSizeIcon(size, false)}
-      </div>
+      <div className="w-8 h-8 flex items-center justify-center">{getSizeIcon(size, false)}</div>
       <div className="text-xs font-medium">{size}</div>
       <div className="text-xs text-text-muted">{getSizeLabel(size)}</div>
     </button>
@@ -379,7 +345,23 @@ export default function WorkspaceRefactored() {
   // const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
 
 
-  const { selectedSize, setSelectedSize } = useAppStore()
+  const { selectedSize, setSelectedSize, selectedModel, setSelectedModel } = useAppStore()
+
+  // 模型尺寸集合
+  const availableSizesByModel: Record<ModelType, ImageSize[]> = useMemo(() => ({
+    'gpt4o-image': ['1:1','3:2','2:3'],
+    'flux-kontext-pro': ['1:1','4:3','3:4','16:9','9:16','21:9','16:21'],
+    'flux-kontext-max': ['1:1','4:3','3:4','16:9','9:16','21:9','16:21']
+  }), [])
+  const derivedSizes = availableSizesByModel[selectedModel]
+
+  // 模型切换时校正尺寸默认值
+  useEffect(() => {
+    if (!derivedSizes.includes(selectedSize)) {
+      const fallback = selectedModel === 'gpt4o-image' ? '1:1' : '16:9'
+      setSelectedSize(fallback as ImageSize)
+    }
+  }, [selectedModel])
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pollIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -722,7 +704,17 @@ useEffect(() => {
     setCurrentResult(newResult)
     console.log('[generateImage] 设置currentResult:', newResult.id)
 
-    const requestBody = {
+    // 模型分流：GPT‑4o Image vs Flux Kontext
+    const isFlux = selectedModel === 'flux-kontext-pro' || selectedModel === 'flux-kontext-max'
+    const requestBody = isFlux ? {
+      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+      aspectRatio: selectedSize,
+      inputImage: mode === 'text-to-image' ? undefined : fileUrl,
+      model: selectedModel,
+      enableTranslation: true,
+      outputFormat: 'jpeg',
+      promptUpsampling: enhancePrompt
+    } : {
       fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
       prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
       enhancePrompt,
@@ -734,7 +726,7 @@ useEffect(() => {
     console.log('[generateImage] 请求体:', JSON.stringify(requestBody, null, 2))
 
     try {
-      const response = await fetch('/api/generate-image', {
+      const response = await fetch(isFlux ? '/api/flux-kontext/generate' : '/api/generate-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
@@ -775,7 +767,11 @@ useEffect(() => {
         console.log('[generateImage] 使用taskId进行轮询, taskId:', taskId)
         // 确保isGenerating为true，防止轮询提前结束
         setIsGenerating(true)
-        await pollProgress(taskId, newResult.id)
+        if (isFlux) {
+          await pollFluxProgress(taskId, newResult.id)
+        } else {
+          await pollProgress(taskId, newResult.id)
+        }
       } else {
         throw new Error('未获得有效的生成结果')
       }
@@ -823,6 +819,7 @@ useEffect(() => {
           originalUrl: originalUrl,
           prompt: result.prompt,
           style: selectedTemplate?.name || 'カスタム',
+          model: selectedModel,
           timestamp: Date.now(),
           isR2Stored: isR2Url, // 标记是否使用R2永久URL
           // 默认SEO标签（参考 seo优化任务.md 的高优先级关键词）
@@ -1156,6 +1153,118 @@ useEffect(() => {
     loop()
   }
 
+  // Flux Kontext 轮询（使用统一后的服务端结构）
+  const pollFluxProgress = async (taskId: string, resultId: string) => {
+    console.log('[pollFluxProgress] 启动, taskId:', taskId, 'resultId:', resultId)
+    const startTime = Date.now()
+    const timeout = 5 * 60 * 1000
+    let errorCount = 0
+    let consecutiveFailures = 0
+    if (!isGenerating) {
+      setIsGenerating(true)
+    }
+    const loop = async () => {
+      if (!isMountedRef.current) return
+      if (Date.now() - startTime >= timeout) {
+        setGenerationError('タイムアウトしました')
+        setCurrentResult(null)
+        setIsGenerating(false)
+        return
+      }
+      try {
+        const response = await fetch(`/api/flux-kontext/image-details?taskId=${taskId}`)
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const payload = await response.json()
+        const info = payload?.data || {}
+        const status: 'GENERATING'|'SUCCESS'|'FAILED' = info.status || 'GENERATING'
+        const urls: string[] = Array.isArray(info.resultUrls) ? info.resultUrls : []
+        const errorMessage: string = info.errorMessage || ''
+        const hasUrl = urls.length > 0
+
+        if (status === 'SUCCESS') {
+          consecutiveFailures = 0
+          let finalImageUrl = ''
+          const generatedUrl = hasUrl ? urls[0] : ''
+          if (generatedUrl) {
+            const isR2Url = generatedUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
+            if (isR2Url) {
+              finalImageUrl = generatedUrl
+            } else {
+              try {
+                const uploadResponse = await fetch('/api/download-and-upload', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ url: generatedUrl, taskId, fileName: `generated_${taskId}.png` })
+                })
+                if (uploadResponse.ok) {
+                  const uploadData = await uploadResponse.json()
+                  if (uploadData.success && uploadData.publicUrl) {
+                    finalImageUrl = uploadData.publicUrl
+                  } else {
+                    finalImageUrl = generatedUrl
+                  }
+                } else {
+                  finalImageUrl = generatedUrl
+                }
+              } catch {
+                finalImageUrl = generatedUrl
+              }
+            }
+          } else {
+            // 无 URL，尝试 R2 反查
+            try {
+              const r2UrlResponse = await fetch(`/api/get-generated-url?taskId=${taskId}`)
+              if (r2UrlResponse.ok) {
+                const r2 = await r2UrlResponse.json()
+                if (r2.found && r2.url) finalImageUrl = r2.url
+              }
+            } catch {}
+          }
+          const completedResult = {
+            id: resultId,
+            original_url: mode === 'text-to-image' ? '' : (fileUrl || ''),
+            generated_url: finalImageUrl,
+            prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+            timestamp: Date.now()
+          }
+          setCurrentResult(completedResult)
+          if (finalImageUrl && finalImageUrl.trim() !== '') {
+            try {
+              const isR2Url = finalImageUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
+              if (isR2Url) {
+                const shareResponse = await handleShare(completedResult)
+                if (shareResponse) setAutoShareUrl(shareResponse)
+              }
+            } catch {}
+          }
+          setTimeout(() => setIsGenerating(false), 2000)
+          return
+        }
+
+        if (status === 'FAILED') {
+          consecutiveFailures++
+          setGenerationError(errorMessage || '生成に失敗しました')
+          setCurrentResult(null)
+          setIsGenerating(false)
+          return
+        }
+
+        // 继续轮询（生成中）
+        pollIntervalRef.current = setTimeout(loop, 2000)
+      } catch (e) {
+        errorCount++
+        consecutiveFailures++
+        if (errorCount >= 3 || consecutiveFailures >= 5) {
+          setCurrentResult(null)
+          stopWithReason('MAX_FAILURES', 'ネットワーク状態が不安定です。少し待ってから「再試行」してください。')
+          return
+        }
+        pollIntervalRef.current = setTimeout(loop, 3000)
+      }
+    }
+    loop()
+  }
+
   const handleTemplateSelect = (template: Template) => {
     // 桌面端：完全保持滑块位置，不重置
     setSelectedTemplate(template)
@@ -1217,9 +1326,20 @@ useEffect(() => {
           <div id="workspace-mobile-core" className="p-3 space-y-3">
             
             {/* 顶部标题 */}
-            <div className="text-center mb-4">
+              <div className="text-center mb-4">
               <div className="inline-flex items-center gap-2">
                 <span className="text-sm font-bold text-text">{isEnglish ? 'AI Image Conversion' : 'AI画像変換'}</span>
+                {/* 模型选择（移动端 顶部补充一处快捷入口） */}
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value as ModelType)}
+                  className="px-2 py-1 rounded-md text-xs bg-white border border-border"
+                  aria-label={isEnglish ? 'Model' : 'モデル'}
+                >
+                  <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
+                  <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+                  <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
+                </select>
               </div>
             </div>
 
@@ -1419,7 +1539,7 @@ useEffect(() => {
                        <h3 className="text-lg font-bold text-text mb-2">{isEnglish ? 'Generating image...' : '画像生成中...'}</h3>
                        <p className="text-sm text-text-muted mb-4">{isEnglish ? 'AI is generating your image' : 'AIが画像を生成しています'}</p>
                       <div className="bg-surface rounded-lg p-4">
-                         <p className="text-sm text-text-muted">{isEnglish ? 'It takes about 2-5 minutes' : '2-5分で完了します'}</p>
+                          <p className="text-sm text-text-muted">{isEnglish ? 'Completed in seconds' : '数秒で完了します'}</p>
                       </div>
                     </div>
                   </div>
@@ -1525,64 +1645,65 @@ useEffect(() => {
           </div>
         )}
 
-        <div className="p-2 sm:p-3 border-t border-border">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-                  {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
-                <SizeButton
-                  key={size}
-                  size={size}
-                  isSelected={selectedSize === size}
-                      onClick={() => setSelectedSize(size)}
-                      isMobile={true}
-                      isEnglish={isEnglish}
-                />
-              ))}
-            </div>
-
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <button
-                onClick={() => {
-                  setMode('template-mode')
-                  if (!selectedTemplate) setPrompt('')
-                }}
-                className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                  mode === 'template-mode' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
-                }`}
-              >
-                {isEnglish ? 'Easy' : '簡単'}
-              </button>
-              <button
-                onClick={() => {
-                  setMode('image-to-image')
+        {/* 简洁三列：模型 / 模式 / 尺寸（无折叠） */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 p-2 sm:p-3 border-t border-border">
+          <div className="p-2 border border-border rounded-lg">
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value as ModelType)}
+              className="w-full px-2.5 py-1.5 rounded-lg text-sm bg-white border border-border"
+            >
+              <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
+              <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+              <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
+            </select>
+          </div>
+          <div className="p-2 border border-border rounded-lg">
+            <select
+              value={mode}
+              onChange={(e) => {
+                const v = e.target.value as 'template-mode'|'image-to-image'|'text-to-image'
+                setMode(v)
+                if (v === 'image-to-image' || v === 'text-to-image') {
                   setPrompt('')
+                  if (v === 'text-to-image') {
+                    setFileUrl(null)
+                    setImagePreview(null)
+                  }
                   setSelectedTemplate(null)
                   localStorage.removeItem('selectedTemplateId')
-                }}
-                className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                  mode === 'image-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
-                }`}
-              >
-                {isEnglish ? 'Image→Image' : '図→図'}
-              </button>
-              <button
-                onClick={() => {
-                  setMode('text-to-image')
-                  setPrompt('')
-                  setSelectedTemplate(null)
-                  setFileUrl(null)
-                  setImagePreview(null)
-                  localStorage.removeItem('selectedTemplateId')
-                  localStorage.removeItem('savedFileUrl')
-                  localStorage.removeItem('savedMode')
-                }}
-                className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                  mode === 'text-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
-                }`}
-              >
-                {isEnglish ? 'Text→Image' : '文→図'}
-              </button>
-            </div>
+                }
+              }}
+              className="w-full px-2.5 py-1.5 rounded-lg text-sm bg-white border border-border"
+            >
+              <option value="template-mode">{isEnglish ? 'Easy' : '簡単'}</option>
+              <option value="image-to-image">{isEnglish ? 'Image→Image' : '図→図'}</option>
+              <option value="text-to-image">{isEnglish ? 'Text→Image' : '文→図'}</option>
+            </select>
+          </div>
+          <div className="p-2 border border-border rounded-lg">
+            <details>
+              <summary className="w-full px-2.5 py-1.5 rounded-lg text-sm bg-white border border-border flex items-center justify-between cursor-pointer select-none">
+                <span className="inline-flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center">{renderRatioIcon(selectedSize, 16)}</span>
+                  <span className="font-medium">{selectedSize}</span>
+                </span>
+                <span className="text-text-muted">▾</span>
+              </summary>
+              <div className="mt-2 grid grid-cols-1 min-[380px]:grid-cols-2 gap-1.5 max-h-48 overflow-auto pr-1">
+                {(derivedSizes as ImageSize[]).map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`w-full flex items-center gap-2 px-2 py-1 rounded-lg text-[11px] sm:text-xs border whitespace-nowrap justify-start ${selectedSize === size ? 'btn-primary text-white' : 'bg-white text-text border-border'}`}
+                    aria-label={`size-${size}`}
+                  >
+                    <span className="inline-flex items-center justify-center">{renderRatioIcon(size, 14)}</span>
+                    <span className="font-medium">{size}</span>
+                  </button>
+                ))}
+              </div>
+            </details>
           </div>
         </div>
       </div>
@@ -1599,7 +1720,18 @@ useEffect(() => {
           <div className="lg:w-1/2 space-y-8">
             <div className="bg-[var(--surface)] rounded-lg p-5 card border border-[var(--border)]">
               <div className="mb-4">
-              <div className="flex justify-center space-x-3 mb-3">
+              <div className="flex justify-center flex-wrap gap-3 mb-3">
+                {/* 模型选择（桌面端） */}
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value as ModelType)}
+                  className="px-3 py-2 rounded-lg text-sm font-medium bg-white border border-border"
+                  aria-label={isEnglish ? 'Model' : 'モデル'}
+                >
+                  <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
+                  <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+                  <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
+                </select>
                 <button
                   onClick={() => {
                   setMode('template-mode')
@@ -1809,7 +1941,7 @@ useEffect(() => {
               <div>
                 <label className="block text-lg font-bold text-text mb-3">{isEnglish ? '📐 Choose image size ✨' : '📐 画像サイズを選んでね ✨'}</label>
                 <div className="grid grid-cols-3 gap-5">
-                  {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
+                  {(derivedSizes as ImageSize[]).map((size) => (
                     <SizeButton
                       key={size}
                       size={size}
@@ -2134,7 +2266,7 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
                       `}</style>
                     </span>
                     <p className="mt-4 text-text-muted">
-                      2kawaiiのGPT-4o Image で画像生成中... 2-5分で完成！✨
+                     2kawaiiのAIで画像生成中... 数秒で完成！✨
                     </p>
                   </div>
                 )}

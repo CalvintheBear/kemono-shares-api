@@ -3,71 +3,136 @@
 import { useState, useEffect } from 'react'
 // import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
-const faqData = [
+const faqDataJa = [
   {
     id: 1,
     question: "AI画像変換は本当に無料で使えるの？",
-    answer: "はい、AI画像生成が完全に無料でご利用いただけます。登録不要・隠れた課金なし、商用利用も可能なAI画像変換ツールです。"
+    answer: "はい、AI画像生成は完全無料です。登録不要・隠れ課金なし。生成した画像は商用利用も可能です。"
   },
   {
     id: 2,
-    question: "AI画像変換に対応している画像ファイルは？",
-    answer: "JPG、PNG、WebP形式の画像ファイルに対応しており、最大10MBまでのAI画像生成が可能です。1:1、2:3、3:2のサイズ比率で高画質なアニメ画像が作成できます。"
+    question: "対応ファイルと制限は？",
+    answer: "JPG / PNG / WebP に対応、最大10MB。サイズ比率は 1:1 / 3:2 / 2:3 のほか、Flux Kontext では 16:9 / 9:16 / 4:3 / 3:4 / 21:9 / 16:21 にも対応しています。"
   },
   {
     id: 3,
-    question: "AI画像変換でアップロードした画像は安全？",
-    answer: "お客様のプライバシーを最優先に考えています。アップロードされた画像はAI画像変換処理後すぐに自動削除され、第三者に共有されることは一切ありません。"
+    question: "アップロードした画像は安全？",
+    answer: "プライバシー最優先。処理後は自動削除され第三者と共有しません。生成画像は14日で期限切れ（外部API仕様）ですが、公開用URLはR2へ安全に保存します。"
   },
   {
     id: 4,
-    question: "写真をアニメ風に変換するのにどれくらい時間がかかる？",
-    answer: "AI画像変換は通常2-5分程度で完了します。写真をアニメ風に変換する処理時間は画像サイズや複雑さにより異なりますが、写真加工アプリよりも高速です。"
+    question: "どれくらいで完了する？",
+    answer: "通常は数秒で完了します（Flux Kontext）。混雑時でも概ね1分以内。GPT‑4o Image も対応しています。"
   },
   {
     id: 5,
-    question: "AI画像生成したアニメ画像は商用利用可能？",
-    answer: "はい！AI画像生成したアニメ画像は商用利用可能です。SNSアイコン、プロフィール画像、VTuber立ち絵、擬人化キャラクター制作など、幅広くご利用ください。"
+    question: "商用利用はできる？",
+    answer: "はい、可能です。SNSアイコン、プロフィール、VTuber立ち絵、擬人化キャラ、LINEスタンプなど幅広く利用できます（権利侵害は不可）。"
   },
   {
     id: 6,
-    question: "スマートフォンからでもAI画像変換は利用可能？",
-    answer: "はい、スマートフォン、タブレット、PCのどのデバイスからでもAI画像変換をご利用いただけます。レスポンシブデザインで最適化されており、chibiキャラクター作成も簡単です。"
+    question: "スマホでも使える？",
+    answer: "はい。スマホ/タブレット/PC すべてで快適に使えます。UI はモバイル最適化済みで、テンプレート選択も直感的です。"
   },
   {
     id: 7,
-    question: "人物以外の画像でもアニメ風に変換できますか？",
-    answer: "人物の画像で最高の結果が得られるAI画像変換ですが、動物やキャラクターの擬人化、chibi化も可能です。ペットやオリジナルキャラクターをアニメ風に変換してみてください。"
+    question: "人物以外も変換できる？",
+    answer: "できます。動物やオブジェクトの擬人化、chibi 化、壁紙パターン生成など多用途に対応します。"
   },
   {
     id: 8,
-    question: "AI画像変換の結果が気に入らない場合は？",
-    answer: "別のアニメスタイルを選択して再度AI画像変換をお試しいただけます。ジブリ風、VTuber風、美少女、chibiなど20種類以上のスタイルから選択可能です。"
+    question: "結果が微妙だったら？",
+    answer: "別のテンプレートへ切替、またはプロンプト微調整がおすすめ。Flux Kontext では縦横比を変えて再生成すると改善することがあります。"
   },
   {
     id: 9,
-    question: "一度に複数の写真をAI画像変換できますか？",
-    answer: "現在のバージョンでは一度に1枚ずつのAI画像変換となります。複数の写真をアニメ風に変換したい場合は、1枚ずつ処理をお願いします。"
+    question: "複数同時に処理できる？",
+    answer: "現在は1枚ずつです。複数画像の一括処理は今後のアップデートで検討中です。"
   },
   {
     id: 10,
-    question: "AI画像生成したアニメ画像の解像度は？",
-    answer: "AI画像生成するアニメ画像は1:1、2:3、3:2のサイズ比率で作成され、元画像の解像度を保持します。高解像度の写真をアップロードすることで、より鮮明なアニメ画像が作成できます。"
+    question: "解像度や縦横比は？",
+    answer: "縦横比はモデルにより選択可能。GPT‑4o Image は 1:1 / 3:2 / 2:3、Flux Kontext は 1:1 / 4:3 / 3:4 / 16:9 / 9:16 / 21:9 / 16:21 を提供します。"
   },
   {
     id: 11,
-    question: "チャットGPT画像生成との違いは何ですか？",
-    answer: "当AI画像変換ツールは写真を直接アニメ風に変換するため、チャットGPT画像生成よりも簡単で速く、登録不要で即座にご利用いただけます。プロンプト入力も不要です。"
+    question: "他サービスと比べた強みは？",
+    answer: "Flux Kontext による数秒生成、豊富な縦横比、R2 永久URLへの自動保存、シェア機能、登録不要が特長です。"
   },
   {
     id: 12,
-    question: "AI画像変換でエラーが発生した場合はどうすればいい？",
-    answer: "AI画像変換で技術的な問題が発生した場合は、画像サイズや形式を確認していただくか、お問い合わせフォームからご連絡ください。AI画像生成の改善に努めています。"
+    question: "うまくいかない時は？",
+    answer: "画像サイズ（≤10MB）と形式（JPG/PNG/WebP）を確認し、ネットワークを見直してください。1分以上完了しない場合は再実行をお試しください。"
+  }
+]
+
+const faqDataEn = [
+  {
+    id: 1,
+    question: "Is it really free?",
+    answer: "Yes. Completely free, no signup, no hidden fees. You can use generated images commercially."
+  },
+  {
+    id: 2,
+    question: "File formats and limits?",
+    answer: "JPG / PNG / WebP up to 10MB. Aspect ratios: GPT‑4o Image supports 1:1 / 3:2 / 2:3; Flux Kontext also supports 16:9 / 9:16 / 4:3 / 3:4 / 21:9 / 16:21."
+  },
+  {
+    id: 3,
+    question: "Is my upload safe?",
+    answer: "We prioritize privacy. Source files are deleted after processing and never shared. Generated images expire in 14 days on the external API, and public URLs are safely stored on R2."
+  },
+  {
+    id: 4,
+    question: "How long does it take?",
+    answer: "Usually seconds with Flux Kontext; typically within a minute even under load. GPT‑4o Image is also supported."
+  },
+  {
+    id: 5,
+    question: "Commercial use?",
+    answer: "Allowed. Use for SNS icons, profiles, VTuber models, personified characters, LINE stickers, etc. (no infringement)."
+  },
+  {
+    id: 6,
+    question: "Mobile support?",
+    answer: "Yes. Works great on smartphone / tablet / PC. Mobile‑first UI with intuitive template selection."
+  },
+  {
+    id: 7,
+    question: "Non‑human subjects?",
+    answer: "Yes. Pet/object personification, chibi, wallpaper patterns and more are supported."
+  },
+  {
+    id: 8,
+    question: "Not satisfied with the result?",
+    answer: "Try a different template or tweak the prompt. With Flux Kontext, changing the aspect ratio often improves results."
+  },
+  {
+    id: 9,
+    question: "Batch processing?",
+    answer: "Currently one image at a time. Batch mode is under consideration for future updates."
+  },
+  {
+    id: 10,
+    question: "Resolution and aspect ratio?",
+    answer: "Aspect ratios vary by model: GPT‑4o Image (1:1 / 3:2 / 2:3) and Flux Kontext (1:1 / 4:3 / 3:4 / 16:9 / 9:16 / 21:9 / 16:21)."
+  },
+  {
+    id: 11,
+    question: "Why 2kawaii?",
+    answer: "Seconds‑fast Flux Kontext, rich aspect ratios, automatic R2 permanent URLs, built‑in share pages, and no signup."
+  },
+  {
+    id: 12,
+    question: "Troubleshooting?",
+    answer: "Check file size (≤10MB) and type (JPG/PNG/WebP), then network. If it doesn’t finish within a minute, try again."
   }
 ]
 
 export default function FAQ() {
   const [isVisible, setIsVisible] = useState(false)
+  const isEnglish = typeof window !== 'undefined' && /^\/en(\/|$)/.test(window.location.pathname)
+  const faqData = isEnglish ? faqDataEn : faqDataJa
 
   useEffect(() => {
     // 页面加载后触发渐入效果
@@ -87,10 +152,10 @@ export default function FAQ() {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text font-cute mb-6 lg:mb-8">
-            AI画像変換 よくある質問
+            {isEnglish ? 'FAQ — AI Image Conversion' : 'AI画像変換 よくある質問'}
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-text-muted leading-relaxed">
-            AI画像変換・写真アニメ化についてのよくある質問をまとめました
+            {isEnglish ? 'Frequently asked questions about photo‑to‑anime AI conversion' : 'AI画像変換・写真アニメ化についてのよくある質問をまとめました'}
           </p>
         </div>
 

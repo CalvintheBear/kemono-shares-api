@@ -271,7 +271,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
       {/* Image */}
       {inView && (
         <Image
-          src={image.url}
+          src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=70&fm=webp`}
           alt={image.alt || 'Gallery image'}
           fill
           sizes={`${columnWidth}px`}

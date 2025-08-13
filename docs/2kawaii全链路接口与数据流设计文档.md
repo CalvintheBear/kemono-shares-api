@@ -36,6 +36,9 @@
   - POST `/api/download-and-upload`（下载后上传至 R2 `generated/` 前缀并返回 `publicUrl`）
   - GET `/api/get-generated-url`（S3 v4 列举反查；当前前缀为 `kie-downloads/`，建议统一）
   - POST `/api/upload-image`
+  - POST `/api/flux-kontext/generate`（Flux 模型：Pro/Max）
+  - GET `/api/flux-kontext/image-details`（Flux 任务详情）
+  - POST `/api/callback/flux-kontext`（Flux 回调 → R2 永久化）
   - POST `/api/callback/image-generated`
 
 - 分享与列表类
@@ -79,6 +82,24 @@
 
 ---
 
+### 1a) POST /api/flux-kontext/generate
+
+- 文件：`functions/api/flux-kontext/generate.ts`
+- 方法与路径：POST `/api/flux-kontext/generate`
+- 请求体（JSON）：
+  - `prompt: string`
+  - `aspectRatio?: string` 比例，如 `"1:1" | "4:3" | "3:4" | "16:9" | "9:16" | "21:9" | "16:21"`
+  - `inputImage?: string` 以图编辑时传（参考图 URL）
+  - `model: 'flux-kontext-pro' | 'flux-kontext-max'`
+  - `enableTranslation?: boolean`（默认 true）
+  - `promptUpsampling?: boolean`（可映射前端的 `enhancePrompt`）
+  - `outputFormat?: 'jpeg' | 'png'`（默认 `jpeg`）
+- 响应（JSON）：`{ success: true, taskId: string }`
+- 外部调用：Kie.ai `POST https://api.kie.ai/api/v1/flux/kontext/generate`
+- 回调设置：若存在 `env.NEXT_PUBLIC_APP_URL`，将 `callBackUrl` 指向 `{APP_URL}/api/callback/flux-kontext`
+
+---
+
 ### 2) GET /api/image-details
 
 - 文件：`functions/api/image-details.ts`
@@ -87,6 +108,19 @@
 - 响应（JSON）：`{ success: true, data: KieApiRecordInfoRaw }`（含 `status`, `response.resultUrls` 等）
 - 外部调用：Kie.ai `GET /gpt4o-image/record-info?taskId=...`
 - R2/KV：无
+
+---
+
+### 2a) GET /api/flux-kontext/image-details
+
+- 文件：`functions/api/flux-kontext/image-details.ts`
+- 方法与路径：GET `/api/flux-kontext/image-details?taskId=...`
+- 查询参数：`taskId: string` 必填
+- 响应（JSON）：标准化后的结构（服务端已做兼容）：
+  - `status: 'GENERATING' | 'SUCCESS' | 'FAILED'`
+  - `resultUrls: string[]`（兼容 `result_urls/resultImageUrl`）
+  - `errorMessage?: string`
+- 外部调用：Kie.ai `GET /flux/kontext/record-info?taskId=...`
 
 ---
 
@@ -151,6 +185,16 @@
 - 方法与路径：POST `/api/callback/image-generated`
 - 请求体：Kie.ai 回调 `{ code, data, msg }`
 - 逻辑：当 `code===200 && data.status==='SUCCESS'` 时，遍历 `resultUrls`，为每个 URL 调用 `/api/download-and-upload` 持久化到 R2
+- 响应：`{ success: true, message: '回调处理成功' }`
+
+---
+
+### 7a) POST /api/callback/flux-kontext
+
+- 文件：`functions/api/callback/flux-kontext.ts`
+- 方法与路径：POST `/api/callback/flux-kontext`
+- 请求体：Kie.ai 回调 `{ code, data, msg }`
+- 逻辑：当回调成功时解析结果 URL 集合，逐一调用 `/api/download-and-upload` 转存到 R2（与 GPT‑4o 回调一致的持久化策略）
 - 响应：`{ success: true, message: '回调处理成功' }`
 
 ---
@@ -224,10 +268,15 @@
 - 文件：`src/components/Workspace.tsx`
 - 调用点与数据：
   - 上传图片 → `POST /api/upload-image`（XHR）→ `fileUrl`
-  - 发起生成 → `POST /api/generate-image` → `taskId`
-  - 轮询状态 → `GET /api/image-details?taskId`
-    - 拿到临时 `resultUrl` → `POST /api/download-url` → `downloadUrl` → `POST /api/download-and-upload` → R2 永久 URL
-  - 无 URL → `GET /api/get-generated-url?taskId` 反查 afterimage 桶
+  - 发起生成（按模型分流）
+    - GPT‑4o Image → `POST /api/generate-image` → `taskId`
+    - Flux Kontext（Pro/Max）→ `POST /api/flux-kontext/generate` → `taskId`
+  - 轮询状态（按模型分流）
+    - GPT‑4o Image → `GET /api/image-details?taskId`
+    - Flux Kontext → `GET /api/flux-kontext/image-details?taskId`
+  - 获取结果与持久化
+    - 若得到结果 URL → `POST /api/download-and-upload` 转存到 R2 → `publicUrl`
+    - 若短期内未获取 → `GET /api/get-generated-url?taskId` 反查 afterimage 桶（兼容历史前缀）
   - 分享：页面按钮触发 `POST /api/share`；自动分享逻辑已去除
 - 前端用途：
   - `currentResult.generated_url` → 结果渲染/下载
@@ -263,7 +312,8 @@
 
 ### B. KIE 回调 → R2 永久化（服务端）
 
-- KIE → `POST /api/callback/image-generated` → 内部 `POST /api/download-and-upload` → R2 永久 URL
+- GPT‑4o → `POST /api/callback/image-generated` → 内部 `POST /api/download-and-upload` → R2 永久 URL
+- Flux Kontext → `POST /api/callback/flux-kontext` → 内部 `POST /api/download-and-upload` → R2 永久 URL
 
 ### C. 分享展示（落地页）
 
@@ -307,6 +357,29 @@ ShareData 字段：`id, generatedUrl, originalUrl, prompt, style, timestamp, cre
 | enhancePrompt | boolean | req | 是否增强提示词 |
 | taskId | string | res | 任务 ID |
 | success | boolean | res | 是否受理成功 |
+
+### /api/flux-kontext/generate（POST）
+
+| 字段名 | 类型 | 方向 | 含义 |
+|---|---|---|---|
+| prompt | string | req | 提示词 |
+| aspectRatio | string? | req | 比例，如 1:1/4:3/3:4/16:9/9:16/21:9/16:21 |
+| inputImage | string? | req | 参考图 URL（以图编辑） |
+| model | string | req | 'flux-kontext-pro'/'flux-kontext-max' |
+| enableTranslation | boolean? | req | 翻译开关（默认 true） |
+| promptUpsampling | boolean? | req | 提示词增强（可映射前端开关） |
+| outputFormat | 'jpeg'|'png'? | req | 输出格式（默认 'jpeg'） |
+| taskId | string | res | 任务 ID |
+| success | boolean | res | 是否受理成功 |
+
+### /api/flux-kontext/image-details（GET）
+
+| 字段名 | 类型 | 方向 | 含义 |
+|---|---|---|---|
+| taskId | string | req | 任务 ID |
+| status | 'GENERATING'|'SUCCESS'|'FAILED' | res | 任务状态（标准化） |
+| resultUrls | string[] | res | 结果 URL 集合（兼容多字段名） |
+| errorMessage | string? | res | 错误信息 |
 
 ### /api/image-details（GET）
 
@@ -533,10 +606,11 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
 
 ## 九、变更建议（Roadmap）
 
-- 统一 R2 Afterimage 桶前缀（`generated/` vs `kie-downloads/`），并调整 `/api/get-generated-url` 前缀逻辑
+- 统一 R2 Afterimage 桶前缀（`generated/` vs `kie-downloads/`），并调整 `/api/get-generated-url` 前缀逻辑（兼容 Flux 与 GPT‑4o 产物检索）
 - `/api/share` 可加入基于 `generatedUrl` 的幂等去重策略
 - `_middleware.ts` 可增加允许域白名单以增强安全
 - 为接口在 `src/types/api.ts` 补充更严格的响应类型约束
+- 下载直链兜底：`/api/download-and-upload` 优先尝试对结果 URL 直接下载；仅当识别为 GPT‑4o 临时域名时调用 `/gpt4o-image/download-url` 兜底
 
 ---
 

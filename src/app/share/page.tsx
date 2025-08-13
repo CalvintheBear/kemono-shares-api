@@ -174,7 +174,7 @@ function SharePageContent() {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
               <div className="flex items-center justify-center space-x-2 mb-4">
-                <h1 className="text-3xl font-bold">AI画像変換結果・プロンプト生成</h1>
+                <h1 className="text-3xl font-bold">AI画像変換 結果（数秒で完了）</h1>
               </div>
               <p className="text-lg opacity-90">{shareData.style}スタイルでAI変換完了！</p>
               <p className="text-sm opacity-75 mt-2">シェアID: {shareData.id}</p>
@@ -207,7 +207,14 @@ function SharePageContent() {
                 <ul className="list-disc pl-5 space-y-1">
                   <li>スタイル: {shareData.style}</li>
                   <li>テーマ: {(shareData.prompt || '').slice(0, 40)}...</li>
-                  <li>生成プロセス: GPT-4o Image による自動プロンプト最適化</li>
+                  <li>
+                    生成プロセス: {(() => {
+                      const m: any = (shareData as any)?.model
+                      if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext による自動最適化'
+                      if (m === 'gpt4o-image') return 'GPT-4o Image による自動プロンプト最適化'
+                      return 'GPT-4o / Flux Kontext による自動最適化'
+                    })()}
+                  </li>
                 </ul>
               </div>
             )}
@@ -239,10 +246,10 @@ function SharePageContent() {
         <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 py-8 pt-24">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-text font-cute">
-            AI画像生成 お題一覧 | チャットGPT・ai プロンプト ギャラリー
+            AI画像ギャラリー（GPT‑4o / Flux Kontext 対応）
           </h1>
           <p className="text-gray-700 mt-2 text-sm">
-            AI プロンプトで作られた最新のチャットGPT 画像生成作例を毎日更新。AI画像生成 サイト 無料・登録不要、2-5分で完成。
+            AI プロンプトで作られた最新のチャットGPT 画像生成作例を毎日更新。AI画像生成 サイト 無料・登録不要、数秒で完成。
           </p>
         </div>
         <ShareGallery />

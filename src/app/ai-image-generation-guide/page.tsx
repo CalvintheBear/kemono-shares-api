@@ -13,13 +13,13 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
-  description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換する完全ガイド。プロンプト不要で2-5分完成。ジブリ風・VTuber・chibiなど20スタイルの選び方も解説。",
+  description: "【初心者OK】GPT-4o Image と Flux Kontext で写真を無料でアニメ風に変換する完全ガイド。プロンプト不要で数秒完成。ジブリ風・VTuber・chibiなど20スタイルの選び方も解説。",
   alternates: {
     canonical: "https://2kawaii.com/ai-image-generation-guide",
   },
   openGraph: {
     title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
-    description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換。プロンプト不要で2-5分完成。ジブリ風・VTuber・chibi対応。",
+    description: "【初心者OK】GPT-4o Image と Flux Kontext で写真を無料でアニメ風に変換。プロンプト不要で数秒完成。ジブリ風・VTuber・chibi対応。",
     url: "https://2kawaii.com/ai-image-generation-guide",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "AI画像生成 完全ガイド | GPT-4oで写真をアニメ風に無料変換",
-    description: "【初心者OK】GPT-4o Imageで写真を無料でアニメ風に変換。プロンプト不要で2-5分完成。",
+    description: "【初心者OK】GPT-4o Image と Flux Kontext で写真を無料でアニメ風に変換。プロンプト不要で数秒完成。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-ai-guide.jpg"],
   },
   robots: {
@@ -223,7 +223,7 @@ export default function AIGuidePage() {
                   />
                 </div>
                 <h3 className="text-lg font-bold text-text mb-4">3. AI画像生成完了</h3>
-                <p className="text-text-muted text-sm leading-relaxed">最新のAI技術で2-5分で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
+                <p className="text-text-muted text-sm leading-relaxed">最新のAI技術で数秒で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
               </div>
             </div>
           </section>
@@ -233,7 +233,7 @@ export default function AIGuidePage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li>高品質な写真を用意する（正面を向いている写真がおすすめ）</li>
               <li>お好みのアニメスタイルを選択する（ジブリ風、VTuber風、美少女など）</li>
-              <li>AI画像生成を開始する（2-5分で完了）</li>
+              <li>AI画像生成を開始する（数秒で完了）</li>
               <li>生成されたアニメ画像をダウンロードする</li>
             </ol>
           </section>

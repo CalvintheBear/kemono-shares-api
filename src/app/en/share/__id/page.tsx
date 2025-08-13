@@ -14,6 +14,7 @@ interface ShareData {
   timestamp: number
   createdAt: string
   seoTags?: string[]
+  model?: string
 }
 
 async function getShareData(id: string): Promise<ShareData | null> {
@@ -44,6 +45,13 @@ export default async function ShareDetailPage({ params }: { params: { id: string
     month: 'long',
     day: 'numeric',
   })
+
+  const generationProcess = (() => {
+    const m = (data as any).model
+    if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext automatic optimization'
+    if (m === 'gpt4o-image') return 'GPT-4o Image automatic prompt optimization'
+    return 'GPT-4o / Flux Kontext automatic optimization'
+  })()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
@@ -124,6 +132,18 @@ export default async function ShareDetailPage({ params }: { params: { id: string
                   </p>
                 </div>
               </div>
+
+              {/* Highlights (mirroring JP detail) */}
+              {data.prompt && (
+                <div className="bg-white/60 rounded-2xl p-6">
+                  <h2 className="text-xl font-bold text-text mb-3 font-cute">Work Highlights</h2>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
+                    <li>Style: {data.style}</li>
+                    <li>Theme: {(data.prompt || '').slice(0, 60)}...</li>
+                    <li>Generation process: {generationProcess}</li>
+                  </ul>
+                </div>
+              )}
 
               {/* Style Info */}
               <div className="grid grid-cols-2 gap-4">

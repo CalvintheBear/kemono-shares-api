@@ -12,11 +12,11 @@ import Image from 'next/image'
 
 // ホームページSEOメタデータ
 export const metadata = {
-  title: "AI画像生成 無料 登録不要 | gpt4o image で写真をアニメ風に即変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
+  title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext で写真をアニメ風に即変換 - 2kawaii",
+  description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で数秒でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
   openGraph: {
-    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。プロンプト自動生成で写真をアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
+    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で写真を数秒でアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
     url: "https://2kawaii.com",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -32,8 +32,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI画像生成 無料 登録不要 | gpt4o image - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。gpt4o image でプロンプト自動生成、2-5分でアニメ風に変換。",
+    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
+    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、数秒でアニメ風に変換。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
@@ -61,8 +61,8 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: '2kawaii GPT-4o画像生成',
-  description: 'GPT-4o Imageでプロンプト自動生成により写真をアニメ風に即変換できる無料AIツール',
+  name: '2kawaii 画像生成（GPT-4o / Flux Kontext 対応）',
+  description: 'GPT-4o Image と Flux Kontext に対応。プロンプト自動生成により写真をアニメ風に即変換できる無料AIツール',
   url: 'https://2kawaii.com',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
@@ -77,7 +77,7 @@ const structuredData = {
     'プロンプト自動生成',
     '写真をアニメ風に即変換',
     'ジブリ風・chibi・VTuber対応',
-    '2-5分で高速生成',
+    '数秒で高速生成',
     '商用利用可能'
   ],
   screenshot: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/homepage-screenshot.jpg',
@@ -113,7 +113,7 @@ export default function Home() {
       <section className="py-12 lg:py-20 px-3 sm:px-4 lg:px-6 bg-[var(--bg)] animate-fade-in">
         <div className="max-w-7xl mx-auto px-2">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-[var(--text)] mb-8 lg:mb-12 animate-fade-in-up">
-            AI画像変換の使い方 - 3ステップで簡単操作
+            数秒で仕上がるAI画像変換（3ステップ）
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
@@ -173,7 +173,7 @@ export default function Home() {
           </h2>
           <div className="card p-3 sm:p-4 lg:p-6 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[600px] text-xs sm:text-sm">
+              <table className="w-full text-left border-collapse min-w-[680px] text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-border">
                     <th className="py-2 px-2 font-bold text-[var(--text)]">サービス名</th>
@@ -181,6 +181,7 @@ export default function Home() {
                     <th className="py-2 px-2 font-bold text-[var(--text)]">登録必要</th>
                     <th className="py-2 px-2 font-bold text-[var(--text)]">商用利用</th>
                     <th className="py-2 px-2 font-bold text-[var(--text)]">使いやすさ</th>
+                    <th className="py-2 px-2 font-bold text-[var(--text)]">生成速度</th>
                     <th className="py-2 px-2 font-bold text-[var(--text)]">画質</th>
                   </tr>
                 </thead>
@@ -191,6 +192,7 @@ export default function Home() {
                     <td className="py-4 px-4 text-sm sm:text-base">❌ 不要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 可能</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐ 超簡単</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⚡ 数秒（Flux Kontext）</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-surface-hover transition-colors">
@@ -199,6 +201,7 @@ export default function Home() {
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">📄 条件付き</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐ 簡単</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⏱️ 数十秒〜数分</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-surface-hover transition-colors">
@@ -207,6 +210,7 @@ export default function Home() {
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">📄 条件付き</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐ 普通</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⏱️ 数十秒〜数分</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-surface-hover transition-colors">
@@ -215,6 +219,7 @@ export default function Home() {
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 必要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⚠️ 複雑</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐⭐ 困難</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⏳ 数分〜</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
                   </tr>
                 </tbody>

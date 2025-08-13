@@ -82,7 +82,7 @@ export default function LineStickerCreationPage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>Prepare your photo</strong>: Bright, front-facing photos are recommended</li>
               <li><strong>Select sticker style</strong>: Choose from chibi style, cute style, etc.</li>
-              <li><strong>Run AI image generation</strong>: Get 8 different expressions completed in 2-5 minutes</li>
+              <li><strong>Run AI image generation</strong>: Get 8 different expressions completed in seconds</li>
               <li><strong>Register on LINE Creators Market</strong>: Apply and start selling</li>
               <li><strong>Publish your stickers</strong>: Share with friends and followers</li>
             </ol>
@@ -121,7 +121,7 @@ export default function LineStickerCreationPage() {
               <li><strong>Completely Free</strong>: No registration required, no hidden fees</li>
               <li><strong>Commercial Use OK</strong>: Can be sold on LINE Creators Market</li>
               <li><strong>High Quality</strong>: Auto-generated in 1:1, 2:3, 3:2 aspect ratios</li>
-              <li><strong>Fast Processing</strong>: 8 expressions completed in 2-5 minutes</li>
+              <li><strong>Fast Processing</strong>: 8 expressions completed in seconds</li>
               <li><strong>Copyright Clear</strong>: Safe to use as original works</li>
             </ul>
           </section>

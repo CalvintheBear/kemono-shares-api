@@ -13,7 +13,7 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: "Complete AI Image Generation Guide | Convert Photos to Anime Free with GPT-4o",
-  description: "Beginner-friendly complete guide to convert photos to anime style for free using GPT-4o Image. No prompt required, completed in 2-5 minutes. Studio Ghibli, VTuber, chibi and 20+ style selection guide included.",
+  description: "Beginner-friendly complete guide to convert photos to anime style for free using GPT-4o Image and Flux Kontext. No prompt required, completed in seconds. Studio Ghibli, VTuber, chibi and 20+ style selection guide included.",
   alternates: {
     canonical: "https://2kawaii.com/en/ai-image-generation-guide",
     languages: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Complete AI Image Generation Guide | Convert Photos to Anime Free with GPT-4o",
-    description: "Beginner-friendly guide to convert photos to anime style for free using GPT-4o Image. No prompt required, completed in 2-5 minutes. Studio Ghibli, VTuber, chibi supported.",
+    description: "Beginner-friendly guide to convert photos to anime style for free using GPT-4o Image and Flux Kontext. No prompt required, completed in seconds. Studio Ghibli, VTuber, chibi supported.",
     url: "https://2kawaii.com/en/ai-image-generation-guide",
     siteName: "2kawaii AI Image Generation",
     images: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Complete AI Image Generation Guide | Convert Photos to Anime Free with GPT-4o",
-    description: "Beginner-friendly guide to convert photos to anime style for free using GPT-4o Image. No prompt required, completed in 2-5 minutes.",
+    description: "Beginner-friendly guide to convert photos to anime style for free using GPT-4o Image and Flux Kontext. No prompt required, completed in seconds.",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-ai-guide.jpg"],
   },
   robots: {
@@ -228,7 +228,7 @@ export default function AIGuidePage() {
                   />
                 </div>
                 <h3 className="text-lg font-bold text-text mb-4">3. AI Image Generation Complete</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Generate high-quality anime images in 2-5 minutes with the latest AI technology! Download and share on social media</p>
+                <p className="text-text-muted text-sm leading-relaxed">Generate high-quality anime images in seconds with the latest AI technology! Download and share on social media</p>
               </div>
             </div>
           </section>
@@ -238,7 +238,7 @@ export default function AIGuidePage() {
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li>Prepare a high-quality photo (front-facing photos are recommended)</li>
               <li>Select your preferred anime style (Ghibli style, VTuber style, beautiful girl, etc.)</li>
-              <li>Start AI image generation (completed in 2-5 minutes)</li>
+              <li>Start AI image generation (completed in seconds)</li>
               <li>Download the generated anime image</li>
             </ol>
           </section>
