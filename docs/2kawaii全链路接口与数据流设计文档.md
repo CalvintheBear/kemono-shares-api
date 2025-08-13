@@ -30,11 +30,11 @@
 下表为 API 总览，详表见各小节：
 
 - 生成与资源流转类
-  - POST `/api/generate-image`
+  - POST `/api/generate-image`（密钥池回退，支持 `filesUrl` 与回调）
   - GET `/api/image-details`
-  - POST `/api/download-url`
-  - POST `/api/download-and-upload`
-  - GET `/api/get-generated-url`
+  - POST `/api/download-url`（密钥池回退，KIE 临时直链）
+  - POST `/api/download-and-upload`（下载后上传至 R2 `generated/` 前缀并返回 `publicUrl`）
+  - GET `/api/get-generated-url`（S3 v4 列举反查；当前前缀为 `kie-downloads/`，建议统一）
   - POST `/api/upload-image`
   - POST `/api/callback/image-generated`
 
@@ -57,6 +57,7 @@
   - `Access-Control-Allow-Origin`: 请求 Origin 或 `*`
   - `Access-Control-Allow-Methods`: GET, POST, PUT, DELETE, OPTIONS
   - `Access-Control-Allow-Headers`: Content-Type, Authorization
+  - `Access-Control-Max-Age`: 86400
 
 ---
 
@@ -69,7 +70,7 @@
   - `style?: string`
   - `size?: string` 比例，如 `"1:1" | "3:2" | "2:3"`；若传像素值会被转换
   - `mode?: 'image-to-image' | 'template' | 'template-mode' | 'text-to-image'`
-  - `fileUrl?: string` 当 `mode` 为图生图/模板时传
+  - `fileUrl?: string` 当 `mode` 为图生图/模板时传（服务端会转换为 KIE 所需的 `filesUrl: string[]`）
   - `enhancePrompt?: boolean`
 - 响应（JSON）：`{ success: true, taskId: string, status?: string, data: any }`
 - 外部调用：Kie.ai `POST https://api.kie.ai/api/v1/gpt4o-image/generate`（最多 5 个 API Key 轮询回退）
@@ -194,8 +195,9 @@
 
 - 文件：`functions/api/share/latest.ts`
 - 方法与路径：GET `/api/share/latest`
-- 缓存：KV 内部缓存（键 `share:cache:latest:12`，TTL 30 分钟）
+- 缓存：KV 内部缓存（键 `share:cache:latest:12`，TTL 10 分钟）
 - 响应：`{ success: true, data: { items } }`
+- Cache-Control：`public, s-maxage=600, max-age=300, stale-while-revalidate=120`
 
 ---
 
@@ -225,8 +227,8 @@
   - 发起生成 → `POST /api/generate-image` → `taskId`
   - 轮询状态 → `GET /api/image-details?taskId`
     - 拿到临时 `resultUrl` → `POST /api/download-url` → `downloadUrl` → `POST /api/download-and-upload` → R2 永久 URL
-    - 无 URL → `GET /api/get-generated-url?taskId` 反查 afterimage 桶
-  - 自动分享 → `POST /api/share`
+  - 无 URL → `GET /api/get-generated-url?taskId` 反查 afterimage 桶
+  - 分享：页面按钮触发 `POST /api/share`；自动分享逻辑已去除
 - 前端用途：
   - `currentResult.generated_url` → 结果渲染/下载
   - `autoShareUrl` → 复用分享链接
@@ -234,8 +236,8 @@
 
 ### 分享与列表
 
-- 详情（App Router）`src/app/share/[id]/page.tsx` → `GET /api/share/{id}`
-- 详情（Query 回退）`src/app/share/page.tsx`（`?id=`）→ `GET /api/share/{id}`（已迁移至 `[id]` 路由）
+- 详情（App Router）`src/app/share/[id]/page.tsx` → `GET /api/share/{id}`（静态导出时不参与路由）
+- 详情（Query 回退）`src/app/share/page.tsx`（`?id=`）→ `GET /api/share/{id}`（静态导出主要使用该页面作为回退）
 - 首页最新 `src/components/HomeLatestShares.tsx` → `GET /api/share/latest`
 - 画廊无限加载 `src/components/ShareGallery.tsx` → `GET /api/share/list`
 
@@ -475,7 +477,7 @@ const shareRes = await fetch('/api/share', {
   })
 }).then(r => r.json())
 
-console.log(shareRes.shareUrl) // 例如 /share?id=share_...
+console.log(shareRes.shareUrl) // 可能为绝对地址，如 https://2kawaii.com/share?id=share_...
 ```
 
 ### 后端：Cloudflare Pages Function 基本形态

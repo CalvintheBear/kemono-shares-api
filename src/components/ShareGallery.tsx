@@ -129,8 +129,9 @@ export default function ShareGallery() {
 
   // Handle image click
   const handleImageClick = (image: MasonryImage) => {
-    // 为适配 Cloudflare Pages 静态导出回退，统一采用 query 形式
-    window.open(`/share?id=${encodeURIComponent(image.id)}`, '_blank');
+    const id = encodeURIComponent(image.id)
+    const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
+    window.open(target, '_blank')
   };
 
   return (

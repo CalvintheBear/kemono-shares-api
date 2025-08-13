@@ -31,12 +31,23 @@ export default function Header() {
       const base = queryString && queryString.length > 0 ? `${p}?${queryString}` : p
       return `${base}${hashString || ''}`
     }
+    const qs = new URLSearchParams(queryString)
+    const shareId = qs.get('id')
     if (isEnglish) {
       // Remove /en prefix safely
-      const toJa = pathname === '/en' ? '/' : pathname.replace(/^\/en(\/|$)/, '/')
+      let toJa = pathname === '/en' ? '/' : pathname.replace(/^\/en(\/|$)/, '/')
+      // Special case: English share list with query id → map to Japanese detail path
+      if ((pathname === '/en/share' || pathname === '/en/share/') && shareId) {
+        toJa = `/share/${shareId}`
+        return withQueryAndHash(toJa.split('?')[0])
+      }
       return withQueryAndHash(toJa)
     }
     // Add /en prefix
+    if ((pathname === '/share' || pathname === '/share/') && shareId) {
+      const toDetail = `/en/share/${shareId}`
+      return withQueryAndHash(toDetail)
+    }
     const toEn = pathname === '/' ? '/en' : pathname.startsWith('/en') ? pathname : `/en${pathname}`
     return withQueryAndHash(toEn)
   }

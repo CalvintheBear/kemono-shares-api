@@ -1991,12 +1991,12 @@ useEffect(() => {
                           </div>
                         </div>
                         
-                        <div className="bg-surface rounded-2xl p-4 mx-4 border border-border"
+                          <div className="bg-surface rounded-2xl p-4 mx-4 border border-border"
                           role="alert"
                         >
-                          <h4 className="text-sm font-bold text-green-800 mb-1">✅ 画像準備完了！</h4>
-                          <p className="text-xs text-green-700">綺麗な写真がアップロードされました</p>
-                          <p className="text-xs text-green-600 mt-1">魔法の変身を開始できます！</p>
+                          <h4 className="text-sm font-bold text-green-800 mb-1">{isEnglish ? '✅ Image ready!' : '✅ 画像準備完了！'}</h4>
+                          <p className="text-xs text-green-700">{isEnglish ? 'Nice photo uploaded' : '綺麗な写真がアップロードされました'}</p>
+                          <p className="text-xs text-green-600 mt-1">{isEnglish ? 'You can start the magic transformation!' : '魔法の変身を開始できます！'}</p>
                         </div>
                       </div>
                     ) : (
@@ -2006,22 +2006,22 @@ useEffect(() => {
                         onClick={() => fileInputRef.current?.click()}
                       >
                         <div className="text-6xl mb-4 animate-bounce-slow">📸✨</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">📱 可愛い写真をアップロードしよう！</h3>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">{isEnglish ? '📱 Upload a cute photo!' : '📱 可愛い写真をアップロードしよう！'}</h3>
                         <p className="text-gray-600 mb-4 font-cute">
-                          あなたの写真を、可愛いアニメ風に変身させましょう！
+                          {isEnglish ? 'Let\'s transform your photo into anime style!' : 'あなたの写真を、可愛いアニメ風に変身させましょう！'}
                         </p>
                         
                         <div className="bg-surface rounded-2xl p-4 mx-8 mb-4 border border-border"
                           role="note"
                         >
-                          <p className="text-sm text-gray-700 mb-2">📌 コツ：</p>
+                          <p className="text-sm text-gray-700 mb-2">{isEnglish ? '📌 Tips:' : '📌 コツ：'}</p>
                           <ul className="text-xs text-gray-600 space-y-1 text-left"
                             role="list"
                           >
-                            <li role="listitem">• 明るくて顔がはっきりしている写真がおすすめ</li>
-                            <li role="listitem">• 背景がシンプルだと綺麗に変身できるよ</li>
-                            <li role="listitem">• ドラッグ&ドロップでもアップロードOK！</li>
-                            <li role="listitem">• 10MBまでの画像ファイル対応</li>
+                            <li role="listitem">{isEnglish ? '• Bright, clear face photos are recommended' : '• 明るくて顔がはっきりしている写真がおすすめ'}</li>
+                            <li role="listitem">{isEnglish ? '• Simple backgrounds produce better results' : '• 背景がシンプルだと綺麗に変身できるよ'}</li>
+                            <li role="listitem">{isEnglish ? '• Drag & drop is OK too!' : '• ドラッグ&ドロップでもアップロードOK！'}</li>
+                            <li role="listitem">{isEnglish ? '• Up to 10MB supported' : '• 10MBまでの画像ファイル対応'}</li>
                           </ul>
                         </div>
                         
@@ -2029,7 +2029,7 @@ useEffect(() => {
                           className="btn-primary text-white px-8 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-bold"
                           aria-label="画像ファイルを選択"
                         >
-                          📁 画像を選択する
+                          {isEnglish ? '📁 Select image' : '📁 画像を選択する'}
                         </button>
                         
                         <div className="mt-4 flex justify-center space-x-2"
