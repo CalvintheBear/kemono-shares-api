@@ -5,7 +5,9 @@ export type AppState = 'initial' | 'uploading' | 'uploaded' | 'processing' | 'co
 
 export type StyleType = 'kemonomimi' | 'humanization' | 'illustration' | 'moefy' | 'ghibli' | 'daughter'
 
-export type ImageSize = '1:1' | '3:2' | '2:3'
+export type ImageSize = '1:1' | '3:2' | '2:3' | '16:9' | '9:16' | '4:3' | '3:4' | '21:9' | '16:21'
+
+export type ModelType = 'gpt4o-image' | 'flux-kontext-pro' | 'flux-kontext-max'
 
 export interface UploadedImage {
   file: File
@@ -35,6 +37,7 @@ interface AppStore {
   uploadedImage: UploadedImage | null
   selectedStyle: StyleType | null
   selectedSize: ImageSize
+  selectedModel: ModelType
   processedImage: ProcessedImage | null
   generatedResult: GeneratedResult | null
   
@@ -53,6 +56,7 @@ interface AppStore {
   setUploadedImage: (image: UploadedImage | null) => void
   setSelectedStyle: (style: StyleType | null) => void
   setSelectedSize: (size: ImageSize) => void
+  setSelectedModel: (model: ModelType) => void
   setProcessedImage: (image: ProcessedImage | null) => void
   setGeneratedResult: (result: GeneratedResult | null) => void
   setAppState: (state: AppState) => void
@@ -72,6 +76,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   uploadedImage: null,
   selectedStyle: null,
   selectedSize: '1:1',
+  selectedModel: 'gpt4o-image',
   processedImage: null,
   generatedResult: null,
   isLoading: false,
@@ -93,6 +98,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setSelectedStyle: (style) => set({ selectedStyle: style }),
   
   setSelectedSize: (size) => set({ selectedSize: size }),
+
+  setSelectedModel: (model) => set({ selectedModel: model }),
   
   setProcessedImage: (image) => set({ 
     processedImage: image,
@@ -132,6 +139,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     uploadedImage: null,
     selectedStyle: null,
     selectedSize: '1:1',
+    selectedModel: 'gpt4o-image',
     processedImage: null,
     generatedResult: null,
     isLoading: false,
@@ -148,6 +156,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     uploadedImage: null,
     selectedStyle: null,
     selectedSize: '1:1',
+    selectedModel: 'gpt4o-image',
     processedImage: null,
     isLoading: false,
     loadingProgress: 0,

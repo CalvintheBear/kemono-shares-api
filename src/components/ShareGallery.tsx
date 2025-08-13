@@ -38,7 +38,7 @@ export default function ShareGallery() {
   const lastRequestRef = useRef<number>(0);
   const inFlightRef = useRef<boolean>(false);
 
-  const ITEMS_PER_PAGE = 12;
+  const ITEMS_PER_PAGE = 30;
 
   // Transform share items to masonry images
   const transformToMasonryImages = (items: ShareItem[]): MasonryImage[] => {
@@ -156,13 +156,22 @@ export default function ShareGallery() {
           </div>
         </div>
       ) : images.length > 0 ? (
-        <MasonryGallery
-          images={images}
-          onLoadMore={handleLoadMore}
-          hasMore={hasMore}
-          loading={loading || isFetching}
-          onImageClick={handleImageClick}
-        />
+        <>
+          <MasonryGallery
+            images={images}
+            onLoadMore={handleLoadMore}
+            hasMore={hasMore}
+            loading={loading || isFetching}
+            onImageClick={handleImageClick}
+          />
+          {hasMore && !loading && !isFetching && (
+            <div className="flex justify-center py-4">
+              <button className="btn-outline px-6 py-2" onClick={handleLoadMore}>
+                {isEnglish ? 'Load more' : 'さらに読み込む'}
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <EmptyGallery onRefresh={() => fetchShareItems(0, false)} />
       )}

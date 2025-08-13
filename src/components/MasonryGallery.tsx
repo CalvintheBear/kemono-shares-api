@@ -50,7 +50,7 @@ export default function MasonryGallery({
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
     triggerOnce: false,
-    rootMargin: '800px', // 提前加载，避免识别不到
+    rootMargin: '1500px', // 更大触发范围，防止识别不到
   });
   const autoLoadAttemptsRef = useRef(0);
 
@@ -113,7 +113,7 @@ export default function MasonryGallery({
     }
   }, [inView, hasMore, isLoading, loading, onLoadMore]);
 
-  // 当内容高度不足以填满视口时，自动追加加载，最多尝试3次，避免一次性加载过多
+  // 当内容高度不足以填满视口时，自动追加加载，最多尝试6次，避免一次性加载过多
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!containerRef.current) return;
@@ -121,12 +121,43 @@ export default function MasonryGallery({
 
     const height = containerRef.current.getBoundingClientRect().height;
     const viewport = window.innerHeight || 800;
-    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 3) {
+    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 6) {
       autoLoadAttemptsRef.current += 1;
       setIsLoading(true);
       onLoadMore().finally(() => setIsLoading(false));
     }
   }, [columns, hasMore, isLoading, loading, onLoadMore]);
+
+  // 兜底：滚动到底部附近时也触发加载（节流）
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!hasMore) return;
+    let ticking = false;
+
+    const handle = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const viewport = window.innerHeight || 800;
+        const docHeight = document.documentElement.scrollHeight || 0;
+        const distanceToBottom = docHeight - (scrollY + viewport);
+        if (distanceToBottom < 1200 && !isLoading && !loading) {
+          setIsLoading(true);
+          onLoadMore().finally(() => setIsLoading(false));
+        }
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', handle, { passive: true });
+    window.addEventListener('resize', handle);
+    handle(); // 初次检查
+    return () => {
+      window.removeEventListener('scroll', handle);
+      window.removeEventListener('resize', handle);
+    };
+  }, [hasMore, isLoading, loading, onLoadMore]);
 
   // Handle window resize with debouncing
   useEffect(() => {

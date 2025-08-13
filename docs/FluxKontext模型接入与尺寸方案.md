@@ -101,11 +101,25 @@
 - 若 Flux 未提供“download-url”专用接口，直接对回调/详情返回的 URL 发起下载
 - 继续保留 10 分钟有效期的风险提示与重试策略
 
+与“2kawaii 全链路接口与数据流设计文档”对齐要点：
+- 路由注册方式一致：每个 `functions/api/*.ts` 对应一个路由，`onRequestGet/OnRequestPost` 导出（参见文档“一、后端 API 分析”与“六、Next.js 与 Cloudflare Pages Functions 特性说明”）。
+- CORS：复用 `functions/_middleware.ts` 的全局跨域策略（`Access-Control-Allow-*` 与 `Access-Control-Max-Age: 86400`），无需为新路由单独实现。
+- API 总览需补充三条新路由（建议在全链路文档“API 总览”中新增）：
+  - POST `/api/flux-kontext/generate`
+  - GET `/api/flux-kontext/image-details`
+  - POST `/api/callback/flux-kontext`
+- R2 存储：沿用 Afterimage 桶（`env.AFTERIMAGE_BUCKET`），对象键前缀建议统一为 `generated/`，与现有 `/api/download-and-upload` 写入策略一致。
+- 反查 R2：`/api/get-generated-url` 当前默认前缀为 `kie-downloads/`；建议兼容同时搜索 `generated/` 与历史 `kie-downloads/`，并在 Roadmap 中推动统一（文档已有同类建议）。
+- 下载直链兜底：为避免 Flux 场景误用 GPT‑4o 专属的 `/gpt4o-image/download-url`，推荐将 `/api/download-and-upload` 调整为“优先直接下载；失败时（仅 gpt4o 场景）再调用下载直链 API 兜底”。
+
 ## 配置与环境变量
 
 - 复用现有密钥池（`KIE_AI_API_KEY[_2.._5]`）
 - `NEXT_PUBLIC_APP_URL` 用于注入 `callBackUrl`
 - 无需修改 Pages 控制台，按项目约定仅通过 `wrangler.toml` 与环境变量配置（与当前策略一致）
+- 若需显式区分基址，可新增（可选）：
+  - `KIE_AI_FLUX_BASE = https://api.kie.ai/api/v1/flux/kontext`
+  - 也可在代码内以常量形式维护，避免环境变量膨胀
 
 ## UI/交互细节
 
@@ -114,6 +128,14 @@
   - 若当前模式为“以图编辑”，保持已上传图片与提示词；若模式为“模板”，只切换参数不重置模板选择
 - 尺寸不可用时（例如在 GPT 下选择了 `16:9` 再切回）：
   - 直接禁用按钮并回退到默认尺寸，或弹出一次性提示（避免 silent fallback 造成困惑）
+
+前端调用与数据流对齐（参考“二、前端交互过程与调用位置”与“三、全链路数据流”）：
+- `Workspace.tsx`：
+  - 上传：仍走 `POST /api/upload-image` → `fileUrl`
+  - 生成：根据模型分流，GPT → `POST /api/generate-image`；Flux → `POST /api/flux-kontext/generate`
+  - 轮询：GPT → `GET /api/image-details?taskId`；Flux → `GET /api/flux-kontext/image-details?taskId`
+  - 获取结果：若详情已包含可下载 URL，直接 `POST /api/download-and-upload`（不再强依赖 `download-url` 接口）；若无 URL，则调用 `GET /api/get-generated-url?taskId` 反查 R2
+  - 分享：`POST /api/share`（保持不变）
 
 ## 验收标准（关键用例）
 
@@ -134,6 +156,9 @@
 - 所有改动在 Flux 选中时生效；默认保持 GPT 路由与行为不变
 - 如果 Flux API 不可用或限流，用户可切回 GPT，服务不中断
 - 回滚方案：隐藏“模型选择”或默认强制 GPT（配置开关）
+- 监控与日志：
+  - 在新路由中统一打印关键点日志（taskId、status、resultUrls 数量、R2 key、错误信息），便于 Cloudflare Pages 日志检索
+  - 建议为 Flux 相关日志统一添加前缀 `[FLUX]`，与现有 `[KEY OK]/[KEY FAIL]` 风格一致
 
 ## 文件改动清单（计划）
 
@@ -145,6 +170,7 @@
   - `src/store/useAppStore.ts`（新增 `selectedModel`，扩展尺寸类型或改为字符串模板）
   - `src/components/Workspace.tsx`（模型下拉、尺寸候选源切换、参数映射与路由分流、轮询入口切换）
   - 如需：`functions/api/download-and-upload.ts`（允许 Flux 结果 URL 直接下载，不再仅限 `gpt4o-image/download-url`）
+  - 如需：`functions/_middleware.ts` 无需变更；但可在后续迭代引入允许域白名单（参考全链路文档“注意事项与维护建议”）
 
 ## 参考实现片段（参数映射要点）
 
@@ -181,5 +207,7 @@
 - 生成/编辑参数定义：[生成或编辑图像](https://docs.kie.ai/cn/flux-kontext-api/generate-or-edit-image)
 - 回调字段与用法：[图像生成或编辑回调](https://docs.kie.ai/cn/flux-kontext-api/generate-or-edit-image-callbacks)
 - 详情查询接口与状态语义：[获取图像详情](https://docs.kie.ai/cn/flux-kontext-api/get-image-details)
+
+并与本仓库的全链路规范严格对齐：`docs/2kawaii全链路接口与数据流设计文档.md`
 
 
