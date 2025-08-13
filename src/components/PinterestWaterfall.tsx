@@ -29,17 +29,12 @@ export default function PinterestWaterfall({
   return (
     <>
       <div className="pinterest-gallery">
-        {items.map((item, index) => (
-          <div
-            key={item.id}
-            className="pinterest-item group cursor-pointer mb-4"
-            onClick={() => {
-              const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/')
-              const id = encodeURIComponent(item.id)
-              const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
-              window.location.href = target
-            }}
-          >
+        {items.map((item, index) => {
+          const isEnglish = typeof window !== 'undefined' && (location.pathname === '/en' || location.pathname.startsWith('/en/'))
+          const id = encodeURIComponent(item.id)
+          const href = isEnglish ? `/en/share/${id}` : `/share/${id}`
+          return (
+            <a key={item.id} href={href} className="pinterest-item group cursor-pointer mb-4 block">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <div className="relative">
                 <Image
@@ -68,8 +63,9 @@ export default function PinterestWaterfall({
                 <p className="text-xs text-gray-400 mt-1">{item.timestamp}</p>
               </div>
             </div>
-          </div>
-        ))}
+            </a>
+          )
+        })}
       </div>
     </>
   )
