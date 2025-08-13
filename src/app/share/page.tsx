@@ -26,10 +26,17 @@ function SharePageContent() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 支持通过 query 参数或路径段渲染详情（Cloudflare 内部重写不会改变地址栏 query，这里兜底从 pathname 提取）
+  // 支持通过 query 参数或路径段渲染详情
+  // 注意：在 Cloudflare Pages 的 200 重写下，Next 的 usePathname 可能返回 '/share'，
+  // 因此先用 window.location.pathname 兜底提取 id
   // 修复: 从详情返回到 /share 时需要清空 shareId，否则会停留在详情页
   useEffect(() => {
     let id = searchParams?.get('id') || null
+    if (!id && typeof window !== 'undefined') {
+      const rawPath = window.location.pathname || ''
+      const m = rawPath.match(/^\/share\/([^\/?#]+)/)
+      if (m && m[1]) id = decodeURIComponent(m[1])
+    }
     if (!id && typeof pathname === 'string') {
       const m = pathname.match(/^\/share\/([^\/?#]+)/)
       if (m && m[1]) id = decodeURIComponent(m[1])

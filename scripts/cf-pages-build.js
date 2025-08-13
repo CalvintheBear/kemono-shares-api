@@ -163,6 +163,20 @@ const headers = `# Cache static assets
 
 fs.writeFileSync('out/_headers', headers);
 
+// Copy favicon.ico from src/app if available
+try {
+  const srcFavicon = path.join('src', 'app', 'favicon.ico');
+  const destFavicon = path.join('out', 'favicon.ico');
+  if (fs.existsSync(srcFavicon)) {
+    fs.copyFileSync(srcFavicon, destFavicon);
+    console.log('✅ favicon.ico copied');
+  } else {
+    console.warn('⚠️  src/app/favicon.ico not found; favicon may be missing in out/');
+  }
+} catch (e) {
+  console.warn('⚠️  Could not copy favicon.ico:', e.message);
+}
+
 console.log('✅ Cloudflare Pages build completed!');
 console.log('📂 Files ready in out/ directory');
 console.log('📄 Created _redirects and _headers for proper routing');

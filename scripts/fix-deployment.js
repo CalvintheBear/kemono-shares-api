@@ -124,10 +124,27 @@ function createHeaders() {
   console.log('✅ _headers file created');
 }
 
+// Copy favicon.ico from src/app
+function copyFavicon() {
+  try {
+    const srcFavicon = path.join('src', 'app', 'favicon.ico');
+    const destFavicon = path.join(pagesOutput, 'favicon.ico');
+    if (fs.existsSync(srcFavicon)) {
+      fs.copyFileSync(srcFavicon, destFavicon);
+      console.log('✅ favicon.ico copied');
+    } else {
+      console.warn('⚠️  src/app/favicon.ico not found; favicon may be missing');
+    }
+  } catch (e) {
+    console.warn('⚠️  Could not copy favicon.ico:', e.message);
+  }
+}
+
 // Run the fixes
 copyStaticFiles();
 createRedirects();
 createHeaders();
+copyFavicon();
 
 console.log('🎉 Deployment fix complete!');
 console.log('📂 Files ready in out/ directory');

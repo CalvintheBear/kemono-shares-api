@@ -26,6 +26,11 @@ function Content() {
 
   useEffect(() => {
     let id = searchParams?.get('id') || null
+    if (!id && typeof window !== 'undefined') {
+      const rawPath = window.location.pathname || ''
+      const m = rawPath.match(/^\/en\/share\/([^\/?#]+)/)
+      if (m && m[1]) id = decodeURIComponent(m[1])
+    }
     if (!id && typeof pathname === 'string') {
       const m = pathname.match(/^\/en\/share\/([^\/?#]+)/)
       if (m && m[1]) id = decodeURIComponent(m[1])

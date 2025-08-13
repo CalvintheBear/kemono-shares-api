@@ -87,11 +87,19 @@ const headers = `# 静态资源缓存头
 fs.writeFileSync(path.join(outDir, '_redirects'), redirects);
 fs.writeFileSync(path.join(outDir, '_headers'), headers);
 
-// 创建 favicon
-const faviconPath = path.join(outDir, 'favicon.ico');
-if (!fs.existsSync(faviconPath)) {
-  // 创建简单的 favicon 文件
-  fs.writeFileSync(faviconPath, '');
+// 复制 favicon
+try {
+  const srcFavicon = path.join('src', 'app', 'favicon.ico');
+  const destFavicon = path.join(outDir, 'favicon.ico');
+  if (fs.existsSync(srcFavicon)) {
+    fs.copyFileSync(srcFavicon, destFavicon);
+    console.log('✅ favicon.ico copied');
+  } else {
+    console.warn('⚠️  src/app/favicon.ico not found; creating empty placeholder');
+    if (!fs.existsSync(destFavicon)) fs.writeFileSync(destFavicon, '');
+  }
+} catch (e) {
+  console.warn('⚠️  Could not copy favicon.ico:', e.message);
 }
 
 console.log('🎉 Cloudflare Pages build completed!');

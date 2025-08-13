@@ -40,7 +40,7 @@ export default function Footer() {
             <Link href={withLang('/')} className="flex items-center space-x-2 text-xl font-bold mb-4 text-text font-sans hover:text-brand transition-colors">
               <Image 
                 src="/favicon.ico" 
-                alt="Kemono Mimi" 
+                alt="2kawaii icon" 
                 width={28} 
                 height={28} 
                 className="w-7 h-7"
