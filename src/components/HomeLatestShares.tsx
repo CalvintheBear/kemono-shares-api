@@ -94,7 +94,10 @@ export default function HomeLatestShares() {
       <div className="max-w-7xl mx-auto">
         <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-text font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
         <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>10分ごとに更新</p>
-        {content}
+        {/* PC 端居中一个较窄容器以居中 12 张图 */}
+        <div className="mx-auto max-w-5xl">
+          {content}
+        </div>
         <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <a
             href="/share"

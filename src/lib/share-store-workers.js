@@ -136,17 +136,17 @@ export class ShareStoreWorkers {
           originalUrl: share.originalUrl
         }));
 
-      // 过滤：只显示文生图生成的图片（没有originalUrl的）
-      const textToImageItems = items.filter(item => !item.originalUrl || item.originalUrl === '');
-      
-      console.log(`📊 分享列表: 总共${items.length}个分享，文生图${textToImageItems.length}个`);
+      // 仅展示文生图（originalUrl 为空）并在过滤后再分页
+      const filtered = items.filter(item => !item.originalUrl || item.originalUrl === '');
+      const paginated = filtered.slice(offset, offset + limit);
+      console.log(`📊 分享列表（文生图）: 返回${paginated.length}个，文生图总计${filtered.length}个`);
 
       return {
-        items: textToImageItems,
-        total: textToImageItems.length,
+        items: paginated,
+        total: filtered.length,
         limit,
         offset,
-        hasMore: offset + limit < total
+        hasMore: offset + limit < filtered.length
       };
     } catch (error) {
       console.error('❌ 获取分享列表失败:', error);
