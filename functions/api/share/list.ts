@@ -55,7 +55,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       status: 200,
       headers: { 
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache' // 确保获取最新数据
+        'Cache-Control': 'public, s-maxage=300, max-age=60, stale-while-revalidate=120'
       }
     });
 

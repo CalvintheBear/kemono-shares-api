@@ -75,9 +75,8 @@ export default function ShareGallery() {
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
       const apiUrl = `${origin}/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc`;
       const response = await fetch(apiUrl, {
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
+        // 允许浏览器/边缘缓存按照响应头策略工作
+        cache: 'default'
       });
 
       if (!response.ok) {

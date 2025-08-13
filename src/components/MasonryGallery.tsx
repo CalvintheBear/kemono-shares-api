@@ -50,7 +50,7 @@ export default function MasonryGallery({
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
     triggerOnce: false,
-    rootMargin: '1500px', // 更大触发范围，防止识别不到
+    rootMargin: '800px',
   });
   const autoLoadAttemptsRef = useRef(0);
 
@@ -113,7 +113,7 @@ export default function MasonryGallery({
     }
   }, [inView, hasMore, isLoading, loading, onLoadMore]);
 
-  // 当内容高度不足以填满视口时，自动追加加载，最多尝试6次，避免一次性加载过多
+  // 当内容高度不足以填满视口时，自动追加加载，最多尝试2次，避免一次性加载过多
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!containerRef.current) return;
@@ -121,7 +121,7 @@ export default function MasonryGallery({
 
     const height = containerRef.current.getBoundingClientRect().height;
     const viewport = window.innerHeight || 800;
-    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 6) {
+    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 2) {
       autoLoadAttemptsRef.current += 1;
       setIsLoading(true);
       onLoadMore().finally(() => setIsLoading(false));
@@ -142,7 +142,7 @@ export default function MasonryGallery({
         const viewport = window.innerHeight || 800;
         const docHeight = document.documentElement.scrollHeight || 0;
         const distanceToBottom = docHeight - (scrollY + viewport);
-        if (distanceToBottom < 1200 && !isLoading && !loading) {
+        if (distanceToBottom < 800 && !isLoading && !loading) {
           setIsLoading(true);
           onLoadMore().finally(() => setIsLoading(false));
         }
