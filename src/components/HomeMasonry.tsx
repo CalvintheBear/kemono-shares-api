@@ -67,27 +67,33 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 			<div ref={containerRef} style={containerStyle} className="flex gap-4">
 				{Array.from({ length: columnCount }).map((_, col) => (
 					<div key={col} className="flex-1 flex flex-col gap-4">
-						{(columns[col] || []).map(image => (
-							<div
-								key={image.id}
-								style={{ width: `${columnWidth}px`, height: `${image.height}px`, contentVisibility: 'auto' as any, containIntrinsicSize: `${image.height}px ${columnWidth}px` as any }}
-								className="relative overflow-hidden rounded-xl bg-white shadow cursor-pointer"
-								onClick={() => onImageClick?.(image)}
-							>
-            <Image
-              src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=60&fm=webp`}
-									alt={image.alt || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'AI generated image' : 'AI生成画像')}
-									fill
-									sizes={`${columnWidth}px`}
-									className="object-cover"
-              unoptimized
-              loading={image ? (typeof window !== 'undefined' && document?.readyState !== 'complete' ? (Math.random() < 0.5 ? 'eager' : 'lazy') : 'lazy') : 'lazy'}
-              decoding="async"
-									placeholder="blur"
-									blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
-								/>
-							</div>
-						))}
+						{(columns[col] || []).map(image => {
+							const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+							const id = encodeURIComponent(image.id)
+							const href = isEnglish ? `/en/share/${id}` : `/share/${id}`
+							return (
+								<a
+									key={image.id}
+									href={href}
+									style={{ width: `${columnWidth}px`, height: `${image.height}px`, contentVisibility: 'auto' as any, containIntrinsicSize: `${image.height}px ${columnWidth}px` as any }}
+									className="relative overflow-hidden rounded-xl bg-white shadow block"
+									onClick={() => onImageClick?.(image)}
+								>
+									<Image
+										src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=60&fm=webp`}
+										alt={image.alt || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'AI generated image' : 'AI生成画像')}
+										fill
+										sizes={`${columnWidth}px`}
+										className="object-cover"
+										unoptimized
+										loading={image ? (typeof window !== 'undefined' && document?.readyState !== 'complete' ? (Math.random() < 0.5 ? 'eager' : 'lazy') : 'lazy') : 'lazy'}
+										decoding="async"
+										placeholder="blur"
+										blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
+									/>
+								</a>
+							)
+						})}
 					</div>
 				))}
 			</div>

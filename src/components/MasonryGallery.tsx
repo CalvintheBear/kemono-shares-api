@@ -201,14 +201,20 @@ export default function MasonryGallery({
       <div className="flex gap-4">
         {columns.map((column, columnIndex) => (
           <div key={columnIndex} className="flex-1 flex flex-col gap-4">
-            {column.items.map((image) => (
-              <MasonryImageCard
-                key={image.id}
-                image={image}
-                columnWidth={columnWidth}
-                onClick={onImageClick}
-              />
-            ))}
+            {column.items.map((image) => {
+              const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
+              const id = encodeURIComponent(image.id)
+              const href = isEnglish ? `/en/share/${id}` : `/share/${id}`
+              return (
+                <a key={image.id} href={href} className="block">
+                  <MasonryImageCard
+                    image={image}
+                    columnWidth={columnWidth}
+                    onClick={onImageClick}
+                  />
+                </a>
+              )
+            })}
           </div>
         ))}
       </div>
