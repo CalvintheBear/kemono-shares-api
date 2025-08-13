@@ -40,6 +40,7 @@ export const metadata = {
     canonical: "https://2kawaii.com",
     languages: {
       ja: "https://2kawaii.com",
+      en: "https://2kawaii.com/en",
       "x-default": "https://2kawaii.com",
     },
   },

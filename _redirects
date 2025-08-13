@@ -5,5 +5,8 @@
 # 说明：将任意 `/share/*` 重写到 `/share/index.html?id=:splat`，由前端解析并渲染详情
 /share/* /share/index.html?id=:splat 200
 
+# 英文分享详情页动态兜底
+/en/share/* /en/share/index.html?id=:splat 200
+
 # 其他页面兜底（不影响 /api/*）
 /*   /index.html   200

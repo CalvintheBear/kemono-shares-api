@@ -1,0 +1,213 @@
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import Image from 'next/image'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import MobileBottomNav from '@/components/MobileBottomNav'
+
+interface ShareData {
+  id: string
+  generatedUrl: string
+  originalUrl: string | null
+  prompt: string
+  style: string
+  timestamp: number
+  createdAt: string
+  seoTags?: string[]
+}
+
+async function getShareData(id: string): Promise<ShareData | null> {
+  try {
+    const apiUrl = `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/api/share/${id}`
+    const res = await fetch(apiUrl, { cache: 'no-store' })
+    if (res.ok) {
+      const json = await res.json()
+      if (json.success && json.data) return json.data as ShareData
+    }
+  } catch (error) {
+    console.error('Failed to fetch share data:', error)
+  }
+  return null
+}
+
+
+export default async function ShareDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params
+  const data = await getShareData(id)
+
+  if (!data) {
+    notFound()
+  }
+
+  const formattedDate = new Date(data.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
+      <head>
+        <link rel="canonical" href={`https://2kawaii.com/en/share/${id}`} />
+        <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${id}`} />
+        <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${id}`} />
+        <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${id}`} />
+      </head>
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'CreativeWork',
+            name: `AI Generated ${data.style} Style Image`,
+            description: data.prompt,
+            image: data.generatedUrl,
+            dateCreated: data.createdAt,
+            creator: {
+              '@type': 'Organization',
+              name: '2kawaii AI Image Generation',
+              url: 'https://2kawaii.com'
+            },
+            url: `https://2kawaii.com/en/share/${id}`,
+            inLanguage: 'en'
+          })
+        }}
+      />
+
+      <Header />
+
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+          <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
+            {/* Image Section */}
+            <div className="space-y-6">
+              <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
+                <Image
+                  src={data.generatedUrl}
+                  alt={`AI Generated ${data.style} Style Image`}
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-cover"
+                  priority
+                />
+              </div>
+              
+              {data.originalUrl && (
+                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                  <Image
+                    src={data.originalUrl}
+                    alt="Original Image"
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Details Section */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold text-text mb-2 font-cute">
+                  {data.style} Style AI Generation
+                </h1>
+                <p className="text-text-muted font-cute">Created on {formattedDate}</p>
+              </div>
+
+              {/* AI Prompt Section */}
+              <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-text mb-3 font-cute">🤖 AI Prompt</h2>
+                <div className="bg-white/50 rounded-xl p-4">
+                  <p className="text-sm text-gray-700 leading-relaxed font-cute whitespace-pre-wrap">
+                    {data.prompt}
+                  </p>
+                </div>
+              </div>
+
+              {/* Style Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/50 rounded-xl p-4">
+                  <h3 className="font-semibold text-text mb-1 font-cute">Style</h3>
+                  <p className="text-sm text-text-muted font-cute">{data.style}</p>
+                </div>
+                <div className="bg-white/50 rounded-xl p-4">
+                  <h3 className="font-semibold text-text mb-1 font-cute">Created</h3>
+                  <p className="text-sm text-text-muted font-cute">{formattedDate}</p>
+                </div>
+              </div>
+
+              {/* Tags */}
+              {data.seoTags && data.seoTags.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-text mb-2 font-cute">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {data.seoTags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Link
+                  href="/en/workspace"
+                  className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                >
+                  Try This Style Yourself
+                </Link>
+                
+                <Link
+                  href="/en/share"
+                  className="block w-full bg-white/50 text-text text-center py-3 rounded-full font-bold hover:bg-white/70 transition-all border border-white/50"
+                >
+                  View More Examples
+                </Link>
+              </div>
+
+              {/* Language Alternatives */}
+              <div className="border-t border-border pt-4">
+                <p className="text-sm text-text-muted mb-2 font-cute">Language:</p>
+                <div className="flex gap-3">
+                  <Link
+                    href={`/share/${id}`}
+                    className="text-sm text-pink-600 hover:text-pink-800 font-cute"
+                  >
+                    Japanese
+                  </Link>
+                  <span className="text-sm text-text-muted">•</span>
+                  <span className="text-sm text-text font-cute">English</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Content */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-text mb-6 text-center font-cute">
+            More AI Creations
+          </h2>
+          <div className="text-center">
+            <Link
+              href="/en/share"
+              className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 font-semibold text-text hover:bg-white/90 transition-all"
+            >
+              <span>🎨</span>
+              <span>Explore Gallery</span>
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+      <MobileBottomNav />
+    </div>
+  )
+}

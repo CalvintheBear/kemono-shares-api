@@ -164,6 +164,7 @@ function SharePageContent() {
             <>
               <link rel="canonical" href={`https://2kawaii.com/share/${shareId}`} />
               <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
+              <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${shareId}`} />
               <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
             </>
           )}

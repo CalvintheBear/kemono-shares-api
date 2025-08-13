@@ -21,6 +21,7 @@ interface ShareDetailProps {
 
 export default function ShareDetail({ shareData }: ShareDetailProps) {
   const [isDownloading, setIsDownloading] = useState(false)
+  const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
 
   const handleDownload = async () => {
     if (!shareData) return
@@ -61,11 +62,11 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
           <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <SparklesIcon className="w-6 h-6" />
-              <h1 className="text-3xl font-bold">変換完了！</h1>
+              <h1 className="text-3xl font-bold">{isEnglish ? 'Transformation complete!' : '変換完了！'}</h1>
               <SparklesIcon className="w-6 h-6" />
             </div>
             <p className="text-lg opacity-90">
-              {shareData.style}スタイルで変身完了！
+              {isEnglish ? `Finished in ${shareData.style} style!` : `${shareData.style}スタイルで変身完了！`}
             </p>
           </div>
 
@@ -73,11 +74,11 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
           <div className="p-8">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-[var(--text)] mb-4 text-center">
-                変身前後の比較
+                {isEnglish ? 'Before vs After' : '変身前後の比較'}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="text-center">
-                  <p className="text-sm text-[var(--text-muted)] mb-2">変身前</p>
+                  <p className="text-sm text-[var(--text-muted)] mb-2">{isEnglish ? 'Before' : '変身前'}</p>
                   <Image
                     src={shareData.original}
                     alt="Original"
@@ -87,7 +88,7 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-[var(--text-muted)] mb-2">変身后</p>
+                  <p className="text-sm text-[var(--text-muted)] mb-2">{isEnglish ? 'After' : '変身后'}</p>
                   <Image
                     src={shareData.generated}
                     alt="Generated"
@@ -101,13 +102,13 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
 
             {/* Style Information */}
             <div className="bg-[var(--surface)] rounded-lg p-6 mb-8">
-              <h3 className="text-lg font-bold text-[var(--text)] mb-3">変換スタイル</h3>
+              <h3 className="text-lg font-bold text-[var(--text)] mb-3">{isEnglish ? 'Style' : '変換スタイル'}</h3>
               <div className="flex items-center space-x-2 mb-4">
                 <span className="bg-[var(--surface)] text-[var(--text)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--border)]">
                   {shareData.style}
                 </span>
                 <span className="text-[var(--text-muted)] text-sm">
-                  {new Date(shareData.timestamp).toLocaleDateString('ja-JP')}
+                  {new Date(shareData.timestamp).toLocaleDateString(isEnglish ? 'en-US' : 'ja-JP')}
                 </span>
               </div>
               <p className="text-[var(--text)] text-sm leading-relaxed">
@@ -122,13 +123,13 @@ export default function ShareDetail({ shareData }: ShareDetailProps) {
                 disabled={isDownloading}
                 className="btn-primary py-3 px-8 font-bold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isDownloading ? 'ダウンロード中...' : '📥 ダウンロード'}
+                {isDownloading ? (isEnglish ? 'Downloading...' : 'ダウンロード中...') : (isEnglish ? '📥 Download' : '📥 ダウンロード')}
               </button>
               <button
                 onClick={handleTryNow}
                 className="btn-primary py-3 px-8 font-bold"
               >
-                ✨ 自分も試してみる
+                {isEnglish ? '✨ Try it now' : '✨ 自分も試してみる'}
               </button>
             </div>
           </div>

@@ -231,11 +231,12 @@ const templates: Template[] = [
 ]
 
 // 添加尺寸按钮组件
-const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
+const SizeButton = ({ size, isSelected, onClick, isMobile = false, isEnglish = false }: {
   size: ImageSize
   isSelected: boolean
   onClick: () => void
   isMobile?: boolean
+  isEnglish?: boolean
 }) => {
   const getSizeIcon = (size: ImageSize, isMobile: boolean = false) => {
     if (isMobile) {
@@ -309,11 +310,11 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
   const getSizeLabel = (size: ImageSize) => {
     switch (size) {
       case '1:1':
-        return '正方形'
+        return isEnglish ? 'Square' : '正方形'
       case '3:2':
-        return '横長'
+        return isEnglish ? 'Landscape' : '横長'
       case '2:3':
-        return '縦長'
+        return isEnglish ? 'Portrait' : '縦長'
       default:
         return size
     }
@@ -354,6 +355,7 @@ const SizeButton = ({ size, isSelected, onClick, isMobile = false }: {
 }
 
 export default function WorkspaceRefactored() {
+  const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
@@ -524,7 +526,7 @@ useEffect(() => {
       }
     }
 
-    throw new Error('すべてのアップロード方法が失敗しました')
+    throw new Error(isEnglish ? 'All upload methods failed' : 'すべてのアップロード方法が失敗しました')
   }, [])
 
   // 图片上传
@@ -685,15 +687,15 @@ useEffect(() => {
   // 图片生成
   const generateImage = async () => {
     if (mode === 'template-mode' && !selectedTemplate) {
-      alert('テンプレートを選択してください')
+      alert(isEnglish ? 'Please select a template' : 'テンプレートを選択してください')
       return
     }
     if (mode !== 'text-to-image' && !fileUrl) {
-      alert('画像をアップロードしてください')
+      alert(isEnglish ? 'Please upload an image' : '画像をアップロードしてください')
       return
     }
     if ((mode === 'image-to-image' || mode === 'text-to-image') && !prompt.trim()) {
-      alert('プロンプトを入力してください')
+      alert(isEnglish ? 'Please enter a prompt' : 'プロンプトを入力してください')
       return
     }
 
@@ -1182,12 +1184,12 @@ useEffect(() => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('画像ファイルを選択してください')
+    if (!file.type.startsWith('image/')) {
+      alert(isEnglish ? 'Please select an image file' : '画像ファイルを選択してください')
         return
       }
       if (file.size > 10 * 1024 * 1024) {
-        alert('画像サイズは10MBを超えることはできません')
+      alert(isEnglish ? 'Image size cannot exceed 10MB' : '画像サイズは10MBを超えることはできません')
         return
       }
       handleImageSelect(file)
@@ -1206,6 +1208,7 @@ useEffect(() => {
 
   // 移动端布局组件
   const MobileLayout = () => {
+    const isUploadDisabled = mode === 'text-to-image'
     return (
       <div className="min-h-screen bg-[var(--bg)] flex flex-col">
         {/* 中间结果展示区 - 限高自适应，避免小屏溢出 */}
@@ -1215,7 +1218,7 @@ useEffect(() => {
             {/* 顶部标题 */}
             <div className="text-center mb-4">
               <div className="inline-flex items-center gap-2">
-                <span className="text-sm font-bold text-text">AI画像変換</span>
+                <span className="text-sm font-bold text-text">{isEnglish ? 'AI Image Conversion' : 'AI画像変換'}</span>
               </div>
             </div>
 
@@ -1230,14 +1233,14 @@ useEffect(() => {
                 }}
                 className="inline-flex items-center gap-2 btn-primary text-sm"
               >
-                <span>使い方ガイドを見る</span>
+                <span>{isEnglish ? 'View how-to guide' : '使い方ガイドを見る'}</span>
                 <span>↓</span>
               </button>
             </div>
 
             {/* モバイル常時表示の注意事項 */}
             <div className="mx-auto max-w-md text-center text-[11px] text-text-muted -mt-1 mb-2 px-2">
-              現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
+              {isEnglish ? 'We do not provide paid features at the moment. Text-to-image results may be included in the Gallery; image-to-image results will not be included.' : '現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。'}
             </div>
 
             {/* モバイル用エラーパネル */}
@@ -1245,8 +1248,8 @@ useEffect(() => {
               <div className="mx-auto max-w-md bg-surface border border-border rounded-lg p-3 mb-3 text-center">
                 <p className="text-red-600 text-sm mb-3">{generationError}</p>
                 <div className="flex justify-center gap-2">
-                  <button onClick={handleRetry} className="btn-primary px-4 py-2 rounded-full text-white text-sm">再試行</button>
-                  <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full text-sm">閉じる</button>
+                  <button onClick={handleRetry} className="btn-primary px-4 py-2 rounded-full text-white text-sm">{isEnglish ? 'Retry' : '再試行'}</button>
+                  <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full text-sm">{isEnglish ? 'Close' : '閉じる'}</button>
                 </div>
               </div>
             )}
@@ -1258,17 +1261,17 @@ useEffect(() => {
                     <div className="relative card w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <div className="text-center p-4">
                         <h3 className="text-xl font-bold text-[var(--text)] mb-3">
-                        テキストからイラストモード、始まるよ！
+                          {isEnglish ? 'Text-to-Image mode is ready!' : 'テキストからイラストモード、始まるよ！'}
                         </h3>
                         <p className="text-[var(--text-muted)] mb-6">
-                          テキストだけで、画像を作れるよ！
+                          {isEnglish ? 'Create images with text only!' : 'テキストだけで、画像を作れるよ！'}
                         </p>
                         <div className="bg-[var(--surface)] rounded-lg p-4 mb-6">
-                          <p className="text-sm text-[var(--text)] mb-2">コツ：</p>
+                          <p className="text-sm text-[var(--text)] mb-2">{isEnglish ? 'Tips:' : 'コツ：'}</p>
                           <ul className="text-sm text-[var(--text-muted)] space-y-1 text-left">
-                            <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
-                            <li>• 背景や服装の色も指定できる</li>
-                            <li>• 日本語でも英語でもOK！</li>
+                            <li>{isEnglish ? '• Describe character features for better results' : '• 具体的なキャラクター特徴を書くと綺麗に生成されるよ'}</li>
+                            <li>{isEnglish ? '• You can specify background and outfit colors' : '• 背景や服装の色も指定できる'}</li>
+                            <li>{isEnglish ? '• Both Japanese and English prompts are OK' : '• 日本語でも英語でもOK！'}</li>
                           </ul>
                         </div>
                       </div>
@@ -1286,8 +1289,8 @@ useEffect(() => {
                           className="max-w-full h-auto rounded-lg"
                         />
                         <div className="mt-4 text-center">
-                          <h3 className="text-lg font-bold text-text mb-1">画像準備完了！</h3>
-                          <p className="text-sm text-text-muted">写真がアップロードされました</p>
+                          <h3 className="text-lg font-bold text-text mb-1">{isEnglish ? 'Image ready!' : '画像準備完了！'}</h3>
+                          <p className="text-sm text-text-muted">{isEnglish ? 'Your photo has been uploaded' : '写真がアップロードされました'}</p>
                         </div>
                       </div>
                     </div>
@@ -1296,19 +1299,19 @@ useEffect(() => {
                   <div className="w-full max-w-full px-0 sm:px-2 md:max-w-md mx-auto cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                     <div className="relative card w-full max-w-full mx-auto max-h-[65vh] sm:max-h-[70vh] overflow-auto">
                       <div className="text-center p-4">
-                        <h3 className="text-xl font-bold text-text mb-3">
-                          写真をアップロード
-                        </h3>
-                        <p className="text-text-muted mb-6">
-                          写真をアニメ風に変身させましょう！
-                        </p>
+                          <h3 className="text-xl font-bold text-text mb-3">
+                            {isEnglish ? 'Upload your photo' : '写真をアップロード'}
+                          </h3>
+                          <p className="text-text-muted mb-6">
+                            {isEnglish ? 'Let’s transform your photo into anime style!' : '写真をアニメ風に変身させましょう！'}
+                          </p>
                         <div className="bg-surface rounded-lg p-4 mb-6">
-                          <p className="text-sm text-text mb-2">コツ：</p>
-                          <ul className="text-sm text-text-muted space-y-1 text-left">
-                            <li>• 明るくて顔がはっきりしている写真がおすすめ</li>
-                            <li>• 背景がシンプルだと綺麗に変身できるよ</li>
-                            <li>• 10MBまでのアップロードOK！</li>
-                          </ul>
+                            <p className="text-sm text-text mb-2">{isEnglish ? 'Tips:' : 'コツ：'}</p>
+                            <ul className="text-sm text-text-muted space-y-1 text-left">
+                              <li>{isEnglish ? '• Bright, clear face photos work best' : '• 明るくて顔がはっきりしている写真がおすすめ'}</li>
+                              <li>{isEnglish ? '• Simple backgrounds produce better results' : '• 背景がシンプルだと綺麗に変身できるよ'}</li>
+                              <li>{isEnglish ? '• Up to 10MB' : '• 10MBまでの上传OK！'}</li>
+                            </ul>
                         </div>
                       </div>
                     </div>
@@ -1335,7 +1338,7 @@ useEffect(() => {
                             </div>
                             
                             <div className="mt-4 bg-surface rounded-lg p-4">
-                              <h4 className="text-sm font-bold text-text mb-2">プロンプト：</h4>
+                              <h4 className="text-sm font-bold text-text mb-2">{isEnglish ? 'Prompt:' : 'プロンプト：'}</h4>
                               <p className="text-xs text-text-muted leading-relaxed">{currentResult.prompt.substring(0, 100)}...</p>
                             </div>
                           </div>
@@ -1351,7 +1354,7 @@ useEffect(() => {
                               />
                             </div>
                             <div className="mt-4 bg-surface rounded-lg p-4">
-                              <h4 className="text-sm font-bold text-text mb-2">プロンプト：</h4>
+                              <h4 className="text-sm font-bold text-text mb-2">{isEnglish ? 'Prompt:' : 'プロンプト：'}</h4>
                               <p className="text-xs text-text-muted leading-relaxed">{currentResult.prompt.substring(0, 100)}...</p>
                             </div>
                           </div>
@@ -1366,9 +1369,9 @@ useEffect(() => {
                               className="w-full sm:w-auto btn-primary py-3 px-6 flex items-center justify-center gap-2"
                               target="_blank"
                               rel="noopener noreferrer"
-                              aria-label="ダウンロード"
+                              aria-label={isEnglish ? 'Download' : 'ダウンロード'}
                             >
-                              ダウンロード
+                              {isEnglish ? 'Download' : 'ダウンロード'}
                             </a>
                             <ShareButton
                               generatedImageUrl={currentResult.generated_url}
@@ -1412,10 +1415,10 @@ useEffect(() => {
                           }
                         `}</style>
                       </span>
-                      <h3 className="text-lg font-bold text-text mb-2">画像生成中...</h3>
-                      <p className="text-sm text-text-muted mb-4">AIが画像を生成しています</p>
+                       <h3 className="text-lg font-bold text-text mb-2">{isEnglish ? 'Generating image...' : '画像生成中...'}</h3>
+                       <p className="text-sm text-text-muted mb-4">{isEnglish ? 'AI is generating your image' : 'AIが画像を生成しています'}</p>
                       <div className="bg-surface rounded-lg p-4">
-                        <p className="text-sm text-text-muted">2-5分で完了します</p>
+                         <p className="text-sm text-text-muted">{isEnglish ? 'It takes about 2-5 minutes' : '2-5分で完了します'}</p>
                       </div>
                     </div>
                   </div>
@@ -1438,8 +1441,11 @@ useEffect(() => {
               onChange={handleFileChange}
             />
             <button
-              onClick={() => fileInputRef.current?.click()}
-              className="btn-primary p-3 rounded-full"
+              onClick={() => { if (!isUploadDisabled) fileInputRef.current?.click() }}
+              disabled={isUploadDisabled}
+              aria-disabled={isUploadDisabled}
+              title={isUploadDisabled ? (isEnglish ? 'Text-to-Image mode: upload disabled' : '文→図モードではアップロード不可') : undefined}
+              className={`btn-primary p-3 rounded-full ${isUploadDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
             >
               <PhotoIcon className="w-6 h-6" />
             </button>
@@ -1455,13 +1461,13 @@ useEffect(() => {
               className={`w-full p-2 bg-white border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
                 mode === 'template-mode' ? 'hidden' : ''
               }`}
-              placeholder="プロンプトを入力..."
+              placeholder={isEnglish ? 'Enter prompt...' : 'プロンプトを入力...'}
             />
             {/* 模板模式的显示文本 */}
             <div className={`text-sm font-medium text-text truncate ${
               mode === 'template-mode' ? '' : 'hidden'
             }`}>
-              {selectedTemplate ? selectedTemplate.name : 'テンプレートを選択'}
+              {selectedTemplate ? selectedTemplate.name : (isEnglish ? 'Select a template' : 'テンプレートを選択')}
             </div>
           </div>
 
@@ -1521,13 +1527,14 @@ useEffect(() => {
         <div className="p-2 sm:p-3 border-t border-border">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
+                  {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
                 <SizeButton
                   key={size}
                   size={size}
                   isSelected={selectedSize === size}
-                  onClick={() => setSelectedSize(size)}
-                  isMobile={true}
+                      onClick={() => setSelectedSize(size)}
+                      isMobile={true}
+                      isEnglish={isEnglish}
                 />
               ))}
             </div>
@@ -1542,7 +1549,7 @@ useEffect(() => {
                   mode === 'template-mode' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
                 }`}
               >
-                簡単
+                {isEnglish ? 'Easy' : '簡単'}
               </button>
               <button
                 onClick={() => {
@@ -1555,7 +1562,7 @@ useEffect(() => {
                   mode === 'image-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
                 }`}
               >
-                図→図
+                {isEnglish ? 'Image→Image' : '図→図'}
               </button>
               <button
                 onClick={() => {
@@ -1572,7 +1579,7 @@ useEffect(() => {
                   mode === 'text-to-image' ? 'btn-primary text-white' : 'bg-surface text-text-muted border border-border hover:bg-surface-hover'
                 }`}
               >
-                文→図
+                {isEnglish ? 'Text→Image' : '文→図'}
               </button>
             </div>
           </div>
@@ -1603,7 +1610,7 @@ useEffect(() => {
                       : 'btn-outline'
                   }`}
                 >
-                  簡単
+                  {isEnglish ? 'Easy' : '簡単'}
                 </button>
                 <button
                   onClick={() => {
@@ -1618,7 +1625,7 @@ useEffect(() => {
                       : 'btn-outline'
                   }`}
                 >
-                  図→図
+                  {isEnglish ? 'Image→Image' : '図→図'}
                 </button>
                 <button
                   onClick={() => {
@@ -1637,13 +1644,13 @@ useEffect(() => {
                       : 'btn-outline'
                   }`}
                 >
-                  文→図
+                  {isEnglish ? 'Text→Image' : '文→図'}
                 </button>
               </div>
             </div>
 
             {/* 滚动到guides的按钮 */}
-            <div className="text-center mb-4">
+              <div className="text-center mb-4">
               <button
                 onClick={() => {
                   const guidesSection = document.getElementById('guides-section')
@@ -1653,7 +1660,7 @@ useEffect(() => {
                 }}
                 className="inline-flex items-center gap-2 btn-primary text-sm"
               >
-                <span>使い方ガイドを見る</span>
+                <span>{isEnglish ? 'View how-to guide' : '使い方ガイドを見る'}</span>
                 <span>↓</span>
               </button>
             </div>
@@ -1664,7 +1671,7 @@ useEffect(() => {
                   <button
                     onClick={handlePreviousPage}
                     disabled={currentPage === 0}
-                    title="前のページ"
+                     title={isEnglish ? 'Previous' : '前のページ'}
                     className="flex-shrink-0 p-2 rounded-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronLeftIcon className="w-4 h-4" />
@@ -1700,7 +1707,7 @@ useEffect(() => {
                   <button
                     onClick={handleNextPage}
                     disabled={currentPage >= Math.ceil(templates.length / templatesPerPage) - 1}
-                    title="次のページ"
+                     title={isEnglish ? 'Next' : '次のページ'}
                     className="flex-shrink-0 p-2 rounded-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <ChevronRightIcon className="w-4 h-4" />
@@ -1758,9 +1765,9 @@ useEffect(() => {
                 ) : (
                   <div className="space-y-4 animate-bounce-slow">
                     <PhotoIcon className="w-16 h-16 mx-auto text-text-muted animate-pulse" />
-                    <p className="text-lg text-text-muted">写真をドロップしてね！ 📸</p>
-                    <p className="text-sm text-text-muted">またはここをクリックして選んでね ✨</p>
-                    <p className="text-xs text-text">10MBまでの画像OK！</p>
+                    <p className="text-lg text-text-muted">{isEnglish ? 'Drop your photo here! 📸' : '写真をドロップしてね！ 📸'}</p>
+                    <p className="text-sm text-text-muted">{isEnglish ? 'Or click here to select ✨' : 'またはここをクリックして選んでね ✨'}</p>
+                    <p className="text-xs text-text">{isEnglish ? 'Up to 10MB supported' : '10MBまでの画像OK！'}</p>
                   </div>
                 )}
               </div>
@@ -1772,14 +1779,14 @@ useEffect(() => {
               }`}>
                 <div className="space-y-4">
                   <div className="text-6xl mb-4 animate-pulse">✍️✨</div>
-                  <h3 className="text-xl font-bold text-text mb-2">🎨 テキストからイラストモード、始まるよ！</h3>
-                  <p className="text-text-muted mb-3">テキストだけで、可愛い画像を作れるよ！</p>
+                  <h3 className="text-xl font-bold text-text mb-2">{isEnglish ? '🎨 Text-to-Image mode is ready!' : '🎨 テキストからイラストモード、始まるよ！'}</h3>
+                  <p className="text-text-muted mb-3">{isEnglish ? 'Create cute images with only text!' : 'テキストだけで、可愛い画像を作れるよ！'}</p>
                   <div className="bg-surface rounded-2xl p-4 mx-2 border border-border">
-                    <p className="text-sm text-text mb-2">💡 おすすめの使い方：</p>
+                    <p className="text-sm text-text mb-2">{isEnglish ? '💡 Tips:' : '💡 おすすめの使い方：'}</p>
                     <ul className="text-xs text-text-muted space-y-1 text-left">
-                      <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
-                      <li>• 背景や服装の色も指定できる</li>
-                      <li>• 日本語でも英語でもOK！</li>
+                      <li>{isEnglish ? '• Describe character features for better results' : '• 具体的なキャラクター特徴を書くと綺麗に生成されるよ'}</li>
+                      <li>{isEnglish ? '• You can specify background and outfit colors' : '• 背景や服装の色も指定できる'}</li>
+                      <li>{isEnglish ? '• Both Japanese and English are OK!' : '• 日本語でも英語でもOK！'}</li>
                     </ul>
                   </div>
                 </div>
@@ -1788,10 +1795,10 @@ useEffect(() => {
 
             {isUploading && (
               <div className="mt-4 text-center">
-                <div className="w-full max-w-xs mx-auto bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div className="w-full max-w-xs mx-auto bg-gray-2 00 rounded-full h-2 overflow-hidden">
                   <div className="bg-pink-500 h-2" style={{ width: `${uploadProgress}%` }} />
                 </div>
-                <p className="mt-2 text-sm text-text-muted">アップロード中... {uploadProgress}%</p>
+                    <p className="mt-2 text-sm text-text-muted">{isEnglish ? 'Uploading...' : 'アップロード中...'} {uploadProgress}%</p>
               </div>
             )}
 
@@ -1799,7 +1806,7 @@ useEffect(() => {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}>
               <div>
-                <label className="block text-lg font-bold text-text mb-3">📐 画像サイズを選んでね ✨</label>
+                <label className="block text-lg font-bold text-text mb-3">{isEnglish ? '📐 Choose image size ✨' : '📐 画像サイズを選んでね ✨'}</label>
                 <div className="grid grid-cols-3 gap-5">
                   {(['1:1', '3:2', '2:3'] as ImageSize[]).map((size) => (
                     <SizeButton
@@ -1808,6 +1815,7 @@ useEffect(() => {
                       isSelected={selectedSize === size}
                       onClick={() => setSelectedSize(size)}
                       isMobile={false}
+                      isEnglish={isEnglish}
                     />
                   ))}
                 </div>
@@ -1817,13 +1825,13 @@ useEffect(() => {
               <div className={`${
                 (mode === 'image-to-image' || mode === 'text-to-image') ? '' : 'hidden'
               }`}>
-                <label className="block text-lg font-bold text-text mb-3">プロンプトを書いてね ✨</label>
+                <label className="block text-lg font-bold text-text mb-3">{isEnglish ? 'Write your prompt ✨' : 'プロンプトを書いてね ✨'}</label>
                 <textarea
                   ref={promptDesktopTextareaRef}
                   value={prompt}
                   onChange={handlePromptChange}
                   className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text"
-                  placeholder="プロンプトを入力..."
+                  placeholder={isEnglish ? 'Enter your prompt...' : 'プロンプトを入力...'}
                   rows={4}
                 />
                 
@@ -1832,7 +1840,7 @@ useEffect(() => {
 
               {mode === 'template-mode' && selectedTemplate && (
                 <div className="bg-surface p-4 rounded-2xl shadow-lg">
-                  <h4 className="font-bold text-text mb-2 text-base">🎀 選択中の魔法：{selectedTemplate.name}</h4>
+                  <h4 className="font-bold text-text mb-2 text-base">{isEnglish ? '🎀 Selected magic:' : '🎀 選択中の魔法：'}{selectedTemplate.name}</h4>
                   <p className="text-xs text-text-muted leading-relaxed">{selectedTemplate.prompt}</p>
                 </div>
               )}
@@ -1846,7 +1854,7 @@ useEffect(() => {
                   className="rounded border-border text-brand focus:ring-brand h-5 w-5"
                 />
                 <label htmlFor="enhancePrompt" className="ml-3 text-sm text-text">
-                  プロンプト効果を強化する
+                  {isEnglish ? 'Enhance prompt effect' : 'プロンプト効果を強化する'}
                 </label>
               </div>
 
@@ -1880,7 +1888,7 @@ useEffect(() => {
                         <rect x="7" y="9" width="2" height="1" fill="#2B2B2B" />
                       </svg>
                     </span>
-                    {mode === 'text-to-image' ? '画像を生成しているよ... ✨' : '魔法をかけているよ... ✨'}
+                    {mode === 'text-to-image' ? (isEnglish ? 'Generating image... ✨' : '画像を生成しているよ... ✨') : (isEnglish ? 'Working magic... ✨' : '魔法をかけているよ... ✨')}
                     <style jsx>{`
                       .cat-bounce {
                         animation: squishy-bounce 1.2s ease-in-out infinite;
@@ -1898,7 +1906,7 @@ useEffect(() => {
                 ) : (
                   <>
                     <PaperAirplaneIcon className="w-6 h-6 mr-3" />
-                    {mode === 'text-to-image' ? '画像を生成する！ 🎨' : '変身させる！ 🎀'}
+                    {mode === 'text-to-image' ? (isEnglish ? 'Generate image! 🎨' : '画像を生成する！ 🎨') : (isEnglish ? 'Transform! 🎀' : '変身させる！ 🎀')}
                   </>
                 )}
               </button>
@@ -1909,8 +1917,8 @@ useEffect(() => {
               <div className="mt-6 p-6 bg-surface backdrop-blur-sm border border-border rounded-[24px] shadow-lg overflow-hidden">
                 <p className="text-pink-800 font-cute mb-3">{generationError}</p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <button onClick={handleRetry} className="btn-primary text-white px-4 py-2 rounded-full font-bold shadow hover:shadow-md transition">再試行</button>
-                  <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full font-bold shadow-sm hover:shadow transition">閉じる</button>
+              <button onClick={handleRetry} className="btn-primary text-white px-4 py-2 rounded-full font-bold shadow hover:shadow-md transition">{isEnglish ? 'Retry' : '再試行'}</button>
+              <button onClick={() => setGenerationError('')} className="bg-white border border-border text-text px-4 py-2 rounded-full font-bold shadow-sm hover:shadow transition">{isEnglish ? 'Close' : '閉じる'}</button>
                 </div>
               </div>
             )}
@@ -1924,17 +1932,19 @@ useEffect(() => {
             <div className="mb-4 text-center">
               <h3 className="text-2xl font-bold text-text">
                 {isGenerating 
-                  ? (mode === 'text-to-image' ? '画像生成中...' : '変身中...') 
+                  ? (mode === 'text-to-image' ? (isEnglish ? 'Generating...' : '画像生成中...') : (isEnglish ? 'Transforming...' : '変身中...')) 
                   : currentResult?.status === 'SUCCESS' 
-                    ? (mode === 'text-to-image' ? '画像生成完了！🎉' : '変身完了！🎉') 
-                    : '結果プレビュー ✨'
+                    ? (mode === 'text-to-image' ? (isEnglish ? 'Generation complete! 🎉' : '画像生成完了！🎉') : (isEnglish ? 'Transformation complete! 🎉' : '変身完了！🎉')) 
+                    : (isEnglish ? 'Result Preview ✨' : '結果プレビュー ✨')
                 }
               </h3>
               {isGenerating && null}
 
               {/* 注意事項（常時表示）*/}
               <div className="mt-2 text-center text-xs text-text">
-                現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。
+                {isEnglish 
+                  ? 'We do not provide paid features at the moment. Text-to-image results may be included in the Gallery; image-to-image results will not be included.' 
+                  : '現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。'}
               </div>
             </div>
 
@@ -1946,14 +1956,14 @@ useEffect(() => {
                     {mode === 'text-to-image' ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4 animate-pulse">✍️✨</div>
-                        <h3 className="text-xl font-bold text-text mb-2">🎨 テキストからイラストモード、始まるよ！</h3>
-                        <p className="text-text-muted mb-3">テキストだけで、可愛い画像を作れるよ！</p>
+                        <h3 className="text-xl font-bold text-text mb-2">{isEnglish ? '🎨 Text-to-Image mode is ready!' : '🎨 テキストからイラストモード、始まるよ！'}</h3>
+                        <p className="text-text-muted mb-3">{isEnglish ? 'Create cute images with only text!' : 'テキストだけで、可愛い画像を作れるよ！'}</p>
                         <div className="bg-surface rounded-2xl p-4 mx-4 border border-border">
-                          <p className="text-sm text-text mb-2">💡 おすすめの使い方：</p>
+                          <p className="text-sm text-text mb-2">{isEnglish ? '💡 Tips:' : '💡 おすすめの使い方：'}</p>
                           <ul className="text-xs text-text-muted space-y-1 text-left">
-                            <li>• 具体的なキャラクター特徴を書くと綺麗に生成されるよ</li>
-                            <li>• 背景や服装の色も指定できる</li>
-                            <li>• 日本語でも英語でもOK！</li>
+                            <li>{isEnglish ? '• Describe character features for better results' : '• 具体的なキャラクター特徴を書くと綺麗に生成されるよ'}</li>
+                            <li>{isEnglish ? '• You can specify background and outfit colors' : '• 背景や服装の色も指定できる'}</li>
+                            <li>{isEnglish ? '• Both Japanese and English are OK!' : '• 日本語でも英語でもOK！'}</li>
                           </ul>
                         </div>
                       </div>

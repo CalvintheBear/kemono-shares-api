@@ -74,14 +74,14 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 								className="relative overflow-hidden rounded-xl bg-white shadow cursor-pointer"
 								onClick={() => onImageClick?.(image)}
 							>
-								<Image
-									src={image.url}
-									alt={image.alt || 'AI生成画像'}
-									fill
-									sizes={`${columnWidth}px`}
-									className="object-cover"
-									unoptimized
-								/>
+                            <Image
+                                src={image.url}
+                                alt={image.alt || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'AI generated image' : 'AI生成画像')}
+                                fill
+                                sizes={`${columnWidth}px`}
+                                className="object-cover"
+                                unoptimized
+                            />
 							</div>
 						))}
 					</div>

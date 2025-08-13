@@ -10,14 +10,21 @@ module.exports = {
     ]
   },
   transform: async (config, path) => {
+    const origin = process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
+    // Normalize to generate reciprocal hreflang for both languages
+    const isEn = path === '/en' || path.startsWith('/en/')
+    const jaPath = isEn ? (path === '/en' ? '/' : path.replace(/^\/en/, '')) : path
+    const enPath = isEn ? path : (path === '/' ? '/en' : `/en${path}`)
+
     return {
       loc: path,
       changefreq: 'daily',
       priority: 0.7,
       lastmod: new Date().toISOString(),
       alternateRefs: [
-        { href: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}${path}`, hreflang: 'ja' },
-        { href: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}${path}`, hreflang: 'x-default' }
+        { href: `${origin}${jaPath}`, hreflang: 'ja' },
+        { href: `${origin}${enPath}`, hreflang: 'en' },
+        { href: `${origin}${jaPath}`, hreflang: 'x-default' }
       ],
     }
   },

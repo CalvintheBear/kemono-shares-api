@@ -37,6 +37,11 @@ export const metadata = {
   },
   alternates: {
     canonical: "https://2kawaii.com/terms",
+    languages: {
+      ja: "https://2kawaii.com/terms",
+      en: "https://2kawaii.com/en/terms",
+      "x-default": "https://2kawaii.com/terms",
+    },
   },
   robots: {
     index: true,

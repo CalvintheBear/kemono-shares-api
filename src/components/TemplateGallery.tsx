@@ -219,6 +219,37 @@ export default function TemplateGallery() {
   const [selectedCategory, setSelectedCategory] = useState<string>(templates[0].category)
   const [isClient, setIsClient] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const isEnglish = typeof window !== 'undefined' && (window.location.pathname === '/en' || window.location.pathname.startsWith('/en/'))
+
+  const translate = (ja: string, en: string) => (isEnglish ? en : ja)
+
+  const categoryMap: Record<string, string> = {
+    'emoji 絵文字風': 'emoji sticker style',
+    'lineスタンプ': 'LINE stickers',
+    chibi: 'chibi',
+    '可愛い壁紙': 'Cute wallpaper',
+    'flux風': 'Flux style',
+    '証明写真加工': 'ID photo retouch',
+    irasutoya: 'irasutoya',
+    '萌え化': 'Moe style',
+    'ブルーアーカイブ': 'Blue Archive',
+    vtuber: 'VTuber',
+    'ウマ娘': 'Uma Musume',
+    '少女': 'Girl',
+    '可愛line アイコン': 'Cute LINE icon',
+    'ジブリ風': 'Ghibli style',
+    'SDキャラ': 'SD chibi',
+    '原神異世界': 'Genshin Isekai',
+    'ゴシック地雷女': 'Gothic Y2K Girl',
+    '厚塗': 'Thick paint',
+    '3D CG': '3D CG',
+    '擬人化': 'Anthropomorphism',
+    'クレヨンしんちゃん': 'Crayon Shin-chan',
+    '写真 アニメ風': 'Photo to anime',
+    '獣耳': 'Animal ears',
+  }
+
+  const nameMap = categoryMap
 
   useEffect(() => {
     setIsClient(true)
@@ -245,7 +276,7 @@ export default function TemplateGallery() {
         <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-text font-cute mb-12 lg:mb-16 transition-all duration-1000 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          選べる変身スタイル
+          {translate('選べる変身スタイル', 'Choose your style')}
         </h2>
         
         {/* 分类选择按钮 */}
@@ -263,7 +294,7 @@ export default function TemplateGallery() {
               }`}
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}
             >
-              {category}
+              {isEnglish ? (categoryMap[category] || category) : category}
             </button>
           ))}
         </div>
@@ -274,18 +305,18 @@ export default function TemplateGallery() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text font-cute text-center mb-8 lg:mb-10">
-              {selectedTemplate.name} - 変身前後の比較
+              {(isEnglish ? (nameMap[selectedTemplate.name] || selectedTemplate.name) : selectedTemplate.name)} - {translate('変身前後の比較', 'Before vs After')}
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-center">
               {/* 变身前 */}
               <div className="text-center animate-fade-in-left" style={{animationDelay: '0.8s'}}>
-                <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 font-bold">変身前</p>
+                <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 font-bold">{translate('変身前', 'Before')}</p>
                 <div className="bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 shadow-lg inline-block">
                   {isClient && (
                     <OptimizedImage
                       src={selectedTemplate.beforeImage}
-                      alt={`${selectedTemplate.name} 変身前`}
+                      alt={`${isEnglish ? (nameMap[selectedTemplate.name] || selectedTemplate.name) : selectedTemplate.name} ${translate('変身前','Before')}`}
                       width={300}
                       height={300}
                       className="w-auto h-auto max-w-full max-h-96 object-contain"
@@ -300,18 +331,18 @@ export default function TemplateGallery() {
                   →
                 </div>
                 <p className="text-sm sm:text-base text-text-muted mt-3 sm:mt-4 font-cute">
-                  AI変身
+                  {translate('AI変身','AI transform')}
                 </p>
               </div>
               
               {/* 变身后 */}
               <div className="text-center animate-fade-in-right" style={{animationDelay: '0.8s'}}>
-                <p className="text-sm sm:text-base text-text mb-3 sm:mb-4 font-bold">変身後</p>
+                <p className="text-sm sm:text-base text-text mb-3 sm:mb-4 font-bold">{translate('変身後','After')}</p>
                 <div className="bg-surface rounded-lg overflow-hidden border-2 border-border shadow-lg inline-block">
                   {isClient && (
                     <OptimizedImage
                       src={selectedTemplate.afterImage}
-                      alt={`${selectedTemplate.name} 変身後`}
+                      alt={`${isEnglish ? (nameMap[selectedTemplate.name] || selectedTemplate.name) : selectedTemplate.name} ${translate('変身後','After')}`}
                       width={300}
                       height={300}
                       className="w-auto h-auto max-w-full max-h-96 object-contain"
@@ -329,13 +360,13 @@ export default function TemplateGallery() {
               <div className="flex gap-4 justify-center">
                 {isClient && (
                   <Link
-                    href="/workspace"
+                    href={isEnglish ? '/en/workspace' : '/workspace'}
                     className="btn-primary px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg"
                     onClick={() => {
                       localStorage.setItem('selectedTemplateId', selectedTemplate.id)
                     }}
                   >
-                    このスタイルで変身
+                    {translate('このスタイルで変身','Use this style')}
                   </Link>
                 )}
               </div>

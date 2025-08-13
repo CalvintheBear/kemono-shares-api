@@ -58,8 +58,9 @@ export default function HomeLatestShares() {
       )
     }
     if (!items || items.length === 0) {
+      const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
       return (
-        <div className={`text-center text-sm text-gray-500 py-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>まだ作品がありません。少し待ってね…</div>
+        <div className={`text-center text-sm text-gray-500 py-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>{isEnglish ? 'No works yet. Please check back later…' : 'まだ作品がありません。少し待ってね…'}</div>
       )
     }
     const images = items.slice(0, 12).map(it => ({ id: it.id, url: it.generatedUrl, alt: it.style || 'AI生成画像' }))
@@ -76,20 +77,26 @@ export default function HomeLatestShares() {
   return (
     <section className="py-6 lg:py-10 px-3 sm:px-4 lg:px-6 bg-surface animate-fade-in">
       <div className="max-w-7xl mx-auto">
-        <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-text font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>本日の最新作品</h2>
-        <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>10分ごとに更新</p>
+        {(() => { const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en'); return (
+          <>
+            <h2 className={`text-xl sm:text-2xl lg:text-3xl font-bold text-center text-text font-cute mb-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>{isEnglish ? "Today's latest works" : '本日の最新作品'}</h2>
+            <p className={`text-center text-text-muted text-sm mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>{isEnglish ? 'Updated every 10 minutes' : '10分ごとに更新'}</p>
+          </>
+        )})()}
         {/* PC 端居中一个较窄容器以居中 12 张图 */}
         <div className="mx-auto max-w-5xl">
           {content}
         </div>
-        <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <a
-            href="/share"
-            className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold shadow hover:shadow-md transition-colors bg-surface text-text hover:bg-surface-hover"
-          >
-            お題一覧 🖼️
-          </a>
-        </div>
+        {(() => { const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en'); return (
+          <div className={`mt-6 flex justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <a
+              href={isEnglish ? '/en/share' : '/share'}
+              className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold shadow hover:shadow-md transition-colors bg-surface text-text hover:bg-surface-hover"
+            >
+              {isEnglish ? 'Gallery 🖼️' : 'お題一覧 🖼️'}
+            </a>
+          </div>
+        )})()}
       </div>
     </section>
   )

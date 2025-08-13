@@ -1,12 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { usePathname } from 'next/navigation'
+import { Bars3Icon, XMarkIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const [queryString, setQueryString] = useState('')
+  const [hashString, setHashString] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const qs = window.location.search
+      setQueryString(qs.startsWith('?') ? qs.slice(1) : qs)
+      const hs = window.location.hash || ''
+      setHashString(hs.startsWith('#') ? hs : (hs ? `#${hs}` : ''))
+    }
+  }, [pathname])
+  
+  // Detect current language
+  const isEnglish = pathname?.startsWith('/en/') || pathname === '/en'
+  
+  // Create language switch URLs
+  const getLanguageSwitchUrl = () => {
+    if (!pathname) return '/'
+    const withQueryAndHash = (p: string) => {
+      const base = queryString && queryString.length > 0 ? `${p}?${queryString}` : p
+      return `${base}${hashString || ''}`
+    }
+    if (isEnglish) {
+      // Remove /en prefix safely
+      const toJa = pathname === '/en' ? '/' : pathname.replace(/^\/en(\/|$)/, '/')
+      return withQueryAndHash(toJa)
+    }
+    // Add /en prefix
+    const toEn = pathname === '/' ? '/en' : pathname.startsWith('/en') ? pathname : `/en${pathname}`
+    return withQueryAndHash(toEn)
+  }
+  
+  const getOtherLanguageLabel = () => isEnglish ? '日本語' : 'English'
+  const getCurrentLanguageLabel = () => isEnglish ? 'English' : '日本語'
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-gray-100 border-b border-gray-300 z-50 animate-fade-in">
@@ -31,9 +67,9 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
             <div className="flex items-center space-x-8">
-              <Link href="/faq" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
-              <Link href="/privacy" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">プライバシー</Link>
-              <Link href="/terms" className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">利用規約</Link>
+              <Link href={isEnglish ? '/en/faq' : '/faq'} className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">FAQ</Link>
+              <Link href={isEnglish ? '/en/privacy' : '/privacy'} className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">{isEnglish ? 'Privacy' : 'プライバシー'}</Link>
+              <Link href={isEnglish ? '/en/terms' : '/terms'} className="text-text-muted hover:text-text px-3 py-2 text-sm font-medium transition-colors">{isEnglish ? 'Terms' : '利用規約'}</Link>
             </div>
           </nav>
           
@@ -42,19 +78,40 @@ export default function Header() {
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center space-x-2">
               <Link 
-                href="/workspace" 
+                href={isEnglish ? '/en/workspace' : '/workspace'} 
                 className="btn-primary text-sm whitespace-nowrap"
               >
-                体験
+                {isEnglish ? 'Start' : '体験'}
               </Link>
               <Link 
-                href="/share" 
+                href={isEnglish ? '/en/share' : '/share'} 
                 className="btn-outline text-sm whitespace-nowrap"
               >
-                お題一覧
+                {isEnglish ? 'Gallery' : 'お題一覧'}
+              </Link>
+              {/* Language Switch */}
+              <Link 
+                href={getLanguageSwitchUrl()}
+                className="flex items-center gap-1.5 text-sm px-3 py-2 rounded-md text-text-muted hover:text-text hover:bg-surface transition-colors"
+                aria-label={`Language: ${getCurrentLanguageLabel()}`}
+                title={`Language: ${getCurrentLanguageLabel()}`}
+              >
+                <ArrowsRightLeftIcon className="h-4 w-4" />
+                <span>{getCurrentLanguageLabel()}</span>
               </Link>
             </div>
             
+            {/* Mobile Language Switch - Always visible */}
+            <Link 
+              href={getLanguageSwitchUrl()}
+              className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-text-muted hover:text-text hover:bg-surface focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand"
+              aria-label={`Language: ${getCurrentLanguageLabel()}`}
+              title={`Language: ${getCurrentLanguageLabel()}`}
+            >
+              <ArrowsRightLeftIcon className="h-6 w-6" />
+              <span className="ml-1 text-sm">{getCurrentLanguageLabel()}</span>
+            </Link>
+
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -69,15 +126,15 @@ export default function Header() {
           </div>
         </div>
         
-        {/* Mobile Navigation */}
+          {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-2 sm:px-3 bg-gray-100 border-t border-gray-300">
-              <Link href="/workspace" className="btn-primary block w-full text-center text-sm">体験</Link>
-              <Link href="/share" className="btn-outline block w-full text-center text-sm">お題一覧</Link>
-              <Link href="/faq" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">FAQ</Link>
-              <Link href="/privacy" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">プライバシー</Link>
-              <Link href="/terms" className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">利用規約</Link>
+              <Link href={isEnglish ? '/en/workspace' : '/workspace'} className="btn-primary block w-full text-center text-sm">{isEnglish ? 'Start' : '体験'}</Link>
+              <Link href={isEnglish ? '/en/share' : '/share'} className="btn-outline block w-full text-center text-sm">{isEnglish ? 'Gallery' : 'お題一覧'}</Link>
+              <Link href={isEnglish ? '/en/faq' : '/faq'} className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">FAQ</Link>
+              <Link href={isEnglish ? '/en/privacy' : '/privacy'} className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">{isEnglish ? 'Privacy' : 'プライバシー'}</Link>
+              <Link href={isEnglish ? '/en/terms' : '/terms'} className="text-text-muted hover:text-text block px-3 py-2 text-base font-medium">{isEnglish ? 'Terms' : '利用規約'}</Link>
             </div>
           </div>
         )}

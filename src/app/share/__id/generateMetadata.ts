@@ -62,6 +62,7 @@ export default async function generateMetadata(
       canonical: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/share/${id}`,
       languages: {
         ja: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/share/${id}`,
+        en: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/en/share/${id}`,
         'x-default': `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/share/${id}`,
       },
     },

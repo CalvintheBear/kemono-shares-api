@@ -37,6 +37,11 @@ export const metadata = {
   },
   alternates: {
     canonical: "https://2kawaii.com/privacy",
+    languages: {
+      ja: "https://2kawaii.com/privacy",
+      en: "https://2kawaii.com/en/privacy",
+      "x-default": "https://2kawaii.com/privacy",
+    },
   },
   robots: {
     index: true,

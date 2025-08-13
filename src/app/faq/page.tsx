@@ -37,6 +37,11 @@ export const metadata = {
   },
   alternates: {
     canonical: "https://2kawaii.com/faq",
+    languages: {
+      ja: "https://2kawaii.com/faq",
+      en: "https://2kawaii.com/en/faq",
+      "x-default": "https://2kawaii.com/faq",
+    },
   },
   robots: {
     index: true,

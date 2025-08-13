@@ -105,6 +105,9 @@ try {
   const redirectsContent = `# 分享详情页动态路由 - 重定向到静态页面
 /share/* /share.html?id=:splat 200
 
+# 英文分享详情页动态路由
+/en/share/* /en/share.html?id=:splat 200
+
 # 其他页面
 /* /index.html 200`;
   fs.writeFileSync(redirectsPath, redirectsContent);

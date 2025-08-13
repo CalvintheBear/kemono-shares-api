@@ -30,38 +30,52 @@ export default function MobileBottomNav() {
 
   if (!isMobile) return null
 
+  const isEnglish = currentPath === '/en' || currentPath.startsWith('/en/')
+
+  const buildHref = (path: string) => {
+    if (isEnglish) {
+      if (path === '/') return '/en'
+      return path.startsWith('/en') ? path : `/en${path}`
+    }
+    // ja
+    if (path === '/en') return '/'
+    return path.replace(/^\/en(\/|$)/, '/')
+  }
+
   const navItems = [
     {
-      name: 'ホーム',
-      href: '/',
+      name: isEnglish ? 'Home' : 'ホーム',
+      href: buildHref('/'),
       icon: HomeIcon,
       iconSolid: HomeSolidIcon,
       color: 'text-brand'
     },
     {
-      name: 'ワークスペース',
-      href: '/workspace',
+      name: isEnglish ? 'Workspace' : 'ワークスペース',
+      href: buildHref('/workspace'),
       icon: SparklesIcon,
       iconSolid: SparklesSolidIcon,
       color: 'text-brand'
     },
     {
-      name: 'お題一覧',
-      href: '/share',
+      name: isEnglish ? 'Gallery' : 'お題一覧',
+      href: buildHref('/share'),
       icon: PhotoIcon,
       iconSolid: PhotoSolidIcon,
       color: 'text-brand'
-    }
+    },
   ]
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50 md:hidden">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => {
-          const isActive = currentPath === item.href || 
-            (item.href === '/share' && currentPath.startsWith('/share')) ||
-            (item.href === '/workspace' && currentPath.startsWith('/workspace')) ||
-            (item.href === '/' && currentPath === '/')
+          const isActive = (
+            currentPath === item.href ||
+            (item.href.endsWith('/share') && (currentPath.startsWith('/share') || currentPath.startsWith('/en/share'))) ||
+            (item.href.endsWith('/workspace') && (currentPath.startsWith('/workspace') || currentPath.startsWith('/en/workspace'))) ||
+            ((item.href === '/' || item.href === '/en') && (currentPath === '/' || currentPath === '/en'))
+          )
           
           const Icon = isActive ? item.iconSolid : item.icon
           

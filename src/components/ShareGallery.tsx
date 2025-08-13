@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import MasonryGallery from './MasonryGallery';
 import { SparklesIcon } from '@heroicons/react/24/outline';
+import { usePathname } from 'next/navigation';
 
 
 interface ShareItem {
@@ -30,6 +31,9 @@ export default function ShareGallery() {
   const [hasMore, setHasMore] = useState(true);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const pathname = usePathname();
+  
+  const isEnglish = pathname?.startsWith('/en/') || pathname === '/en';
 
   const lastRequestRef = useRef<number>(0);
 
@@ -42,7 +46,7 @@ export default function ShareGallery() {
       url: item.generatedUrl,
       width: 800,
       height: 600,
-      alt: `${item.style} アニメ変換`,
+      alt: isEnglish ? `${item.style} Anime Conversion` : `${item.style} アニメ変換`,
     }));
   };
 
@@ -107,7 +111,7 @@ export default function ShareGallery() {
       setIsFetching(false);
       setLoading(false);
     }
-  }, [loading, isFetching, ITEMS_PER_PAGE]);
+  }, [loading, isFetching, ITEMS_PER_PAGE, isEnglish]);
 
   // Initial load
   useEffect(() => {
@@ -155,28 +159,31 @@ export default function ShareGallery() {
 }
 
 function EmptyGallery({ onRefresh }: { onRefresh: () => void }) {
+  const pathname = usePathname();
+  const isEnglish = pathname?.startsWith('/en/') || pathname === '/en';
+  
   return (
     <div className="text-center py-20">
       <div className="text-8xl mb-6">🎨</div>
       <h3 className="text-2xl font-bold text-text mb-4">
-        ギャラリーはまだ空です
+        {isEnglish ? 'Gallery is empty' : 'ギャラリーはまだ空です'}
       </h3>
       <p className="text-text-muted mb-8">
-        あなたが最初の作品を作ってみませんか？
+        {isEnglish ? 'Be the first to create a masterpiece!' : 'あなたが最初の作品を作ってみませんか？'}
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <button
-          onClick={() => window.location.href = '/workspace'}
+          onClick={() => window.location.href = isEnglish ? '/en/workspace' : '/workspace'}
           className="btn-primary px-8 py-3 flex items-center gap-2"
         >
           <SparklesIcon className="w-5 h-5" />
-          今すぐ始める
+          {isEnglish ? 'Get Started Now' : '今すぐ始める'}
         </button>
         <button
           onClick={onRefresh}
           className="btn-outline px-8 py-3"
         >
-          更新
+          {isEnglish ? 'Refresh' : '更新'}
         </button>
       </div>
     </div>

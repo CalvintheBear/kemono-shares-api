@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     canonical: "https://2kawaii.com/share",
     languages: {
       ja: "https://2kawaii.com/share",
+      en: "https://2kawaii.com/en/share",
       "x-default": "https://2kawaii.com/share",
     },
   },
