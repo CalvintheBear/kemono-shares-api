@@ -41,9 +41,13 @@ try {
     }
   }
 
-  // 安装依赖
-  console.log('📦 安装依赖...');
-  execSync('npm install', { stdio: 'inherit' });
+  // 安装依赖（本地构建默认跳过，避免二次安装导致失败；如需强制安装，设置 FORCE_NPM_INSTALL=true）
+  if (process.env.FORCE_NPM_INSTALL === 'true') {
+    console.log('📦 安装依赖...');
+    execSync('npm install', { stdio: 'inherit' });
+  } else {
+    console.log('⏭️ 跳过依赖安装（设置 FORCE_NPM_INSTALL=true 可启用）');
+  }
 
   // 构建静态文件
   console.log('🔨 构建静态文件...');
