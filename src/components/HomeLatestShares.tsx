@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import MasonryGallery from './MasonryGallery'
+import Image from 'next/image'
 
 interface Item { id: string; generatedUrl: string; style?: string }
 
@@ -62,26 +62,29 @@ export default function HomeLatestShares() {
         <div className={`text-center text-sm text-gray-500 py-10 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>まだ作品がありません。少し待ってね…</div>
       )
     }
-    const images = items.slice(0, 12).map((it) => ({
-      id: it.id,
-      url: it.generatedUrl,
-      // 先给一个大致的比例，组件会在图片加载完成后用实际尺寸自适应
-      width: 800,
-      height: 600,
-      alt: it.style || 'AI生成画像',
-    }))
-
     return (
       <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <MasonryGallery
-          images={images}
-          hasMore={false}
-          loading={false}
-          onLoadMore={async () => {}}
-          onImageClick={(img) => {
-            window.location.href = `/share?id=${encodeURIComponent(img.id)}`
-          }}
-        />
+        <div className="pinterest-gallery">
+          {items.slice(0, 12).map((it, index) => (
+            <div key={it.id} className="pinterest-item group cursor-pointer mb-4">
+              <a href={`/share?id=${encodeURIComponent(it.id)}`} className="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div className="relative">
+                  <Image
+                    src={it.generatedUrl}
+                    alt={it.style || 'AI生成画像'}
+                    width={600}
+                    height={400}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                    loading={index < 8 ? 'eager' : 'lazy'}
+                    priority={index < 4}
+                    unoptimized
+                  />
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }, [items, loading, isVisible])

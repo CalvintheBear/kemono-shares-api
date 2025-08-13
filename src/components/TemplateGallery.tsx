@@ -59,6 +59,14 @@ const templates = [
     category: '可愛い壁紙'
   },
   {
+    id: '25',
+    name: 'flux風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-after',
+    prompt: '超高精细なアニメーションイラスト、フラックス風の傑作。極限まで鮮明なフォーカス、刃物のようにクリーンな線画。太い輪郭線。劇的な陰影と強いハイライト（スタジオ照明の逆光）のコントラスト。滑らかなグラデーションのセル塗り。細部描写が異様に緻密で、8K解像度。クリーンでモダン、鋭い審美眼。明るい色彩、寒色トーン。「現代アニメキービジュアル」。--style raw--v 6.0',
+    category: 'flux風'
+  },
+  {
     id: '17',
     name: 'irasutoya',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/irasutoya-beforer',

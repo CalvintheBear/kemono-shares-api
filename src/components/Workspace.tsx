@@ -5,7 +5,6 @@ import { PhotoIcon, PaperAirplaneIcon, ChevronLeftIcon, ChevronRightIcon } from 
 
 import { useAppStore } from '@/store/useAppStore'
 import { ImageSize } from '@/store/useAppStore'
-import BeforeAfterSlider from './BeforeAfterSlider'
 import ShareButton from './ShareButton'
 import MobileBottomNav from './MobileBottomNav'
 import TemplateGallery from './TemplateGallery'
@@ -67,6 +66,14 @@ const templates: Template[] = [
     category: '可愛い壁紙'
   },
   {
+    id: '25',
+    name: 'flux風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-after',
+    prompt: '超高精细なアニメーションイラスト、フラックス風の傑作。極限まで鮮明なフォーカス、刃物のようにクリーンな線画。太い輪郭線。劇的な陰影と強いハイライト（スタジオ照明の逆光）のコントラスト。滑らかなグラデーションのセル塗り。細部描写が異様に緻密で、8K解像度。クリーンでモダン、鋭い審美眼。明るい色彩、寒色トーン。「現代アニメキービジュアル」。--style raw--v 6.0',
+    category: 'flux風'
+  },
+  {
     id: '22',
     name: '証明写真加工',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-before',
@@ -119,7 +126,7 @@ const templates: Template[] = [
     name: '少女',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-beforer',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%B0%91%E5%A5%B3-after',
-    prompt: 'eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、4K超高解像度、質の高いディテール、かわいい日本の女の子',
+    prompt: '超高精细なアニメーションイラスト、フラックス風の傑作。eva effect，明るい色調、デジタルアニメスタイルのイラスト，二次元アニメの超高精細イラストスタイル、細部描写が異様に緻密で、8K解像度。質の高いディテール。',
     category: '少女'
   },
   
@@ -1333,13 +1340,20 @@ useEffect(() => {
                             </div>
                           </div>
                         ) : (
-                          <div className="space-y-4">
-                            <BeforeAfterSlider
-                              beforeImage={currentResult.original_url}
-                              afterImage={currentResult.generated_url}
-                              beforeAlt="変身前"
-                              afterAlt="変身后"
-                            />
+                          <div className="text-center">
+                            <div className="relative inline-block">
+                              <OptimizedImage
+                                src={currentResult.generated_url}
+                                alt="生成された画像"
+                                width={400}
+                                height={400}
+                                className="w-full h-auto rounded-lg"
+                              />
+                            </div>
+                            <div className="mt-4 bg-surface rounded-lg p-4">
+                              <h4 className="text-sm font-bold text-text mb-2">プロンプト：</h4>
+                              <p className="text-xs text-text-muted leading-relaxed">{currentResult.prompt.substring(0, 100)}...</p>
+                            </div>
                           </div>
                         )}
 
@@ -2041,12 +2055,19 @@ useEffect(() => {
                         <p className="text-sm text-text font-cute mt-3">✨ 生成された画像</p>
                       </div>
                     ) : (
-                      <BeforeAfterSlider
-                        beforeImage={(currentResult as GenerationResult).original_url}
-                        afterImage={(currentResult as GenerationResult).generated_url}
-                        beforeAlt="変身前"
-                        afterAlt="変身后"
-                      />
+                      <div className="text-center">
+                        <a href={(currentResult as GenerationResult).generated_url} target="_blank" rel="noopener noreferrer">
+                          <OptimizedImage
+                            src={(currentResult as GenerationResult).generated_url}
+                            alt="生成された画像"
+                            width={400}
+                            height={400}
+                            className="max-w-full h-auto rounded-2xl mx-auto shadow-lg hover:shadow-2xl hover:scale-105 transition-all"
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </a>
+                        <p className="text-sm text-text font-cute mt-3">✨ 生成された画像</p>
+                      </div>
                     )}
 
                     <div className="bg-[var(--surface)] rounded-lg p-6 border border-[var(--border)]">
