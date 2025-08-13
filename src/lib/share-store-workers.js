@@ -113,40 +113,44 @@ export class ShareStoreWorkers {
       }
 
       const shareIds = JSON.parse(listData);
-      const total = shareIds.length;
+      const totalIds = shareIds.length;
 
-      // 分页处理
-      const paginatedIds = shareIds.slice(offset, offset + limit);
-      
-      // 并行获取分享数据
-      const promises = paginatedIds.map(id => this.getShare(id));
-      const shareDataList = await Promise.all(promises);
-      
-      // 过滤掉空值并按时间排序
-      const items = shareDataList
-        .filter(data => data !== null)
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .map(share => ({
+      // 扫描最近的分享ID，先过滤出文生图，再按 offset/limit 切片
+      const MAX_SCAN = 500; // 限制最大扫描量，避免过多KV请求
+      const targetCount = offset + limit; // 为了判断 hasMore，需要至少拿到 offset+limit 条
+      const filteredItems = [];
+      let scanned = 0;
+
+      for (let i = 0; i < totalIds && scanned < MAX_SCAN && filteredItems.length < targetCount; i++) {
+        const id = shareIds[i];
+        const share = await this.getShare(id);
+        scanned++;
+        if (!share) continue;
+        if (share.originalUrl && share.originalUrl !== '') continue; // 仅保留文生图
+
+        filteredItems.push({
           id: share.id,
           title: `${share.style}変換`,
           style: share.style,
           timestamp: new Date(share.timestamp).toLocaleDateString('ja-JP'),
           createdAt: share.createdAt,
           generatedUrl: share.generatedUrl,
-          originalUrl: share.originalUrl
-        }));
+          originalUrl: share.originalUrl || ''
+        });
+      }
 
-      // 仅展示文生图（originalUrl 为空）并在过滤后再分页
-      const filtered = items.filter(item => !item.originalUrl || item.originalUrl === '');
-      const paginated = filtered.slice(offset, offset + limit);
-      console.log(`📊 分享列表（文生图）: 返回${paginated.length}个，文生图总计${filtered.length}个`);
+      const totalFilteredApprox = filteredItems.length; // 近似值（扫描窗口内）
+      const paginated = filteredItems.slice(Math.min(offset, totalFilteredApprox), Math.min(offset + limit, totalFilteredApprox));
+      const hasMore = totalFilteredApprox > offset + limit || (scanned < totalIds);
+
+      console.log(`📊 分享列表（文生图）: 扫描${scanned}/${totalIds}，返回${paginated.length}个，hasMore=${hasMore}`);
 
       return {
         items: paginated,
-        total: filtered.length,
+        total: totalFilteredApprox,
         limit,
         offset,
-        hasMore: offset + limit < filtered.length
+        hasMore
       };
     } catch (error) {
       console.error('❌ 获取分享列表失败:', error);
