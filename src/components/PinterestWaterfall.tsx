@@ -49,11 +49,11 @@ export default function PinterestWaterfall({
                   height={200}
                   className="w-full h-auto object-cover"
                   sizes="(max-width: 375px) 33vw, (max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                  loading={index < 12 ? "eager" : "lazy"}
-                  priority={index < 8}
-                  quality={85}
+                  loading={index < 6 ? "eager" : "lazy"}
+                  priority={index < 4}
+                  quality={80}
                   placeholder="blur"
-                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjBGMEYwIi8+CjxwYXRoIGQ9Ik0xNTAgMTAwQzE1MCA5NSA1NSAxMDAgNTUgMTAwQzU1IDEwNSAxNTAgMTAwIDE1MCAxMDBaIiBmaWxsPSIjRTBFMEUwIi8+Cjwvc3ZnPgo="
+                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-3 text-white">

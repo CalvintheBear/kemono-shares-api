@@ -45,8 +45,9 @@ export default function ShareGallery() {
     return items.map(item => ({
       id: item.id,
       url: item.generatedUrl,
-      width: 800,
-      height: 600,
+      // 若后端未给尺寸，降级为 4:3，避免前端再次探测
+      width: item.width && item.height ? item.width : 800,
+      height: item.width && item.height ? item.height : 600,
       alt: isEnglish ? `${item.style} Anime Conversion` : `${item.style} アニメ変換`,
     }));
   };

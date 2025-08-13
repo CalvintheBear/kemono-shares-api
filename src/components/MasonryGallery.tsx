@@ -188,32 +188,10 @@ interface MasonryImageCardProps {
 function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [actualHeight, setActualHeight] = useState(0);
 
-  // Calculate initial height based on aspect ratio
+  // 使用传入的宽高比计算占位高度，避免二次网络预加载
   const aspectRatio = image.width && image.height ? image.height / image.width : 1;
-  const initialHeight = Math.round(columnWidth * aspectRatio);
-
-  useEffect(() => {
-    if (!image.url) return;
-
-    const img = new window.Image();
-    img.onload = () => {
-      setIsLoaded(true);
-      // Use actual image dimensions if available
-      const actualRatio = img.naturalWidth && img.naturalHeight 
-        ? img.naturalHeight / img.naturalWidth 
-        : aspectRatio;
-      setActualHeight(Math.round(columnWidth * actualRatio));
-    };
-    img.onerror = () => {
-      setIsError(true);
-      setActualHeight(initialHeight);
-    };
-    img.src = image.url;
-  }, [image.url, columnWidth, aspectRatio, initialHeight]);
-
-  const displayHeight = actualHeight > 0 ? actualHeight : initialHeight;
+  const displayHeight = Math.round(columnWidth * aspectRatio);
 
   return (
     <div
@@ -221,6 +199,9 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
       style={{
         width: `${columnWidth}px`,
         height: `${displayHeight}px`,
+        // 降低首屏渲染与离屏开销
+        contentVisibility: 'auto' as any,
+        containIntrinsicSize: `${displayHeight}px ${columnWidth}px` as any,
       }}
       onClick={() => onClick?.(image)}
     >
@@ -245,6 +226,12 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
         className={`object-cover transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}
+        // 显式惰性加载与快速解码
+        loading="lazy"
+        decoding="async"
+        // 轻量模糊占位，避免白屏
+        placeholder="blur"
+        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
         onLoadingComplete={() => setIsLoaded(true)}
         onError={() => setIsError(true)}
       />

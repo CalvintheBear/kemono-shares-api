@@ -16,7 +16,7 @@ export default function HomeLatestShares() {
     const fetchLatest = async () => {
       try {
         const origin = typeof window !== 'undefined' ? window.location.origin : ''
-        const res = await fetch(`${origin}/api/share/latest`, { cache: 'no-store' })
+        const res = await fetch(`${origin}/api/share/latest`)
         const json = await res.json()
         if (!alive) return
         if (json.success && Array.isArray(json.data?.items)) {
