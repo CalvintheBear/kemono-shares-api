@@ -53,8 +53,8 @@ export default async function generateMetadata(
     if (m === 'gpt4o-image') return 'GPT-4o Image'
     return 'GPT-4o / Flux Kontext'
   })()
-  const title = `${data.style} | ${modelLabel} | ChatGPT AI Prompt | ${shortPrompt}`
-  const description = `${modelLabel} — ChatGPT AI Prompt: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
+  const title = (data as any)?.seo?.titleEn || `${data.style} | ${modelLabel} | ChatGPT AI Prompt | ${shortPrompt}`
+  const description = (data as any)?.seo?.descEn || `${modelLabel} — ChatGPT AI Prompt: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
 
   return {
     title,
@@ -76,5 +76,6 @@ export default async function generateMetadata(
       },
     },
     robots: { index: true, follow: true },
+    keywords: ((data as any)?.seo?.keywordsEn || data.seoTags || []).slice(0, 20).join(', ')
   }
 }

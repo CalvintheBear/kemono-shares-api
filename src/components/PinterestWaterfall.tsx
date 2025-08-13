@@ -36,7 +36,7 @@ export default function PinterestWaterfall({
             onClick={() => {
               const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/')
               const id = encodeURIComponent(item.id)
-              const target = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
+              const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
               window.location.href = target
             }}
           >

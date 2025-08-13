@@ -119,7 +119,18 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       isR2StoredParam: isR2Stored
     });
     
-    // 5. 创建分享数据对象
+    // 5. 生成 SEO 元数据（多语言）
+    let seo: any = undefined
+    try {
+      // 动态导入以兼容 CF Pages Functions 构建
+      const { buildSeoMeta } = await import('../../src/lib/seo-meta.js')
+      seo = buildSeoMeta({ prompt, style, model })
+    } catch (e) {
+      // 忽略失败，继续使用传入的 seoTags
+      seo = undefined
+    }
+
+    // 6. 创建分享数据对象
     const shareDataObject = {
       id: `share_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
       title: prompt ? prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '') : '生成的图片',
@@ -135,13 +146,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       model: typeof model === 'string' ? model : undefined,
       isR2Stored: isR2Stored || isR2Url,
       urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown'),
-      // 可选SEO标签/关键词
-      seoTags: Array.isArray(seoTags) ? seoTags.slice(0, 20) : undefined
+      // 可选SEO标签/关键词（沿用旧字段以保持兼容），并写入新结构 seo
+      seoTags: Array.isArray(seoTags) ? seoTags.slice(0, 20) : (seo?.tagsJa || seo?.tagsEn) || undefined,
+      seo
     };
     
     console.log(`✅ 创建分享对象: ${shareDataObject.id}, 类型: ${generationType}`);
     
-    // 6. 初始化KV存储并创建分享
+    // 7. 初始化KV存储并创建分享
     console.log('🚀 初始化KV存储...');
     const shareStorePost = new ShareStoreWorkers(hasBindingPost ? env.SHARE_DATA_KV : env);
     
@@ -150,7 +162,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`✅ 分享数据已成功存储到KV:`, createdShare);
     
-    // 基于请求来源构建可用的分享URL（使用查询参数形式，避免 Next 静态路由冲突）
+    // 8. 基于请求来源构建可用的分享URL（使用查询参数形式，避免 Next 静态路由冲突）
     const origin = new URL(request.url).origin;
     const shareUrl = `${origin}/share?id=${createdShare.id}`;
     return new Response(JSON.stringify({

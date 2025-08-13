@@ -75,14 +75,14 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 								onClick={() => onImageClick?.(image)}
 							>
             <Image
-              src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=70&fm=webp`}
+              src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=60&fm=webp`}
 									alt={image.alt || (typeof window !== 'undefined' && window.location.pathname.startsWith('/en') ? 'AI generated image' : 'AI生成画像')}
 									fill
 									sizes={`${columnWidth}px`}
 									className="object-cover"
-									unoptimized
-									loading="lazy"
-									decoding="async"
+              unoptimized
+              loading={image ? (typeof window !== 'undefined' && document?.readyState !== 'complete' ? (Math.random() < 0.5 ? 'eager' : 'lazy') : 'lazy') : 'lazy'}
+              decoding="async"
 									placeholder="blur"
 									blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
 								/>

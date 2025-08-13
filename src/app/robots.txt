@@ -10,8 +10,12 @@ Allow: /conversion
 Allow: /personification
 Allow: /icon
 
-# 静的リソースのクロールを許可（JS/CSSのブロックは推奨されません）
-# ここでは特別なブロックを設けません
+# 不要なクロールを制限（SEO対象外のエンドポイント/静的アセット）
+Disallow: /api/
+Disallow: /_next/
+Disallow: /cdn-cgi/
+
+# クエリ版のシェア詳細はクローラ許可（正規URLへ集約はカノニカルで実施）
 
 # サイトマップの場所を指定
 Sitemap: https://2kawaii.com/sitemap.xml

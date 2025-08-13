@@ -50,7 +50,7 @@ export default function MasonryGallery({
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
     triggerOnce: false,
-    rootMargin: '800px',
+    rootMargin: '1200px',
   });
   const autoLoadAttemptsRef = useRef(0);
 
@@ -113,7 +113,7 @@ export default function MasonryGallery({
     }
   }, [inView, hasMore, isLoading, loading, onLoadMore]);
 
-  // 当内容高度不足以填满视口时，自动追加加载，最多尝试2次，避免一次性加载过多
+  // 当内容高度不足以填满视口时，自动追加加载，最多尝试3次，避免一次性加载过多
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!containerRef.current) return;
@@ -121,7 +121,7 @@ export default function MasonryGallery({
 
     const height = containerRef.current.getBoundingClientRect().height;
     const viewport = window.innerHeight || 800;
-    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 2) {
+    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 3) {
       autoLoadAttemptsRef.current += 1;
       setIsLoading(true);
       onLoadMore().finally(() => setIsLoading(false));
@@ -142,7 +142,7 @@ export default function MasonryGallery({
         const viewport = window.innerHeight || 800;
         const docHeight = document.documentElement.scrollHeight || 0;
         const distanceToBottom = docHeight - (scrollY + viewport);
-        if (distanceToBottom < 800 && !isLoading && !loading) {
+        if (distanceToBottom < 1000 && !isLoading && !loading) {
           setIsLoading(true);
           onLoadMore().finally(() => setIsLoading(false));
         }
@@ -271,7 +271,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
       {/* Image */}
       {inView && (
         <Image
-          src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=70&fm=webp`}
+          src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=60&fm=webp`}
           alt={image.alt || 'Gallery image'}
           fill
           sizes={`${columnWidth}px`}
@@ -281,7 +281,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
           // 显式惰性加载与快速解码
           loading="lazy"
           decoding="async"
-          fetchPriority="low"
+          fetchPriority={image.id ? (Number(image.id) % 6 === 0 ? 'high' : 'low') : 'low'}
           // 轻量模糊占位，避免白屏
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="

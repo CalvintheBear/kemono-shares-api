@@ -12,6 +12,15 @@ export class ShareStoreWorkers {
     this.cacheTTL = 5 * 60 * 1000; // 5分钟缓存
   }
 
+  // 简易 slug 化，作为索引键的组成部分
+  _slugify(text) {
+    return String(text || '')
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-\u3040-\u30FF\u4E00-\u9FFF]/g, '')
+      .slice(0, 64)
+  }
+
   // 生成KV键名
   getShareKey(shareId) {
     return `share:${shareId}`;
@@ -23,6 +32,32 @@ export class ShareStoreWorkers {
 
   getStatsKey() {
     return 'share:stats';
+  }
+
+  getStyleIndexKey(style) {
+    return `share:index:style:${this._slugify(style)}`
+  }
+
+  getModelIndexKey(model) {
+    return `share:index:model:${this._slugify(model)}`
+  }
+
+  getTagIndexKey(tag) {
+    return `share:index:tag:${this._slugify(tag)}`
+  }
+
+  async _addToIndexList(key, id, limit = 500) {
+    try {
+      const raw = await this._kvGet(key)
+      let ids = raw ? JSON.parse(raw) : []
+      ids = Array.isArray(ids) ? ids : []
+      ids = ids.filter(x => x !== id)
+      ids.unshift(id)
+      if (ids.length > limit) ids = ids.slice(0, limit)
+      await this._kvPut(key, JSON.stringify(ids), 60 * 60 * 24 * 365)
+    } catch (e) {
+      // 索引失败不影响主流程
+    }
   }
 
   // 创建分享
@@ -38,8 +73,10 @@ export class ShareStoreWorkers {
         timestamp: data.timestamp || Date.now(),
         createdAt: new Date().toISOString(),
         isR2Stored: data.isR2Stored || false,
-        // 存储可选seo标签（数组）
-        seoTags: Array.isArray(data.seoTags) ? data.seoTags.slice(0, 20) : []
+        // 存储可选seo标签（数组）并兼容新结构
+        seoTags: Array.isArray(data.seoTags) ? data.seoTags.slice(0, 20) : [],
+        seo: data.seo || undefined,
+        model: data.model || undefined
       };
 
       // 存储分享数据
@@ -47,6 +84,19 @@ export class ShareStoreWorkers {
 
       // 更新分享列表
       await this.updateShareList(shareId, shareData);
+
+      // 更新常用索引（样式 / 模型 / 标签）
+      await this._addToIndexList(this.getStyleIndexKey(shareData.style), shareId, 500)
+      if (shareData.model) {
+        await this._addToIndexList(this.getModelIndexKey(shareData.model), shareId, 500)
+      }
+      const tagSource = (shareData.seo && Array.isArray(shareData.seo.keywordsJa) && shareData.seo.keywordsJa.length > 0)
+        ? shareData.seo.keywordsJa
+        : (Array.isArray(shareData.seoTags) ? shareData.seoTags : [])
+      const uniqueTags = Array.from(new Set((tagSource || []).map(t => String(t).trim()).filter(Boolean))).slice(0, 3)
+      for (const t of uniqueTags) {
+        await this._addToIndexList(this.getTagIndexKey(t), shareId, 200)
+      }
 
       // 更新统计信息
       await this.updateStats();

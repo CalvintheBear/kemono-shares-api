@@ -45,8 +45,11 @@ export default async function generateMetadata(
   }
 
   const shortPrompt = data.prompt?.slice(0, 50) || ''
-  const title = `${data.style} | チャットGPT・ai プロンプト | ${shortPrompt}`
-  const description = `チャットGPT・AI プロンプト: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
+  // 兼容新结构 seo.titleJa/descJa
+  // @ts-ignore
+  const title = (data as any)?.seo?.titleJa || `${data.style} | チャットGPT・ai プロンプト | ${shortPrompt}`
+  // @ts-ignore
+  const description = (data as any)?.seo?.descJa || `チャットGPT・AI プロンプト: ${data.prompt?.slice(0, 140) || ''}`.slice(0, 160)
 
   return {
     title,
@@ -67,6 +70,8 @@ export default async function generateMetadata(
       },
     },
     robots: { index: true, follow: true },
+    // 提供 keywords（新结构）
+    keywords: ((data as any)?.seo?.keywordsJa || data.seoTags || []).slice(0, 20).join(', ')
   }
 }
 

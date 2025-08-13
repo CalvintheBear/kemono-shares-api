@@ -174,3 +174,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     });
   }
 } 
+
+// 明确 GET 不支持，避免被搜索引擎误抓取报 404
+export async function onRequestGet() {
+  return new Response(JSON.stringify({
+    error: 'Method Not Allowed',
+    message: 'Use POST /api/generate-image instead.'
+  }), {
+    status: 405,
+    headers: { 'Content-Type': 'application/json' }
+  })
+}

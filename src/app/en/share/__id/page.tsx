@@ -87,6 +87,12 @@ export default async function ShareDetailPage({ params }: { params: { id: string
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+          {/* Hero Section: unify with JP version */}
+          <div className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-6 lg:p-8 text-center">
+            <h1 className="text-2xl lg:text-3xl font-bold font-cute">AI Image Conversion Result · Prompt</h1>
+            <p className="opacity-90 mt-2 font-cute">Finished in {data.style} style!</p>
+            <p className="opacity-75 mt-1 text-sm font-cute">Share ID: {data.id}</p>
+          </div>
           <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
             {/* Image Section */}
             <div className="space-y-6">
@@ -158,11 +164,11 @@ export default async function ShareDetailPage({ params }: { params: { id: string
               </div>
 
               {/* Tags */}
-              {data.seoTags && data.seoTags.length > 0 && (
+              {(((data as any)?.seo?.keywordsEn?.length ?? 0) > 0 || (data.seoTags && data.seoTags.length > 0)) && (
                 <div>
                   <h3 className="font-semibold text-text mb-2 font-cute">Tags</h3>
                   <div className="flex flex-wrap gap-2">
-                    {data.seoTags.map((tag, index) => (
+                    {(((data as any)?.seo?.keywordsEn as string[]) || data.seoTags || []).map((tag, index) => (
                       <span
                         key={index}
                         className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute"
@@ -176,19 +182,24 @@ export default async function ShareDetailPage({ params }: { params: { id: string
 
               {/* Action Buttons */}
               <div className="space-y-3">
+                <a
+                  href={data.generatedUrl}
+                  download
+                  className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                >
+                  📥 Download
+                </a>
                 <Link
                   href="/en/workspace"
-                  className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                  className="block w-full bg-white/50 text-text text-center py-3 rounded-full font-bold hover:bg-white/70 transition-all border border-white/50"
                 >
                   Try This Style Yourself
                 </Link>
-                
-                <Link
-                  href="/en/share"
-                  className="block w-full bg-white/50 text-text text-center py-3 rounded-full font-bold hover:bg-white/70 transition-all border border-white/50"
-                >
-                  View More Examples
-                </Link>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <Link href="/en" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">🏠 Home</Link>
+                  <Link href="/en/share" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">🖼️ Gallery</Link>
+                  <Link href="/en/workspace" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">✨ Workspace</Link>
+                </div>
               </div>
 
               {/* Language Alternatives */}

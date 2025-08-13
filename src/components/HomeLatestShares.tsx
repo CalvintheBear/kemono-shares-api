@@ -71,7 +71,7 @@ export default function HomeLatestShares() {
           onImageClick={(img) => {
             const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
             const id = encodeURIComponent(img.id)
-            window.location.href = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
+            window.location.href = isEnglish ? `/en/share/${id}` : `/share/${id}`
           }}
         />
       </div>

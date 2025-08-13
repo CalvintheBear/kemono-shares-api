@@ -25,6 +25,11 @@ export async function onRequest(context: any) {
   newHeaders.set('Vary', 'Origin');
   newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   newHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // 安全与SEO相关响应头（HTTPS 强化与轻量安全）
+  newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  newHeaders.set('X-Content-Type-Options', 'nosniff');
+  newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
 
   return new Response(response.body, {
     status: response.status,

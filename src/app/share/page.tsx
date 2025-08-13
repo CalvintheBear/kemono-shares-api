@@ -88,7 +88,8 @@ function SharePageContent() {
   }
 
   const renderSeoTags = () => {
-    const tags: string[] = (shareData as any)?.seoTags || []
+    const seo = (shareData as any)?.seo
+    const tags: string[] = (seo?.keywordsJa || (shareData as any)?.seoTags) || []
     if (!tags || tags.length === 0) return null
     // 仅展示日文标签，减少中文/英文对检索的影响
     const jaTags = tags.filter(t => /[\u3040-\u30FF\u4E00-\u9FFF]/.test(t)).slice(0, 10)
@@ -154,6 +155,31 @@ function SharePageContent() {
         <head>
           <title>{seoTitle}</title>
           <meta name="description" content={seoDesc} />
+          {/* 统一信号：规范化到 /share/<id>，但允许索引以整合权重 */}
+          {shareId && (
+            <>
+              <link rel="canonical" href={`https://2kawaii.com/share/${shareId}`} />
+              <meta property="og:url" content={`https://2kawaii.com/share/${shareId}`} />
+              <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
+              <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${shareId}`} />
+              <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'CreativeWork',
+                    name: `${shareData?.style || ''} | AI 画像生成`,
+                    description: shareData?.prompt || '',
+                    image: shareData?.generatedUrl || undefined,
+                    url: `https://2kawaii.com/share/${shareId}`,
+                    dateCreated: shareData?.createdAt || undefined,
+                    inLanguage: 'ja'
+                  })
+                }}
+              />
+            </>
+          )}
           <meta property="og:title" content={seoTitle} />
           <meta property="og:description" content={seoDesc} />
           {shareData?.generatedUrl && (

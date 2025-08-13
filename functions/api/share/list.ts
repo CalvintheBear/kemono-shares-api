@@ -22,15 +22,47 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     const url = new URL(request.url);
     const limit = parseInt(url.searchParams.get('limit') || '20');
     const offset = parseInt(url.searchParams.get('offset') || '0');
+    const style = url.searchParams.get('style') || ''
+    const model = url.searchParams.get('model') || ''
+    const tag = url.searchParams.get('tag') || ''
     
     console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}`);
 
     // 2. 初始化KV存储
     const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env);
     
-    // 3. 从KV获取分享列表
-    console.log('📊 正在从KV获取分享列表...');
-    const result = await shareStore.getShareList(limit, offset);
+    // 3. 支持基于样式/模型/标签的索引过滤（任取其一）
+    let result: any = null
+    if (style || model || tag) {
+      console.log('📊 采用索引过滤: ', { style, model, tag })
+      let indexKey = ''
+      if (style) indexKey = shareStore.getStyleIndexKey(style)
+      else if (model) indexKey = shareStore.getModelIndexKey(model)
+      else if (tag) indexKey = shareStore.getTagIndexKey(tag)
+      const raw = indexKey ? await shareStore._kvGet(indexKey) : null
+      const idList: string[] = raw ? JSON.parse(raw) : []
+      const total = idList.length
+      const slice = idList.slice(offset, offset + limit)
+      const items: any[] = []
+      for (const id of slice) {
+        const share = await shareStore.getShare(id)
+        if (!share) continue
+        items.push({
+          id: share.id,
+          title: `${share.style}変換`,
+          style: share.style,
+          timestamp: share.timestamp,
+          createdAt: share.createdAt,
+          generatedUrl: share.generatedUrl,
+          originalUrl: share.originalUrl || ''
+        })
+      }
+      result = { items, total, limit, offset, hasMore: offset + items.length < total }
+    } else {
+      // 3. 从KV获取分享列表
+      console.log('📊 正在从KV获取分享列表...');
+      result = await shareStore.getShareList(limit, offset);
+    }
 
     if (!result || !result.items) {
       console.log('⚠️ 未从KV中获取到分享项目。');
@@ -49,7 +81,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         limit,
         offset,
         hasMore: result.hasMore,
-        filter: 'all' // 因为我们移除了过滤，所以总是'all'
+        filter: style ? `style:${style}` : model ? `model:${model}` : tag ? `tag:${tag}` : 'all'
       }
     }), {
       status: 200,

@@ -53,11 +53,14 @@ export default function ShareDetailPage() {
   const seoTitle = useMemo(() => {
     if (!shareData) return 'AI画像生成 無料 | GPT-4o 画像変換 - 2kawaii'
     const shortPrompt = shareData.prompt?.slice(0, 32) || ''
-    return `${shareData.style} | チャットGPT 画像生成 プロンプト | ${shortPrompt}`
+    // 兼容新结构 seo.titleJa
+    const seoTitleFromData = (shareData as any)?.seo?.titleJa
+    return seoTitleFromData || `${shareData.style} | チャットGPT 画像生成 プロンプト | ${shortPrompt}`
   }, [shareData])
   const seoDesc = useMemo(() => {
     if (!shareData) return 'AI画像生成 ギャラリー | GPT-4oで写真をアニメ風に変換。プロンプト付き。'
-    return `チャットGPT 画像生成 プロンプト: ${shareData.prompt?.slice(0, 120) || ''}`
+    const seoDescFromData = (shareData as any)?.seo?.descJa
+    return seoDescFromData || `チャットGPT 画像生成 プロンプト: ${shareData.prompt?.slice(0, 120) || ''}`
   }, [shareData])
 
   const handleTryNow = () => (window.location.href = '/')
@@ -167,9 +170,9 @@ export default function ShareDetailPage() {
                 </ul>
               </div>
             )}
-            {Array.isArray(shareData.seoTags) && shareData.seoTags.length > 0 && (
+            {(((shareData as any)?.seo?.keywordsJa?.length ?? 0) > 0 || (Array.isArray(shareData.seoTags) && shareData.seoTags.length > 0)) && (
               <div className="flex flex-wrap gap-2 mt-3">
-                {shareData.seoTags.slice(0, 10).map((t, i) => (
+                {(((shareData as any)?.seo?.keywordsJa as string[]) || shareData.seoTags || []).slice(0, 10).map((t, i) => (
                   <span key={i} className="text-xs bg-surface text-text px-2 py-1 rounded-full border border-border">#{t}</span>
                 ))}
               </div>

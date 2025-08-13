@@ -38,7 +38,7 @@ export default function ShareGallery() {
   const lastRequestRef = useRef<number>(0);
   const inFlightRef = useRef<boolean>(false);
 
-  const ITEMS_PER_PAGE = 30;
+  const ITEMS_PER_PAGE = 18;
 
   // Transform share items to masonry images
   const transformToMasonryImages = (items: ShareItem[]): MasonryImage[] => {
@@ -137,10 +137,10 @@ export default function ShareGallery() {
 
 
 
-  // Handle image click - use query param fallback to be compatible with static export
+  // Handle image click - prefer path-style detail route; static export仍由 _redirects 兜底
   const handleImageClick = (image: MasonryImage) => {
     const id = encodeURIComponent(image.id)
-    const target = isEnglish ? `/en/share?id=${id}` : `/share?id=${id}`
+    const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
     window.location.href = target
   };
 
