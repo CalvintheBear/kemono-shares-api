@@ -48,10 +48,11 @@ export default function MasonryGallery({
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { ref: loadMoreRef, inView } = useInView({
-    threshold: 0.5, // Require 50% visibility
+    threshold: 0,
     triggerOnce: false,
-    rootMargin: '50px', // Smaller trigger area
+    rootMargin: '800px', // 提前加载，避免识别不到
   });
+  const autoLoadAttemptsRef = useRef(0);
 
   // Calculate column count based on container width
   const columnCount = useMemo(() => {
@@ -111,6 +112,21 @@ export default function MasonryGallery({
       onLoadMore().finally(() => setIsLoading(false));
     }
   }, [inView, hasMore, isLoading, loading, onLoadMore]);
+
+  // 当内容高度不足以填满视口时，自动追加加载，最多尝试3次，避免一次性加载过多
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!containerRef.current) return;
+    if (!hasMore || isLoading || loading) return;
+
+    const height = containerRef.current.getBoundingClientRect().height;
+    const viewport = window.innerHeight || 800;
+    if (height < viewport * 0.9 && autoLoadAttemptsRef.current < 3) {
+      autoLoadAttemptsRef.current += 1;
+      setIsLoading(true);
+      onLoadMore().finally(() => setIsLoading(false));
+    }
+  }, [columns, hasMore, isLoading, loading, onLoadMore]);
 
   // Handle window resize with debouncing
   useEffect(() => {
