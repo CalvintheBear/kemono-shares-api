@@ -115,39 +115,56 @@ export class ShareStoreWorkers {
       const shareIds = JSON.parse(listData);
       const totalIds = shareIds.length;
 
-      // 扫描最近的分享ID，先过滤出文生图，再按 offset/limit 切片
-      const MAX_SCAN = 500; // 限制最大扫描量，避免过多KV请求
-      const targetCount = offset + limit; // 为了判断 hasMore，需要至少拿到 offset+limit 条
-      const filteredItems = [];
+      // 单次遍历，边过滤边做分页，直到判断出 hasMore
+      const pageItems = [];
+      let textCount = 0;
       let scanned = 0;
+      let hasMore = false;
 
-      for (let i = 0; i < totalIds && scanned < MAX_SCAN && filteredItems.length < targetCount; i++) {
+      for (let i = 0; i < totalIds; i++) {
         const id = shareIds[i];
         const share = await this.getShare(id);
         scanned++;
         if (!share) continue;
-        if (share.originalUrl && share.originalUrl !== '') continue; // 仅保留文生图
+        if (share.originalUrl && share.originalUrl !== '') continue; // 仅文生图
 
-        filteredItems.push({
-          id: share.id,
-          title: `${share.style}変換`,
-          style: share.style,
-          timestamp: new Date(share.timestamp).toLocaleDateString('ja-JP'),
-          createdAt: share.createdAt,
-          generatedUrl: share.generatedUrl,
-          originalUrl: share.originalUrl || ''
-        });
+        // 当前已匹配的文生图数量
+        textCount++;
+
+        // 收集当前页数据：索引区间 (offset, offset+limit]
+        if (textCount > offset && pageItems.length < limit) {
+          pageItems.push({
+            id: share.id,
+            title: `${share.style}変換`,
+            style: share.style,
+            timestamp: new Date(share.timestamp).toLocaleDateString('ja-JP'),
+            createdAt: share.createdAt,
+            generatedUrl: share.generatedUrl,
+            originalUrl: share.originalUrl || ''
+          });
+        }
+
+        // 如果已经凑满当前页，再看看是否还能找到下一条以确定 hasMore
+        if (pageItems.length >= limit) {
+          // 继续向后找是否还有第 (offset+limit+1) 条
+          for (let j = i + 1; j < totalIds; j++) {
+            const nid = shareIds[j];
+            const nshare = await this.getShare(nid);
+            scanned++;
+            if (!nshare) continue;
+            if (nshare.originalUrl && nshare.originalUrl !== '') continue;
+            hasMore = true;
+            break;
+          }
+          break;
+        }
       }
 
-      const totalFilteredApprox = filteredItems.length; // 近似值（扫描窗口内）
-      const paginated = filteredItems.slice(Math.min(offset, totalFilteredApprox), Math.min(offset + limit, totalFilteredApprox));
-      const hasMore = totalFilteredApprox > offset + limit || (scanned < totalIds);
-
-      console.log(`📊 分享列表（文生图）: 扫描${scanned}/${totalIds}，返回${paginated.length}个，hasMore=${hasMore}`);
+      console.log(`📊 分享列表（文生图）: 扫描${scanned}/${totalIds}，匹配${textCount}个，返回${pageItems.length}个，hasMore=${hasMore}`);
 
       return {
-        items: paginated,
-        total: totalFilteredApprox,
+        items: pageItems,
+        total: textCount,
         limit,
         offset,
         hasMore

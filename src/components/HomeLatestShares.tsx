@@ -64,7 +64,8 @@ export default function HomeLatestShares() {
     }
     return (
       <div className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <div className="pinterest-gallery">
+        <div className="flex justify-center">
+          <div className="pinterest-gallery inline-block">
           {items.slice(0, 12).map((it, index) => (
             <div key={it.id} className="pinterest-item group cursor-pointer mb-4">
               <a href={`/share?id=${encodeURIComponent(it.id)}`} className="block bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -84,6 +85,7 @@ export default function HomeLatestShares() {
               </a>
             </div>
           ))}
+          </div>
         </div>
       </div>
     )
