@@ -7,8 +7,8 @@ import { useInView } from 'react-intersection-observer';
 interface MasonryImage {
   id: string;
   url: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   blurDataUrl?: string;
   alt?: string;
 }
@@ -188,10 +188,13 @@ interface MasonryImageCardProps {
 function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [actualHeight, setActualHeight] = useState(0);
+  const { ref: inViewRef, inView } = useInView({ rootMargin: '400px', triggerOnce: true });
 
-  // 使用传入的宽高比计算占位高度，避免二次网络预加载
+  // 使用传入的宽高比计算占位高度，图片加载完成后根据真实尺寸纠正
   const aspectRatio = image.width && image.height ? image.height / image.width : 1;
-  const displayHeight = Math.round(columnWidth * aspectRatio);
+  const initialHeight = Math.round(columnWidth * aspectRatio);
+  const displayHeight = actualHeight > 0 ? actualHeight : initialHeight;
 
   return (
     <div
@@ -203,6 +206,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
         contentVisibility: 'auto' as any,
         containIntrinsicSize: `${displayHeight}px ${columnWidth}px` as any,
       }}
+      ref={inViewRef}
       onClick={() => onClick?.(image)}
     >
       {/* Loading placeholder */}
@@ -218,23 +222,32 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
       )}
 
       {/* Image */}
-      <Image
-        src={image.url}
-        alt={image.alt || 'Gallery image'}
-        fill
-        sizes={`${columnWidth}px`}
-        className={`object-cover transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-        // 显式惰性加载与快速解码
-        loading="lazy"
-        decoding="async"
-        // 轻量模糊占位，避免白屏
-        placeholder="blur"
-        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
-        onLoadingComplete={() => setIsLoaded(true)}
-        onError={() => setIsError(true)}
-      />
+      {inView && (
+        <Image
+          src={image.url}
+          alt={image.alt || 'Gallery image'}
+          fill
+          sizes={`${columnWidth}px`}
+          className={`object-cover transition-opacity duration-300 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          // 显式惰性加载与快速解码
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          // 轻量模糊占位，避免白屏
+          placeholder="blur"
+          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
+          onLoadingComplete={(img) => {
+            setIsLoaded(true);
+            const naturalRatio = img.naturalWidth && img.naturalHeight
+              ? img.naturalHeight / img.naturalWidth
+              : aspectRatio;
+            setActualHeight(Math.round(columnWidth * naturalRatio));
+          }}
+          onError={() => setIsError(true)}
+        />
+      )}
 
       {/* Overlay on hover */}
       <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300">

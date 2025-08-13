@@ -20,8 +20,8 @@ interface ShareItem {
 interface MasonryImage {
   id: string;
   url: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   alt?: string;
 }
 
@@ -38,16 +38,16 @@ export default function ShareGallery() {
   const lastRequestRef = useRef<number>(0);
   const inFlightRef = useRef<boolean>(false);
 
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 12;
 
   // Transform share items to masonry images
   const transformToMasonryImages = (items: ShareItem[]): MasonryImage[] => {
     return items.map(item => ({
       id: item.id,
       url: item.generatedUrl,
-      // 若后端未给尺寸，降级为 4:3，避免前端再次探测
-      width: item.width && item.height ? item.width : 800,
-      height: item.width && item.height ? item.height : 600,
+      // 优先使用后端尺寸；若缺失，不强制占比，加载完成后再以自然尺寸纠正
+      width: item.width || undefined,
+      height: item.height || undefined,
       alt: isEnglish ? `${item.style} Anime Conversion` : `${item.style} アニメ変換`,
     }));
   };
