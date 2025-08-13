@@ -16,9 +16,15 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     
     console.log(`🔄 开始下载并上传流程: ${imageUrl}, taskId: ${taskId}`);
     
-    // 获取 Kie.ai API 密钥
-    const kieApiKey = env.KIE_AI_API_KEY;
-    if (!kieApiKey) {
+    // 获取 Kie.ai API 密钥池（最多5个），并在并发下做分流+回退
+    const keyPool = [
+      env.KIE_AI_API_KEY,
+      env.KIE_AI_API_KEY_2,
+      env.KIE_AI_API_KEY_3,
+      env.KIE_AI_API_KEY_4,
+      env.KIE_AI_API_KEY_5,
+    ].filter((k: string | undefined) => !!k) as string[]
+    if (keyPool.length === 0) {
       return new Response(JSON.stringify({ error: 'Kie.ai API 密钥未配置' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -62,28 +68,53 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       
       console.log(`📤 发送请求到KIE AI:`, JSON.stringify(downloadRequestBody, null, 2));
       
-      const downloadResponse = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${kieApiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(downloadRequestBody)
-      });
-      
+      // 采用密钥池随机起点轮询回退，提升并发分流能力
+      let downloadResponse: Response | null = null
+      const start = Math.floor(Math.random() * keyPool.length)
+      let lastErrText = ''
+      for (let i = 0; i < keyPool.length; i++) {
+        const key = keyPool[(start + i) % keyPool.length]
+        try {
+          const resp = await fetch('https://api.kie.ai/api/v1/gpt4o-image/download-url', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${key}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(downloadRequestBody)
+          })
+          if (resp.ok) {
+            downloadResponse = resp
+            console.log(`[KEY OK] 下载直链使用密钥#${(start + i) % keyPool.length + 1}`)
+            break
+          } else {
+            lastErrText = await resp.text()
+            console.warn(`[KEY FAIL] 下载直链密钥#${(start + i) % keyPool.length + 1} 响应 ${resp.status} ${resp.statusText}`)
+          }
+        } catch (e) {
+          lastErrText = e instanceof Error ? e.message : String(e)
+          console.warn(`[KEY ERROR] 下载直链密钥#${(start + i) % keyPool.length + 1} 异常:`, lastErrText)
+        }
+      }
+
+      if (!downloadResponse) {
+        return new Response(JSON.stringify({ error: '获取下载直链失败', details: lastErrText }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+      }
+
       if (!downloadResponse.ok) {
         const errorText = await downloadResponse.text();
         console.error(`❌ 获取下载直链失败: ${downloadResponse.status} ${downloadResponse.statusText}`, errorText);
         return new Response(JSON.stringify({ 
           error: '获取下载直链失败',
           status: downloadResponse.status,
-          message: downloadResponse.statusText
+          message: downloadResponse.statusText,
+          details: errorText
         }), {
           status: downloadResponse.status,
           headers: { 'Content-Type': 'application/json' }
         });
       }
-      
+
       const downloadData = await downloadResponse.json();
       console.log(`✅ KIE AI 下载URL API 响应:`, downloadData);
       
