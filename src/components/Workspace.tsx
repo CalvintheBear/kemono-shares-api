@@ -1310,6 +1310,7 @@ useEffect(() => {
 
   // 移动端布局组件
   const MobileLayout = () => {
+    const [isSizePickerOpen, setIsSizePickerOpen] = useState(false)
     const isUploadDisabled = mode === 'text-to-image'
     return (
       <div className="min-h-screen bg-[var(--bg)] flex flex-col">
@@ -1674,28 +1675,54 @@ useEffect(() => {
             </select>
           </div>
           <div className="p-2 border border-border rounded-lg">
-            <details>
-              <summary className="w-full px-2.5 py-1.5 rounded-lg text-sm bg-white border border-border flex items-center justify-between cursor-pointer select-none">
-                <span className="inline-flex items-center gap-2">
-                  <span className="inline-flex items-center justify-center">{renderRatioIcon(selectedSize, 16)}</span>
-                  <span className="font-medium">{selectedSize}</span>
-                </span>
-                <span className="text-text-muted">▾</span>
-              </summary>
-              <div className="mt-2 grid grid-cols-1 min-[380px]:grid-cols-2 gap-1.5 max-h-48 overflow-auto pr-1">
-                {(derivedSizes as ImageSize[]).map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-full flex items-center gap-2 px-2 py-1 rounded-lg text-[11px] sm:text-xs border whitespace-nowrap justify-start ${selectedSize === size ? 'btn-primary text-white' : 'bg-white text-text border-border'}`}
-                    aria-label={`size-${size}`}
-                  >
-                    <span className="inline-flex items-center justify-center">{renderRatioIcon(size, 14)}</span>
-                    <span className="font-medium">{size}</span>
-                  </button>
-                ))}
+            <button
+              onClick={() => setIsSizePickerOpen(true)}
+              className="w-full px-2.5 py-1.5 rounded-lg text-sm bg-white border border-border flex items-center justify-between"
+              aria-haspopup="dialog"
+              aria-expanded={isSizePickerOpen}
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center justify-center">{renderRatioIcon(selectedSize, 16)}</span>
+                <span className="font-medium">{selectedSize}</span>
+              </span>
+              <span className="text-text-muted">▾</span>
+            </button>
+
+            {isSizePickerOpen && (
+              <div
+                role="dialog"
+                aria-modal="true"
+                className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40"
+                onClick={() => setIsSizePickerOpen(false)}
+              >
+                <div
+                  className="w-full sm:w-[420px] max-h-[70vh] bg-white rounded-t-2xl sm:rounded-2xl shadow-xl border border-border overflow-hidden mb-16 sm:mb-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-text">{isEnglish ? 'Select size' : 'サイズを選択'}</h3>
+                    <button onClick={() => setIsSizePickerOpen(false)} className="text-text-muted">✕</button>
+                  </div>
+                  <div className="p-3 overflow-auto max-h-[60vh] pb-20 sm:pb-4">
+                    <div className="flex flex-col gap-1.5">
+                      {(derivedSizes as ImageSize[]).map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => { setSelectedSize(size); setIsSizePickerOpen(false) }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm border ${selectedSize === size ? 'btn-primary text-white' : 'bg-white text-text border-border'}`}
+                          aria-label={`size-${size}`}
+                        >
+                          <span className="inline-flex items-center gap-2">
+                            <span className="inline-flex items-center justify-center">{renderRatioIcon(size, 16)}</span>
+                            <span className="font-medium">{size}</span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </details>
+            )}
           </div>
         </div>
       </div>
@@ -1895,6 +1922,16 @@ useEffect(() => {
                     <p className="text-xs text-text">{isEnglish ? 'Up to 10MB supported' : '10MBまでの画像OK！'}</p>
                   </div>
                 )}
+              </div>
+            )}
+
+            {mode === 'template-mode' && (
+              <div className="mt-2 text-center">
+                <p className="text-xs text-text-muted">
+                  {isEnglish
+                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                </p>
               </div>
             )}
 
@@ -2273,7 +2310,7 @@ className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-c
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      {isMobile ? MobileLayout() : DesktopLayout()}
+      {isMobile ? <MobileLayout /> : <DesktopLayout />}
 {/* 選べる変身スタイル セクション（页面底部） */}
 <div className="pt-6 pb-12 lg:pt-8 lg:pb-20">
   <TemplateGallery />

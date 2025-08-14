@@ -155,17 +155,15 @@ export default async function ShareDetailPage({ params }: { params: { id: string
                 </div>
               </div>
 
-              {/* Highlights (mirroring JP detail) */}
-              {data.prompt && (
-                <div className="bg-white/60 rounded-2xl p-6">
-                  <h2 className="text-xl font-bold text-text mb-3 font-cute">Work Highlights</h2>
-                  <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
-                    <li>Style: {data.style}</li>
-                    <li>Theme: {(data.prompt || '').slice(0, 60)}...</li>
-                    <li>Generation process: {generationProcess}</li>
-                  </ul>
-                </div>
-              )}
+              {/* Highlights (mirroring JP detail, always show with fallbacks) */}
+              <div className="bg-white/60 rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-text mb-3 font-cute">Work Highlights</h2>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
+                  <li>Style: {data.style || 'Custom'}</li>
+                  <li>Theme: {(data.prompt || 'N/A').slice(0, 60)}{(data.prompt || '').length > 60 ? '...' : ''}</li>
+                  <li>Generation process: {generationProcess}</li>
+                </ul>
+              </div>
 
               {/* Style Info */}
               <div className="grid grid-cols-2 gap-4">
@@ -179,22 +177,30 @@ export default async function ShareDetailPage({ params }: { params: { id: string
                 </div>
               </div>
 
-              {/* Tags */}
-              {(((data as any)?.seo?.keywordsEn?.length ?? 0) > 0 || (data.seoTags && data.seoTags.length > 0)) && (
-                <div>
-                  <h3 className="font-semibold text-text mb-2 font-cute">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {(((data as any)?.seo?.keywordsEn as string[]) || data.seoTags || []).map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
+              {/* Tags (fallback to JA or legacy seoTags) */}
+              {(() => {
+                const seo: any = (data as any).seo || {}
+                const tags: string[] = (seo.keywordsEn && seo.keywordsEn.length > 0)
+                  ? seo.keywordsEn
+                  : (seo.keywordsJa && seo.keywordsJa.length > 0)
+                    ? seo.keywordsJa
+                    : (data.seoTags || [])
+                return tags && tags.length > 0 ? (
+                  <div>
+                    <h3 className="font-semibold text-text mb-2 font-cute">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : null
+              })()}
 
               {/* Action Buttons */}
               <div className="space-y-3">
