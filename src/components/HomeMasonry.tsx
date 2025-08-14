@@ -70,7 +70,7 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 						{(columns[col] || []).map(image => {
 							const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
 							const id = encodeURIComponent(image.id)
-							const href = isEnglish ? `/en/share/${id}` : `/share/${id}`
+							const href = isEnglish ? `/en/share/${id}?id=${id}` : `/share/${id}?id=${id}`
 							return (
 								<a
 									key={image.id}

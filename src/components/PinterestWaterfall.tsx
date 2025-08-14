@@ -32,7 +32,7 @@ export default function PinterestWaterfall({
         {items.map((item, index) => {
           const isEnglish = typeof window !== 'undefined' && (location.pathname === '/en' || location.pathname.startsWith('/en/'))
           const id = encodeURIComponent(item.id)
-          const href = isEnglish ? `/en/share/${id}` : `/share/${id}`
+          const href = isEnglish ? `/en/share/${id}?id=${id}` : `/share/${id}?id=${id}`
           return (
             <a key={item.id} href={href} className="pinterest-item group cursor-pointer mb-4 block">
             <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
