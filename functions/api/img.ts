@@ -27,7 +27,7 @@ export async function onRequestGet({ request }: { request: Request }) {
       imageOpts.format = fm
     }
 
-    const upstream = await fetch(url, { cf: { image: imageOpts } as any })
+    const upstream = await fetch(url, { cf: { image: imageOpts } } as any)
     if (!upstream.ok) {
       // Fallback to direct fetch without resizing
       const raw = await fetch(url)
