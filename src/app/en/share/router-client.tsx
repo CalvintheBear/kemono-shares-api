@@ -37,6 +37,14 @@ function Content() {
     }
     if (id) {
       setShareId(id)
+      // 将地址规范化为 /en/share/<id>?id=<id>
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname
+        if (currentPath === '/en/share' || currentPath === '/en/share/') {
+          const newUrl = `/en/share/${encodeURIComponent(id)}${searchParams?.get('id') ? `?id=${encodeURIComponent(id)}` : ''}`
+          try { window.history.replaceState(null, '', newUrl) } catch {}
+        }
+      }
     } else {
       setShareId(null)
       setShareData(null)
