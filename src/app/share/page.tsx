@@ -228,12 +228,13 @@ function SharePageContent() {
             <div className="p-8">
           <div className="flex justify-center">
             <Image
-              src={shareData.generatedUrl}
+              src={`/api/img?u=${encodeURIComponent(shareData.generatedUrl)}&w=1200&q=85&fm=webp`}
               alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
               width={1200}
               height={800}
               unoptimized
               className="rounded-2xl shadow-lg max-w-full h-auto"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
               onError={(e) => {
                 const target = e.target as HTMLImageElement
                 target.style.display = 'none'

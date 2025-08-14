@@ -201,7 +201,7 @@ export default function MasonryGallery({
       <div className="flex gap-4">
         {columns.map((column, columnIndex) => (
           <div key={columnIndex} className="flex-1 flex flex-col gap-4">
-            {column.items.map((image) => {
+            {column.items.map((image, itemIndex) => {
               const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
               const id = encodeURIComponent(image.id)
               const href = isEnglish ? `/en/share/${id}?id=${id}` : `/share/${id}?id=${id}`
@@ -210,6 +210,8 @@ export default function MasonryGallery({
                   <MasonryImageCard
                     image={image}
                     columnWidth={columnWidth}
+                    columnIndex={columnIndex}
+                    itemIndex={itemIndex}
                     onClick={onImageClick}
                   />
                 </a>
@@ -235,10 +237,12 @@ export default function MasonryGallery({
 interface MasonryImageCardProps {
   image: MasonryImage;
   columnWidth: number;
+  columnIndex: number;
+  itemIndex: number;
   onClick?: (image: MasonryImage) => void;
 }
 
-function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps) {
+function MasonryImageCard({ image, columnWidth, columnIndex, itemIndex, onClick }: MasonryImageCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
   const [actualHeight, setActualHeight] = useState(0);
@@ -287,7 +291,7 @@ function MasonryImageCard({ image, columnWidth, onClick }: MasonryImageCardProps
           // 显式惰性加载与快速解码
           loading="lazy"
           decoding="async"
-          fetchPriority={image.id ? (Number(image.id) % 6 === 0 ? 'high' : 'low') : 'low'}
+          fetchPriority={(columnIndex < 3 && itemIndex < 2) ? 'high' : 'low'}
           // 轻量模糊占位，避免白屏
           placeholder="blur"
           blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEwIDciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjciIGZpbGw9IiNlZWUiLz48L3N2Zz4="
