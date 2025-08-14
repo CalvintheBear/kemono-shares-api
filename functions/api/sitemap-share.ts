@@ -19,8 +19,8 @@ export async function onRequestGet({ env }: { env: any }) {
     const origin = env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
 
     const urls = items.map((it: any) => {
-      const locJa = `${origin}/share/${it.id}`
-      const locEn = `${origin}/en/share/${it.id}`
+      const locJa = `${origin}/share/${it.id}?id=${encodeURIComponent(it.id)}`
+      const locEn = `${origin}/en/share/${it.id}?id=${encodeURIComponent(it.id)}`
       const lastmod = new Date(it.createdAt || it.timestamp || Date.now()).toISOString()
       return `  <url>
     <loc>${locJa}</loc>
