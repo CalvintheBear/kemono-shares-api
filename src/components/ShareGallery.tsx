@@ -184,12 +184,8 @@ export default function ShareGallery() {
 
 
 
-  // Handle image click - prefer path-style detail route; static export仍由 _redirects 兜底
-  const handleImageClick = (image: MasonryImage) => {
-    const id = encodeURIComponent(image.id)
-    const target = isEnglish ? `/en/share/${id}` : `/share/${id}`
-    window.location.href = target
-  };
+  // 仍保留回调给统计用，但不再改变路由，避免覆盖 <a href>
+  const handleImageClick = (_image: MasonryImage) => {};
 
   return (
     <div className="w-full">

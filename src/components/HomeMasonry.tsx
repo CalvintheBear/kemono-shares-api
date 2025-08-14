@@ -78,7 +78,6 @@ export default function HomeMasonry({ images, onImageClick }: HomeMasonryProps) 
 									href={href}
 									style={{ width: `${columnWidth}px`, height: `${image.height}px`, contentVisibility: 'auto' as any, containIntrinsicSize: `${image.height}px ${columnWidth}px` as any }}
 									className="relative overflow-hidden rounded-xl bg-white shadow block"
-									onClick={() => onImageClick?.(image)}
 								>
 									<Image
 										src={`/api/img?u=${encodeURIComponent(image.url)}&w=${columnWidth}&q=60`}
