@@ -53,6 +53,10 @@ NODE_ENV = "production"
 id = "77b81f5b787b449e931fa6a51263b38c"
 binding = "SHARE_DATA_KV"
 
+[[env.production.kv_namespaces]]
+id = "c0cbc704463a4d1882cc8f1b23d5fd7a"
+binding = "RATE_LIMIT_KV"
+
 [[env.production.r2_buckets]]
 bucket_name = "kemono-afterimage"
 binding = "AFTERIMAGE_BUCKET"
