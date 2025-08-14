@@ -51,6 +51,27 @@ export class ShareStoreWorkers {
     return 'share:index:text:all'
   }
 
+  // 文生图最新条目（精简字段）索引键
+  getTextLatestKey() {
+    return 'share:index:text:latest'
+  }
+
+  // 维护最新条目列表，存储精简对象，便于首页极速读取
+  async _addToLatestList(key, item, limit = 200) {
+    try {
+      const raw = await this._kvGet(key)
+      let list = raw ? JSON.parse(raw) : []
+      if (!Array.isArray(list)) list = []
+      // 去重并插入头部
+      list = list.filter((x) => x && x.id !== item.id)
+      list.unshift(item)
+      if (list.length > limit) list = list.slice(0, limit)
+      await this._kvPut(key, JSON.stringify(list), 60 * 60 * 24 * 7)
+    } catch (e) {
+      // 索引失败不影响主流程
+    }
+  }
+
   async _addToIndexList(key, id, limit = 500) {
     try {
       const raw = await this._kvGet(key)
@@ -106,6 +127,13 @@ export class ShareStoreWorkers {
       // 文生图快速索引：仅 originalUrl 为空时加入
       if (!shareData.originalUrl || shareData.originalUrl === '') {
         await this._addToIndexList(this.getTextIndexKey(), shareId, 1000)
+        // 同步更新最新条目索引（精简字段）
+        await this._addToLatestList(this.getTextLatestKey(), {
+          id: shareId,
+          generatedUrl: shareData.generatedUrl,
+          style: shareData.style,
+          timestamp: shareData.timestamp,
+        }, 200)
       }
 
       // 更新统计信息

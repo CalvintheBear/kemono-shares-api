@@ -33,9 +33,21 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       })
     }
 
-    // 刷新最新12个
-    const list = await shareStore.getShareList(12, 0)
-    let items = Array.isArray(list?.items) ? list.items.slice(0, 12) : []
+    // 优先读取精简最新索引，避免逐条查询
+    let items: any[] = []
+    try {
+      const rawLatest = await shareStore._kvGet?.(shareStore.getTextLatestKey())
+      const simpleList = rawLatest ? JSON.parse(rawLatest) : []
+      if (Array.isArray(simpleList) && simpleList.length > 0) {
+        items = simpleList.slice(0, 12)
+      }
+    } catch {}
+
+    // 回退：从常规列表获取
+    if (!items || items.length === 0) {
+      const list = await shareStore.getShareList(12, 0)
+      items = Array.isArray(list?.items) ? list.items.slice(0, 12) : []
+    }
 
     // 若没有取到新数据，则保持KV中已有的12个，避免清空
     if ((!items || items.length === 0) && Array.isArray(cached?.items)) {

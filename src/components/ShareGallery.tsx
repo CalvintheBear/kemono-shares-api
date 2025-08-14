@@ -31,6 +31,7 @@ export default function ShareGallery() {
   const [hasMore, setHasMore] = useState(true);
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const [scanCursor, setScanCursor] = useState<number | null>(null);
   const pathname = usePathname();
   
   const isEnglish = pathname?.startsWith('/en/') || pathname === '/en';
@@ -73,7 +74,17 @@ export default function ShareGallery() {
       console.log('Fetching share items, offset:', offset, 'append:', append);
       
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const apiUrl = `${origin}/api/share/list?limit=${ITEMS_PER_PAGE}&offset=${offset}&sort=createdAt&order=desc`;
+      const url = new URL(`${origin}/api/share/list`);
+      url.searchParams.set('limit', String(ITEMS_PER_PAGE));
+      url.searchParams.set('offset', String(offset));
+      url.searchParams.set('sort', 'createdAt');
+      url.searchParams.set('order', 'desc');
+      // 渐进扫描：如果后端返回了cursor，则携带cursor继续扫描；带上时间预算tb以尽快返回部分结果
+      if (scanCursor !== null && scanCursor !== undefined) {
+        url.searchParams.set('cursor', String(scanCursor));
+        url.searchParams.set('tb', '200');
+      }
+      const apiUrl = url.toString();
       const response = await fetch(apiUrl, {
         // 允许浏览器/边缘缓存按照响应头策略工作
         cache: 'default'
@@ -96,7 +107,14 @@ export default function ShareGallery() {
           setImages(newImages);
         }
 
-        setHasMore(result.data.hasMore || false);
+        // 若后端提供cursor，优先依据cursor判断是否还有更多（即使hasMore为false）
+        const nextCursor = typeof result.data.cursor === 'number' ? result.data.cursor : (result.data.cursor ? Number(result.data.cursor) : null);
+        if (nextCursor !== null && !Number.isNaN(nextCursor)) {
+          setScanCursor(nextCursor);
+        } else {
+          setScanCursor(null);
+        }
+        setHasMore(Boolean(result.data.hasMore || nextCursor !== null));
         setCurrentOffset(offset + newImages.length);
         
         // Prevent infinite loop if no new items
@@ -125,6 +143,7 @@ export default function ShareGallery() {
     setImages([]);
     setHasMore(true);
     setCurrentOffset(0);
+    setScanCursor(null);
     fetchShareItems(0, false);
   }, [isEnglish]);
 

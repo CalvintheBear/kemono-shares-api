@@ -25,6 +25,9 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     const style = url.searchParams.get('style') || ''
     const model = url.searchParams.get('model') || ''
     const tag = url.searchParams.get('tag') || ''
+    const cursorParam = url.searchParams.get('cursor')
+    const cursor = cursorParam ? Math.max(0, parseInt(cursorParam)) : 0
+    const timeBudgetMs = Math.min(500, Math.max(100, parseInt(url.searchParams.get('tb') || '200')))
     
     console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}`);
 
@@ -85,10 +88,57 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         }
       } catch {}
 
-      // 回退兜底：仍可从原有路径构建
+      // 回退兜底（逐步扫描，按时间预算提前返回，并提供cursor继续扫描）
       if (!result) {
-        console.log('📊 正在从KV获取分享列表...');
-        result = await shareStore.getShareList(limit, offset);
+        console.log('📊 采用回退扫描路径: 支持按时间预算提前返回');
+        const listRaw = await shareStore._kvGet?.(shareStore.getListKey())
+        const shareIds: string[] = listRaw ? JSON.parse(listRaw) : []
+        const totalIds = shareIds.length
+        const startTime = Date.now()
+        let nextCursor = cursor
+        let scanned = 0
+        let matchedCount = 0
+        const items: any[] = []
+
+        for (let i = cursor; i < totalIds; i++) {
+          const id = shareIds[i]
+          const share = await shareStore.getShare(id)
+          nextCursor = i + 1
+          scanned++
+          if (!share) continue
+          if (share.originalUrl && share.originalUrl !== '') continue
+          // 匹配到文生图
+          matchedCount++
+          if (matchedCount <= offset) {
+            // 跳过到offset
+            continue
+          }
+          if (items.length < limit) {
+            items.push({
+              id: share.id,
+              title: `${share.style}変換`,
+              style: share.style,
+              timestamp: share.timestamp,
+              createdAt: share.createdAt,
+              generatedUrl: share.generatedUrl,
+              originalUrl: share.originalUrl || ''
+            })
+          }
+          // 满足数量即返回
+          if (items.length >= limit) break
+          // 时间预算到达且已有部分结果，先返回以加速首屏
+          if (Date.now() - startTime > timeBudgetMs && items.length > 0) break
+        }
+
+        const hasMore = nextCursor < totalIds
+        result = {
+          items,
+          total: undefined,
+          limit,
+          offset,
+          hasMore: hasMore || (items.length >= limit),
+          cursor: hasMore ? nextCursor : undefined
+        }
       }
     }
 
@@ -109,6 +159,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         limit,
         offset,
         hasMore: result.hasMore,
+        cursor: result.cursor,
         filter: style ? `style:${style}` : model ? `model:${model}` : tag ? `tag:${tag}` : 'all'
       }
     }), {
