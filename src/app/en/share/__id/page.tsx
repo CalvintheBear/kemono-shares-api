@@ -53,6 +53,14 @@ export default async function ShareDetailPage({ params }: { params: { id: string
     return 'GPT-4o / Flux Kontext automatic optimization'
   })()
 
+  const modelLabel = (() => {
+    const m = (data as any).model
+    if (m === 'flux-kontext-pro') return 'Flux Kontext Pro'
+    if (m === 'flux-kontext-max') return 'Flux Kontext Max'
+    if (m === 'gpt4o-image') return 'GPT-4o Image'
+    return 'GPT-4o / Flux Kontext'
+  })()
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
       <head>
@@ -129,10 +137,18 @@ export default async function ShareDetailPage({ params }: { params: { id: string
                 <p className="text-text-muted font-cute">Created on {formattedDate}</p>
               </div>
 
+              {/* JP-like chips row (style/date/model) */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{data.style}</span>
+                <span className="text-text-muted text-sm font-cute">{formattedDate}</span>
+                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{modelLabel}</span>
+              </div>
+
               {/* AI Prompt Section */}
               <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-6">
                 <h2 className="text-xl font-bold text-text mb-3 font-cute">🤖 AI Prompt</h2>
                 <div className="bg-white/50 rounded-xl p-4">
+                  <h3 className="text-sm font-semibold text-text mb-1 font-cute">Prompt:</h3>
                   <p className="text-sm text-gray-700 leading-relaxed font-cute whitespace-pre-wrap">
                     {data.prompt}
                   </p>

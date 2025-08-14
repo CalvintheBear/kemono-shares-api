@@ -16,6 +16,7 @@ interface ShareData {
   style: string
   timestamp: number
   createdAt: string
+  model?: string
 }
 
 function SharePageContent() {
@@ -155,10 +156,17 @@ function SharePageContent() {
     }
     // 动态SEO：为 /share?id=... 注入基础头部元信息
     const seoTitle = shareData
-      ? `${shareData.style} | チャットGPT 画像生成 プロンプト | ${(shareData.prompt || '').slice(0, 32)}`
+      ? (() => {
+          const shortPrompt = (shareData.prompt || '').slice(0, 32)
+          const modelLabel = (shareData as any)?.seo?.modelLabel || (shareData?.model === 'gpt4o-image' ? 'GPT-4o Image' : shareData?.model === 'flux-kontext-pro' ? 'Flux Kontext Pro' : shareData?.model === 'flux-kontext-max' ? 'Flux Kontext Max' : 'GPT-4o / Flux Kontext')
+          return `${shareData.style} | ${modelLabel} | AI プロンプト | ${shortPrompt}`
+        })()
       : 'AI画像生成 無料 | GPT-4o 画像変換 - 2kawaii'
     const seoDesc = shareData
-      ? `チャットGPT 画像生成 プロンプト: ${(shareData.prompt || '').slice(0, 120)}`
+      ? (() => {
+          const modelLabel = (shareData as any)?.seo?.modelLabel || (shareData?.model === 'gpt4o-image' ? 'GPT-4o Image' : shareData?.model === 'flux-kontext-pro' ? 'Flux Kontext Pro' : shareData?.model === 'flux-kontext-max' ? 'Flux Kontext Max' : 'GPT-4o / Flux Kontext')
+          return `${modelLabel} — AI プロンプト: ${(shareData.prompt || '').slice(0, 120)}`
+        })()
       : 'AI画像生成 ギャラリー | GPT-4oで写真をアニメ風に変換。プロンプト付き。'
 
     return (
@@ -238,6 +246,7 @@ function SharePageContent() {
                 <span className="bg-surface text-text px-3 py-1 rounded-full text-sm font-medium border border-border">{shareData.style}</span>
                 <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
               </div>
+            <h3 className="text-sm font-semibold text-text mt-2 mb-1">プロンプト：</h3>
             <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{shareData.prompt}</p>
             {shareData.prompt && (
               <div className="mt-4 text-gray-700 text-sm leading-relaxed">

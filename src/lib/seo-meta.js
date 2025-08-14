@@ -40,10 +40,18 @@ function filterEn(tokens) {
 }
 
 function labelForModel(model) {
-  if (model === 'flux-kontext-pro' || model === 'flux-kontext-max') return 'Flux Kontext'
+  if (model === 'flux-kontext-pro') return 'Flux Kontext Pro'
+  if (model === 'flux-kontext-max') return 'Flux Kontext Max'
   if (model === 'gpt4o-image') return 'GPT-4o Image'
   if (!model) return 'GPT-4o / Flux Kontext'
   return model
+}
+
+function labelForModelJa(model) {
+  if (model === 'flux-kontext-pro') return 'Flux Kontext Pro 画像生成'
+  if (model === 'flux-kontext-max') return 'Flux Kontext Max 画像生成'
+  if (model === 'gpt4o-image') return 'GPT-4o 画像生成'
+  return 'AI画像生成'
 }
 
 export function buildSeoMeta({ prompt = '', style = 'カスタム', model = '' }) {
@@ -52,9 +60,10 @@ export function buildSeoMeta({ prompt = '', style = 'カスタム', model = '' }
   const jaTokens = filterJa(tokens)
   const enTokens = filterEn(tokens)
 
+  const jaModelTag = labelForModelJa(model)
   const baseJa = [
     style,
-    'チャットgpt 画像生成',
+    jaModelTag,
     '画像生成ai 無料',
     'ai画像生成 サイト 無料 登録不要',
     modelLabel
@@ -73,8 +82,8 @@ export function buildSeoMeta({ prompt = '', style = 'カスタム', model = '' }
   const shortPromptJa = (prompt || '').slice(0, 50)
   const shortPromptEn = (prompt || '').slice(0, 60)
 
-  const titleJa = `${style} | チャットGPT 画像生成 プロンプト | ${shortPromptJa}`
-  const descJa = `チャットGPT 画像生成 プロンプト: ${(prompt || '').slice(0, 140)}`.slice(0, 160)
+  const titleJa = `${style} | ${modelLabel} | AI プロンプト | ${shortPromptJa}`
+  const descJa = `${modelLabel} — AI プロンプト: ${(prompt || '').slice(0, 140)}`.slice(0, 160)
   const titleEn = `${style} | ${modelLabel} | ChatGPT AI Prompt | ${shortPromptEn}`
   const descEn = `${modelLabel} — ChatGPT AI Prompt: ${(prompt || '').slice(0, 140)}`.slice(0, 160)
 

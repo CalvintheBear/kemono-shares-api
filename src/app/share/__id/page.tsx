@@ -16,6 +16,7 @@ interface ShareData {
   timestamp: number
   createdAt: string
   seoTags?: string[]
+  model?: string
 }
 
 export default function ShareDetailPage() {
@@ -53,14 +54,17 @@ export default function ShareDetailPage() {
   const seoTitle = useMemo(() => {
     if (!shareData) return 'AI画像生成 無料 | GPT-4o 画像変換 - 2kawaii'
     const shortPrompt = shareData.prompt?.slice(0, 32) || ''
-    // 兼容新结构 seo.titleJa
     const seoTitleFromData = (shareData as any)?.seo?.titleJa
-    return seoTitleFromData || `${shareData.style} | チャットGPT 画像生成 プロンプト | ${shortPrompt}`
+    if (seoTitleFromData) return seoTitleFromData
+    const modelLabel = (shareData as any)?.seo?.modelLabel || (shareData?.model === 'gpt4o-image' ? 'GPT-4o Image' : shareData?.model === 'flux-kontext-pro' ? 'Flux Kontext Pro' : shareData?.model === 'flux-kontext-max' ? 'Flux Kontext Max' : 'GPT-4o / Flux Kontext')
+    return `${shareData.style} | ${modelLabel} | AI プロンプト | ${shortPrompt}`
   }, [shareData])
   const seoDesc = useMemo(() => {
-    if (!shareData) return 'AI画像生成 ギャラリー | GPT-4oで写真をアニメ風に変換。プロンプト付き。'
+    if (!shareData) return 'AI画像生成 ギャラリー | GPT-4oで写真をアニメ风に変換。プロンプト付き。'
     const seoDescFromData = (shareData as any)?.seo?.descJa
-    return seoDescFromData || `チャットGPT 画像生成 プロンプト: ${shareData.prompt?.slice(0, 120) || ''}`
+    if (seoDescFromData) return seoDescFromData
+    const modelLabel = (shareData as any)?.seo?.modelLabel || (shareData?.model === 'gpt4o-image' ? 'GPT-4o Image' : shareData?.model === 'flux-kontext-pro' ? 'Flux Kontext Pro' : shareData?.model === 'flux-kontext-max' ? 'Flux Kontext Max' : 'GPT-4o / Flux Kontext')
+    return `${modelLabel} — AI プロンプト: ${shareData.prompt?.slice(0, 120) || ''}`
   }, [shareData])
 
   const handleTryNow = () => (window.location.href = '/')
@@ -149,6 +153,7 @@ export default function ShareDetailPage() {
               <span className="bg-surface text-text px-3 py-1 rounded-full text-sm font-medium border border-border">{shareData.style}</span>
               <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
             </div>
+            <h3 className="text-sm font-semibold text-text mt-2 mb-1">プロンプト：</h3>
             <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
               {shareData.prompt}
             </p>

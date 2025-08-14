@@ -821,15 +821,7 @@ useEffect(() => {
           style: selectedTemplate?.name || 'カスタム',
           model: selectedModel,
           timestamp: Date.now(),
-          isR2Stored: isR2Url, // 标记是否使用R2永久URL
-          // 默认SEO标签（参考 seo优化任务.md 的高优先级关键词）
-          seoTags: [
-            'チャットgpt 画像生成',
-            '画像生成ai 無料',
-            'プロンプト',
-            'ai画像生成 サイト 無料 登録不要',
-            'gpt4o image'
-          ]
+          isR2Stored: isR2Url // 标记是否使用R2永久URL
         })
       })
 
