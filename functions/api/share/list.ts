@@ -31,7 +31,8 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     // 2. 初始化KV存储
     const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env);
     
-    // 3. 支持基于样式/模型/标签的索引过滤（任取其一）
+    // 3. 支持基于样式/模型/标签的索引过滤（任取其一）。
+    //    同时优先使用“文生图索引”加速首页/画廊列表的首次加载。
     let result: any = null
     if (style || model || tag) {
       console.log('📊 采用索引过滤: ', { style, model, tag })
@@ -59,9 +60,36 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       }
       result = { items, total, limit, offset, hasMore: offset + items.length < total }
     } else {
-      // 3. 从KV获取分享列表
-      console.log('📊 正在从KV获取分享列表...');
-      result = await shareStore.getShareList(limit, offset);
+      // 优先从“文生图索引”直接分页，避免扫描全表
+      try {
+        const raw = await shareStore._kvGet?.(shareStore.getTextIndexKey())
+        const idList: string[] = raw ? JSON.parse(raw) : []
+        if (Array.isArray(idList) && idList.length > 0) {
+          const total = idList.length
+          const slice = idList.slice(offset, offset + limit)
+          const items: any[] = []
+          for (const id of slice) {
+            const share = await shareStore.getShare(id)
+            if (!share) continue
+            items.push({
+              id: share.id,
+              title: `${share.style}変換`,
+              style: share.style,
+              timestamp: share.timestamp,
+              createdAt: share.createdAt,
+              generatedUrl: share.generatedUrl,
+              originalUrl: share.originalUrl || ''
+            })
+          }
+          result = { items, total, limit, offset, hasMore: offset + items.length < total }
+        }
+      } catch {}
+
+      // 回退兜底：仍可从原有路径构建
+      if (!result) {
+        console.log('📊 正在从KV获取分享列表...');
+        result = await shareStore.getShareList(limit, offset);
+      }
     }
 
     if (!result || !result.items) {

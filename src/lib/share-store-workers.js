@@ -46,6 +46,11 @@ export class ShareStoreWorkers {
     return `share:index:tag:${this._slugify(tag)}`
   }
 
+  // 文生图（无 originalUrl）全局索引键
+  getTextIndexKey() {
+    return 'share:index:text:all'
+  }
+
   async _addToIndexList(key, id, limit = 500) {
     try {
       const raw = await this._kvGet(key)
@@ -96,6 +101,11 @@ export class ShareStoreWorkers {
       const uniqueTags = Array.from(new Set((tagSource || []).map(t => String(t).trim()).filter(Boolean))).slice(0, 3)
       for (const t of uniqueTags) {
         await this._addToIndexList(this.getTagIndexKey(t), shareId, 200)
+      }
+
+      // 文生图快速索引：仅 originalUrl 为空时加入
+      if (!shareData.originalUrl || shareData.originalUrl === '') {
+        await this._addToIndexList(this.getTextIndexKey(), shareId, 1000)
       }
 
       // 更新统计信息
