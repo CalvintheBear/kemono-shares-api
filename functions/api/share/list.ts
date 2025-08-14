@@ -27,7 +27,8 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     const tag = url.searchParams.get('tag') || ''
     const cursorParam = url.searchParams.get('cursor')
     const cursor = cursorParam ? Math.max(0, parseInt(cursorParam)) : 0
-    const timeBudgetMs = Math.min(500, Math.max(100, parseInt(url.searchParams.get('tb') || '200')))
+    // 提高默认时间预算，避免每次只返回1-2张；允许前端覆盖
+    const timeBudgetMs = Math.min(800, Math.max(100, parseInt(url.searchParams.get('tb') || '400')))
     
     console.log(`🔍 获取分享列表: limit=${limit}, offset=${offset}`);
 
@@ -100,6 +101,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         let matchedCount = 0
         const items: any[] = []
 
+        const minBatch = Math.min(6, limit)
         for (let i = cursor; i < totalIds; i++) {
           const id = shareIds[i]
           const share = await shareStore.getShare(id)
@@ -127,7 +129,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           // 满足数量即返回
           if (items.length >= limit) break
           // 时间预算到达且已有部分结果，先返回以加速首屏
-          if (Date.now() - startTime > timeBudgetMs && items.length > 0) break
+          if (Date.now() - startTime > timeBudgetMs && items.length >= minBatch) break
         }
 
         const hasMore = nextCursor < totalIds

@@ -32,6 +32,7 @@ export default function ShareGallery() {
   const [currentOffset, setCurrentOffset] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
   const [scanCursor, setScanCursor] = useState<number | null>(null);
+  const followUpRef = useRef<number>(0);
   const pathname = usePathname();
   
   const isEnglish = pathname?.startsWith('/en/') || pathname === '/en';
@@ -54,10 +55,11 @@ export default function ShareGallery() {
   };
 
   // Fetch share items from API
-  const fetchShareItems = useCallback(async (offset: number = 0, append: boolean = false) => {
+  const fetchShareItems = useCallback(async (offset: number = 0, append: boolean = false, force: boolean = false) => {
     // Debounce to prevent rapid requests
     const now = Date.now();
-    if (now - lastRequestRef.current < 1000) {
+    const debounceMs = scanCursor !== null ? 200 : 1000;
+    if (!force && now - lastRequestRef.current < debounceMs) {
       console.log('Request too fast, skipping...');
       return;
     }
@@ -71,6 +73,8 @@ export default function ShareGallery() {
       inFlightRef.current = true;
       setIsFetching(true);
       if (!append && offset === 0) setLoading(true);
+      // 新一轮加载重置跟进次数
+      if (!append || offset === 0) followUpRef.current = 0;
       console.log('Fetching share items, offset:', offset, 'append:', append);
       
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
@@ -79,10 +83,10 @@ export default function ShareGallery() {
       url.searchParams.set('offset', String(offset));
       url.searchParams.set('sort', 'createdAt');
       url.searchParams.set('order', 'desc');
-      // 渐进扫描：如果后端返回了cursor，则携带cursor继续扫描；带上时间预算tb以尽快返回部分结果
+      // 渐进扫描：如果后端返回了cursor，则携带cursor继续扫描；带上时间预算tb以尽快返回一批
       if (scanCursor !== null && scanCursor !== undefined) {
         url.searchParams.set('cursor', String(scanCursor));
-        url.searchParams.set('tb', '200');
+        url.searchParams.set('tb', '700');
       }
       const apiUrl = url.toString();
       const response = await fetch(apiUrl, {
@@ -111,6 +115,15 @@ export default function ShareGallery() {
         const nextCursor = typeof result.data.cursor === 'number' ? result.data.cursor : (result.data.cursor ? Number(result.data.cursor) : null);
         if (nextCursor !== null && !Number.isNaN(nextCursor)) {
           setScanCursor(nextCursor);
+          // 如果这一批数量太少，自动再拉取，直到凑满一页或达到跟进上限
+          const batchSize = newImages.length;
+          const targetBatch = ITEMS_PER_PAGE;
+          if (batchSize > 0 && (images.length + batchSize) < (offset + targetBatch) && followUpRef.current < 30) {
+            followUpRef.current += 1;
+            setTimeout(() => {
+              fetchShareItems(offset + batchSize, true, true);
+            }, 180);
+          }
         } else {
           setScanCursor(null);
         }
