@@ -143,47 +143,47 @@ export default function Home() {
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
-                  alt="AI画像変換 モデル選択とテンプレート選択 - 無料ツール" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides1-choosemodelandeuploadimage.jpg" 
+                  alt="AI画像変換 モデル選択と画像アップロード - 無料ツール" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換 モデル選択とテンプレート選択ガイド"
+                  title="AI画像変換 モデル選択と画像アップロードガイド"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1. モデルとテンプレートを選択</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルとアニメスタイルテンプレートを選択してください</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. モデル選択と画像アップロード</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルを選択し、JPEG/PNG形式の写真をアップロードしてください</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step2" 
-                  alt="AI画像変換 画像アップロードと開始 - 無料ツール" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides2-choosesizeandchoosetemplate.jpg" 
+                  alt="AI画像変換 サイズ選択とテンプレート選択 - 無料ツール" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換 画像アップロードと開始"
+                  title="AI画像変換 サイズ選択とテンプレート選択"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">2. 画像をアップロードして開始</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">写真をアップロードして「開始」ボタンをクリックするとAI変換が始まります</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">3-4. サイズとテンプレート選択</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">縦横比を選択し、お好みのアニメスタイルテンプレートを選択してください</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.6s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
-                  alt="AI画像変換成功 - 最終画像取得 ダウンロード可能 商用利用" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides3-clickstartandgetfinialimage.jpg" 
+                  alt="AI画像変換成功 - 開始して最終画像取得 ダウンロード可能 商用利用" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI画像変換成功 - 最終画像取得"
+                  title="AI画像変換成功 - 開始して最終画像取得"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">3. 成功！最終画像を取得</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">AI変換が完了！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">5. 開始して最終画像取得</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">「開始」ボタンをクリックしてAI変換を開始！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
             </div>
           </div>
         </div>

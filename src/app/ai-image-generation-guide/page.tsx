@@ -178,42 +178,42 @@ export default function AIGuidePage() {
 
           {/* 使い方ガイド - 3ステップで簡単操作 */}
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-8 text-center">AI画像変換の使い方 - 3ステップで簡単操作</h2>
+            <h2 className="text-2xl font-bold text-text mb-8 text-center">AI画像変換の使い方 - 5ステップで簡単操作</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
-                    alt="AI画像変換 写真アップロード方法 - JPEG PNG対応 無料ツール" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides1-choosemodelandeuploadimage.jpg" 
+                    alt="AI画像変換 モデル選択と画像アップロード - JPEG PNG対応 無料ツール" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
                     height={192}
                     unoptimized
-                    title="AI画像変換 写真アップロードガイド"
+                    title="AI画像変換 モデル選択と画像アップロードガイド"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">1. 写真をアップロード</h3>
-                <p className="text-text-muted text-sm leading-relaxed">JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
+                <h3 className="text-lg font-bold text-text mb-4">1-2. モデル選択と画像アップロード</h3>
+                <p className="text-text-muted text-sm leading-relaxed">お好みのAIモデルを選択し、JPEG/PNG形式の写真をドラッグ&ドロップまたはクリックして選択してください</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step2" 
-                    alt="アニメスタイル選択 - ジブリ風 VTuber風 chibi 美少女 無料" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides2-choosesizeandchoosetemplate.jpg" 
+                    alt="サイズ選択とテンプレート選択 - 縦横比 アニメスタイル 無料" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
                     height={192}
                     unoptimized
-                    title="AI画像変換 アニメスタイル選択"
+                    title="AI画像変換 サイズ選択とテンプレート選択"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">2. アニメスタイルを選択</h3>
-                <p className="text-text-muted text-sm leading-relaxed">ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
+                <h3 className="text-lg font-bold text-text mb-4">3-4. サイズとテンプレート選択</h3>
+                <p className="text-text-muted text-sm leading-relaxed">縦横比を選択し、ジブリ風・VTuber風・美少女・chibi・擬人化など20種類以上のアニメスタイルからお選びください</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides3-clickstartandgetfinialimage.jpg" 
                     alt="AI画像変換完了 - アニメ画像作成 ダウンロード可能 商用利用" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -222,8 +222,8 @@ export default function AIGuidePage() {
                     title="AI画像変換完了"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">3. AI画像生成完了</h3>
-                <p className="text-text-muted text-sm leading-relaxed">最新のAI技術で数秒で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
+                <h3 className="text-lg font-bold text-text mb-4">5. 開始して最終画像取得</h3>
+                <p className="text-text-muted text-sm leading-relaxed">「開始」ボタンをクリックしてAI変換を開始！最新のAI技術で数秒で高品質なアニメ画像を生成！ダウンロードしてSNSにシェア可能</p>
               </div>
             </div>
           </section>

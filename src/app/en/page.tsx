@@ -141,47 +141,47 @@ export default function Home() {
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
-                  alt="AI Image Conversion Model and Template Selection - Free Tool" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides1-choosemodelandeuploadimage.jpg" 
+                  alt="AI Image Conversion Model Selection and Image Upload - Free Tool" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI Image Conversion Model and Template Selection Guide"
+                  title="AI Image Conversion Model Selection and Image Upload Guide"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1. Select Model and Template</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Choose your preferred AI model and anime style template</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. Select Model and Upload Image</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Choose your preferred AI model and upload JPEG/PNG format photos</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step2" 
-                  alt="AI Image Conversion Image Upload and Start - Free Tool" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides2-choosesizeandchoosetemplate.jpg" 
+                  alt="AI Image Conversion Size Selection and Template Selection - Free Tool" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI Image Conversion Image Upload and Start"
+                  title="AI Image Conversion Size Selection and Template Selection"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">2. Upload Image and Start</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Upload your photo and click the start button to begin AI conversion</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">3-4. Select Size and Template</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Choose aspect ratio and select your preferred anime style template</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.6s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
                 <Image 
-                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
-                  alt="AI Image Conversion Success - Final Image Download Available Commercial Use" 
+                  src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides3-clickstartandgetfinialimage.jpg" 
+                  alt="AI Image Conversion Success - Click Start and Get Final Image Download Available Commercial Use" 
                   width={224}
                   height={224}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg shadow-lg"
-                  title="AI Image Conversion Success - Final Image Download"
+                  title="AI Image Conversion Success - Click Start and Get Final Image"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">3. Success! Get Final Image</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">AI conversion complete! Download high-quality anime images and share on social media</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">5. Click Start and Get Final Image</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Click the "Start" button to begin AI conversion! Download high-quality anime images and share on social media</p>
             </div>
           </div>
         </div>

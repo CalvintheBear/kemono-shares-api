@@ -183,42 +183,42 @@ export default function AIGuidePage() {
 
           {/* How to use guide - 3 simple steps */}
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-8 text-center">How to Use AI Image Conversion - 3 Simple Steps</h2>
+            <h2 className="text-2xl font-bold text-text mb-8 text-center">How to Use AI Image Conversion - 5 Simple Steps</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guide-step1" 
-                    alt="AI Image Conversion Photo Upload Method - JPEG PNG Support Free Tool" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides1-choosemodelandeuploadimage.jpg" 
+                    alt="AI Image Conversion Model Selection and Image Upload - JPEG PNG Support Free Tool" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
                     height={192}
                     unoptimized
-                    title="AI Image Conversion Photo Upload Guide"
+                    title="AI Image Conversion Model Selection and Image Upload Guide"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">1. Upload Photo</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Upload JPEG/PNG format photos by drag & drop or click to select</p>
+                <h3 className="text-lg font-bold text-text mb-4">1-2. Select Model and Upload Image</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Choose your preferred AI model and upload JPEG/PNG format photos by drag & drop or click to select</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-step2" 
-                    alt="Anime Style Selection - Ghibli Style VTuber Style Chibi Beautiful Girl Free" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides2-choosesizeandchoosetemplate.jpg" 
+                    alt="Size Selection and Template Selection - Aspect Ratio Anime Style Free" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
                     height={192}
                     unoptimized
-                    title="AI Image Conversion Anime Style Selection"
+                    title="AI Image Conversion Size Selection and Template Selection"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">2. Select Anime Style</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Choose from over 20 anime styles including Ghibli style, VTuber style, beautiful girl, chibi, anthropomorphism, etc.</p>
+                <h3 className="text-lg font-bold text-text mb-4">3-4. Select Size and Template</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Choose aspect ratio and select from over 20 anime styles including Ghibli style, VTuber style, beautiful girl, chibi, anthropomorphism, etc.</p>
               </div>
               <div className="text-center">
                 <div className="w-48 h-48 mx-auto mb-6">
                   <Image 
-                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides-success_gain_final_image" 
+                    src="https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/guides3-clickstartandgetfinialimage.jpg" 
                     alt="AI Image Conversion Complete - Anime Image Creation Download Available Commercial Use" 
                     className="w-full h-full object-cover rounded-full shadow-lg"
                     width={192}
@@ -227,8 +227,8 @@ export default function AIGuidePage() {
                     title="AI Image Conversion Complete"
                   />
                 </div>
-                <h3 className="text-lg font-bold text-text mb-4">3. AI Image Generation Complete</h3>
-                <p className="text-text-muted text-sm leading-relaxed">Generate high-quality anime images in seconds with the latest AI technology! Download and share on social media</p>
+                <h3 className="text-lg font-bold text-text mb-4">5. Click Start and Get Final Image</h3>
+                <p className="text-text-muted text-sm leading-relaxed">Click the "Start" button to begin AI conversion! Generate high-quality anime images in seconds with the latest AI technology! Download and share on social media</p>
               </div>
             </div>
           </section>
