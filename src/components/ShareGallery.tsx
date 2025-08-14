@@ -137,11 +137,7 @@ export default function ShareGallery() {
           setScanCursor(null);
         }
         setHasMore(Boolean(result.data.hasMore || nextCursor !== null));
-        if (append) {
-          setCurrentOffset(prev => prev + newImages.length);
-        } else {
-          setCurrentOffset(newImages.length);
-        }
+        setCurrentOffset(offset + newImages.length);
         
         // 仅在没有cursor且后端声明无更多时才判定结束
         if (newImages.length === 0) {

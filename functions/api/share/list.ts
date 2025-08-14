@@ -64,40 +64,30 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       }
       result = { items, total, limit, offset, hasMore: offset + items.length < total }
     } else {
-      // 若请求已带 cursor，直接走回退扫描路径（跳过索引分页）
-      if (!cursorParam) {
-        // 优先从“文生图索引”直接分页，避免扫描全表
-        try {
-          const raw = await shareStore._kvGet?.(shareStore.getTextIndexKey())
-          const idList: string[] = raw ? JSON.parse(raw) : []
-          if (Array.isArray(idList) && idList.length > 0) {
-            const total = idList.length
-            const slice = idList.slice(offset, offset + limit)
-            const items: any[] = []
-            for (const id of slice) {
-              const share = await shareStore.getShare(id)
-              if (!share) continue
-              items.push({
-                id: share.id,
-                title: `${share.style}変換`,
-                style: share.style,
-                timestamp: share.timestamp,
-                createdAt: share.createdAt,
-                generatedUrl: share.generatedUrl,
-                originalUrl: share.originalUrl || ''
-              })
-            }
-            result = { items, total, limit, offset, hasMore: offset + items.length < total }
-            // 如果索引页未填满或已到索引末尾，提供 cursor=0 让前端继续用扫描路径补齐更旧的数据
-            const reachedEndOfIndex = offset + items.length >= total
-            const notFilledPage = items.length < limit
-            if (reachedEndOfIndex || notFilledPage) {
-              ;(result as any).cursor = 0
-              ;(result as any).hasMore = true
-            }
+      // 优先从“文生图索引”直接分页，避免扫描全表
+      try {
+        const raw = await shareStore._kvGet?.(shareStore.getTextIndexKey())
+        const idList: string[] = raw ? JSON.parse(raw) : []
+        if (Array.isArray(idList) && idList.length > 0) {
+          const total = idList.length
+          const slice = idList.slice(offset, offset + limit)
+          const items: any[] = []
+          for (const id of slice) {
+            const share = await shareStore.getShare(id)
+            if (!share) continue
+            items.push({
+              id: share.id,
+              title: `${share.style}変換`,
+              style: share.style,
+              timestamp: share.timestamp,
+              createdAt: share.createdAt,
+              generatedUrl: share.generatedUrl,
+              originalUrl: share.originalUrl || ''
+            })
           }
-        } catch {}
-      }
+          result = { items, total, limit, offset, hasMore: offset + items.length < total }
+        }
+      } catch {}
 
       // 回退兜底（逐步扫描，按时间预算提前返回，并提供cursor继续扫描）
       if (!result) {
@@ -110,6 +100,8 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         let scanned = 0
         let matchedCount = 0
         const items: any[] = []
+        // 当携带 cursor 时，将 offset 视为相对该游标的偏移（置 0），避免重复跳过
+        const effectiveOffset = cursorParam ? 0 : offset
 
         const minBatch = Math.min(6, limit)
         for (let i = cursor; i < totalIds; i++) {
@@ -121,7 +113,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           if (share.originalUrl && share.originalUrl !== '') continue
           // 匹配到文生图
           matchedCount++
-          if (matchedCount <= offset) {
+          if (matchedCount <= effectiveOffset) {
             // 跳过到offset
             continue
           }
