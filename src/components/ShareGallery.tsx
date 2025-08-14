@@ -139,9 +139,10 @@ export default function ShareGallery() {
         setHasMore(Boolean(result.data.hasMore || nextCursor !== null));
         setCurrentOffset(offset + newImages.length);
         
-        // Prevent infinite loop if no new items
+        // 仅在没有cursor且后端声明无更多时才判定结束
         if (newImages.length === 0) {
-          setHasMore(false);
+          const noMore = !result.data?.hasMore && (result.data?.cursor === undefined || result.data?.cursor === null)
+          if (noMore) setHasMore(false)
         }
       } else {
         console.log('No items found or invalid response format:', result);
