@@ -1404,7 +1404,8 @@ useEffect(() => {
                         />
                         <div className="mt-4 text-center">
                           <h3 className="text-lg font-bold text-text mb-1">{isEnglish ? 'Image ready!' : '画像準備完了！'}</h3>
-                          <p className="text-sm text-text-muted">{isEnglish ? 'Your photo has been uploaded' : '写真がアップロードされました'}</p>
+                    <p className="text-sm text-text-muted">{isEnglish ? 'Your photo has been uploaded' : '写真がアップロードされました'}</p>
+                    <p className="text-[11px] text-text-muted mt-1">{isEnglish ? 'Up to 10MB supported' : '10MBまでの画像OK！'}</p>
                         </div>
                       </div>
                     </div>
@@ -1420,11 +1421,11 @@ useEffect(() => {
                             {isEnglish ? 'Let’s transform your photo into anime style!' : '写真をアニメ風に変身させましょう！'}
                           </p>
                         <div className="bg-surface rounded-lg p-4 mb-6">
-                            <p className="text-sm text-text mb-2">{isEnglish ? 'Tips:' : 'コツ：'}</p>
+                          <p className="text-sm text-text mb-2">{isEnglish ? 'Tips:' : 'コツ：'}</p>
                             <ul className="text-sm text-text-muted space-y-1 text-left">
                               <li>{isEnglish ? '• Bright, clear face photos work best' : '• 明るくて顔がはっきりしている写真がおすすめ'}</li>
                               <li>{isEnglish ? '• Simple backgrounds produce better results' : '• 背景がシンプルだと綺麗に変身できるよ'}</li>
-                              <li>{isEnglish ? '• Up to 10MB' : '• 10MBまでの上传OK！'}</li>
+                            <li>{isEnglish ? '• Up to 10MB' : '• 10MBまでの画像OK！'}</li>
                             </ul>
                         </div>
                       </div>
@@ -1583,6 +1584,15 @@ useEffect(() => {
             }`}>
               {selectedTemplate ? selectedTemplate.name : (isEnglish ? 'Select a template' : 'テンプレートを選択')}
             </div>
+            {mode === 'template-mode' && (
+              <div className="mt-1 text-[11px] leading-snug text-text-muted">
+                <p>
+                  {isEnglish
+                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex-shrink-0">

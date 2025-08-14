@@ -307,6 +307,13 @@ export default function TemplateGallery() {
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text font-cute text-center mb-8 lg:mb-10">
               {(isEnglish ? (nameMap[selectedTemplate.name] || selectedTemplate.name) : selectedTemplate.name)} - {translate('変身前後の比較', 'Before vs After')}
             </h3>
+            <div className="text-center mb-4 -mt-4">
+              <p className="text-xs text-text-muted">
+                {isEnglish
+                  ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                  : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+              </p>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-center">
               {/* 变身前 */}
