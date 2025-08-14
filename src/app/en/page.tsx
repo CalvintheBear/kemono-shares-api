@@ -84,6 +84,30 @@ const structuredData = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-[var(--bg)]">
+      {/* Prewarm share list in idle time on English homepage as well */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+          (function(){
+            try{
+              var fired=false;
+              var prefetch=function(){
+                if(fired) return; fired=true;
+                var origin=location.origin;
+                var url=origin+'/api/share/list?limit=12&offset=0&tb=120';
+                try{ fetch(url, { cache:'default', credentials:'omit' }).catch(function(){}); }catch(e){}
+              };
+              if ('requestIdleCallback' in window) {
+                requestIdleCallback(prefetch, { timeout: 1500 });
+              } else {
+                setTimeout(prefetch, 800);
+              }
+              window.addEventListener('load', function(){ setTimeout(prefetch, 300); }, { once: true });
+            }catch(e){}
+          })();
+          `
+        }}
+      />
       {/* JSON-LD structured data embed */}
       <script
         type="application/ld+json"

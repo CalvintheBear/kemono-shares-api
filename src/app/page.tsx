@@ -86,6 +86,30 @@ const structuredData = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-[var(--bg)]">
+      {/* 进入首页后，在空闲时预拉 share 首屏，预热边缘/内存缓存 */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+          (function(){
+            try{
+              var fired=false;
+              var prefetch=function(){
+                if(fired) return; fired=true;
+                var origin=location.origin;
+                var url=origin+'/api/share/list?limit=12&offset=0&tb=120';
+                try{ fetch(url, { cache:'default', credentials:'omit' }).catch(function(){}); }catch(e){}
+              };
+              if ('requestIdleCallback' in window) {
+                requestIdleCallback(prefetch, { timeout: 1500 });
+              } else {
+                setTimeout(prefetch, 800);
+              }
+              window.addEventListener('load', function(){ setTimeout(prefetch, 300); }, { once: true });
+            }catch(e){}
+          })();
+          `
+        }}
+      />
       {/* JSON-LD 構造化データ埋め込み */}
       <script
         type="application/ld+json"

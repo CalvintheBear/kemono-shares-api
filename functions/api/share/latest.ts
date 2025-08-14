@@ -67,6 +67,27 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     }
     items = items.slice(0, 12)
 
+    // 预温：并发小批量预取这些 id，填充 Workers 内存缓存（限制时间预算，避免阻塞响应过久）
+    try {
+      const ids = (items || []).map((it: any) => it?.id).filter(Boolean)
+      if (ids.length > 0) {
+        const concurrency = Math.min(4, ids.length)
+        let idx = 0
+        const worker = async () => {
+          while (idx < ids.length) {
+            const id = ids[idx++]
+            try { await shareStore.getShare(id) } catch {}
+          }
+        }
+        const runners = Array.from({ length: concurrency }, () => worker())
+        // 限时预热：最多等待 ~120ms，其后继续返回响应
+        await Promise.race([
+          Promise.allSettled(runners),
+          new Promise(resolve => setTimeout(resolve, 120))
+        ])
+      }
+    } catch {}
+
     // 写入缓存
     try {
       await shareStore._kvPut?.(CACHE_KEY, JSON.stringify({ items, updatedAt: now }), 60 * 60 * 24)
