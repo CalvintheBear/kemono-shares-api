@@ -115,7 +115,7 @@ export default function ShareDetailPage() {
 
   // UI 复刻英文版风格（两栏、完整信息区块 + 原图展示）
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
+    <div className="min-h-screen bg-white">
       <Header />
       <head>
         <title>{seoTitle}</title>
@@ -131,8 +131,8 @@ export default function ShareDetailPage() {
         <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
       </head>
       <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
-          <div className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-6 lg:p-8 text-center">
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-brand bg-[#0096fa] text-white p-6 lg:p-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold font-cute">AI画像変換結果・プロンプト</h1>
             <p className="opacity-90 mt-2 font-cute">{shareData.style} スタイルで完成！</p>
             <p className="opacity-75 mt-1 text-sm font-cute">シェアID: {shareData.id}</p>
@@ -143,7 +143,7 @@ export default function ShareDetailPage() {
               {((shareData as any)?.isPublished === false) ? (
                 <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
               ) : (
-                <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
+                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                   <Image
                     src={shareData.generatedUrl}
                     alt={`AI Generated ${shareData.style} Style Image`}
@@ -173,9 +173,9 @@ export default function ShareDetailPage() {
                 <p className="text-text-muted font-cute">作成日 {new Date(shareData.createdAt).toLocaleDateString('ja-JP')}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{shareData.style}</span>
+                <span className="bg-white text-text px-3 py-1 rounded-full text-sm font-cute border border-gray-200">{shareData.style}</span>
                 <span className="text-text-muted text-sm font-cute">{new Date(shareData.createdAt).toLocaleDateString('ja-JP')}</span>
-                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{(() => {
+                <span className="bg-white text-text px-3 py-1 rounded-full text-sm font-cute border border-gray-200">{(() => {
                   const m: any = (shareData as any).model
                   if (m === 'flux-kontext-pro') return 'Flux Kontext Pro'
                   if (m === 'flux-kontext-max') return 'Flux Kontext Max'
@@ -183,14 +183,14 @@ export default function ShareDetailPage() {
                   return 'GPT-4o / Flux Kontext'
                 })()}</span>
               </div>
-              <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-6">
+              <div className="bg-gray-50 rounded-2xl p-6">
                 <h2 className="text-xl font-bold text-text mb-3 font-cute">🤖 プロンプト</h2>
                 <div className="bg-white/50 rounded-xl p-4">
                   <h3 className="text-sm font-semibold text-text mb-1 font-cute">Prompt：</h3>
                   <p className="text-sm text-gray-700 leading-relaxed font-cute whitespace-pre-wrap">{shareData.prompt}</p>
                 </div>
               </div>
-              <div className="bg-white/60 rounded-2xl p-6">
+              <div className="bg-white rounded-2xl p-6 border border-gray-100">
                 <h2 className="text-xl font-bold text-text mb-3 font-cute">作品のポイント</h2>
                 <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
                   <li>スタイル: {shareData.style || 'Custom'}</li>
@@ -216,7 +216,7 @@ export default function ShareDetailPage() {
                     <h3 className="font-semibold text-text mb-2 font-cute">タグ</h3>
                     <div className="flex flex-wrap gap-2">
                       {tags.map((tag, index) => (
-                        <span key={index} className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute">#{tag}</span>
+                        <span key={index} className="bg-surface text-text px-3 py-1 rounded-full text-xs font-cute border border-border">#{tag}</span>
                       ))}
                     </div>
                   </div>
@@ -224,12 +224,12 @@ export default function ShareDetailPage() {
               })()}
               {/* アクション */}
               <div className="space-y-3">
-                <a href={shareData.generatedUrl} download className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">📥 ダウンロード</a>
-                <Link href="/workspace" className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">自分も試してみる</Link>
+                <a href={shareData.generatedUrl} download className="inline-flex items-center justify-center w-full bg-[#0096fa] hover:bg-[#0085e0] text-white py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">📥 ダウンロード</a>
+                <Link href="/workspace" className="inline-flex items-center justify-center w-full bg-[#0096fa] hover:bg-[#0085e0] text-white py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">自分も試してみる</Link>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <button onClick={navToHome} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 ホームへ</button>
-                  <button onClick={navToGallery} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ ギャラリーへ</button>
-                  <button onClick={navToWorkspace} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ ワークスペースへ</button>
+                  <button onClick={navToHome} className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 ホームへ</button>
+                  <button onClick={navToGallery} className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ ギャラリーへ</button>
+                  <button onClick={navToWorkspace} className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ ワークスペースへ</button>
                 </div>
               </div>
             </div>

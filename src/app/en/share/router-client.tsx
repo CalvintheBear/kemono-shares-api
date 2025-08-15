@@ -160,9 +160,9 @@ function Content() {
           )}
         </head>
         <main className="max-w-6xl mx-auto px-4 py-8">
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-6 lg:p-8 text-center">
+            <div className="bg-brand bg-[#0096fa] text-white p-6 lg:p-8 text-center">
               <h1 className="text-2xl lg:text-3xl font-bold font-cute">AI Image Conversion Result · Prompt</h1>
               <p className="opacity-90 mt-2 font-cute">Finished in {shareData.style} style!</p>
               <p className="opacity-75 mt-1 text-sm font-cute">Share ID: {shareData.id}</p>
@@ -173,7 +173,7 @@ function Content() {
                 {((shareData as any)?.isPublished === false) ? (
                   <div className="text-center text-text-muted py-6">This work has not been made public by the author yet.</div>
                 ) : (
-                  <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
+                  <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                     <Image
                       src={shareData.generatedUrl}
                       alt={`AI Generated ${shareData.style} Style Image`}
@@ -206,13 +206,13 @@ function Content() {
                   <p className="text-text-muted font-cute">Created on {formattedDate}</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{shareData.style}</span>
+                  <span className="bg-white text-text px-3 py-1 rounded-full text-sm font-cute border border-gray-200">{shareData.style}</span>
                   <span className="text-text-muted text-sm font-cute">{formattedDate}</span>
-                  <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{modelLabel}</span>
+                  <span className="bg-white text-text px-3 py-1 rounded-full text-sm font-cute border border-gray-200">{modelLabel}</span>
                 </div>
 
                 {/* Prompt */}
-                <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-6">
+                <div className="bg-gray-50 rounded-2xl p-6">
                   <h2 className="text-xl font-bold text-text mb-3 font-cute">🤖 AI Prompt</h2>
                   <div className="bg-white/50 rounded-xl p-4">
                     <h3 className="text-sm font-semibold text-text mb-1 font-cute">Prompt:</h3>
@@ -223,7 +223,7 @@ function Content() {
                 </div>
 
                 {/* Highlights */}
-                <div className="bg-white/60 rounded-2xl p-6">
+                <div className="bg-white rounded-2xl p-6 border border-gray-100">
                   <h2 className="text-xl font-bold text-text mb-3 font-cute">Work Highlights</h2>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
                     <li>Style: {shareData.style || 'Custom'}</li>
@@ -234,11 +234,11 @@ function Content() {
 
                 {/* Style Info */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/50 rounded-xl p-4">
+                  <div className="bg-white rounded-xl p-4 border border-gray-100">
                     <h3 className="font-semibold text-text mb-1 font-cute">Style</h3>
                     <p className="text-sm text-text-muted font-cute">{shareData.style}</p>
                   </div>
-                  <div className="bg-white/50 rounded-xl p-4">
+                  <div className="bg-white rounded-xl p-4 border border-gray-100">
                     <h3 className="font-semibold text-text mb-1 font-cute">Created</h3>
                     <p className="text-sm text-text-muted font-cute">{formattedDate}</p>
                   </div>
@@ -250,7 +250,7 @@ function Content() {
                     <h3 className="font-semibold text-text mb-2 font-cute">Tags</h3>
                     <div className="flex flex-wrap gap-2">
                       {tags.map((tag, index) => (
-                        <span key={index} className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute">#{tag}</span>
+                        <span key={index} className="bg-surface text-text px-3 py-1 rounded-full text-xs font-cute border border-border">#{tag}</span>
                       ))}
                     </div>
                   </div>
@@ -261,20 +261,20 @@ function Content() {
                   <a
                     href={shareData.generatedUrl}
                     download
-                    className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                    className="inline-flex items-center justify-center w-full bg-[#0096fa] hover:bg-[#0085e0] text-white py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
                   >
                     📥 Download
                   </a>
                   <Link
                     href="/en/workspace"
-                    className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
+                    className="inline-flex items-center justify-center w-full bg-[#0096fa] hover:bg-[#0085e0] text-white py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
                   >
                     Try This Style Yourself
                   </Link>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Link href="/en" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">🏠 Home</Link>
-                    <Link href="/en/share" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">🖼️ Gallery</Link>
-                    <Link href="/en/workspace" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">✨ Workspace</Link>
+                    <Link href="/en" className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 Home</Link>
+                    <Link href="/en/share" className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ Gallery</Link>
+                    <Link href="/en/workspace" className="inline-flex items-center justify-center w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ Workspace</Link>
                   </div>
                 </div>
 
