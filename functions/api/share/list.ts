@@ -70,36 +70,22 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         const simpleList: any[] = rawSimple ? JSON.parse(rawSimple) : []
         if (Array.isArray(simpleList) && simpleList.length > 0) {
           const total = simpleList.length
-          let slice: any[] = simpleList.slice(offset, offset + limit)
-          // 若不足一页，尝试用通用回退接口补齐（去重）
-          if (slice.length < limit) {
-            try {
-              const fallback = await shareStore.getShareList(limit, offset)
-              const used = new Set(slice.map((x: any) => x.id))
-              for (const it of (fallback?.items || [])) {
-                if (slice.length >= limit) break
-                if (!it?.id || used.has(it.id)) continue
-                slice.push(it)
-                used.add(it.id)
-              }
-              const more = Boolean(fallback?.hasMore || (offset + slice.length < total))
-              result = { items: slice, total, limit, offset, hasMore: more, cursor: (fallback as any)?.cursor }
-            } catch {
-              result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
-            }
-          } else {
-            result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
-          }
+          const start = cursorParam ? Math.max(0, parseInt(cursorParam)) : offset
+          const slice: any[] = simpleList.slice(start, start + limit)
+          const nextCursor = start + slice.length
+          const hasMore = nextCursor < total
+          result = { items: slice, total, limit, offset: start, hasMore, cursor: hasMore ? nextCursor : undefined }
         }
       } catch {}
 
       // 次优先：从“已发布索引”按 id 分页（仍可能产生 N 次 getShare）
-      try {
+      if (!result) try {
         const raw = await shareStore._kvGet?.(shareStore.getPublishedIndexKey())
         const idList: string[] = raw ? JSON.parse(raw) : []
         if (Array.isArray(idList) && idList.length > 0) {
           const total = idList.length
-          const slice = idList.slice(offset, offset + limit)
+          const start = cursorParam ? Math.max(0, parseInt(cursorParam)) : offset
+          const slice = idList.slice(start, start + limit)
           const items: any[] = []
           const used = new Set<string>()
           for (const id of slice) {
@@ -116,141 +102,17 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
               originalUrl: share.originalUrl || ''
             })
           }
-          // 若不足一页，尝试用旧索引和扫描补齐
-          let filled = items.length
-          if (filled < limit) {
-            try {
-              const rawLegacy = await shareStore._kvGet?.('share:index:text:all')
-              const idListLegacy: string[] = rawLegacy ? JSON.parse(rawLegacy) : []
-              for (const id of idListLegacy) {
-                if (filled >= limit) break
-                if (used.has(id)) continue
-                const share = await shareStore.getShare(id)
-                if (!share || share.published === false) continue
-                used.add(id)
-                items.push({
-                  id: share.id,
-                  title: `${share.style}変換`,
-                  style: share.style,
-                  timestamp: share.timestamp,
-                  createdAt: share.createdAt,
-                  generatedUrl: share.generatedUrl,
-                  originalUrl: share.originalUrl || ''
-                })
-                filled++
-              }
-            } catch {}
-          }
-          if (filled < limit) {
-            try {
-              const listRaw = await shareStore._kvGet?.(shareStore.getListKey())
-              const allIds: string[] = listRaw ? JSON.parse(listRaw) : []
-              for (const id of allIds) {
-                if (filled >= limit) break
-                if (used.has(id)) continue
-                const share = await shareStore.getShare(id)
-                if (!share || share.published === false) continue
-                used.add(id)
-                items.push({
-                  id: share.id,
-                  title: `${share.style}変換`,
-                  style: share.style,
-                  timestamp: share.timestamp,
-                  createdAt: share.createdAt,
-                  generatedUrl: share.generatedUrl,
-                  originalUrl: share.originalUrl || ''
-                })
-                filled++
-              }
-            } catch {}
-          }
-          const hasMore = offset + items.length < total || items.length >= limit
-          result = { items, total, limit, offset, hasMore }
+          const nextCursor = start + items.length
+          const hasMore = nextCursor < total
+          result = { items, total, limit, offset: start, hasMore, cursor: hasMore ? nextCursor : undefined }
         }
       } catch {}
 
-      // 兼容回退：尝试旧的“文生图索引”（历史数据可能只写入该索引）
+      // 不再兼容旧索引与全表扫描（你已不关心旧数据，且为避免重复）
+
+      // 无可用索引则返回空列表
       if (!result) {
-        try {
-          const rawLegacy = await shareStore._kvGet?.('share:index:text:all')
-          const idListLegacy: string[] = rawLegacy ? JSON.parse(rawLegacy) : []
-          if (Array.isArray(idListLegacy) && idListLegacy.length > 0) {
-            const total = idListLegacy.length
-            const slice = idListLegacy.slice(offset, offset + limit)
-            const items: any[] = []
-            for (const id of slice) {
-              const share = await shareStore.getShare(id)
-              if (!share) continue
-              // 历史数据无 published 字段，getShare 已兼容视为已发布
-              if (share.published === false) continue
-              items.push({
-                id: share.id,
-                title: `${share.style}変換`,
-                style: share.style,
-                timestamp: share.timestamp,
-                createdAt: share.createdAt,
-                generatedUrl: share.generatedUrl,
-                originalUrl: share.originalUrl || ''
-              })
-            }
-            result = { items, total, limit, offset, hasMore: offset + items.length < total }
-          }
-        } catch {}
-      }
-
-      // 回退兜底（逐步扫描已发布项，按时间预算提前返回，并提供cursor继续扫描）
-      if (!result) {
-        console.log('📊 采用回退扫描路径: 支持按时间预算提前返回');
-        const listRaw = await shareStore._kvGet?.(shareStore.getListKey())
-        const shareIds: string[] = listRaw ? JSON.parse(listRaw) : []
-        const totalIds = shareIds.length
-        const startTime = Date.now()
-        let nextCursor = cursor
-        let scanned = 0
-        let matchedCount = 0
-        const items: any[] = []
-        // 当携带 cursor 时，将 offset 视为相对该游标的偏移（置 0），避免重复跳过
-        const effectiveOffset = cursorParam ? 0 : offset
-
-        const minBatch = Math.min(6, limit)
-        for (let i = cursor; i < totalIds; i++) {
-          const id = shareIds[i]
-          const share = await shareStore.getShare(id)
-          nextCursor = i + 1
-          scanned++
-          if (!share || share.published === false) continue
-          // 匹配到已发布
-          matchedCount++
-          if (matchedCount <= effectiveOffset) {
-            // 跳过到offset
-            continue
-          }
-          if (items.length < limit) {
-            items.push({
-              id: share.id,
-              title: `${share.style}変換`,
-              style: share.style,
-              timestamp: share.timestamp,
-              createdAt: share.createdAt,
-              generatedUrl: share.generatedUrl,
-              originalUrl: share.originalUrl || ''
-            })
-          }
-          // 满足数量即返回
-          if (items.length >= limit) break
-          // 时间预算到达且已有部分结果，先返回以加速首屏
-          if (Date.now() - startTime > timeBudgetMs && items.length >= minBatch) break
-        }
-
-        const hasMore = nextCursor < totalIds
-        result = {
-          items,
-          total: undefined,
-          limit,
-          offset,
-          hasMore: hasMore || (items.length >= limit),
-          cursor: hasMore ? nextCursor : undefined
-        }
+        result = { items: [], total: 0, limit, offset, hasMore: false }
       }
     }
 

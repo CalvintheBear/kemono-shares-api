@@ -40,6 +40,7 @@ export default function ShareGallery() {
 
   const lastRequestRef = useRef<number>(0);
   const inFlightRef = useRef<boolean>(false);
+  const seenIdsRef = useRef<Set<string>>(new Set());
 
   const ITEMS_PER_PAGE = 18;
 
@@ -97,13 +98,12 @@ export default function ShareGallery() {
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
       const url = new URL(`${origin}/api/share/list`);
       url.searchParams.set('limit', String(ITEMS_PER_PAGE));
-      url.searchParams.set('offset', String(offset));
-      url.searchParams.set('sort', 'createdAt');
-      url.searchParams.set('order', 'desc');
-      // 渐进扫描：如果后端返回了cursor，则携带cursor继续扫描；带上时间预算tb以尽快返回一批
+      // 优先使用 cursor 稳定分页；仅无 cursor 时使用 offset
       if (scanCursor !== null && scanCursor !== undefined) {
         url.searchParams.set('cursor', String(scanCursor));
         url.searchParams.set('tb', '700');
+      } else {
+        url.searchParams.set('offset', String(offset));
       }
       const apiUrl = url.toString();
       const response = await fetch(apiUrl, {
@@ -120,28 +120,38 @@ export default function ShareGallery() {
       
       if (result.success && result.data?.items) {
         const safeItems = Array.isArray(result.data.items) ? result.data.items.filter((it: any) => it && it.id) : []
-        const newImages = transformToMasonryImages(safeItems);
-        console.log('Transformed images:', newImages.length, 'items', 'hasMore:', result.data.hasMore);
+        const mapped = transformToMasonryImages(safeItems);
+        // 去重：避免重复 18 张
+        const filtered = mapped.filter((img) => {
+          if (!img?.id) return false;
+          return !seenIdsRef.current.has(img.id);
+        });
+        console.log('Transformed images:', filtered.length, 'items', 'hasMore:', result.data.hasMore);
         
         if (append) {
-          setImages(prev => [...prev, ...newImages]);
+          setImages(prev => {
+            const merged = [...prev, ...filtered];
+            for (const it of filtered) { if (it?.id) seenIdsRef.current.add(it.id); }
+            return merged;
+          });
         } else {
-          setImages(newImages);
+          for (const it of filtered) { if (it?.id) seenIdsRef.current.add(it.id); }
+          setImages(filtered);
         }
 
         // 若后端提供cursor，优先依据cursor判断是否还有更多（即使hasMore为false）
         const nextCursor = typeof result.data.cursor === 'number' ? result.data.cursor : (result.data.cursor ? Number(result.data.cursor) : null);
         if (nextCursor !== null && !Number.isNaN(nextCursor)) {
           setScanCursor(nextCursor);
-          autoChaseCursor(offset, newImages.length);
+          autoChaseCursor(offset, filtered.length);
         } else {
           setScanCursor(null);
         }
         setHasMore(Boolean(result.data.hasMore || nextCursor !== null));
-        setCurrentOffset(offset + newImages.length);
+        setCurrentOffset(offset + filtered.length);
         
         // 仅在没有cursor且后端声明无更多时才判定结束
-        if (newImages.length === 0) {
+        if (filtered.length === 0) {
           const noMore = !result.data?.hasMore && (result.data?.cursor === undefined || result.data?.cursor === null)
           if (noMore) setHasMore(false)
         }
