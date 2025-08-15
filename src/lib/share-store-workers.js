@@ -56,6 +56,11 @@ export class ShareStoreWorkers {
     return 'share:index:published:latest'
   }
 
+  // 已发布：轻量列表（供 /api/share/list 极速分页）
+  getPublishedSimpleKey() {
+    return 'share:index:published:simple'
+  }
+
   // 维护最新条目列表，存储精简对象，便于首页极速读取
   async _addToLatestList(key, item, limit = 200) {
     try {
@@ -70,6 +75,21 @@ export class ShareStoreWorkers {
     } catch (e) {
       // 索引失败不影响主流程
     }
+  }
+
+  // 维护“已发布轻量列表”
+  async _addToPublishedSimple(item, limit = 2000) {
+    try {
+      const key = this.getPublishedSimpleKey()
+      const raw = await this._kvGet(key)
+      let list = raw ? JSON.parse(raw) : []
+      if (!Array.isArray(list)) list = []
+      // 去重头插
+      list = list.filter((x) => x && x.id !== item.id)
+      list.unshift(item)
+      if (list.length > limit) list = list.slice(0, limit)
+      await this._kvPut(key, JSON.stringify(list), 60 * 60 * 24 * 7)
+    } catch {}
   }
 
   async _addToIndexList(key, id, limit = 500) {
@@ -130,6 +150,14 @@ export class ShareStoreWorkers {
           style: shareData.style,
           timestamp: shareData.timestamp,
         }, 200)
+        await this._addToPublishedSimple({
+          id: shareId,
+          generatedUrl: shareData.generatedUrl,
+          style: shareData.style,
+          timestamp: shareData.timestamp,
+          createdAt: shareData.createdAt,
+          originalUrl: shareData.originalUrl || ''
+        }, 2000)
         await this._addToIndexList(this.getStyleIndexKey(shareData.style), shareId, 500)
         if (shareData.model) {
           await this._addToIndexList(this.getModelIndexKey(shareData.model), shareId, 500)
@@ -299,6 +327,14 @@ export class ShareStoreWorkers {
         style: data.style,
         timestamp: data.timestamp,
       }, 200)
+      await this._addToPublishedSimple({
+        id: shareId,
+        generatedUrl: data.generatedUrl,
+        style: data.style,
+        timestamp: data.timestamp,
+        createdAt: data.createdAt,
+        originalUrl: data.originalUrl || ''
+      }, 2000)
       await this._addToIndexList(this.getStyleIndexKey(data.style), shareId, 500)
       if (data.model) await this._addToIndexList(this.getModelIndexKey(data.model), shareId, 500)
       const tagSource = (data.seo && Array.isArray(data.seo.keywordsJa) && data.seo.keywordsJa.length > 0)

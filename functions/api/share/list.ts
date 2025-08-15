@@ -64,7 +64,18 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       }
       result = { items, total, limit, offset, hasMore: offset + items.length < total }
     } else {
-      // 优先从“已发布索引”直接分页，避免扫描全表
+      // 优先从“已发布轻量列表”直接分页（零 N+1）
+      try {
+        const rawSimple = await shareStore._kvGet?.(shareStore.getPublishedSimpleKey())
+        const simpleList: any[] = rawSimple ? JSON.parse(rawSimple) : []
+        if (Array.isArray(simpleList) && simpleList.length > 0) {
+          const total = simpleList.length
+          const slice = simpleList.slice(offset, offset + limit)
+          result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
+        }
+      } catch {}
+
+      // 次优先：从“已发布索引”按 id 分页（仍可能产生 N 次 getShare）
       try {
         const raw = await shareStore._kvGet?.(shareStore.getPublishedIndexKey())
         const idList: string[] = raw ? JSON.parse(raw) : []

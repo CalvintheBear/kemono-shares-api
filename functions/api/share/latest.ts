@@ -49,20 +49,31 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       items = Array.isArray(list?.items) ? list.items.slice(0, 12) : []
     }
 
-    // 若没有取到新数据，则保持KV中已有的12个，避免清空
-    if ((!items || items.length === 0) && Array.isArray(cached?.items)) {
-      items = cached.items
-    }
+    // 重要：校验这些 id 是否仍然存在（避免你删除 KV 后首页仍显示旧图）
+    try {
+      const checked: any[] = []
+      for (const it of items) {
+        const id = it?.id
+        if (!id) continue
+        const exists = await shareStore.getShare(id)
+        if (exists && exists.published !== false) checked.push(it)
+      }
+      items = checked
+    } catch {}
 
-    // 若不足12张，尝试用缓存补齐到12张（按去重合并）
+    // 若不足12张，可尝试用缓存补齐，但同样校验存在性
     if (Array.isArray(cached?.items) && items.length < 12) {
       const existingIds = new Set((items || []).map((it: any) => it.id))
       for (const it of cached.items) {
-        if (!existingIds.has(it.id)) {
-          items.push(it)
-          existingIds.add(it.id)
-          if (items.length >= 12) break
-        }
+        if (items.length >= 12) break
+        if (!it?.id || existingIds.has(it.id)) continue
+        try {
+          const exists = await shareStore.getShare(it.id)
+          if (exists && exists.published !== false) {
+            items.push(it)
+            existingIds.add(it.id)
+          }
+        } catch {}
       }
     }
     items = items.slice(0, 12)
