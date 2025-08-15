@@ -1622,11 +1622,6 @@ useEffect(() => {
             </div>
             {mode === 'template-mode' && (
               <div className="mt-1 text-[11px] leading-snug text-text-muted">
-                <p>
-                  {isEnglish
-                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
-                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
-                </p>
               </div>
             )}
           </div>
@@ -1973,11 +1968,6 @@ useEffect(() => {
 
             {mode === 'template-mode' && (
               <div className="mt-2 text-center">
-                <p className="text-xs text-text-muted">
-                  {isEnglish
-                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
-                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
-                </p>
               </div>
             )}
 
