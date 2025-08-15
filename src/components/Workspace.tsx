@@ -51,38 +51,21 @@ interface GenerationResult {
 }
 
 const templates: Template[] = [
-  
   {
-    id: '24',
-    name: 'emoji 絵文字風',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
-    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
-    category: 'emoji 絵文字風'
+    id: '1',
+    name: '擬人化',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after',
+    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
+    category: '擬人化'
   },
   {
-    id: '19',
-    name: 'lineスタンプ',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after',
-    prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、感情を表すシンボルのような要素も含む、透明な背景のイラスト',
-    category: 'lineスタンプ'
-  },
-  {
-    id: '9',
-    name: 'chibi',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
-    prompt: 'ちびキャラクター、Q版デフォルメ、ベクターアイコン風、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系。',
-    category: 'chibi'
-  },
-  {
-    id: '20',
-    name: '可愛い壁紙',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-after',
-    prompt: 'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
-    category: '可愛い壁紙'
+    id: '10',
+    name: 'ジブリ風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after',
+    prompt: '柔らかな手描きタッチ、温かみのある色調、細かい背景描写、自然で幻想的な風景、絵本のような雰囲気、シンプルで生き生きしたキャラクターデザイン、空気感と光の表現に重点を置き、豊かなディテールと伝統的アニメーションの質感を持つ、ジブリ風、2Dフラット塗り技法。',
+    category: 'ジブリ風'
   },
   {
     id: '25',
@@ -100,6 +83,40 @@ const templates: Template[] = [
     prompt: '画像生成AI 無料で韓国風証明写真を作成！自然な美肌補正、清潔な背景の可愛い証明写真をチャットGPT 画像生成で無料作成。登録不要で即座にダウンロード可能、SNSプロフィルや身分証明写真としても使える',
     category: '証明写真加工'
   },
+  {
+    id: '9',
+    name: 'chibi',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-beforer',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/chibi-after',
+    prompt: 'ちびキャラクター、Q版デフォルメ、ベクターアイコン風、可愛らしい小さな体、大きな頭、ふわふわした雰囲気、癒し系。',
+    category: 'chibi'
+  },
+  {
+    id: '24',
+    name: 'emoji 絵文字風',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/emoji-after',
+    prompt: '写真の中の人物を、このスタイルの3Dステッカー風アバターとして生成する。体型、顔の形、肌の色、顔の表情を忠実に再現し、写真内の顔の装飾、髪型やヘアアクセサリー、服装、アクセサリー、表情、ポーズもそのまま維持する。背景は単色で、白い太めのアウトラインを追加し、人物全体がしっかり描かれていること。最終的な画像がApple公式のiOS絵文字ステッカーのように見えるようにする。',
+    category: 'emoji 絵文字風'
+  },
+  {
+    id: '19',
+    name: 'lineスタンプ',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/line%E8%A1%A8%E6%83%85%E5%8C%85-after',
+    prompt: 'LINEスタンプ、可愛いキャラクター、シンプルでわかりやすい、色彩豊かで明るい、メッセージアプリに似たスタンプ感のあるデザイン、親しみやすい、感情を表すシンボルのような要素も含む、透明な背景のイラスト',
+    category: 'lineスタンプ'
+  },
+
+  {
+    id: '20',
+    name: '可愛い壁紙',
+    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-before',
+    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%A3%81%E7%BA%B8-after',
+    prompt: 'かわいい壁紙スタイル、かわいい背景、アニメスタイルのデザイン、シンプルな太い線の手描きスタイル、カートゥーンスタイル、かわいいフルパターン、タイル効果',
+    category: '可愛い壁紙'
+  },
+
   {
     id: '17',
     name: 'irasutoya',
@@ -159,14 +176,6 @@ const templates: Template[] = [
   },
   
   {
-    id: '10',
-    name: 'ジブリ風',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E5%90%89%E5%8D%9C%E5%8A%9B%E9%A3%8E-after',
-    prompt: '柔らかな手描きタッチ、温かみのある色調、細かい背景描写、自然で幻想的な風景、絵本のような雰囲気、シンプルで生き生きしたキャラクターデザイン、空気感と光の表現に重点を置き、豊かなディテールと伝統的アニメーションの質感を持つ、ジブリ風、2Dフラット塗り技法。',
-    category: 'ジブリ風'
-  },
-  {
     id: '11',
     name: 'SDキャラ',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/SD%E5%B0%8F%E4%BA%BA-before',
@@ -205,14 +214,6 @@ const templates: Template[] = [
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/3DCG-after',
     prompt: '3D美しいBJDキャラクター、テクノロジー感、テクノロジー感、スタイルデザイン、スタジオライト、スタイルデザイン、CGアニメーション、8K解像度、ハイビジョン、写真、撮影、ソフトライティング、最高画質、高画質、高細部、ハイビジョン、狂った詳細、超高画質、超リアル、極上のライティング、水光肌、リアルな毛穴、自然で生き生きとした目、ゲームCGレンダリング',
     category: '3D CG'
-  },
-  {
-    id: '1',
-    name: '擬人化',
-    beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-before',
-    afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E6%8B%9F%E4%BA%BA%E5%8C%96-after',
-    prompt: '[対象物]を擬人化したキャラクター。特徴は[素材]、[形状]、[機能]、[色]に基づいてデザイン。髪型や服装に[対象物]の要素を取り入れた[少女／少年]の姿。アニメ風、中心構図、清潔な背景、細部まで丁寧に描写、ソフトな色調',
-    category: '擬人化'
   },
   {
     id: '16',
@@ -1380,11 +1381,6 @@ useEffect(() => {
               </button>
             </div>
 
-            {/* モバイル常時表示の注意事項 */}
-            <div className="mx-auto max-w-md text-center text-[11px] text-text-muted -mt-1 mb-2 px-2">
-              {isEnglish ? 'We do not provide paid features at the moment. Text-to-image results may be included in the Gallery; image-to-image results will not be included.' : '現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。'}
-            </div>
-
             {/* モバイル用エラーパネル */}
             {generationError && (
               <div className="mx-auto max-w-md bg-surface border border-border rounded-lg p-3 mb-3 text-center">
@@ -1622,6 +1618,11 @@ useEffect(() => {
             </div>
             {mode === 'template-mode' && (
               <div className="mt-1 text-[11px] leading-snug text-text-muted">
+                 <p>
+                  {isEnglish
+                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                </p>
               </div>
             )}
           </div>
@@ -1968,6 +1969,11 @@ useEffect(() => {
 
             {mode === 'template-mode' && (
               <div className="mt-2 text-center">
+                  <p className="text-xs text-text-muted">
+                  {isEnglish
+                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                </p>
               </div>
             )}
 
@@ -2138,12 +2144,6 @@ useEffect(() => {
               </h3>
               {isGenerating && null}
 
-              {/* 注意事項（常時表示）*/}
-              <div className="mt-2 text-center text-xs text-text">
-                {isEnglish 
-                  ? 'We do not provide paid features at the moment. Text-to-image results may be included in the Gallery; image-to-image results will not be included.' 
-                  : '現在は有料機能を提供していません。文→図（テキスト→画像）で生成された画像は『お題一覧』に収録される場合があります。図→図（画像→画像）で生成された画像は収録されません。'}
-              </div>
             </div>
 
             {!currentResult && (
