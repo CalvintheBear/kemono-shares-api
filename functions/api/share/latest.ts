@@ -33,23 +33,28 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       })
     }
 
-    // 优先读取“已发布”的精简最新索引，避免逐条查询
+    // 新逻辑：并行聚合“已发布轻量列表”和“常规列表”，去重后取最新的 12 张
     let items: any[] = []
     try {
-      const rawLatest = await shareStore._kvGet?.(shareStore.getPublishedLatestKey())
-      const simpleList = rawLatest ? JSON.parse(rawLatest) : []
-      if (Array.isArray(simpleList) && simpleList.length > 0) {
-        items = simpleList.slice(0, 12)
+      const [rawSimple, listRes] = await Promise.all([
+        shareStore._kvGet?.(shareStore.getPublishedSimpleKey()),
+        shareStore.getShareList(24, 0)
+      ])
+      const simple = rawSimple ? JSON.parse(rawSimple) : []
+      const listItems = Array.isArray(listRes?.items) ? listRes.items : []
+      const merged = [...(Array.isArray(simple) ? simple : []), ...listItems]
+      const dedupMap = new Map<string, any>()
+      for (const it of merged) {
+        const id = it?.id
+        if (!id) continue
+        // 以时间戳排序，后续再截断
+        if (!dedupMap.has(id)) dedupMap.set(id, it)
       }
+      const deduped = Array.from(dedupMap.values()).sort((a: any, b: any) => (b?.timestamp || 0) - (a?.timestamp || 0))
+      items = deduped.slice(0, 12)
     } catch {}
 
-    // 回退：从常规列表获取
-    if (!items || items.length === 0) {
-      const list = await shareStore.getShareList(12, 0)
-      items = Array.isArray(list?.items) ? list.items.slice(0, 12) : []
-    }
-
-    // 重要：校验这些 id 是否仍然存在（避免你删除 KV 后首页仍显示旧图）
+    // 重要：校验这些 id 是否仍然存在（避免删除后首页仍显示旧图）
     try {
       const checked: any[] = []
       for (const it of items) {

@@ -16,13 +16,15 @@ export async function onRequest(context: any) {
     });
   }
 
-  // --- 简单按 IP 限流（按东京时间每日计数），优先用 KV，缺失则回退为短期内存 ---
+  // --- 按 IP 限流（按东京时间每日计数），仅限制“生成”接口：/api/generate-image 与 /api/flux-kontext/generate ---
   try {
     const url = new URL(request.url);
     const path = url.pathname;
     const isPost = request.method === 'POST';
-    // 需求：所有 POST 请求，每 IP 每日（东京时区）最多 40 次
-    const shouldLimit = isPost;
+    // 仅限制生成接口，合计每日 ≤ 10（JST）
+    const isGenerateEndpoint =
+      path === '/api/generate-image' || path === '/api/flux-kontext/generate';
+    const shouldLimit = isPost && isGenerateEndpoint;
 
     if (shouldLimit) {
       const ip = request.headers.get('CF-Connecting-IP')
@@ -38,8 +40,9 @@ export async function onRequest(context: any) {
       const nextJstMidnightUtcMs = (jstDayIndex + 1) * dayMs - offsetMs;
       const ttlSeconds = Math.max(1, Math.ceil((nextJstMidnightUtcMs - nowMs) / 1000));
 
-      const limitPerDay = 45;
-      const key = `rl:post:${ip}:${jstDayIndex}`;
+      const limitPerDay = 10;
+      // 两个生成接口共享一个计数桶，实现“合计不超过10次/日”
+      const key = `rl:gen:${ip}:${jstDayIndex}`;
 
       const kv = (context.env as any)?.RATE_LIMIT_KV;
       if (kv && typeof kv.get === 'function' && typeof kv.put === 'function') {
