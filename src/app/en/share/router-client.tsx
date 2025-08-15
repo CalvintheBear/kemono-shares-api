@@ -267,14 +267,14 @@ function Content() {
                   </a>
                   <Link
                     href="/en/workspace"
-                    className="block w-full bg-white/50 text-text text-center py-3 rounded-full font-bold hover:bg-white/70 transition-all border border-white/50"
+                    className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105"
                   >
                     Try This Style Yourself
                   </Link>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Link href="/en" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">🏠 Home</Link>
-                    <Link href="/en/share" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">🖼️ Gallery</Link>
-                    <Link href="/en/workspace" className="bg-white/70 text-text text-center py-3 rounded-xl font-semibold hover:bg-white transition border border-white/60">✨ Workspace</Link>
+                    <Link href="/en" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">🏠 Home</Link>
+                    <Link href="/en/share" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">🖼️ Gallery</Link>
+                    <Link href="/en/workspace" className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition text-center">✨ Workspace</Link>
                   </div>
                 </div>
 

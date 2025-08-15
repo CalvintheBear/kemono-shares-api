@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import MobileBottomNav from '@/components/MobileBottomNav'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface ShareData {
   id: string
@@ -112,95 +113,136 @@ export default function ShareDetailPage() {
     )
   }
 
+  // UI 复刻英文版风格（两栏、完整信息区块 + 原图展示）
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-orange-50 to-yellow-50">
       <Header />
-      {/* 动态SEO（客户端补充）：仅为兼容静态导出；SSR metadata 在 generateMetadata 实现 */}
       <head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
-        {/* 未发布时 noindex */}
         {((shareData as any)?.isPublished === false) && (
           <meta name="robots" content="noindex, nofollow" />
         )}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
         {(shareData as any)?.isPublished !== false && shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
-        {/* hreflang for detail page */}
         <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
         <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${shareId}`} />
         <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
       </head>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <h1 className="text-3xl font-bold">AI画像変換結果・プロンプト生成</h1>
-            </div>
-            <p className="text-lg opacity-90">{shareData.style}スタイルでAI変換完了！</p>
-            <p className="text-sm opacity-75 mt-2">シェアID: {shareData.id}</p>
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+          <div className="bg-gradient-to-r from-pink-500 to-orange-500 text-white p-6 lg:p-8 text-center">
+            <h1 className="text-2xl lg:text-3xl font-bold font-cute">AI画像変換結果・プロンプト</h1>
+            <p className="opacity-90 mt-2 font-cute">{shareData.style} スタイルで完成！</p>
+            <p className="opacity-75 mt-1 text-sm font-cute">シェアID: {shareData.id}</p>
           </div>
-          <div className="p-8">
-            {((shareData as any)?.isPublished === false) ? (
-              <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
-            ) : (
-              <div className="flex justify-center">
-                <Image
-                  src={shareData.generatedUrl}
-                  alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
-                  width={1200}
-                  height={800}
-                  unoptimized
-                  className="rounded-2xl shadow-lg max-w-full h-auto"
-                />
+          <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
+            {/* 画像列 */}
+            <div className="space-y-6">
+              {((shareData as any)?.isPublished === false) ? (
+                <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
+              ) : (
+                <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
+                  <Image
+                    src={shareData.generatedUrl}
+                    alt={`AI Generated ${shareData.style} Style Image`}
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                    priority
+                  />
+                </div>
+              )}
+              {((shareData as any)?.isPublished !== false) && shareData.originalUrl && (
+                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                  <Image
+                    src={shareData.originalUrl}
+                    alt="Original Image"
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+            {/* 詳細列 */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold text-text mb-2 font-cute">{shareData.style} スタイル AI 生成</h1>
+                <p className="text-text-muted font-cute">作成日 {new Date(shareData.createdAt).toLocaleDateString('ja-JP')}</p>
               </div>
-            )}
-          </div>
-          <div className="bg-gray-50 rounded-xl p-6 mb-8">
-            <div className="flex items-center space-x-2 mb-4">
-              <span className="bg-surface text-text px-3 py-1 rounded-full text-sm font-medium border border-border">{shareData.style}</span>
-              <span className="text-gray-500 text-sm">{new Date(shareData.timestamp).toLocaleDateString('ja-JP')}</span>
-            </div>
-            <h3 className="text-sm font-semibold text-text mt-2 mb-1">プロンプト：</h3>
-            <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-              {shareData.prompt}
-            </p>
-            {/* 基于 prompt 的摘要，提升文本密度 */}
-            {shareData.prompt && (
-              <div className="mt-4 text-gray-700 text-sm leading-relaxed">
-                <h2 className="text-base font-semibold mb-2">作品のポイント</h2>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>スタイル: {shareData.style}</li>
-                  <li>テーマ: {(shareData.prompt || '').slice(0, 40)}...</li>
-                  <li>
-                    生成プロセス: {(() => {
-                      const m: any = (shareData as any).model
-                      if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext による自動最適化'
-                      if (m === 'gpt4o-image') return 'GPT-4o Image による自動プロンプト最適化'
-                      return 'GPT-4o / Flux Kontext による自動最適化'
-                    })()}
-                  </li>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{shareData.style}</span>
+                <span className="text-text-muted text-sm font-cute">{new Date(shareData.createdAt).toLocaleDateString('ja-JP')}</span>
+                <span className="bg-white/70 text-text px-3 py-1 rounded-full text-sm font-cute border border-white/60">{(() => {
+                  const m: any = (shareData as any).model
+                  if (m === 'flux-kontext-pro') return 'Flux Kontext Pro'
+                  if (m === 'flux-kontext-max') return 'Flux Kontext Max'
+                  if (m === 'gpt4o-image') return 'GPT-4o Image'
+                  return 'GPT-4o / Flux Kontext'
+                })()}</span>
+              </div>
+              <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-text mb-3 font-cute">🤖 プロンプト</h2>
+                <div className="bg-white/50 rounded-xl p-4">
+                  <h3 className="text-sm font-semibold text-text mb-1 font-cute">Prompt：</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed font-cute whitespace-pre-wrap">{shareData.prompt}</p>
+                </div>
+              </div>
+              <div className="bg-white/60 rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-text mb-3 font-cute">作品のポイント</h2>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-text-muted font-cute">
+                  <li>スタイル: {shareData.style || 'Custom'}</li>
+                  <li>テーマ: {(shareData.prompt || 'N/A').slice(0, 60)}{(shareData.prompt || '').length > 60 ? '...' : ''}</li>
+                  <li>生成プロセス: {(() => {
+                    const m: any = (shareData as any).model
+                    if (m === 'flux-kontext-pro' || m === 'flux-kontext-max') return 'Flux Kontext による自動最適化'
+                    if (m === 'gpt4o-image') return 'GPT-4o Image による自動プロンプト最適化'
+                    return 'GPT-4o / Flux Kontext による自動最適化'
+                  })()}</li>
                 </ul>
               </div>
-            )}
-            {(((shareData as any)?.seo?.keywordsJa?.length ?? 0) > 0 || (Array.isArray(shareData.seoTags) && shareData.seoTags.length > 0)) && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {(((shareData as any)?.seo?.keywordsJa as string[]) || shareData.seoTags || []).slice(0, 10).map((t, i) => (
-                  <span key={i} className="text-xs bg-surface text-text px-2 py-1 rounded-full border border-border">#{t}</span>
-                ))}
+              {/* タグ：日文优先，其次英/旧字段 */}
+              {(() => {
+                const seo: any = (shareData as any).seo || {}
+                const tags: string[] = (seo.keywordsJa && seo.keywordsJa.length > 0)
+                  ? seo.keywordsJa
+                  : (seo.keywordsEn && seo.keywordsEn.length > 0)
+                    ? seo.keywordsEn
+                    : (shareData.seoTags || [])
+                return tags && tags.length > 0 ? (
+                  <div>
+                    <h3 className="font-semibold text-text mb-2 font-cute">タグ</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {tags.map((tag, index) => (
+                        <span key={index} className="bg-gradient-to-r from-pink-100 to-orange-100 text-pink-800 px-3 py-1 rounded-full text-xs font-cute">#{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null
+              })()}
+              {/* アクション */}
+              <div className="space-y-3">
+                <a href={shareData.generatedUrl} download className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">📥 ダウンロード</a>
+                <Link href="/workspace" className="block w-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-center py-3 rounded-full font-bold hover:shadow-lg transition-all transform hover:scale-105">自分も試してみる</Link>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button onClick={navToHome} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 ホームへ</button>
+                  <button onClick={navToGallery} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ ギャラリーへ</button>
+                  <button onClick={navToWorkspace} className="bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ ワークスペースへ</button>
+                </div>
               </div>
-            )}
+            </div>
           </div>
-          <div className="p-6 bg-gray-50 rounded-xl">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-              <button onClick={handleDownload} className="w-full sm:w-auto btn-primary text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 min-w-[140px]">📥 ダウンロード</button>
-              <button onClick={handleTryNow} className="w-full sm:w-auto btn-primary text-white py-3 px-6 sm:px-8 rounded-xl font-bold hover:shadow-lg transition-all transform hover:scale-105 min-w-[140px]">✨ 自分も試してみる</button>
-            </div>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <button onClick={navToHome} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🏠 ホームへ</button>
-              <button onClick={navToGallery} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">🖼️ ギャラリーへ</button>
-              <button onClick={navToWorkspace} className="w-full bg-white border border-gray-200 text-gray-700 py-3 px-6 rounded-xl font-semibold hover:shadow transition">✨ ワークスペースへ</button>
-            </div>
+        </div>
+        {/* Related CTA */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-text mb-6 text-center font-cute">他のAI作品を見る</h2>
+          <div className="text-center">
+            <Link href="/share" className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 font-semibold text-text hover:bg-white/90 transition-all">
+              <span>🎨</span>
+              <span>ギャラリーを探索</span>
+            </Link>
           </div>
         </div>
       </main>

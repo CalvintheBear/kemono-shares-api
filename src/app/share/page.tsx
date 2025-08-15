@@ -228,7 +228,7 @@ function SharePageContent() {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="bg-brand bg-[#0096fa] text-white p-8 text-center">
               <div className="flex items-center justify-center space-x-2 mb-4">
-                <h1 className="text-3xl font-bold">AI画像変換 結果（数秒で完了）</h1>
+                <h1 className="text-3xl font-bold">AI画像変換結果 · プロンプト</h1>
               </div>
               <p className="text-lg opacity-90">{shareData.style}スタイルでAI変換完了！</p>
               <p className="text-sm opacity-75 mt-2">シェアID: {shareData.id}</p>
