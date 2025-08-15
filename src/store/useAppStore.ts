@@ -5,7 +5,7 @@ export type AppState = 'initial' | 'uploading' | 'uploaded' | 'processing' | 'co
 
 export type StyleType = 'kemonomimi' | 'humanization' | 'illustration' | 'moefy' | 'ghibli' | 'daughter'
 
-export type ImageSize = '1:1' | '3:2' | '2:3' | '16:9' | '9:16' | '4:3' | '3:4' | '21:9' | '16:21'
+export type ImageSize = '1:1' | '3:2' | '2:3' | '16:9' | '9:16' | '4:3' | '3:4'
 
 export type ModelType = 'gpt4o-image' | 'flux-kontext-pro' | 'flux-kontext-max'
 

@@ -12,7 +12,7 @@ const faqDataJa = [
   {
     id: 2,
     question: "対応ファイルと制限は？",
-    answer: "JPG / PNG / WebP に対応、最大10MB。サイズ比率は 1:1 / 3:2 / 2:3 のほか、Flux Kontext では 16:9 / 9:16 / 4:3 / 3:4 / 21:9 / 16:21 にも対応しています。"
+    answer: "JPG / PNG / WebP に対応、最大10MB。サイズ比率は 1:1 / 3:2 / 2:3 のほか、Flux Kontext では 16:9 / 9:16 / 4:3 / 3:4  にも対応しています。"
   },
   {
     id: 3,
@@ -52,7 +52,7 @@ const faqDataJa = [
   {
     id: 10,
     question: "解像度や縦横比は？",
-    answer: "縦横比はモデルにより選択可能。GPT‑4o Image は 1:1 / 3:2 / 2:3、Flux Kontext は 1:1 / 4:3 / 3:4 / 16:9 / 9:16 / 21:9 / 16:21 を提供します。"
+    answer: "縦横比はモデルにより選択可能。GPT‑4o Image は 1:1 / 3:2 / 2:3、Flux Kontext は 1:1 / 4:3 / 3:4 / 16:9 / 9:16  を提供します。"
   },
   {
     id: 11,
@@ -75,7 +75,7 @@ const faqDataEn = [
   {
     id: 2,
     question: "File formats and limits?",
-    answer: "JPG / PNG / WebP up to 10MB. Aspect ratios: GPT‑4o Image supports 1:1 / 3:2 / 2:3; Flux Kontext also supports 16:9 / 9:16 / 4:3 / 3:4 / 21:9 / 16:21."
+    answer: "JPG / PNG / WebP up to 10MB. Aspect ratios: GPT‑4o Image supports 1:1 / 3:2 / 2:3; Flux Kontext also supports 16:9 / 9:16 / 4:3 / 3:4."
   },
   {
     id: 3,
@@ -115,7 +115,7 @@ const faqDataEn = [
   {
     id: 10,
     question: "Resolution and aspect ratio?",
-    answer: "Aspect ratios vary by model: GPT‑4o Image (1:1 / 3:2 / 2:3) and Flux Kontext (1:1 / 4:3 / 3:4 / 16:9 / 9:16 / 21:9 / 16:21)."
+    answer: "Aspect ratios vary by model: GPT‑4o Image (1:1 / 3:2 / 2:3) and Flux Kontext (1:1 / 4:3 / 3:4 / 16:9 / 9:16)."
   },
   {
     id: 11,

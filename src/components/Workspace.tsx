@@ -69,11 +69,11 @@ const templates: Template[] = [
   },
   {
     id: '25',
-    name: 'flux風',
+    name: 'リアルなアニメ',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-after',
     prompt: '超高精细なアニメーションイラスト、フラックス風の傑作。極限まで鮮明なフォーカス、刃物のようにクリーンな線画。太い輪郭線。劇的な陰影と強いハイライト（スタジオ照明の逆光）のコントラスト。滑らかなグラデーションのセル塗り。細部描写が異様に緻密で、8K解像度。クリーンでモダン、鋭い審美眼。明るい色彩、寒色トーン。「現代アニメキービジュアル」。--style raw--v 6.0',
-    category: 'flux風'
+    category: 'リアルなアニメ'
   },
   {
     id: '22',
@@ -350,11 +350,39 @@ export default function WorkspaceRefactored() {
 
   const { selectedSize, setSelectedSize, selectedModel, setSelectedModel } = useAppStore()
 
+  // 英文名称映射（与 TemplateGallery 保持一致）
+  const nameMap: Record<string, string> = {
+    'emoji 絵文字風': 'emoji sticker style',
+    'lineスタンプ': 'LINE stickers',
+    chibi: 'chibi',
+    '可愛い壁紙': 'Cute wallpaper',
+    'リアルなアニメ': 'Realistic anime',
+    '証明写真加工': 'ID photo retouch',
+    irasutoya: 'irasutoya',
+    '萌え化': 'Moe style',
+    'ブルーアーカイブ': 'Blue Archive',
+    vtuber: 'VTuber',
+    'ウマ娘': 'Uma Musume',
+    '少女': 'Girl',
+    '可愛line アイコン': 'Cute LINE icon',
+    'ジブリ風': 'Ghibli style',
+    'SDキャラ': 'SD chibi',
+    '原神異世界': 'Genshin Isekai',
+    'ゴシック地雷女': 'Gothic Y2K Girl',
+    '乙女ゲーム': 'Otome game',
+    '厚塗': 'Thick paint',
+    '3D CG': '3D CG',
+    '擬人化': 'Anthropo morphism',
+    'クレヨンしんちゃん': 'Crayon Shin-chan',
+    '写真 アニメ風': 'Photo to anime',
+    '獣耳': 'Animal ears',
+  }
+
   // 模型尺寸集合
   const availableSizesByModel: Record<ModelType, ImageSize[]> = useMemo(() => ({
     'gpt4o-image': ['1:1','3:2','2:3'],
-    'flux-kontext-pro': ['1:1','4:3','3:4','16:9','9:16','21:9','16:21'],
-    'flux-kontext-max': ['1:1','4:3','3:4','16:9','9:16','21:9','16:21']
+    'flux-kontext-pro': ['1:1','4:3','3:4','16:9','9:16'],
+    'flux-kontext-max': ['1:1','4:3','3:4','16:9','9:16']
   }), [])
   const derivedSizes = availableSizesByModel[selectedModel]
 
@@ -1620,8 +1648,8 @@ useEffect(() => {
               <div className="mt-1 text-[11px] leading-snug text-text-muted">
                  <p>
                   {isEnglish
-                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
-                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                    ? 'Tip: We recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：より良い品質のためにGPT-4o画像を推奨しますが、少し時間がかかる場合があります。'}
                 </p>
               </div>
             )}
@@ -1667,13 +1695,13 @@ useEffect(() => {
                   <div className="h-16 flex items-center justify-center mb-1">
                     <Image
                       src={template.afterImage}
-                      alt={template.name}
+                      alt={isEnglish ? (nameMap[template.name] || template.name) : template.name}
                       width={56}
                       height={56}
                       className="w-14 h-14 object-cover rounded"
                     />
                   </div>
-                  <p className="text-[11px] font-bold text-text leading-snug px-0.5 text-center break-words min-h-[28px]">{template.name}</p>
+                  <p className="text-[11px] font-bold text-text leading-snug px-0.5 text-center break-words min-h-[28px]">{isEnglish ? (nameMap[template.name] || template.name) : template.name}</p>
                 </button>
               ))}
             </div>
@@ -1887,13 +1915,13 @@ useEffect(() => {
                           <div className="flex-1 flex items-center justify-center mb-1">
                             <Image
                               src={template.afterImage}
-                              alt={template.name}
+                              alt={isEnglish ? (nameMap[template.name] || template.name) : template.name}
                               width={128}
                               height={128}
                               className="w-full max-w-28 aspect-square object-cover rounded shadow-sm"
                             />
                           </div>
-                          <p className="text-xs font-bold text-text leading-tight px-0.5 text-center h-8 flex items-center justify-center">{template.name}</p>
+                          <p className="text-xs font-bold text-text leading-tight px-0.5 text-center h-8 flex items-center justify-center">{isEnglish ? (nameMap[template.name] || template.name) : template.name}</p>
                         </button>
                       ))}
                   </div>
@@ -1971,8 +1999,8 @@ useEffect(() => {
               <div className="mt-2 text-center">
                   <p className="text-xs text-text-muted">
                   {isEnglish
-                    ? 'Tip: For Easy mode templates, we recommend GPT‑4o Image for better quality, but it may take a bit longer.'
-                    : 'ヒント：簡単モードのテンプレートでは高品質のため GPT‑4o Image の利用をおすすめしますが、処理に時間がかかる場合があります。'}
+                    ? 'Tip: We recommend GPT‑4o Image for better quality, but it may take a bit longer.'
+                    : 'ヒント：より良い品質のためにGPT-4o画像を推奨しますが、少し時間がかかる場合があります。'}
                 </p>
               </div>
             )}

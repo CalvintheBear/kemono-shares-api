@@ -52,11 +52,11 @@ const templates = [
   },
   {
     id: '25',
-    name: 'flux風',
+    name: 'リアルなアニメ',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/flux-after',
     prompt: '超高精细なアニメーションイラスト、フラックス風の傑作。極限まで鮮明なフォーカス、刃物のようにクリーンな線画。太い輪郭線。劇的な陰影と強いハイライト（スタジオ照明の逆光）のコントラスト。滑らかなグラデーションのセル塗り。細部描写が異様に緻密で、8K解像度。クリーンでモダン、鋭い審美眼。明るい色彩、寒色トーン。「現代アニメキービジュアル」。--style raw--v 6.0',
-    category: 'flux風'
+    category: 'リアルなアニメ'
   },
   {
     id: '22',
@@ -228,7 +228,7 @@ export default function TemplateGallery() {
     'lineスタンプ': 'LINE stickers',
     chibi: 'chibi',
     '可愛い壁紙': 'Cute wallpaper',
-    'flux風': 'Flux style',
+    'リアルなアニメ': 'Realistic anime',
     '証明写真加工': 'ID photo retouch',
     irasutoya: 'irasutoya',
     '萌え化': 'Moe style',
@@ -241,6 +241,7 @@ export default function TemplateGallery() {
     'SDキャラ': 'SD chibi',
     '原神異世界': 'Genshin Isekai',
     'ゴシック地雷女': 'Gothic Y2K Girl',
+    '乙女ゲーム':'Otome game',
     '厚塗': 'Thick paint',
     '3D CG': '3D CG',
     '擬人化': 'Anthropomorphism',

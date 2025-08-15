@@ -88,7 +88,7 @@
 - 方法与路径：POST `/api/flux-kontext/generate`
 - 请求体（JSON）：
   - `prompt: string`
-  - `aspectRatio?: string` 比例，如 `"1:1" | "4:3" | "3:4" | "16:9" | "9:16" | "21:9" | "16:21"`
+  - `aspectRatio?: string` 比例，如 `"1:1" | "4:3" | "3:4" | "16:9" | "9:16" `
   - `inputImage?: string` 以图编辑时传（参考图 URL）
   - `model: 'flux-kontext-pro' | 'flux-kontext-max'`
   - `enableTranslation?: boolean`（默认 true）
@@ -363,7 +363,7 @@ ShareData 字段：`id, generatedUrl, originalUrl, prompt, style, timestamp, cre
 | 字段名 | 类型 | 方向 | 含义 |
 |---|---|---|---|
 | prompt | string | req | 提示词 |
-| aspectRatio | string? | req | 比例，如 1:1/4:3/3:4/16:9/9:16/21:9/16:21 |
+| aspectRatio | string? | req | 比例，如 1:1/4:3/3:4/16:9/9:16|
 | inputImage | string? | req | 参考图 URL（以图编辑） |
 | model | string | req | 'flux-kontext-pro'/'flux-kontext-max' |
 | enableTranslation | boolean? | req | 翻译开关（默认 true） |
