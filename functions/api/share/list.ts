@@ -70,8 +70,26 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         const simpleList: any[] = rawSimple ? JSON.parse(rawSimple) : []
         if (Array.isArray(simpleList) && simpleList.length > 0) {
           const total = simpleList.length
-          const slice = simpleList.slice(offset, offset + limit)
-          result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
+          let slice: any[] = simpleList.slice(offset, offset + limit)
+          // 若不足一页，尝试用通用回退接口补齐（去重）
+          if (slice.length < limit) {
+            try {
+              const fallback = await shareStore.getShareList(limit, offset)
+              const used = new Set(slice.map((x: any) => x.id))
+              for (const it of (fallback?.items || [])) {
+                if (slice.length >= limit) break
+                if (!it?.id || used.has(it.id)) continue
+                slice.push(it)
+                used.add(it.id)
+              }
+              const more = Boolean(fallback?.hasMore || (offset + slice.length < total))
+              result = { items: slice, total, limit, offset, hasMore: more, cursor: (fallback as any)?.cursor }
+            } catch {
+              result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
+            }
+          } else {
+            result = { items: slice, total, limit, offset, hasMore: offset + slice.length < total }
+          }
         }
       } catch {}
 
