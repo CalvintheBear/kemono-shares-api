@@ -1504,7 +1504,7 @@ useEffect(() => {
                         )}
 
                         {/* Sticky actions inside the result panel for mobile users */}
-                        <div className="sticky bottom-0 left-0 right-0 bg-surface border-t border-border -mx-4 px-4 py-3">
+                        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-border -mx-4 px-4 py-3">
                           <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch">
                             <a
                               href={currentResult.generated_url}
@@ -2299,13 +2299,20 @@ useEffect(() => {
                         <a
                           href={(currentResult as GenerationResult).generated_url}
                           download={`anime-magic-${Date.now()}.png`}
-className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-center justify-center space-x-2 min-w-[140px]"
+                          className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-center justify-center space-x-2 min-w-[140px]"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <span>📥</span>
                           <span>ダウンロード</span>
                         </a>
+                        <button
+                          onClick={handleContribute}
+                          disabled={!publishInfoRef.current || publishState !== 'idle'}
+                          className="w-full sm:w-auto btn-primary py-3 px-6 sm:px-8 font-bold flex items-center justify-center space-x-2 min-w-[140px] disabled:opacity-60"
+                        >
+                          {publishState === 'publishing' ? '公開中…' : publishState === 'published' ? '公開済み' : '公開する'}
+                        </button>
                         
                         <ShareButton
                           generatedImageUrl={(currentResult as GenerationResult).generated_url}

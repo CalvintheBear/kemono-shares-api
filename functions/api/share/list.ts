@@ -89,6 +89,35 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         }
       } catch {}
 
+      // 兼容回退：尝试旧的“文生图索引”（历史数据可能只写入该索引）
+      if (!result) {
+        try {
+          const rawLegacy = await shareStore._kvGet?.('share:index:text:all')
+          const idListLegacy: string[] = rawLegacy ? JSON.parse(rawLegacy) : []
+          if (Array.isArray(idListLegacy) && idListLegacy.length > 0) {
+            const total = idListLegacy.length
+            const slice = idListLegacy.slice(offset, offset + limit)
+            const items: any[] = []
+            for (const id of slice) {
+              const share = await shareStore.getShare(id)
+              if (!share) continue
+              // 历史数据无 published 字段，getShare 已兼容视为已发布
+              if (share.published === false) continue
+              items.push({
+                id: share.id,
+                title: `${share.style}変換`,
+                style: share.style,
+                timestamp: share.timestamp,
+                createdAt: share.createdAt,
+                generatedUrl: share.generatedUrl,
+                originalUrl: share.originalUrl || ''
+              })
+            }
+            result = { items, total, limit, offset, hasMore: offset + items.length < total }
+          }
+        } catch {}
+      }
+
       // 回退兜底（逐步扫描已发布项，按时间预算提前返回，并提供cursor继续扫描）
       if (!result) {
         console.log('📊 采用回退扫描路径: 支持按时间预算提前返回');
