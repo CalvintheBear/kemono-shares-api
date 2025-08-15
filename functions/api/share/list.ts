@@ -72,9 +72,11 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           const total = idList.length
           const slice = idList.slice(offset, offset + limit)
           const items: any[] = []
+          const used = new Set<string>()
           for (const id of slice) {
             const share = await shareStore.getShare(id)
             if (!share || share.published === false) continue
+            used.add(id)
             items.push({
               id: share.id,
               title: `${share.style}変換`,
@@ -85,7 +87,56 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
               originalUrl: share.originalUrl || ''
             })
           }
-          result = { items, total, limit, offset, hasMore: offset + items.length < total }
+          // 若不足一页，尝试用旧索引和扫描补齐
+          let filled = items.length
+          if (filled < limit) {
+            try {
+              const rawLegacy = await shareStore._kvGet?.('share:index:text:all')
+              const idListLegacy: string[] = rawLegacy ? JSON.parse(rawLegacy) : []
+              for (const id of idListLegacy) {
+                if (filled >= limit) break
+                if (used.has(id)) continue
+                const share = await shareStore.getShare(id)
+                if (!share || share.published === false) continue
+                used.add(id)
+                items.push({
+                  id: share.id,
+                  title: `${share.style}変換`,
+                  style: share.style,
+                  timestamp: share.timestamp,
+                  createdAt: share.createdAt,
+                  generatedUrl: share.generatedUrl,
+                  originalUrl: share.originalUrl || ''
+                })
+                filled++
+              }
+            } catch {}
+          }
+          if (filled < limit) {
+            try {
+              const listRaw = await shareStore._kvGet?.(shareStore.getListKey())
+              const allIds: string[] = listRaw ? JSON.parse(listRaw) : []
+              for (const id of allIds) {
+                if (filled >= limit) break
+                if (used.has(id)) continue
+                const share = await shareStore.getShare(id)
+                if (!share || share.published === false) continue
+                used.add(id)
+                items.push({
+                  id: share.id,
+                  title: `${share.style}変換`,
+                  style: share.style,
+                  timestamp: share.timestamp,
+                  createdAt: share.createdAt,
+                  generatedUrl: share.generatedUrl,
+                  originalUrl: share.originalUrl || ''
+                })
+                filled++
+              }
+            } catch {}
+          }
+          const hasMore = offset + items.length < total || items.length >= limit
+          result = { items, total, limit, offset, hasMore }
         }
       } catch {}
 
