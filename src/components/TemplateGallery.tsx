@@ -276,7 +276,7 @@ export default function TemplateGallery() {
         <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-text font-cute mb-12 lg:mb-16 transition-all duration-1000 delay-300 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          {translate('選べる変身スタイル', 'Choose your style')}
+          {translate('AI画像スタイル変換比較', 'AI image style conversion comparison')}
         </h2>
         
         {/* 分类选择按钮 */}
