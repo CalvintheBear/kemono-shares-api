@@ -119,9 +119,13 @@ export default function ShareDetailPage() {
       <head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
+        {/* 未发布时 noindex */}
+        {((shareData as any)?.isPublished === false) && (
+          <meta name="robots" content="noindex, nofollow" />
+        )}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
-        {shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
+        {(shareData as any)?.isPublished !== false && shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
         {/* hreflang for detail page */}
         <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
         <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${shareId}`} />
@@ -137,16 +141,20 @@ export default function ShareDetailPage() {
             <p className="text-sm opacity-75 mt-2">シェアID: {shareData.id}</p>
           </div>
           <div className="p-8">
-            <div className="flex justify-center">
-              <Image
-                src={shareData.generatedUrl}
-                alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
-                width={1200}
-                height={800}
-                unoptimized
-                className="rounded-2xl shadow-lg max-w-full h-auto"
-              />
-            </div>
+            {((shareData as any)?.isPublished === false) ? (
+              <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
+            ) : (
+              <div className="flex justify-center">
+                <Image
+                  src={shareData.generatedUrl}
+                  alt={`${shareData.style} | ${(shareData.prompt || '').slice(0, 60)}`}
+                  width={1200}
+                  height={800}
+                  unoptimized
+                  className="rounded-2xl shadow-lg max-w-full h-auto"
+                />
+              </div>
+            )}
           </div>
           <div className="bg-gray-50 rounded-xl p-6 mb-8">
             <div className="flex items-center space-x-2 mb-4">

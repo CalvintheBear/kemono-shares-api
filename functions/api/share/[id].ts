@@ -72,12 +72,16 @@ export async function onRequestGet({
         generatedUrl: shareData.generatedUrl?.substring(0, 50) + '...',
         timestamp: shareData.timestamp
       });
-      return new Response(JSON.stringify({
-        success: true,
-        data: shareData
-      }), {
+      // 未发布：不泄露图片直链，仅返回基础信息并 noindex
+      const isPublished = (shareData as any)?.published !== false
+      const safe = { ...shareData }
+      if (!isPublished) {
+        delete (safe as any).generatedUrl
+        delete (safe as any).originalUrl
+      }
+      return new Response(JSON.stringify({ success: true, data: { ...safe, isPublished } }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json', 'X-Robots-Tag': 'noindex, nofollow' }
+        headers: { 'Content-Type': 'application/json', 'X-Robots-Tag': isPublished ? 'index, follow' : 'noindex, nofollow' }
       });
     }
     
@@ -122,30 +126,47 @@ export async function onRequestGet({
 
 export async function onRequestPut({ 
   request, 
-  params 
+  params,
+  env 
 }: { 
   request: Request; 
-  params: { id: string } 
+  params: { id: string },
+  env: any 
 }) {
   try {
     const { id } = params;
     const body = await request.json();
-    
+
     if (!id) {
       return new Response(JSON.stringify({ error: '缺少分享ID' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
-    
-    // 这里可以添加分享更新逻辑
-    return new Response(JSON.stringify({
-      success: true,
-      message: `分享 ${id} 更新成功`
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+
+    // 发布动作：{ action: 'publish', token: 'ptk_xxx' }
+    const action = body?.action
+    if (action === 'publish') {
+      const token = body?.token
+      if (!token) {
+        return new Response(JSON.stringify({ success: false, error: '缺少发布令牌' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+      }
+      const hasBinding = !!env.SHARE_DATA_KV
+      const canRest = !!(env.CLOUDFLARE_API_TOKEN && (env.CLOUDFLARE_ACCOUNT_ID || env.CLOUDFLARE_R2_ACCOUNT_ID) && (env.SHARE_KV_NAMESPACE_ID || env.SHARE_DATA_KV_NAMESPACE_ID))
+      if (!hasBinding && !canRest) {
+        return new Response(JSON.stringify({ success: false, error: '存储未配置' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+      }
+      const store = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env)
+      const result = await store.publishShare(id, token)
+      if (!result.success) {
+        const code = result.error === 'NOT_FOUND' ? 404 : (result.error === 'INVALID_TOKEN' ? 403 : 500)
+        return new Response(JSON.stringify({ success: false, error: result.error }), { status: code, headers: { 'Content-Type': 'application/json' } })
+      }
+      return new Response(JSON.stringify({ success: true, published: true, contributedAt: result.contributedAt }), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    }
+
+    // 其他更新动作预留
+    return new Response(JSON.stringify({ success: true, message: `分享 ${id} 更新成功` }), { status: 200, headers: { 'Content-Type': 'application/json' } });
     
   } catch (error) {
     return new Response(JSON.stringify({ 

@@ -68,6 +68,10 @@ export default async function ShareDetailPage({ params }: { params: { id: string
         <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${id}`} />
         <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${id}`} />
         <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${id}`} />
+        {/* noindex for unpublished */}
+        {((data as any)?.isPublished === false) && (
+          <meta name="robots" content="noindex, nofollow" />
+        )}
       </head>
       {/* JSON-LD structured data */}
       <script
@@ -104,18 +108,22 @@ export default async function ShareDetailPage({ params }: { params: { id: string
           <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
             {/* Image Section */}
             <div className="space-y-6">
-              <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
-                <Image
-                  src={data.generatedUrl}
-                  alt={`AI Generated ${data.style} Style Image`}
-                  width={600}
-                  height={600}
-                  className="w-full h-full object-cover"
-                  priority
-                />
-              </div>
+              {((data as any)?.isPublished === false) ? (
+                <div className="text-center text-text-muted py-6">This work has not been made public by the author yet.</div>
+              ) : (
+                <div className="aspect-square bg-gradient-to-br from-pink-100 to-orange-100 rounded-2xl overflow-hidden">
+                  <Image
+                    src={data.generatedUrl}
+                    alt={`AI Generated ${data.style} Style Image`}
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                    priority
+                  />
+                </div>
+              )}
               
-              {data.originalUrl && (
+              {((data as any)?.isPublished !== false) && data.originalUrl && (
                 <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                   <Image
                     src={data.originalUrl}

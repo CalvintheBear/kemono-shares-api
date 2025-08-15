@@ -36,7 +36,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
     const shareStore = new ShareStoreWorkers(hasBinding ? env.SHARE_DATA_KV : env);
     
     // 3. 支持基于样式/模型/标签的索引过滤（任取其一）。
-    //    同时优先使用“文生图索引”加速首页/画廊列表的首次加载。
+    //    默认仅展示“已发布”的分享（移除文生图限定）。
     let result: any = null
     if (style || model || tag) {
       console.log('📊 采用索引过滤: ', { style, model, tag })
@@ -64,9 +64,9 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       }
       result = { items, total, limit, offset, hasMore: offset + items.length < total }
     } else {
-      // 优先从“文生图索引”直接分页，避免扫描全表
+      // 优先从“已发布索引”直接分页，避免扫描全表
       try {
-        const raw = await shareStore._kvGet?.(shareStore.getTextIndexKey())
+        const raw = await shareStore._kvGet?.(shareStore.getPublishedIndexKey())
         const idList: string[] = raw ? JSON.parse(raw) : []
         if (Array.isArray(idList) && idList.length > 0) {
           const total = idList.length
@@ -74,7 +74,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           const items: any[] = []
           for (const id of slice) {
             const share = await shareStore.getShare(id)
-            if (!share) continue
+            if (!share || share.published === false) continue
             items.push({
               id: share.id,
               title: `${share.style}変換`,
@@ -89,7 +89,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         }
       } catch {}
 
-      // 回退兜底（逐步扫描，按时间预算提前返回，并提供cursor继续扫描）
+      // 回退兜底（逐步扫描已发布项，按时间预算提前返回，并提供cursor继续扫描）
       if (!result) {
         console.log('📊 采用回退扫描路径: 支持按时间预算提前返回');
         const listRaw = await shareStore._kvGet?.(shareStore.getListKey())
@@ -109,9 +109,8 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           const share = await shareStore.getShare(id)
           nextCursor = i + 1
           scanned++
-          if (!share) continue
-          if (share.originalUrl && share.originalUrl !== '') continue
-          // 匹配到文生图
+          if (!share || share.published === false) continue
+          // 匹配到已发布
           matchedCount++
           if (matchedCount <= effectiveOffset) {
             // 跳过到offset

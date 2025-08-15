@@ -26,17 +26,29 @@ async function testShareAPI() {
     if (response.ok) {
       const data = await response.json();
       console.log('✅ 分享API测试成功:', data);
-      
+
       if (data.success && data.shareId) {
         console.log('🔗 分享链接:', data.shareUrl);
-        
-        // 测试获取分享数据
+
+        // 测试未发布状态下获取分享数据（不应包含图片直链）
         const getResponse = await fetch(`http://localhost:3000/api/share/${data.shareId}`);
-        if (getResponse.ok) {
-          const shareData = await getResponse.json();
-          console.log('✅ 获取分享数据成功:', shareData);
+        const shareData = await getResponse.json();
+        console.log('✅ 获取分享数据成功:', shareData);
+        if (shareData?.data?.isPublished === false && (shareData?.data?.generatedUrl || shareData?.data?.originalUrl)) {
+          console.error('❌ 未发布数据泄露直链');
+        }
+
+        // 测试发布（贡献）
+        if (data.publishToken) {
+          const publishRes = await fetch(`http://localhost:3000/api/share/${data.shareId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'publish', token: data.publishToken })
+          })
+          const publishJson = await publishRes.json()
+          console.log('🟢 发布结果:', publishJson)
         } else {
-          console.error('❌ 获取分享数据失败:', getResponse.status);
+          console.warn('⚠️ 响应中未返回 publishToken，无法测试发布流程')
         }
       }
     } else {

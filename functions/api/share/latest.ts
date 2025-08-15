@@ -33,10 +33,10 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       })
     }
 
-    // 优先读取精简最新索引，避免逐条查询
+    // 优先读取“已发布”的精简最新索引，避免逐条查询
     let items: any[] = []
     try {
-      const rawLatest = await shareStore._kvGet?.(shareStore.getTextLatestKey())
+      const rawLatest = await shareStore._kvGet?.(shareStore.getPublishedLatestKey())
       const simpleList = rawLatest ? JSON.parse(rawLatest) : []
       if (Array.isArray(simpleList) && simpleList.length > 0) {
         items = simpleList.slice(0, 12)

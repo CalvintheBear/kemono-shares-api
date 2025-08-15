@@ -16,7 +16,7 @@ export default async function generateMetadata(
   _parent: ResolvingMetadata
 ): Promise<Metadata> {
   const id = params.id
-  let data: ShareData | null = null
+  let data: any | null = null
 
   try {
     // 直接请求同域 API（运行在Edge/Node，需确保可访问）
@@ -24,7 +24,7 @@ export default async function generateMetadata(
     const res = await fetch(apiUrl, { cache: 'no-store' })
     if (res.ok) {
       const json = await res.json()
-      if (json.success && json.data) data = json.data as ShareData
+      if (json.success && json.data) data = json.data as any
     }
   } catch {}
 
@@ -41,6 +41,18 @@ export default async function generateMetadata(
         description: descBase,
         type: 'article',
       },
+    }
+  }
+
+  // 未发布：不索引，不出图
+  if (data?.isPublished === false) {
+    return {
+      title: titleBase,
+      description: descBase,
+      robots: { index: false, follow: false },
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/share/${id}`,
+      }
     }
   }
 

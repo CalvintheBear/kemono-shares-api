@@ -337,6 +337,8 @@ export default function WorkspaceRefactored() {
   const [generationError, setGenerationError] = useState<string>('')
   const [stopReason, setStopReason] = useState<null | 'TIMEOUT' | 'MAX_FAILURES' | 'URL_TIMEOUT' | 'NETWORK'>(null)
   const [autoShareUrl, setAutoShareUrl] = useState<string>('')
+  const publishInfoRef = useRef<{ id: string; token: string } | null>(null)
+  const [publishState, setPublishState] = useState<'idle' | 'publishing' | 'published'>('idle')
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [currentPage, setCurrentPage] = useState(0)
@@ -830,6 +832,10 @@ useEffect(() => {
         if (shareData.success && shareData.shareUrl) {
           shareCreatedRef.current = true
           console.log('✅ 自动分享创建成功:', shareData.shareUrl)
+          if (shareData.shareId && shareData.publishToken) {
+            publishInfoRef.current = { id: shareData.shareId, token: shareData.publishToken }
+            setPublishState('idle')
+          }
           return shareData.shareUrl
         } else {
           console.error('❌ 自动分享创建失败:', shareData.error || '未知错误')
@@ -843,6 +849,28 @@ useEffect(() => {
     } catch (error) {
       console.warn('❌ 自动分享处理失败:', error)
       return null
+    }
+  }
+
+  const handleContribute = async () => {
+    try {
+      if (!publishInfoRef.current) return
+      if (publishState === 'published' || publishState === 'publishing') return
+      setPublishState('publishing')
+      const { id, token } = publishInfoRef.current
+      const res = await fetch(`/api/share/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'publish', token })
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) {
+        throw new Error(json?.error || `HTTP ${res.status}`)
+      }
+      setPublishState('published')
+    } catch (e) {
+      console.error('贡献失败:', e)
+      setPublishState('idle')
     }
   }
 
@@ -1488,6 +1516,14 @@ useEffect(() => {
                             >
                               {isEnglish ? 'Download' : 'ダウンロード'}
                             </a>
+                            <button
+                              onClick={handleContribute}
+                              disabled={!publishInfoRef.current || publishState !== 'idle'}
+                              className="w-full sm:w-auto btn-primary py-3 px-6 flex items-center justify-center gap-2 disabled:opacity-60"
+                              aria-label={isEnglish ? 'Contribute' : '公開する'}
+                            >
+                              {publishState === 'publishing' ? (isEnglish ? 'Publishing…' : '公開中…') : publishState === 'published' ? (isEnglish ? 'Contributed' : '公開済み') : (isEnglish ? 'Contribute' : '公開する')}
+                            </button>
                             <ShareButton
                               generatedImageUrl={currentResult.generated_url}
                               originalImageUrl={currentResult.original_url}

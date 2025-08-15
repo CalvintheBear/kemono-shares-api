@@ -39,10 +39,13 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       
     if (shareData) {
       console.log(`[分享获取] 找到分享数据:`, shareData);
-      return new Response(JSON.stringify({
-        success: true,
-        data: shareData
-      }), {
+      const isPublished = (shareData as any)?.published !== false
+      const safe = { ...shareData }
+      if (!isPublished) {
+        delete (safe as any).generatedUrl
+        delete (safe as any).originalUrl
+      }
+      return new Response(JSON.stringify({ success: true, data: { ...safe, isPublished } }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -130,7 +133,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       seo = undefined
     }
 
-    // 6. 创建分享数据对象
+    // 6. 创建分享数据对象（默认未发布）
     const shareDataObject = {
       id: `share_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
       title: prompt ? prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '') : '生成的图片',
@@ -148,7 +151,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       urlType: isR2Url ? 'r2_permanent' : (isTempUrl ? 'kie_temporary' : 'unknown'),
       // 可选SEO标签/关键词（沿用旧字段以保持兼容），并写入新结构 seo
       seoTags: Array.isArray(seoTags) ? seoTags.slice(0, 20) : (seo?.tagsJa || seo?.tagsEn) || undefined,
-      seo
+      seo,
+      published: false
     };
     
     console.log(`✅ 创建分享对象: ${shareDataObject.id}, 类型: ${generationType}`);
@@ -165,11 +169,13 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
     // 8. 基于请求来源构建可用的分享URL（使用查询参数形式，避免 Next 静态路由冲突）
     const origin = new URL(request.url).origin;
     const shareUrl = `${origin}/share?id=${createdShare.id}`;
+    // 返回发布令牌供前端“贡献”使用
     return new Response(JSON.stringify({
       success: true,
       shareId: createdShare.id,
       shareUrl,
-      data: createdShare,
+      data: (() => { const { publishToken, ...safe } = createdShare as any; return safe })(),
+      publishToken: (createdShare as any).publishToken,
       message: '分享创建成功'
     }), {
       status: 200,

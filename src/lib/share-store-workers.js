@@ -47,13 +47,13 @@ export class ShareStoreWorkers {
   }
 
   // 文生图（无 originalUrl）全局索引键
-  getTextIndexKey() {
-    return 'share:index:text:all'
+  getPublishedIndexKey() {
+    return 'share:index:published:all'
   }
 
   // 文生图最新条目（精简字段）索引键
-  getTextLatestKey() {
-    return 'share:index:text:latest'
+  getPublishedLatestKey() {
+    return 'share:index:published:latest'
   }
 
   // 维护最新条目列表，存储精简对象，便于首页极速读取
@@ -86,10 +86,17 @@ export class ShareStoreWorkers {
     }
   }
 
-  // 创建分享
+  // 生成发布令牌（简单随机串）
+  _generatePublishToken() {
+    return `ptk_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`
+  }
+
+  // 创建分享（默认未发布）
   async createShare(data) {
     try {
       const shareId = `share_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const published = typeof data.published === 'boolean' ? data.published : false
+      const publishToken = this._generatePublishToken()
       const shareData = {
         id: shareId,
         generatedUrl: data.generatedUrl,
@@ -102,7 +109,10 @@ export class ShareStoreWorkers {
         // 存储可选seo标签（数组）并兼容新结构
         seoTags: Array.isArray(data.seoTags) ? data.seoTags.slice(0, 20) : [],
         seo: data.seo || undefined,
-        model: data.model || undefined
+        model: data.model || undefined,
+        published,
+        publishToken,
+        contributedAt: published ? Date.now() : undefined
       };
 
       // 存储分享数据
@@ -111,29 +121,26 @@ export class ShareStoreWorkers {
       // 更新分享列表
       await this.updateShareList(shareId, shareData);
 
-      // 更新常用索引（样式 / 模型 / 标签）
-      await this._addToIndexList(this.getStyleIndexKey(shareData.style), shareId, 500)
-      if (shareData.model) {
-        await this._addToIndexList(this.getModelIndexKey(shareData.model), shareId, 500)
-      }
-      const tagSource = (shareData.seo && Array.isArray(shareData.seo.keywordsJa) && shareData.seo.keywordsJa.length > 0)
-        ? shareData.seo.keywordsJa
-        : (Array.isArray(shareData.seoTags) ? shareData.seoTags : [])
-      const uniqueTags = Array.from(new Set((tagSource || []).map(t => String(t).trim()).filter(Boolean))).slice(0, 3)
-      for (const t of uniqueTags) {
-        await this._addToIndexList(this.getTagIndexKey(t), shareId, 200)
-      }
-
-      // 文生图快速索引：仅 originalUrl 为空时加入
-      if (!shareData.originalUrl || shareData.originalUrl === '') {
-        await this._addToIndexList(this.getTextIndexKey(), shareId, 1000)
-        // 同步更新最新条目索引（精简字段）
-        await this._addToLatestList(this.getTextLatestKey(), {
+      // 若已发布，建立索引；未发布不入任何索引
+      if (published) {
+        await this._addToIndexList(this.getPublishedIndexKey(), shareId, 5000)
+        await this._addToLatestList(this.getPublishedLatestKey(), {
           id: shareId,
           generatedUrl: shareData.generatedUrl,
           style: shareData.style,
           timestamp: shareData.timestamp,
         }, 200)
+        await this._addToIndexList(this.getStyleIndexKey(shareData.style), shareId, 500)
+        if (shareData.model) {
+          await this._addToIndexList(this.getModelIndexKey(shareData.model), shareId, 500)
+        }
+        const tagSource = (shareData.seo && Array.isArray(shareData.seo.keywordsJa) && shareData.seo.keywordsJa.length > 0)
+          ? shareData.seo.keywordsJa
+          : (Array.isArray(shareData.seoTags) ? shareData.seoTags : [])
+        const uniqueTags = Array.from(new Set((tagSource || []).map(t => String(t).trim()).filter(Boolean))).slice(0, 3)
+        for (const t of uniqueTags) {
+          await this._addToIndexList(this.getTagIndexKey(t), shareId, 200)
+        }
       }
 
       // 更新统计信息
@@ -146,6 +153,7 @@ export class ShareStoreWorkers {
       });
 
       console.log('✅ 分享数据已存储到KV:', shareId);
+      // 创建返回可包含 publishToken，便于前端后续发布
       return shareData;
     } catch (error) {
       console.error('❌ 创建分享失败:', error);
@@ -167,6 +175,10 @@ export class ShareStoreWorkers {
       const data = await this._kvGet(this.getShareKey(shareId));
       if (data) {
         const shareData = JSON.parse(data);
+        // 历史兼容：无 published 视为 true
+        if (typeof shareData.published !== 'boolean') shareData.published = true
+        // 移除 publishToken 防止泄露
+        if (shareData.publishToken) delete shareData.publishToken
         
         // 更新缓存
         this.cache.set(shareId, {
@@ -185,79 +197,67 @@ export class ShareStoreWorkers {
     }
   }
 
-  // 获取分享列表
+  // 获取分享列表（仅已发布）
   async getShareList(limit = 20, offset = 0) {
     try {
-      // 从KV获取列表
-      const listData = await this._kvGet(this.getListKey());
-      if (!listData) {
-        return {
-          items: [],
-          total: 0,
-          limit,
-          offset,
-          hasMore: false
-        };
-      }
-
-      const shareIds = JSON.parse(listData);
-      const totalIds = shareIds.length;
-
-      // 单次遍历，边过滤边做分页，直到判断出 hasMore
-      const pageItems = [];
-      let textCount = 0;
-      let scanned = 0;
-      let hasMore = false;
-
-      for (let i = 0; i < totalIds; i++) {
-        const id = shareIds[i];
-        const share = await this.getShare(id);
-        scanned++;
-        if (!share) continue;
-        if (share.originalUrl && share.originalUrl !== '') continue; // 仅文生图
-
-        // 当前已匹配的文生图数量
-        textCount++;
-
-        // 收集当前页数据：索引区间 (offset, offset+limit]
-        if (textCount > offset && pageItems.length < limit) {
-          pageItems.push({
+      // 优先从“已发布索引”分页
+      const raw = await this._kvGet(this.getPublishedIndexKey())
+      const idList = raw ? JSON.parse(raw) : []
+      if (Array.isArray(idList) && idList.length > 0) {
+        const total = idList.length
+        const slice = idList.slice(offset, offset + limit)
+        const items = []
+        for (const id of slice) {
+          const share = await this.getShare(id)
+          if (!share) continue
+          if (share.published === false) continue
+          items.push({
             id: share.id,
             title: `${share.style}変換`,
             style: share.style,
-            // 保持为原始数值，前端按语言格式化
             timestamp: share.timestamp,
             createdAt: share.createdAt,
             generatedUrl: share.generatedUrl,
             originalUrl: share.originalUrl || ''
-          });
+          })
         }
-
-        // 如果已经凑满当前页，再看看是否还能找到下一条以确定 hasMore
-        if (pageItems.length >= limit) {
-          // 继续向后找是否还有第 (offset+limit+1) 条
-          for (let j = i + 1; j < totalIds; j++) {
-            const nid = shareIds[j];
-            const nshare = await this.getShare(nid);
-            scanned++;
-            if (!nshare) continue;
-            if (nshare.originalUrl && nshare.originalUrl !== '') continue;
-            hasMore = true;
-            break;
-          }
-          break;
-        }
+        return { items, total, limit, offset, hasMore: offset + items.length < total }
       }
 
-      console.log(`📊 分享列表（文生图）: 扫描${scanned}/${totalIds}，匹配${textCount}个，返回${pageItems.length}个，hasMore=${hasMore}`);
-
-      return {
-        items: pageItems,
-        total: textCount,
-        limit,
-        offset,
-        hasMore
-      };
+      // 回退：扫描 share:list，仅取 published=true
+      const listData = await this._kvGet(this.getListKey());
+      const shareIds = listData ? JSON.parse(listData) : []
+      const totalIds = shareIds.length
+      const pageItems = []
+      let matched = 0
+      let hasMore = false
+      for (let i = 0; i < totalIds; i++) {
+        const id = shareIds[i]
+        const share = await this.getShare(id)
+        if (!share || share.published === false) continue
+        matched++
+        if (matched > offset && pageItems.length < limit) {
+          pageItems.push({
+            id: share.id,
+            title: `${share.style}変換`,
+            style: share.style,
+            timestamp: share.timestamp,
+            createdAt: share.createdAt,
+            generatedUrl: share.generatedUrl,
+            originalUrl: share.originalUrl || ''
+          })
+        }
+        if (pageItems.length >= limit) {
+          // 是否还有更多
+          for (let j = i + 1; j < totalIds; j++) {
+            const nid = shareIds[j]
+            const nshare = await this.getShare(nid)
+            if (nshare && nshare.published !== false) { hasMore = true; break }
+          }
+          break
+        }
+      }
+      return { items: pageItems, total: matched, limit, offset, hasMore }
     } catch (error) {
       console.error('❌ 获取分享列表失败:', error);
       return {
@@ -267,6 +267,58 @@ export class ShareStoreWorkers {
         offset,
         hasMore: false
       };
+    }
+  }
+
+  // 发布分享（验证 token，建立索引）
+  async publishShare(shareId, token) {
+    try {
+      const raw = await this._kvGet(this.getShareKey(shareId))
+      if (!raw) return { success: false, error: 'NOT_FOUND' }
+      const data = JSON.parse(raw)
+      // 历史兼容：无 published 字段视为已发布，直接返回成功
+      if (typeof data.published !== 'boolean') {
+        data.published = true
+        delete data.publishToken
+        data.contributedAt = data.contributedAt || Date.now()
+      } else {
+        if (data.published === true) return { success: true, already: true, published: true, contributedAt: data.contributedAt }
+        if (!data.publishToken || token !== data.publishToken) return { success: false, error: 'INVALID_TOKEN' }
+        data.published = true
+        data.contributedAt = Date.now()
+        delete data.publishToken
+      }
+
+      await this._kvPut(this.getShareKey(shareId), JSON.stringify(data), 60 * 60 * 24 * 30)
+
+      // 建立索引
+      await this._addToIndexList(this.getPublishedIndexKey(), shareId, 5000)
+      await this._addToLatestList(this.getPublishedLatestKey(), {
+        id: shareId,
+        generatedUrl: data.generatedUrl,
+        style: data.style,
+        timestamp: data.timestamp,
+      }, 200)
+      await this._addToIndexList(this.getStyleIndexKey(data.style), shareId, 500)
+      if (data.model) await this._addToIndexList(this.getModelIndexKey(data.model), shareId, 500)
+      const tagSource = (data.seo && Array.isArray(data.seo.keywordsJa) && data.seo.keywordsJa.length > 0)
+        ? data.seo.keywordsJa
+        : (Array.isArray(data.seoTags) ? data.seoTags : [])
+      const uniqueTags = Array.from(new Set((tagSource || []).map(t => String(t).trim()).filter(Boolean))).slice(0, 3)
+      for (const t of uniqueTags) await this._addToIndexList(this.getTagIndexKey(t), shareId, 200)
+
+      // 更新缓存（不带 token）
+      if (this.cache.has(shareId)) {
+        const cached = this.cache.get(shareId)
+        if (cached?.data) {
+          const { publishToken: _omit, ...safe } = { ...cached.data, published: true, contributedAt: data.contributedAt }
+          this.cache.set(shareId, { data: safe, timestamp: Date.now() })
+        }
+      }
+
+      return { success: true, published: true, contributedAt: data.contributedAt }
+    } catch (e) {
+      return { success: false, error: 'INTERNAL_ERROR' }
     }
   }
 

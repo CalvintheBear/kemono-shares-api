@@ -15,7 +15,7 @@ export async function onRequestGet({ env }: { env: any }) {
     const pageSize = 500
     const offset = (page - 1) * pageSize
     const list = await shareStore.getShareList(pageSize, offset)
-    const items = Array.isArray(list?.items) ? list.items : []
+    const items = (Array.isArray(list?.items) ? list.items : []).filter((it: any) => it && it.id)
     const origin = env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
 
     const urls = items.map((it: any) => {

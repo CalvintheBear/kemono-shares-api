@@ -119,7 +119,8 @@ export default function ShareGallery() {
       console.log('API response:', result);
       
       if (result.success && result.data?.items) {
-        const newImages = transformToMasonryImages(result.data.items);
+        const safeItems = Array.isArray(result.data.items) ? result.data.items.filter((it: any) => it && it.id) : []
+        const newImages = transformToMasonryImages(safeItems);
         console.log('Transformed images:', newImages.length, 'items', 'hasMore:', result.data.hasMore);
         
         if (append) {
