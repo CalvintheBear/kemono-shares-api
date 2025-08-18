@@ -49,7 +49,7 @@ export async function onRequest(context: any) {
         const currentRaw = await kv.get(key);
         const current = parseInt(currentRaw || '0', 10);
         if (current >= limitPerDay) {
-          return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
+          return new Response(JSON.stringify({ error: 'Too Many Requests,Try it Tomorrow' }), {
             status: 429,
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': origin, 'Vary': 'Origin' }
           });
@@ -68,7 +68,7 @@ export async function onRequest(context: any) {
         const record = map.get(key);
         if (record && record.expiresAt > now) {
           if (record.count >= limitPerDay) {
-            return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
+            return new Response(JSON.stringify({ error: 'Too Many Requests,Try it Tomorrow' }), {
               status: 429,
               headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': origin, 'Vary': 'Origin' }
             });
