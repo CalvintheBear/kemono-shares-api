@@ -12,8 +12,12 @@ export default function Footer() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const qs = window.location.search
-      setQueryString(qs.startsWith('?') ? qs.slice(1) : qs)
+      const qs = window.location.search || ''
+      const params = new URLSearchParams(qs)
+      // 避免把分享详情页的 id 透传到所有链接
+      params.delete('id')
+      const filtered = params.toString()
+      setQueryString(filtered)
       const hs = window.location.hash || ''
       setHashString(hs.startsWith('#') ? hs : (hs ? `#${hs}` : ''))
     }
