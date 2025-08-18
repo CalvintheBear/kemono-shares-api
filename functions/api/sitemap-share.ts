@@ -15,12 +15,15 @@ export async function onRequestGet({ env }: { env: any }) {
     const pageSize = 500
     const offset = (page - 1) * pageSize
     const list = await shareStore.getShareList(pageSize, offset)
-    const items = (Array.isArray(list?.items) ? list.items : []).filter((it: any) => it && it.id)
+    const items = (Array.isArray(list?.items) ? list.items : [])
+      // 仅收录已公开或未标注状态的分享，明确为 false 的不收录
+      .filter((it: any) => it && it.id && (it.isPublished !== false))
     const origin = env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
 
     const urls = items.map((it: any) => {
-      const locJa = `${origin}/share/${it.id}?id=${encodeURIComponent(it.id)}`
-      const locEn = `${origin}/en/share/${it.id}?id=${encodeURIComponent(it.id)}`
+      // 站点地图中的 URL 不应包含查询参数，使用规范化路径
+      const locJa = `${origin}/share/${it.id}`
+      const locEn = `${origin}/en/share/${it.id}`
       const lastmod = new Date(it.createdAt || it.timestamp || Date.now()).toISOString()
       return `  <url>
     <loc>${locJa}</loc>
