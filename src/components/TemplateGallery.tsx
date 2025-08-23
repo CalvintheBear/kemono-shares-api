@@ -63,7 +63,7 @@ const templates = [
     name: '証明写真加工',
     beforeImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-before',
     afterImage: 'https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/%E9%9F%A9%E5%BC%8F%E8%AF%81%E4%BB%B6%E7%85%A7-after',
-    prompt: '画像生成AI 無料で韓国風証明写真を作成！自然な美肌補正、清潔な背景の可愛い証明写真をチャットGPT 画像生成で無料作成。登録不要で即座にダウンロード可能、SNSプロフィルや身分証明写真としても使える',
+    prompt: '韓国風証明写真, ナチュラルで清潔感のあるスタイル, 自然な美肌補正, 均一で明るい照明, 白または淡いグラデーションの背景, プロフェッショナルな職業装, 正面を向いた構図, 柔らかく落ち着いた色調, 高画質, リアルポートレート',
     category: '証明写真加工'
   },
   {
