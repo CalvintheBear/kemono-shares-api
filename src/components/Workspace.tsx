@@ -12,6 +12,7 @@ import TemplateGallery from './TemplateGallery'
 import Link from 'next/link'
 import Image from 'next/image'
 import OptimizedImage from './OptimizedImage'
+import SuperProtectedInput from './SuperProtectedInput'
 
 
 // 比例小图标（用于尺寸按钮与折叠摘要）
@@ -459,9 +460,26 @@ export default function WorkspaceRefactored() {
   
   // 修复输入框光标重置问题 - 为不同类型的输入框创建独立的ref
   const promptMobileInputRef = useRef<HTMLInputElement>(null)
-  const promptDesktopTextareaRef = useRef<HTMLTextAreaElement>(null)
+  const promptDesktopTextareaRef = useRef<any>(null) // SuperProtectedInput的ref类型
   
-  const handlePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handlePromptChange = useCallback((value: string) => {
+    // 这里只在最终提交时更新state，中间的输入变化由SuperProtectedInput的ref管理
+    // 可以在这里添加实时验证逻辑
+    console.log('Input value changed:', value)
+  }, [])
+
+  const handlePromptSubmit = useCallback((value: string) => {
+    // 只有在提交时才更新React state
+    setPrompt(value)
+  }, [])
+
+  // 防抖更新，用于按钮状态判断
+  const handlePromptDebouncedChange = useCallback((value: string) => {
+    setPrompt(value)
+  }, [])
+
+  // 兼容移动端input的处理函数
+  const handleMobilePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     setPrompt(newValue)
   }, [])
@@ -491,7 +509,8 @@ export default function WorkspaceRefactored() {
       } else {
         const textareaEl = promptDesktopTextareaRef.current
         if (textareaEl && document.activeElement !== textareaEl) {
-          textareaEl.focus()
+          // SuperProtectedInput的focus方法
+          textareaEl.focus?.() || textareaEl.focus()
         }
       }
     }
@@ -1667,7 +1686,7 @@ useEffect(() => {
               ref={promptMobileInputRef}
               type="text"
               value={prompt}
-              onChange={handlePromptChange}
+              onChange={handleMobilePromptChange}
               className={`w-full p-2 bg-white border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
                 mode === 'template-mode' ? 'hidden' : ''
               }`}
@@ -2093,13 +2112,16 @@ useEffect(() => {
                 (mode === 'image-to-image' || mode === 'text-to-image') ? '' : 'hidden'
               }`}>
                 <label className="block text-lg font-bold text-text mb-3">{isEnglish ? 'Write your prompt ✨' : 'プロンプトを書いてね ✨'}</label>
-                <textarea
+                <SuperProtectedInput
                   ref={promptDesktopTextareaRef}
                   value={prompt}
                   onChange={handlePromptChange}
-                  className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text"
+                  onDebouncedChange={handlePromptDebouncedChange}
+                  onSubmit={handlePromptSubmit}
+                  className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text resize-none"
                   placeholder={isEnglish ? 'Enter your prompt...' : 'プロンプトを入力...'}
                   rows={4}
+                  debounceDelay={200}
                 />
                 
                 {/* おすすめの呪文ブロックはPCでは非表示にしました */}
