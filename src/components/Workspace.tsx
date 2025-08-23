@@ -332,7 +332,24 @@ export default function WorkspaceRefactored() {
   const [templatePrompt, setTemplatePrompt] = useState('')
   const [imageToImagePrompt, setImageToImagePrompt] = useState('')
   const [textToImagePrompt, setTextToImagePrompt] = useState('')
-  
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
+  const [isVisible] = useState(true)
+
+  const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
+  const [enhancePrompt, setEnhancePrompt] = useState(false)
+  const [generationError, setGenerationError] = useState<string>('')
+  const [stopReason, setStopReason] = useState<null | 'TIMEOUT' | 'MAX_FAILURES' | 'URL_TIMEOUT' | 'NETWORK'>(null)
+  const [autoShareUrl, setAutoShareUrl] = useState<string>('')
+  const publishInfoRef = useRef<{ id: string; token: string } | null>(null)
+  const [publishState, setPublishState] = useState<'idle' | 'publishing' | 'published'>('idle')
+
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const templatesPerPage = isMobile ? 3 : 5
+  // const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
+
   // 根据当前模式获取对应的 prompt
   const getCurrentPrompt = () => {
     switch (mode) {
@@ -365,24 +382,6 @@ export default function WorkspaceRefactored() {
   // 保持向后兼容
   const prompt = getCurrentPrompt()
   const setPrompt = setCurrentPrompt
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
-  const [isVisible] = useState(true)
-
-  const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
-  const [enhancePrompt, setEnhancePrompt] = useState(false)
-  const [generationError, setGenerationError] = useState<string>('')
-  const [stopReason, setStopReason] = useState<null | 'TIMEOUT' | 'MAX_FAILURES' | 'URL_TIMEOUT' | 'NETWORK'>(null)
-  const [autoShareUrl, setAutoShareUrl] = useState<string>('')
-  const publishInfoRef = useRef<{ id: string; token: string } | null>(null)
-  const [publishState, setPublishState] = useState<'idle' | 'publishing' | 'published'>('idle')
-
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [isMobile, setIsMobile] = useState(false)
-  const templatesPerPage = isMobile ? 3 : 5
-  // const [selectedCategory, setSelectedCategory] = useState<string>('擬人化')
-
 
   const { selectedSize, setSelectedSize, selectedModel, setSelectedModel } = useAppStore()
 
