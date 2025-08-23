@@ -475,13 +475,17 @@ export default function WorkspaceRefactored() {
 
   // 获取当前输入框内容（用于按钮状态判断）
   const getCurrentPromptValue = useCallback(() => {
+    // 在模板模式下，不应该从输入框获取prompt，而是从选中的模板获取
+    if (mode === 'template-mode') {
+      return selectedTemplate?.prompt || ''
+    }
+
     if (promptDesktopTextareaRef.current) {
       const currentValue = promptDesktopTextareaRef.current.getValue()
-      console.log('getCurrentPromptValue:', currentValue)
       return currentValue || ''
     }
     return prompt
-  }, [prompt])
+  }, [prompt, mode, selectedTemplate])
 
   // 兼容移动端input的处理函数
   const handleMobilePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -2152,14 +2156,9 @@ useEffect(() => {
               </div>
 
               <button
-                onClick={() => {
-                  console.log('Button clicked, mode:', mode)
-                  console.log('getCurrentPromptValue:', getCurrentPromptValue())
-                  console.log('fileUrl:', fileUrl)
-                  generateImage()
-                }}
+                onClick={generateImage}
                 disabled={isGenerating ||
-                  (mode === 'template-mode' && (!fileUrl || !selectedTemplate)) ||
+                  (mode === 'template-mode' && !selectedTemplate) || // 模板模式只需要选中模板
                   (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
                   (mode === 'text-to-image' && !getCurrentPromptValue().trim())
                 }
