@@ -474,6 +474,27 @@ export default function WorkspaceRefactored() {
     setPrompt(value)
   }, [])
 
+  // 移动端输入框的光标保护状态
+  const mobileValueRef = useRef('')
+  const mobileSelectionRef = useRef({ start: 0, end: 0 })
+  const [mobileInputValue, setMobileInputValue] = useState('') // 跟踪移动端输入值，用于按钮状态
+
+  // 兼容移动端input的处理函数（带光标保护）
+  const handleMobilePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    mobileValueRef.current = newValue // 保存到ref
+
+    // 保存光标位置
+    const inputEl = e.target
+    mobileSelectionRef.current = {
+      start: inputEl.selectionStart || 0,
+      end: inputEl.selectionEnd || 0
+    }
+
+    // 实时触发onChange，但不传递给父组件state
+    console.log('Mobile input changed:', newValue)
+  }, [])
+
   // 获取当前输入框内容（用于按钮状态判断）
   const getCurrentPromptValue = useCallback(() => {
     // 在模板模式下，不应该从输入框获取prompt，而是从选中的模板获取
@@ -481,9 +502,10 @@ export default function WorkspaceRefactored() {
       return selectedTemplate?.prompt || ''
     }
 
+    // PC端：使用SuperProtectedInput
     if (promptDesktopTextareaRef.current) {
       const currentValue = promptDesktopTextareaRef.current.getValue()
-      console.log('getCurrentPromptValue debug:', {
+      console.log('getCurrentPromptValue PC端 debug:', {
         mode,
         currentValue,
         prompt,
@@ -491,19 +513,72 @@ export default function WorkspaceRefactored() {
       })
       return currentValue || ''
     }
+
+    // 移动端：使用ref值（实时更新）
+    if (isMobile) {
+      return mobileValueRef.current || ''
+    }
+
     console.log('getCurrentPromptValue fallback debug:', {
       mode,
       prompt,
-      selectedTemplate: selectedTemplate?.name
+      selectedTemplate: selectedTemplate?.name,
+      isMobile
     })
     return prompt
-  }, [prompt, mode, selectedTemplate])
+  }, [prompt, mode, selectedTemplate, isMobile])
 
-  // 兼容移动端input的处理函数
-  const handleMobilePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
-    setPrompt(newValue)
+  // 恢复移动端光标位置
+  const restoreMobileSelection = useCallback(() => {
+    const inputEl = promptMobileInputRef.current
+    if (!inputEl) return
+
+    const { start, end } = mobileSelectionRef.current
+    if (start !== null && end !== null) {
+      try {
+        inputEl.setSelectionRange(start, end)
+      } catch (error) {
+        // 忽略选择范围设置错误
+      }
+    }
   }, [])
+
+  // 移动端输入框的聚焦处理
+  const handleMobileFocus = useCallback(() => {
+    // 聚焦时恢复光标位置
+    setTimeout(restoreMobileSelection, 0)
+  }, [restoreMobileSelection])
+
+  // 移动端输入框的点击处理
+  const handleMobileClick = useCallback(() => {
+    // 点击后保存光标位置
+    setTimeout(() => {
+      const inputEl = promptMobileInputRef.current
+      if (inputEl) {
+        mobileSelectionRef.current = {
+          start: inputEl.selectionStart || 0,
+          end: inputEl.selectionEnd || 0
+        }
+      }
+    }, 0)
+  }, [])
+
+  // 移动端光标恢复（类似SuperProtectedInput的做法）
+  useEffect(() => {
+    if (isMobile) {
+      restoreMobileSelection()
+    }
+  })
+
+  // 同步移动端输入框的初始值
+  useEffect(() => {
+    if (isMobile && promptMobileInputRef.current) {
+      mobileValueRef.current = prompt
+      if (promptMobileInputRef.current) {
+        promptMobileInputRef.current.value = prompt
+      }
+    }
+  }, [isMobile, prompt])
 
   // 响应式检测
   useEffect(() => {
@@ -1704,16 +1779,38 @@ useEffect(() => {
 
           <div className="flex-1 mx-2 sm:mx-3">
             {/* 始终渲染输入框，避免条件渲染导致的卸载重建 */}
-            <input
-              ref={promptMobileInputRef}
-              type="text"
-              value={prompt}
-              onChange={handleMobilePromptChange}
-              className={`w-full p-2 bg-white border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none ${
-                mode === 'template-mode' ? 'hidden' : ''
-              }`}
-              placeholder={isEnglish ? 'Enter prompt...' : 'プロンプトを入力...'}
-            />
+            <div className={`flex gap-2 ${
+              mode === 'template-mode' ? 'hidden' : ''
+            }`}>
+              <input
+                ref={promptMobileInputRef}
+                type="text"
+                defaultValue={mobileInputValue}
+                onChange={handleMobilePromptChange}
+                onFocus={handleMobileFocus}
+                onClick={handleMobileClick}
+                className="flex-1 p-2 bg-white border border-border rounded-lg text-sm focus:ring-2 focus:ring-brand focus:outline-none"
+                placeholder={isEnglish ? 'Enter prompt...' : 'プロンプトを入力...'}
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+              />
+                              <button
+                  onClick={() => {
+                    console.log('移动端确定输入按钮被点击')
+                    console.log('当前输入框内容:', mobileValueRef.current)
+                    console.log('当前fileUrl:', fileUrl)
+                    console.log('当前mode:', mode)
+                    // 强制触发按钮状态重新计算
+                    setForceUpdate(prev => prev + 1)
+                  }}
+                  className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+                  title={isEnglish ? 'Confirm input and update button state' : '入力内容を確認してボタン状態を更新'}
+                >
+                  {isEnglish ? 'Confirm' : '確定'}
+                </button>
+            </div>
             {/* 模板模式的显示文本 */}
             <div className={`text-sm font-medium text-text truncate ${
               mode === 'template-mode' ? '' : 'hidden'
@@ -1736,8 +1833,8 @@ useEffect(() => {
               onClick={generateImage}
               disabled={isGenerating || 
                 (mode === 'template-mode' && (!fileUrl || !selectedTemplate)) || 
-                (mode === 'image-to-image' && (!fileUrl || !prompt.trim())) ||
-                (mode === 'text-to-image' && !prompt.trim())
+                (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
+                (mode === 'text-to-image' && !getCurrentPromptValue().trim())
               }
               className="btn-primary p-3 rounded-full disabled:opacity-50"
             >
