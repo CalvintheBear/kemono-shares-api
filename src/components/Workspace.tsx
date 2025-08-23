@@ -336,6 +336,7 @@ export default function WorkspaceRefactored() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
   const [isVisible] = useState(true)
+  const [forceUpdate, setForceUpdate] = useState(0)
 
   const [mode, setMode] = useState<'image-to-image' | 'template-mode' | 'text-to-image'>('template-mode')
   const [enhancePrompt, setEnhancePrompt] = useState(false)
@@ -482,8 +483,19 @@ export default function WorkspaceRefactored() {
 
     if (promptDesktopTextareaRef.current) {
       const currentValue = promptDesktopTextareaRef.current.getValue()
+      console.log('getCurrentPromptValue debug:', {
+        mode,
+        currentValue,
+        prompt,
+        selectedTemplate: selectedTemplate?.name
+      })
       return currentValue || ''
     }
+    console.log('getCurrentPromptValue fallback debug:', {
+      mode,
+      prompt,
+      selectedTemplate: selectedTemplate?.name
+    })
     return prompt
   }, [prompt, mode, selectedTemplate])
 
@@ -2122,15 +2134,31 @@ useEffect(() => {
                 (mode === 'image-to-image' || mode === 'text-to-image') ? '' : 'hidden'
               }`}>
                 <label className="block text-lg font-bold text-text mb-3">{isEnglish ? 'Write your prompt ✨' : 'プロンプトを書いてね ✨'}</label>
-                <SuperProtectedInput
-                  ref={promptDesktopTextareaRef}
-                  value={prompt}
-                  onChange={handlePromptChange}
-                  onSubmit={handlePromptSubmit}
-                  className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text resize-none"
-                  placeholder={isEnglish ? 'Enter your prompt...' : 'プロンプトを入力...'}
-                  rows={4}
-                />
+                <div className="flex gap-3">
+                  <SuperProtectedInput
+                    ref={promptDesktopTextareaRef}
+                    value={prompt}
+                    onChange={handlePromptChange}
+                    onSubmit={handlePromptSubmit}
+                    className="flex-1 p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text resize-none"
+                    placeholder={isEnglish ? 'Enter your prompt...' : 'プロンプトを入力...'}
+                    rows={4}
+                  />
+                  <button
+                    onClick={() => {
+                      console.log('确定按钮被点击')
+                      console.log('当前输入框内容:', promptDesktopTextareaRef.current?.getValue())
+                      console.log('当前fileUrl:', fileUrl)
+                      console.log('当前mode:', mode)
+                      // 强制触发按钮状态重新计算
+                      setForceUpdate(prev => prev + 1)
+                    }}
+                    className="px-6 py-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-2xl transition-colors whitespace-nowrap"
+                    title={isEnglish ? 'Confirm input and update button state' : '入力内容を確認してボタン状態を更新'}
+                  >
+                    {isEnglish ? 'Confirm Input' : '確定入力'}
+                  </button>
+                </div>
                 
                 {/* おすすめの呪文ブロックはPCでは非表示にしました */}
               </div>
@@ -2157,11 +2185,28 @@ useEffect(() => {
 
               <button
                 onClick={generateImage}
-                disabled={isGenerating ||
-                  (mode === 'template-mode' && !selectedTemplate) || // 模板模式只需要选中模板
-                  (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
-                  (mode === 'text-to-image' && !getCurrentPromptValue().trim())
-                }
+                disabled={(() => {
+                  const disabledReason = isGenerating ||
+                    (mode === 'template-mode' && !selectedTemplate) ||
+                    (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
+                    (mode === 'text-to-image' && !getCurrentPromptValue().trim())
+
+                  console.log('Button disabled debug:', {
+                    isGenerating,
+                    mode,
+                    selectedTemplate: selectedTemplate?.name,
+                    fileUrl: fileUrl,
+                    fileUrlType: typeof fileUrl,
+                    currentPromptValue: getCurrentPromptValue(),
+                    currentPromptTrimmed: getCurrentPromptValue().trim(),
+                    disabledReason,
+                    imageToImageCondition: mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim()),
+                    textToImageCondition: mode === 'text-to-image' && !getCurrentPromptValue().trim(),
+                    forceUpdate // 添加这个来触发重新计算
+                  })
+
+                  return disabledReason
+                })()}
                 className="w-full btn-primary py-4 px-6 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isGenerating ? (
