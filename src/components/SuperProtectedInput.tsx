@@ -4,13 +4,11 @@ export interface SuperProtectedInputProps {
   value: string
   onChange: (value: string) => void
   onSubmit?: (value: string) => void
-  onDebouncedChange?: (value: string) => void // 防抖更新，用于按钮状态判断
   placeholder?: string
   className?: string
   rows?: number
   disabled?: boolean
   autoFocus?: boolean
-  debounceDelay?: number // 防抖延迟时间，默认300ms
 }
 
 export interface SuperProtectedInputRef {
@@ -25,19 +23,16 @@ const SuperProtectedInput = forwardRef<SuperProtectedInputRef, SuperProtectedInp
     value,
     onChange,
     onSubmit,
-    onDebouncedChange,
     placeholder = '',
     className = '',
     rows = 4,
     disabled = false,
-    autoFocus = false,
-    debounceDelay = 300
+    autoFocus = false
   }, ref) => {
     const inputRef = useRef<HTMLTextAreaElement>(null)
     const valueRef = useRef(value) // 内容存储
     const selectionRef = useRef({ start: 0, end: 0 }) // 光标位置存储
     const isComposingRef = useRef(false) // 防止输入法冲突
-    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null) // 防抖定时器
 
     // 更新内部值引用
     useEffect(() => {
@@ -90,18 +85,6 @@ const SuperProtectedInput = forwardRef<SuperProtectedInputRef, SuperProtectedInp
       }
     }, [])
 
-    // 防抖更新state（用于按钮状态判断）
-    const debouncedStateUpdate = useCallback((newValue: string) => {
-      if (onDebouncedChange) {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current)
-        }
-        debounceTimerRef.current = setTimeout(() => {
-          onDebouncedChange(newValue)
-        }, debounceDelay)
-      }
-    }, [onDebouncedChange, debounceDelay])
-
     // 处理输入变化
     const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value
@@ -113,10 +96,7 @@ const SuperProtectedInput = forwardRef<SuperProtectedInputRef, SuperProtectedInp
       // 实时触发onChange，但不传递给父组件state
       // 这样可以支持实时验证等功能
       onChange(newValue)
-
-      // 防抖更新state，用于按钮状态判断
-      debouncedStateUpdate(newValue)
-    }, [onChange, saveSelection, debouncedStateUpdate])
+    }, [onChange, saveSelection])
 
     // 处理键盘事件
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -167,14 +147,7 @@ const SuperProtectedInput = forwardRef<SuperProtectedInputRef, SuperProtectedInp
       }
     }, [autoFocus])
 
-    // 清理定时器
-    useEffect(() => {
-      return () => {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current)
-        }
-      }
-    }, [])
+
 
     return (
       <textarea

@@ -469,14 +469,19 @@ export default function WorkspaceRefactored() {
   }, [])
 
   const handlePromptSubmit = useCallback((value: string) => {
-    // 只有在提交时才更新React state
+    // 只有在提交时才更新React state（用户按Enter键时）
     setPrompt(value)
   }, [])
 
-  // 防抖更新，用于按钮状态判断
-  const handlePromptDebouncedChange = useCallback((value: string) => {
-    setPrompt(value)
-  }, [])
+  // 获取当前输入框内容（用于按钮状态判断）
+  const getCurrentPromptValue = useCallback(() => {
+    if (promptDesktopTextareaRef.current) {
+      const currentValue = promptDesktopTextareaRef.current.getValue()
+      console.log('getCurrentPromptValue:', currentValue)
+      return currentValue || ''
+    }
+    return prompt
+  }, [prompt])
 
   // 兼容移动端input的处理函数
   const handleMobilePromptChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -762,14 +767,15 @@ useEffect(() => {
       alert(isEnglish ? 'Please upload an image' : '画像をアップロードしてください')
       return
     }
-    if ((mode === 'image-to-image' || mode === 'text-to-image') && !prompt.trim()) {
+    if ((mode === 'image-to-image' || mode === 'text-to-image') && !getCurrentPromptValue().trim()) {
       alert(isEnglish ? 'Please enter a prompt' : 'プロンプトを入力してください')
       return
     }
 
     console.log('[generateImage] 开始生成流程, mode:', mode, 'selectedTemplate:', selectedTemplate?.name)
     console.log('[generateImage] fileUrl:', fileUrl)
-    console.log('[generateImage] prompt:', prompt)
+    const currentPrompt = getCurrentPromptValue()
+    console.log('[generateImage] prompt:', currentPrompt)
     console.log('[generateImage] selectedSize:', selectedSize)
     
     // 清空上一次生成的分享链接
@@ -782,7 +788,7 @@ useEffect(() => {
       id: `${Date.now()}`,
       original_url: mode === 'text-to-image' ? '' : imagePreview!, // 文生图不需要原图
       generated_url: '',
-      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : currentPrompt,
       timestamp: Date.now()
     }
 
@@ -792,7 +798,7 @@ useEffect(() => {
     // 模型分流：GPT‑4o Image vs Flux Kontext
     const isFlux = selectedModel === 'flux-kontext-pro' || selectedModel === 'flux-kontext-max'
     const requestBody = isFlux ? {
-      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : currentPrompt,
       aspectRatio: selectedSize,
       inputImage: mode === 'text-to-image' ? undefined : fileUrl,
       model: selectedModel,
@@ -801,7 +807,7 @@ useEffect(() => {
       promptUpsampling: enhancePrompt
     } : {
       fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
-      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+      prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : currentPrompt,
       enhancePrompt,
       size: selectedSize,
       mode: mode,
@@ -2116,12 +2122,10 @@ useEffect(() => {
                   ref={promptDesktopTextareaRef}
                   value={prompt}
                   onChange={handlePromptChange}
-                  onDebouncedChange={handlePromptDebouncedChange}
                   onSubmit={handlePromptSubmit}
                   className="w-full p-4 border-2 border-border rounded-2xl focus:ring-2 focus:ring-brand focus:border-transparent focus:outline-none text-text resize-none"
                   placeholder={isEnglish ? 'Enter your prompt...' : 'プロンプトを入力...'}
                   rows={4}
-                  debounceDelay={200}
                 />
                 
                 {/* おすすめの呪文ブロックはPCでは非表示にしました */}
@@ -2148,11 +2152,16 @@ useEffect(() => {
               </div>
 
               <button
-                onClick={generateImage}
-                disabled={isGenerating || 
-                  (mode === 'template-mode' && (!fileUrl || !selectedTemplate)) || 
-                  (mode === 'image-to-image' && (!fileUrl || !prompt.trim())) ||
-                  (mode === 'text-to-image' && !prompt.trim())
+                onClick={() => {
+                  console.log('Button clicked, mode:', mode)
+                  console.log('getCurrentPromptValue:', getCurrentPromptValue())
+                  console.log('fileUrl:', fileUrl)
+                  generateImage()
+                }}
+                disabled={isGenerating ||
+                  (mode === 'template-mode' && (!fileUrl || !selectedTemplate)) ||
+                  (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
+                  (mode === 'text-to-image' && !getCurrentPromptValue().trim())
                 }
                 className="w-full btn-primary py-4 px-6 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
