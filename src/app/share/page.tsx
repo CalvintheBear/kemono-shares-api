@@ -214,21 +214,17 @@ function SharePageContent() {
             <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
               {/* 画像列 */}
               <div className="space-y-6">
-                {((shareData as any)?.isPublished === false) ? (
-                  <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
-                ) : (
-                  <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                    <Image
-                      src={shareData.generatedUrl}
-                      alt={`AI Generated ${shareData.style} Style Image`}
-                      width={600}
-                      height={600}
-                      className="w-full h-full object-cover"
-                      priority
-                    />
-                  </div>
-                )}
-                {((shareData as any)?.isPublished !== false) && shareData.originalUrl && (
+                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                  <Image
+                    src={shareData.generatedUrl}
+                    alt={`AI Generated ${shareData.style} Style Image`}
+                    width={600}
+                    height={600}
+                    className="w-full h-full object-cover"
+                    priority
+                  />
+                </div>
+                {shareData.originalUrl && (
                   <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                     <Image
                       src={shareData.originalUrl}

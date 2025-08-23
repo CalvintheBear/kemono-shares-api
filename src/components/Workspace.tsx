@@ -328,7 +328,43 @@ export default function WorkspaceRefactored() {
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
-  const [prompt, setPrompt] = useState('')
+  // 为不同模式创建独立的 prompt 状态，避免切换时丢失用户输入
+  const [templatePrompt, setTemplatePrompt] = useState('')
+  const [imageToImagePrompt, setImageToImagePrompt] = useState('')
+  const [textToImagePrompt, setTextToImagePrompt] = useState('')
+  
+  // 根据当前模式获取对应的 prompt
+  const getCurrentPrompt = () => {
+    switch (mode) {
+      case 'template-mode':
+        return selectedTemplate?.prompt || templatePrompt
+      case 'image-to-image':
+        return imageToImagePrompt
+      case 'text-to-image':
+        return textToImagePrompt
+      default:
+        return ''
+    }
+  }
+  
+  // 设置当前模式的 prompt
+  const setCurrentPrompt = (value: string) => {
+    switch (mode) {
+      case 'template-mode':
+        setTemplatePrompt(value)
+        break
+      case 'image-to-image':
+        setImageToImagePrompt(value)
+        break
+      case 'text-to-image':
+        setTextToImagePrompt(value)
+        break
+    }
+  }
+  
+  // 保持向后兼容
+  const prompt = getCurrentPrompt()
+  const setPrompt = setCurrentPrompt
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentResult, setCurrentResult] = useState<GenerationResult | null>(null)
   const [isVisible] = useState(true)
@@ -474,7 +510,7 @@ useEffect(() => {
     const foundTemplate = templates.find(t => t.id === savedTemplateId);
     if (foundTemplate) {
       setSelectedTemplate(foundTemplate);
-      setPrompt(foundTemplate.prompt);
+      // 模板模式下，prompt 来自模板，不需要设置到 templatePrompt
       setMode('template-mode');
       hasInitializedRef.current = true;
       return;
@@ -485,7 +521,7 @@ useEffect(() => {
   const first = templates[0];
   if (first) {
     setSelectedTemplate(first);
-    setPrompt(first.prompt);
+    // 模板模式下，prompt 来自模板，不需要设置到 templatePrompt
     setMode('template-mode');
     try {
       localStorage.setItem('selectedTemplateId', first.id);
@@ -743,7 +779,7 @@ useEffect(() => {
       inputImage: mode === 'text-to-image' ? undefined : fileUrl,
       model: selectedModel,
       enableTranslation: true,
-      outputFormat: 'jpeg',
+      outputFormat: 'png',
       promptUpsampling: enhancePrompt
     } : {
       fileUrl: mode === 'text-to-image' ? undefined : fileUrl,
@@ -1317,7 +1353,7 @@ useEffect(() => {
   const handleTemplateSelect = (template: Template) => {
     // 桌面端：完全保持滑块位置，不重置
     setSelectedTemplate(template)
-    setPrompt(template.prompt)
+    // 模板模式下，prompt 来自模板，不需要设置到 templatePrompt
     localStorage.setItem('selectedTemplateId', template.id)
     // 不保存或设置任何滚动位置，保持原生滚动状态
   }
@@ -1326,7 +1362,7 @@ useEffect(() => {
   const handleMobileTemplateSelect = (template: Template) => {
     // 移动端：完全保持滑块位置，不做任何滚动操作
     setSelectedTemplate(template)
-    setPrompt(template.prompt)
+    // 模板模式下，prompt 来自模板，不需要设置到 templatePrompt
     localStorage.setItem('selectedTemplateId', template.id)
     // 不调用任何scrollTo方法，保持原生滚动状态
   }
@@ -1728,7 +1764,7 @@ useEffect(() => {
                 const v = e.target.value as 'template-mode'|'image-to-image'|'text-to-image'
                 setMode(v)
                 if (v === 'image-to-image' || v === 'text-to-image') {
-                  setPrompt('')
+                  // 不要清空 prompt，保持用户输入的内容
                   if (v === 'text-to-image') {
                     setFileUrl(null)
                     setImagePreview(null)
@@ -1824,7 +1860,7 @@ useEffect(() => {
                 <button
                   onClick={() => {
                   setMode('template-mode')
-                  if (!selectedTemplate) setPrompt('')
+                  // 不要清空 prompt，保持用户输入的内容
                 }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'template-mode'
@@ -1837,7 +1873,7 @@ useEffect(() => {
                 <button
                   onClick={() => {
                     setMode('image-to-image')
-                    setPrompt('')
+                    // 不要清空 prompt，保持用户输入的内容
                     setSelectedTemplate(null)
                     localStorage.removeItem('selectedTemplateId')
                   }}
@@ -1852,7 +1888,7 @@ useEffect(() => {
                 <button
                   onClick={() => {
                     setMode('text-to-image')
-                    setPrompt('')
+                    // 不要清空 prompt，保持用户输入的内容
                     setSelectedTemplate(null)
                     setFileUrl(null)
                     setImagePreview(null)

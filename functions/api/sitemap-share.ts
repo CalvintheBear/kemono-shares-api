@@ -16,8 +16,8 @@ export async function onRequestGet({ env }: { env: any }) {
     const offset = (page - 1) * pageSize
     const list = await shareStore.getShareList(pageSize, offset)
     const items = (Array.isArray(list?.items) ? list.items : [])
-      // 仅收录已公开或未标注状态的分享，明确为 false 的不收录
-      .filter((it: any) => it && it.id && (it.isPublished !== false))
+      // 移除发布状态限制，所有作品都可以被收录到sitemap
+      .filter((it: any) => it && it.id)
     const origin = env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'
 
     const urls = items.map((it: any) => {

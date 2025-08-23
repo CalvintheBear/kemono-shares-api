@@ -44,17 +44,7 @@ export default async function generateMetadata(
     }
   }
 
-  // 未发布：不索引，不出图
-  if (data?.isPublished === false) {
-    return {
-      title: titleBase,
-      description: descBase,
-      robots: { index: false, follow: false },
-      alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://2kawaii.com'}/share/${id}`,
-      }
-    }
-  }
+  // 移除未发布作品的SEO限制，所有作品都可以被搜索引擎收录
 
   const shortPrompt = data.prompt?.slice(0, 50) || ''
   // 兼容新结构 seo.titleJa/descJa

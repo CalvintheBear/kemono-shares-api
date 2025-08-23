@@ -10,7 +10,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: a
       inputImage,
       model = 'flux-kontext-pro',
       enableTranslation = true,
-      outputFormat = 'jpeg',
+      outputFormat = 'png',
       promptUpsampling = false,
     } = body || {};
 

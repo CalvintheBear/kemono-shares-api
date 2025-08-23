@@ -39,13 +39,9 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
       
     if (shareData) {
       console.log(`[分享获取] 找到分享数据:`, shareData);
-      const isPublished = (shareData as any)?.published !== false
+      // 移除未发布作品的访问限制，所有作品都可以正常访问
       const safe = { ...shareData }
-      if (!isPublished) {
-        delete (safe as any).generatedUrl
-        delete (safe as any).originalUrl
-      }
-      return new Response(JSON.stringify({ success: true, data: { ...safe, isPublished } }), {
+      return new Response(JSON.stringify({ success: true, data: { ...safe, isPublished: true } }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });

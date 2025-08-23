@@ -61,7 +61,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         const id = it?.id
         if (!id) continue
         const exists = await shareStore.getShare(id)
-        if (exists && exists.published !== false) checked.push(it)
+        if (exists) checked.push(it)
       }
       items = checked
     } catch {}
@@ -74,7 +74,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
         if (!it?.id || existingIds.has(it.id)) continue
         try {
           const exists = await shareStore.getShare(it.id)
-          if (exists && exists.published !== false) {
+          if (exists) {
             items.push(it)
             existingIds.add(it.id)
           }

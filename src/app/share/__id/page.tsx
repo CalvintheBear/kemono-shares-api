@@ -120,12 +120,10 @@ export default function ShareDetailPage() {
       <head>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
-        {((shareData as any)?.isPublished === false) && (
-          <meta name="robots" content="noindex, nofollow" />
-        )}
+        {/* 移除未发布作品的SEO限制 */}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
-        {(shareData as any)?.isPublished !== false && shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
+        {shareData.generatedUrl && <meta property="og:image" content={shareData.generatedUrl} />}
         <link rel="alternate" hrefLang="ja" href={`https://2kawaii.com/share/${shareId}`} />
         <link rel="alternate" hrefLang="en" href={`https://2kawaii.com/en/share/${shareId}`} />
         <link rel="alternate" hrefLang="x-default" href={`https://2kawaii.com/share/${shareId}`} />
@@ -140,21 +138,17 @@ export default function ShareDetailPage() {
           <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
             {/* 画像列 */}
             <div className="space-y-6">
-              {((shareData as any)?.isPublished === false) ? (
-                <div className="text-center text-text-muted py-6">この作品はまだ作者が公開していません。</div>
-              ) : (
-                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
-                  <Image
-                    src={shareData.generatedUrl}
-                    alt={`AI Generated ${shareData.style} Style Image`}
-                    width={600}
-                    height={600}
-                    className="w-full h-full object-cover"
-                    priority
-                  />
-                </div>
-              )}
-              {((shareData as any)?.isPublished !== false) && shareData.originalUrl && (
+              <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                <Image
+                  src={shareData.generatedUrl}
+                  alt={`AI Generated ${shareData.style} Style Image`}
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-cover"
+                  priority
+                />
+              </div>
+              {shareData.originalUrl && (
                 <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
                   <Image
                     src={shareData.originalUrl}

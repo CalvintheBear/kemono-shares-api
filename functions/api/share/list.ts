@@ -90,7 +90,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: an
           const used = new Set<string>()
           for (const id of slice) {
             const share = await shareStore.getShare(id)
-            if (!share || share.published === false) continue
+            if (!share) continue
             used.add(id)
             items.push({
               id: share.id,
