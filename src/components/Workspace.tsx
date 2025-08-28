@@ -1539,7 +1539,6 @@ useEffect(() => {
                 >
                   <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
                   <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
-                  <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
                 </select>
               </div>
             </div>
@@ -1891,7 +1890,6 @@ useEffect(() => {
             >
               <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
               <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
-              <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
             </select>
           </div>
           <div className="p-2 border border-border rounded-lg">
@@ -1992,7 +1990,6 @@ useEffect(() => {
                 >
                   <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
                   <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
-                  <option value="flux-kontext-max">{isEnglish ? 'Flux Kontext Max' : 'Flux Kontext Max'}</option>
                 </select>
                 <button
                   onClick={() => {
