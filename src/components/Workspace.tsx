@@ -2528,10 +2528,23 @@ useEffect(() => {
               <button
                 onClick={generateImage}
                 disabled={(() => {
+                  const promptValue = getCurrentPromptValue().trim()
+                  
+                  // nano-banana模型特殊判断
+                  if (selectedModel === 'nano-banana') {
+                    return isGenerating || !promptValue
+                  }
+                  
+                  if (selectedModel === 'nano-banana-edit') {
+                    const hasImages = multipleFileUrls.length > 0 || fileUrl
+                    return isGenerating || !promptValue || !hasImages
+                  }
+                  
+                  // 原有逻辑
                   const disabledReason = isGenerating ||
                     (mode === 'template-mode' && !selectedTemplate) ||
-                    (mode === 'image-to-image' && (!fileUrl || !getCurrentPromptValue().trim())) ||
-                    (mode === 'text-to-image' && !getCurrentPromptValue().trim())
+                    (mode === 'image-to-image' && (!fileUrl || !promptValue)) ||
+                    (mode === 'text-to-image' && !promptValue)
 
                   console.log('Button disabled debug:', {
                     isGenerating,
