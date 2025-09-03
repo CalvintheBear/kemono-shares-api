@@ -48,7 +48,9 @@
       "Bash(cp:*)",
       "Bash(npx:*)",
       "Bash(npm init -y)",
-      "Bash(CF_PAGES=true npm run build)"
+      "Bash(CF_PAGES=true npm run build)",
+      "WebFetch(domain:kie.ai)",
+      "WebFetch(domain:kie.ai)"
     ],
     "deny": []
   }

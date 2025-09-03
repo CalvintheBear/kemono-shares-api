@@ -6,11 +6,11 @@ import Image from 'next/image'
 
 // Additional SEO metadata for English workspace
 export const metadata = {
-  title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-  description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles supported.",
+  title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+  description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds. High-quality, commercial use allowed.",
   openGraph: {
-    title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. Studio Ghibli, VTuber, chibi styles supported.",
+    title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+    description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds. High-quality, commercial use allowed.",
     url: "https://2kawaii.com/en/workspace",
     siteName: "2kawaii AI Image Generator",
     images: [
@@ -26,8 +26,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
+    title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+    description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds.",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-workspace.jpg"],
   },
   alternates: {
@@ -55,8 +55,8 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: '2kawaii Image Generator (GPT-4o / Flux Kontext)',
-  description: 'Free AI tool supporting GPT-4o Image and Flux Kontext to convert photos to anime style in seconds',
+  name: '2kawaii Nanobanana AI Image Generator',
+  description: 'Free AI tool supporting Nanobanana Edit model to convert photos to anime style in seconds',
   url: 'https://2kawaii.com/en/workspace',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
@@ -67,10 +67,10 @@ const structuredData = {
     availability: 'https://schema.org/InStock',
   },
   featureList: [
-    'Free AI image generation',
+    'Free Nanobanana AI image generation',
     'Automatic prompt generation',
     'Convert photos to anime style instantly',
-    'Studio Ghibli, chibi, VTuber styles supported',
+    'Nanobanana Edit model supported',
     'Generation completed in seconds',
     'Commercial use allowed'
   ],
@@ -97,10 +97,10 @@ export default function WorkspacePage() {
           {/* Page title area */}
           <div className="text-center mb-8 sm:mb-10">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black font-cute mb-2">
-              Photo → Anime in Seconds (GPT‑4o / Flux Kontext)
+              Photo → Anime in Seconds (Nanobanana AI)
             </h1>
             <h2 className="text-lg sm:text-xl text-black max-w-2xl mx-auto">
-              Upload your image, pick model and aspect ratio. Fast, high‑quality, no signup.
+              Upload your image, pick Nanobanana model and aspect ratio. Fast, high‑quality, no signup.
             </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full mx-auto mt-4"></div>
           </div>
@@ -114,7 +114,7 @@ export default function WorkspacePage() {
       <section id="guides-section" className="py-12 lg:py-20 px-3 sm:px-4 lg:px-6 bg-[var(--bg)]">
         <div className="max-w-7xl mx-auto px-2">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-[var(--text)] mb-8 lg:mb-12">
-            How it works (3 steps) — AI image conversion in seconds
+            How it works (3 steps) — Nanobanana AI image conversion in seconds
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
             <div className="text-center card p-6 sm:p-8 lg:p-10 h-full flex flex-col">
@@ -129,8 +129,8 @@ export default function WorkspacePage() {
                   title="AI Image Conversion Model Selection and Image Upload Guide"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. Select Model and Upload Image</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Choose your preferred AI model and upload JPEG/PNG format photos</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. Select Nanobanana Model and Upload Image</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Choose Nanobanana Edit model and upload JPEG/PNG format photos</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 h-full flex flex-col">
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
@@ -160,7 +160,7 @@ export default function WorkspacePage() {
                 />
               </div>
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">5. Click Start and Get Final Image</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Click the "Start" button to begin AI conversion! Download high-quality anime images and share on social media</p>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Click the "Start" button to begin Nanobanana AI conversion! Download high-quality anime images and share on social media</p>
             </div>
           </div>
         </div>

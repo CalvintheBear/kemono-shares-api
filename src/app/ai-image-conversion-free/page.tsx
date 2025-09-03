@@ -12,14 +12,14 @@ import Footer from "@/components/Footer";
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-  description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4o / Flux Kontext で写真を数秒でアニメ風に即変換。ジブリ風・VTuber・chibiなど20+スタイル対応。商用利用OK。",
+  title: "Nanobanana AI画像変換 完全無料 | 2kawaiiで写真をアニメ風に即変換",
+  description: "【2025年最強】Nanobanana AI画像変換は2kawaiiが完全無料・登録不要！Nanobanana Editモデルで写真を数秒でアニメ風に即変換。高品質・商用利用OK。",
   alternates: {
     canonical: "https://2kawaii.com/ai-image-generation-guide",
   },
   openGraph: {
-    title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-    description: "【2025年最強】AI画像変換は2kawaiiが完全無料・登録不要！GPT-4o / Flux Kontext で数秒で完成。",
+    title: "Nanobanana AI画像変換 完全無料 | 2kawaiiで写真をアニメ風に即変換",
+    description: "【2025年最強】Nanobanana AI画像変換は2kawaiiが完全無料・登録不要！Nanobanana Editモデルで数秒で完成。",
     url: "https://2kawaii.com/ai-image-conversion-free",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI画像変換 完全無料 | 2kawaii GPT-4oで写真をアニメ風に即変換",
-    description: "【2025年最強】完全無料・登録不要で写真をアニメ風に即変換！",
+    title: "Nanobanana AI画像変換 完全無料 | 2kawaiiで写真をアニメ風に即変換",
+    description: "【2025年最強】Nanobanana AI完全無料・登録不要で写真をアニメ風に即変換！",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-ai-conversion.jpg"],
   },
   robots: {
@@ -61,7 +61,7 @@ export default function ComparisonPage() {
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
-              AI画像変換 無料比較 - 2025年最新版 人気サービス徹底比較
+              Nanobanana AI画像変換 無料比較 - 2025年最新版 人気サービス徹底比較
             </h1>
             
             <div className="mb-8">
@@ -161,15 +161,15 @@ export default function ComparisonPage() {
             </div>
           
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換ツール徹底比較</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI画像変換ツール徹底比較</h2>
             <p className="text-text-muted leading-relaxed mb-4">
-              2025年最新の無料AI画像変換ツールを徹底比較！写真をアニメ風に変換できる人気サービスの機能、品質、使いやすさを詳しく分析しました。
-              あなたに最適なAI画像生成ツールを見つけましょう。
+              2025年最新のNanobanana AI画像変換ツールを徹底比較！写真をアニメ風に変換できる人気サービスの機能、品質、使いやすさを詳しく分析しました。
+              あなたに最適なNanobanana AI画像生成ツールを見つけましょう。
             </p>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-6">無料AI画像変換サービス比較表</h2>
+            <h2 className="text-2xl font-bold text-text mb-6">Nanobanana AI画像変換サービス比較表</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -221,20 +221,20 @@ export default function ComparisonPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換の選び方</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI画像変換の選び方</h2>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
-                              <li><strong>完全無料を求めるなら</strong>：2kawaii - 登録不要で即利用可能</li>
-              <li><strong>高画質を重視するなら</strong>：Stable Diffusion - 細部まで美麗な変換</li>
-                              <li><strong>商用利用を前提なら</strong>：2kawaii - 商用利用完全OK</li>
-                              <li><strong>スピードを重視するなら</strong>：2kawaii - 数秒で完了</li>
-                              <li><strong>日本語対応が必要なら</strong>：2kawaii - 完全日本語対応</li>
+                              <li><strong>完全無料を求めるなら</strong>：2kawaii Nanobanana - 登録不要で即利用可能</li>
+              <li><strong>高画質を重視するなら</strong>：Nanobanana Edit - 細部まで美麗な変換</li>
+                              <li><strong>商用利用を前提なら</strong>：2kawaii Nanobanana - 商用利用完全OK</li>
+                              <li><strong>スピードを重視するなら</strong>：2kawaii Nanobanana - 数秒で完了</li>
+                              <li><strong>日本語対応が必要なら</strong>：2kawaii Nanobanana - 完全日本語対応</li>
             </ul>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">おすすめの無料AI画像変換順位</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">おすすめのNanobanana AI画像変換順位</h2>
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
-                              <li><strong>🏆 2kawaii</strong> - 完全無料・登録不要・商用利用可能・高速処理</li>
+                              <li><strong>🏆 2kawaii Nanobanana</strong> - 完全無料・登録不要・商用利用可能・高速処理</li>
               <li><strong>🥈 Stable Diffusion</strong> - 高画質・カスタマイズ性高い・技術者向け</li>
               <li><strong>🥉 Midjourney</strong> - 芸術的・高品質・制限あり</li>
               <li><strong>4位 Canva</strong> - 簡単操作・デザイン統合・機能制限</li>
@@ -242,11 +242,11 @@ export default function ComparisonPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">無料AI画像変換の注意点</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI画像変換の注意点</h2>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
-              <li>無料プランには利用回数制限がある場合があります</li>
+              <li>Nanobanana AIは完全無料で利用回数制限なし</li>
               <li>商用利用にはライセンス確認が必要なサービスがあります</li>
-              <li>AI画像変換の品質はサービスによって異なります</li>
+              <li>Nanobanana AI画像変換の品質は高品質です</li>
               <li>個人情報の取り扱いは必ず確認してください</li>
             </ul>
           </section>
@@ -254,7 +254,7 @@ export default function ComparisonPage() {
           <section className="text-center mt-12">
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
-                今すぐ無料AI画像変換を試す 🎨
+                今すぐNanobanana AI画像変換を試す 🎨
               </Link>
               <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 お題一覧 🖼️

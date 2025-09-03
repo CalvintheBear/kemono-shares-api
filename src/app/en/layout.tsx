@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-  description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds. ChatGPT image generation support.",
+  title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+  description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds. High-quality, commercial use allowed.",
   alternates: {
     canonical: "https://2kawaii.com/en",
     languages: {
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     yandex: "your-yandex-verification-code",
   },
   openGraph: {
-    title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
+    title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+    description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds.",
     type: "website",
     url: "https://2kawaii.com/en",
     siteName: "AI Image Converter Tool",
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free AI Image Generator | Convert Photos to Anime Style - 2kawaii",
-    description: "Free AI image generator with no registration required. Supports GPT-4o Image and Flux Kontext; converts photos to anime style in seconds.",
+    title: "Nanobanana AI Image Generator | Convert Photos to Anime Style - 2kawaii",
+    description: "Free Nanobanana AI image generator with no registration required. Nanobanana Edit model converts photos to anime style in seconds.",
     images: ["https://2kawaii.com/og-image.jpg"],
   },
   robots: {

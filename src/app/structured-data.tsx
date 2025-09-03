@@ -3,10 +3,10 @@ export const structuredData = {
   website: {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "AI画像変換 無料 - 2kawaii",
-    "alternateName": "写真をアニメ風に変換するAIツール",
+    "name": "Nanobanana AI画像変換 無料 - 2kawaii",
+    "alternateName": "写真をアニメ風に変換するNanobanana AIツール",
     "url": "https://2kawaii.com",
-    "description": "登録不要で写真をアニメ風に無料変換できるAI画像生成ツール。ジブリ風、VTuber風、美少女など20種類以上のスタイルから選択可能。",
+    "description": "登録不要で写真をアニメ風に無料変換できるNanobanana AI画像生成ツール。高品質、商用利用可、20種類以上のスタイルから選択可能。",
     "inLanguage": "ja",
     "potentialAction": {
       "@type": "SearchAction",
@@ -22,10 +22,10 @@ export const structuredData = {
   organization: {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "2kawaii AI画像変換",
+    "name": "2kawaii Nanobanana AI画像変換",
     "url": "https://2kawaii.com",
     "logo": "https://2kawaii.com/logo.png",
-    "description": "AI画像生成技術を使って写真をアニメ風に変換する無料ツール",
+    "description": "Nanobanana AI画像生成技術を使って写真をアニメ風に変換する無料ツール",
     "sameAs": [
       "https://twitter.com/furycode_ai",
       "https://instagram.com/furycode_ai"
@@ -43,9 +43,9 @@ export const structuredData = {
   softwareApplication: {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "AI画像変換ツール - 2kawaii",
+    "name": "Nanobanana AI画像変換ツール - 2kawaii",
     "applicationCategory": "GraphicsApplication",
-    "description": "写真をアニメ風に変換する無料AI画像生成ツール（GPT-4o / Flux Kontext 対応・数秒で高速生成）",
+    "description": "写真をアニメ風に変換する無料Nanobanana AI画像生成ツール（Nanobanana Editモデル対応・数秒で高速生成）",
     "url": "https://2kawaii.com",
     "operatingSystem": "Web",
     "offers": {
@@ -71,18 +71,18 @@ export const structuredData = {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "AI画像変換は本当に無料で使えるの？",
+        "name": "Nanobanana AI画像変換は本当に無料で使えるの？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "はい、AI画像生成が完全に無料でご利用いただけます。登録不要・隠れた課金なし、商用利用も可能なAI画像変換ツールです。"
+          "text": "はい、Nanobanana AI画像生成が完全に無料でご利用いただけます。登録不要・隠れた課金なし、商用利用も可能なNanobanana AI画像変換ツールです。"
         }
       },
       {
         "@type": "Question",
-        "name": "AI画像変換に対応している画像ファイルは？",
+        "name": "Nanobanana AI画像変換に対応している画像ファイルは？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "JPG、PNG、WebP形式の画像ファイルに対応しており、最大10MBまでのAI画像生成が可能です。推奨解像度は512x512以上で、より高画質なアニメ画像が作成できます。"
+          "text": "JPG、PNG、WebP形式の画像ファイルに対応しており、最大10MBまでのNanobanana AI画像生成が可能です。推奨解像度は512x512以上で、より高画質なアニメ画像が作成できます。"
         }
       },
       {
@@ -90,7 +90,7 @@ export const structuredData = {
         "name": "商用利用は可能ですか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "はい！AI画像生成したアニメ画像は商用利用可能です。SNSアイコン、プロフィール画像、VTuber立ち絵、擬人化キャラクター制作など、幅広くご利用ください。"
+          "text": "はい！Nanobanana AI画像生成したアニメ画像は商用利用可能です。SNSアイコン、プロフィール画像、VTuber立ち絵、擬人化キャラクター制作など、幅広くご利用ください。"
         }
       }
     ]
@@ -110,7 +110,7 @@ export const structuredData = {
       {
         "@type": "ListItem",
         "position": 2,
-        "name": "AI画像変換",
+        "name": "Nanobanana AI画像変換",
         "item": "https://2kawaii.com/workspace"
       }
     ]

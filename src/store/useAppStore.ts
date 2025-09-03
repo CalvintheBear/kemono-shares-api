@@ -5,9 +5,9 @@ export type AppState = 'initial' | 'uploading' | 'uploaded' | 'processing' | 'co
 
 export type StyleType = 'kemonomimi' | 'humanization' | 'illustration' | 'moefy' | 'ghibli' | 'daughter'
 
-export type ImageSize = '1:1' | '3:2' | '2:3' | '16:9' | '9:16' | '4:3' | '3:4'
+export type ImageSize = '1:1' | '3:2' | '2:3' | '16:9' | '9:16' | '4:3' | '3:4' | 'auto'
 
-export type ModelType = 'gpt4o-image' | 'flux-kontext-pro' | 'flux-kontext-max'
+export type ModelType = 'gpt4o-image' | 'flux-kontext-pro' | 'flux-kontext-max' | 'nano-banana' | 'nano-banana-edit'
 
 export interface UploadedImage {
   file: File
@@ -76,7 +76,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   uploadedImage: null,
   selectedStyle: null,
   selectedSize: '1:1',
-  selectedModel: 'flux-kontext-pro',
+  selectedModel: 'nano-banana-edit',
   processedImage: null,
   generatedResult: null,
   isLoading: false,
@@ -139,7 +139,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     uploadedImage: null,
     selectedStyle: null,
     selectedSize: '1:1',
-    selectedModel: 'flux-kontext-pro',
+    selectedModel: 'nano-banana-edit',
     processedImage: null,
     generatedResult: null,
     isLoading: false,
@@ -156,7 +156,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     uploadedImage: null,
     selectedStyle: null,
     selectedSize: '1:1',
-    selectedModel: 'flux-kontext-pro',
+    selectedModel: 'nano-banana-edit',
     processedImage: null,
     isLoading: false,
     loadingProgress: 0,

@@ -2,10 +2,10 @@ export const structuredData = {
   website: {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Free AI Image Converter - 2kawaii',
-    alternateName: 'Turn your photos into anime style',
+    name: 'Nanobanana AI Image Converter - 2kawaii',
+    alternateName: 'Turn your photos into anime style with Nanobanana AI',
     url: 'https://2kawaii.com/en',
-    description: 'Free AI image generator to convert photos into anime style. No signup needed. Multiple styles including Ghibli, VTuber, chibi.',
+    description: 'Free Nanobanana AI image generator to convert photos into anime style. No signup needed. High-quality, commercial use allowed.',
     inLanguage: 'en',
     potentialAction: {
       '@type': 'SearchAction',
@@ -19,10 +19,10 @@ export const structuredData = {
   organization: {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: '2kawaii AI Image Converter',
+    name: '2kawaii Nanobanana AI Image Converter',
     url: 'https://2kawaii.com',
     logo: 'https://2kawaii.com/logo.png',
-    description: 'Free AI tool to convert your photos into anime style.',
+    description: 'Free Nanobanana AI tool to convert your photos into anime style.',
     sameAs: [
       'https://twitter.com/furycode_ai',
       'https://instagram.com/furycode_ai',
@@ -38,9 +38,9 @@ export const structuredData = {
   softwareApplication: {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'AI Image Converter - 2kawaii',
+    name: 'Nanobanana AI Image Converter - 2kawaii',
     applicationCategory: 'GraphicsApplication',
-    description: 'Turn photos into anime-style images for free (supports GPT-4o / Flux Kontext, completed in seconds).',
+    description: 'Turn photos into anime-style images for free (supports Nanobanana Edit model, completed in seconds).',
     url: 'https://2kawaii.com/en',
     operatingSystem: 'Web',
     offers: {
@@ -64,26 +64,26 @@ export const structuredData = {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Is it really free to use?',
+        name: 'Is Nanobanana AI really free to use?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, it is completely free. No registration required and no hidden fees.',
+          text: 'Yes, Nanobanana AI is completely free. No registration required and no hidden fees.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Which image formats are supported?',
+        name: 'Which image formats are supported by Nanobanana AI?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'We support JPG, PNG, and WebP up to 10MB. Higher resolution images produce better results.',
+          text: 'Nanobanana AI supports JPG, PNG, and WebP up to 10MB. Higher resolution images produce better results.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Can I use images for commercial purposes?',
+        name: 'Can I use Nanobanana AI images for commercial purposes?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes, AI-generated images can be used commercially for social icons, profiles, VTuber models, etc.',
+          text: 'Yes, Nanobanana AI-generated images can be used commercially for social icons, profiles, VTuber models, etc.',
         },
       },
     ],
@@ -101,7 +101,7 @@ export const structuredData = {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'AI Image Converter',
+        name: 'Nanobanana AI Image Converter',
         item: 'https://2kawaii.com/en/workspace',
       },
     ],

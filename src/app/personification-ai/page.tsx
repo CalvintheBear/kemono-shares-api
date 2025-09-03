@@ -12,8 +12,8 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-  title: "チャットgpt 擬人化 | GPT-4oでペット・キャラを美少女に無料変換",
-  description: "【GPT-4o / Flux Kontext】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを数秒で可愛いアニメキャラに。無料で商用利用可能。",
+  title: "Nanobanana AI 擬人化 | ペット・キャラを美少女に無料変換",
+  description: "【Nanobanana AI】写真をアップロードするだけでペット・キャラクターを美少女に擬人化！猫・犬・モノなどを数秒で可愛いアニメキャラに。無料で商用利用可能。",
   alternates: {
     canonical: "https://2kawaii.com/personification-ai",
   },
@@ -39,7 +39,7 @@ export default function PersonificationPage() {
         <div className="max-w-4xl mx-auto">
           <article className="prose prose-lg max-w-none">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text mb-8 text-center">
-              擬人化 AI 活用術 - ペットやキャラクターを可愛いアニメキャラに変換
+              Nanobanana AI 擬人化 活用術 - ペットやキャラクターを可愛いアニメキャラに変換
             </h1>
             
             <div className="card-kawaii p-8 mb-8">
@@ -96,15 +96,15 @@ export default function PersonificationPage() {
             </div>
           
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">擬人化 AIとは？</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI 擬人化とは？</h2>
             <p className="text-text-muted leading-relaxed mb-4">
-              擬人化 AIは、ペットやキャラクター、モノなどを人間のような可愛いアニメキャラクターに変換する最新技術です。
-              AI画像生成を使って、あなたの大切なペットやお気に入りのキャラクターを魅力的な擬人化キャラに生まれ変わらせます。
+              Nanobanana AI 擬人化は、ペットやキャラクター、モノなどを人間のような可愛いアニメキャラクターに変換する最新技術です。
+              Nanobanana AI画像生成を使って、あなたの大切なペットやお気に入りのキャラクターを魅力的な擬人化キャラに生まれ変わらせます。
             </p>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">擬人化 AIでできること</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI 擬人化でできること</h2>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
               <li><strong>ペットの擬人化</strong>：愛犬・愛猫を可愛いアニメキャラに</li>
               <li><strong>キャラクター擬人化</strong>：オリジナルキャラを美少女/美少年化</li>
@@ -115,11 +115,11 @@ export default function PersonificationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">ペット擬人化の作り方</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI ペット擬人化の作り方</h2>
             <ol className="list-decimal list-inside space-y-3 text-text-muted">
               <li><strong>ペットの写真を準備する</strong>：正面を向いた明るい写真がおすすめ</li>
-              <li><strong>擬人化スタイルを選択する</strong>：美少女系、美少年系、chibi系など</li>
-              <li><strong>AI画像生成を実行する</strong>：数秒で完成</li>
+              <li><strong>Nanobanana AI擬人化スタイルを選択する</strong>：美少女系、美少年系、chibi系など</li>
+              <li><strong>Nanobanana AI画像生成を実行する</strong>：数秒で完成</li>
               <li><strong>仕上がりを確認する</strong>：気に入らなければ別スタイルで再生成</li>
               <li><strong>ダウンロードして活用する</strong>：SNSやグッズ制作に活用可能</li>
             </ol>
@@ -174,18 +174,18 @@ export default function PersonificationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">擬人化 AIの魅力</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI 擬人化の魅力</h2>
             <ul className="list-disc list-inside space-y-2 text-text-muted">
-              <li><strong>無料で利用</strong>：完全無料で擬人化キャラを作成</li>
+              <li><strong>無料で利用</strong>：完全無料でNanobanana AI擬人化キャラを作成</li>
               <li><strong>商用利用OK</strong>：創作活動やビジネスに活用可能</li>
-              <li><strong>高品質</strong>：最新AI技術で美麗な擬人化キャラを生成</li>
+              <li><strong>高品質</strong>：最新Nanobanana AI技術で美麗な擬人化キャラを生成</li>
               <li><strong>簡単操作</strong>：写真をアップロードするだけで完成</li>
               <li><strong>多様なスタイル</strong>：美少女系からchibi系まで選択可能</li>
             </ul>
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">擬人化 AIを使った人気プロジェクト例</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI 擬人化を使った人気プロジェクト例</h2>
             
             <div className="space-y-4">
               <div className="border-l-4 border-border pl-4">
@@ -206,12 +206,12 @@ export default function PersonificationPage() {
           </section>
 
           <section className="card-kawaii p-8 mb-8">
-            <h2 className="text-2xl font-bold text-text mb-4">擬人化 AIの使い方ガイド</h2>
+            <h2 className="text-2xl font-bold text-text mb-4">Nanobanana AI 擬人化の使い方ガイド</h2>
             <div className="bg-surface p-4 rounded-lg">
               <ol className="list-decimal list-inside space-y-2 text-text-muted text-sm">
                 <li>擬人化したい対象の写真を準備（ペット、キャラクター、モノ）</li>
-                <li>好みの擬人化スタイルを選択（美少女、美少年、chibiなど）</li>
-                <li>AI画像生成を実行（数秒）</li>
+                <li>好みのNanobanana AI擬人化スタイルを選択（美少女、美少年、chibiなど）</li>
+                <li>Nanobanana AI画像生成を実行（数秒）</li>
                 <li>完成した擬人化キャラをダウンロード</li>
                 <li>SNSや創作活動で活用</li>
               </ol>
@@ -221,7 +221,7 @@ export default function PersonificationPage() {
           <section className="text-center mt-12">
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/workspace" className="btn-kawaii text-xl px-8 py-4">
-                今すぐ擬人化キャラを作る 🎭
+                今すぐNanobanana AI擬人化キャラを作る 🎭
               </Link>
               <Link href="/share" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 お題一覧 🖼️

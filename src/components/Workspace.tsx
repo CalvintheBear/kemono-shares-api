@@ -327,6 +327,8 @@ export default function WorkspaceRefactored() {
   const isEnglish = typeof window !== 'undefined' && window.location.pathname.startsWith('/en')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
+  const [multipleImagePreviews, setMultipleImagePreviews] = useState<string[]>([])
+  const [multipleFileUrls, setMultipleFileUrls] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   // 为不同模式创建独立的 prompt 状态，避免切换时丢失用户输入
@@ -419,14 +421,17 @@ export default function WorkspaceRefactored() {
   const availableSizesByModel: Record<ModelType, ImageSize[]> = useMemo(() => ({
     'gpt4o-image': ['1:1','3:2','2:3'],
     'flux-kontext-pro': ['1:1','4:3','3:4','16:9','9:16'],
-    'flux-kontext-max': ['1:1','4:3','3:4','16:9','9:16']
+    'flux-kontext-max': ['1:1','4:3','3:4','16:9','9:16'],
+    'nano-banana': ['auto'],
+    'nano-banana-edit': ['auto']
   }), [])
   const derivedSizes = availableSizesByModel[selectedModel]
 
   // 模型切换时校正尺寸默认值
   useEffect(() => {
     if (!derivedSizes.includes(selectedSize)) {
-      const fallback = selectedModel === 'gpt4o-image' ? '1:1' : '16:9'
+      const fallback = selectedModel === 'gpt4o-image' ? '1:1' : 
+                      selectedModel.includes('nano-banana') ? 'auto' : '16:9'
       setSelectedSize(fallback as ImageSize)
     }
   }, [selectedModel])
@@ -693,6 +698,50 @@ useEffect(() => {
     throw new Error(isEnglish ? 'All upload methods failed' : 'すべてのアップロード方法が失敗しました')
   }, [])
 
+  // 多图片上传处理
+  const handleMultipleImageSelect = useCallback(async (files: FileList) => {
+    const fileArray = Array.from(files).slice(0, 5) // 最多5张
+    const newPreviews: string[] = []
+    const newUrls: string[] = []
+
+    try {
+      setIsUploading(true)
+      setUploadProgress(0)
+      
+      for (let i = 0; i < fileArray.length; i++) {
+        const file = fileArray[i]
+        
+        // 创建预览
+        const reader = new FileReader()
+        const previewPromise = new Promise<string>((resolve) => {
+          reader.onload = () => resolve(reader.result as string)
+          reader.readAsDataURL(file)
+        })
+        newPreviews.push(await previewPromise)
+        
+        // 上传文件
+        const url = await uploadImageDirectly(file)
+        newUrls.push(url)
+        
+        // 更新进度
+        setUploadProgress(Math.round(((i + 1) / fileArray.length) * 100))
+      }
+      
+      setMultipleImagePreviews(newPreviews)
+      setMultipleFileUrls(newUrls)
+      localStorage.setItem('savedMultipleFileUrls', JSON.stringify(newUrls))
+      localStorage.setItem('savedMode', mode)
+    } catch (err) {
+      console.error('多图片上传失败:', err)
+      const errorMessage = err instanceof Error ? err.message : '画像アップロードに失败しました'
+      alert(errorMessage)
+      setMultipleFileUrls([])
+      setMultipleImagePreviews([])
+    } finally {
+      setIsUploading(false)
+    }
+  }, [mode, uploadImageDirectly])
+
   // 图片上传
   const handleImageSelect = useCallback(async (file: File) => {
     const reader = new FileReader()
@@ -886,9 +935,23 @@ useEffect(() => {
     setCurrentResult(newResult)
     console.log('[generateImage] 设置currentResult:', newResult.id)
 
-    // 模型分流：GPT‑4o Image vs Flux Kontext
+    // 模型分流：GPT‑4o Image vs Flux Kontext vs Nano Banana
     const isFlux = selectedModel === 'flux-kontext-pro' || selectedModel === 'flux-kontext-max'
-    const requestBody = isFlux ? {
+    const isNanoBanana = selectedModel.includes('nano-banana')
+    
+    const requestBody = isNanoBanana ? {
+      model: selectedModel,
+      input: {
+        prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : currentPrompt,
+        ...(selectedModel === 'nano-banana-edit' && { 
+          image_urls: multipleFileUrls.length > 0 ? multipleFileUrls : 
+                     (mode === 'text-to-image' ? undefined : [fileUrl].filter(Boolean))
+        }),
+        output_format: 'png',
+        enable_translation: true,
+        image_size: 'auto'
+      }
+    } : isFlux ? {
       prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : currentPrompt,
       aspectRatio: selectedSize,
       inputImage: mode === 'text-to-image' ? undefined : fileUrl,
@@ -908,7 +971,10 @@ useEffect(() => {
     console.log('[generateImage] 请求体:', JSON.stringify(requestBody, null, 2))
 
     try {
-      const response = await fetch(isFlux ? '/api/flux-kontext/generate' : '/api/generate-image', {
+      const apiEndpoint = isNanoBanana ? '/api/nano-banana/generate' : 
+                         isFlux ? '/api/flux-kontext/generate' : '/api/generate-image'
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
@@ -949,7 +1015,9 @@ useEffect(() => {
         console.log('[generateImage] 使用taskId进行轮询, taskId:', taskId)
         // 确保isGenerating为true，防止轮询提前结束
         setIsGenerating(true)
-        if (isFlux) {
+        if (isNanoBanana) {
+          await pollNanoBananaProgress(taskId, newResult.id)
+        } else if (isFlux) {
           await pollFluxProgress(taskId, newResult.id)
         } else {
           await pollProgress(taskId, newResult.id)
@@ -1353,7 +1421,111 @@ useEffect(() => {
     loop()
   }
 
-  // Flux Kontext 轮询（使用统一后的服务端结构）
+  // Nano Banana 轮询（使用统一的 playground API）
+  const pollNanoBananaProgress = async (taskId: string, resultId: string) => {
+    console.log('[pollNanoBananaProgress] 启动, taskId:', taskId, 'resultId:', resultId)
+    const startTime = Date.now()
+    const timeout = 5 * 60 * 1000
+    let errorCount = 0
+    let consecutiveFailures = 0
+    if (!isGenerating) {
+      setIsGenerating(true)
+    }
+    const loop = async () => {
+      if (!isMountedRef.current) return
+      if (Date.now() - startTime >= timeout) {
+        setGenerationError('タイムアウトしました')
+        setCurrentResult(null)
+        setIsGenerating(false)
+        return
+      }
+      try {
+        const response = await fetch(`/api/nano-banana/image-details?taskId=${taskId}`)
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const payload = await response.json()
+        const info = payload?.data?.data || payload?.data || {}
+        const state: 'waiting'|'queuing'|'generating'|'success'|'fail' = info.state || 'waiting'
+        const urls: string[] = info.resultUrls || []
+        const errorMessage: string = info.failMsg || ''
+        const hasUrl = urls.length > 0
+
+        console.log('[pollNanoBananaProgress] 状态检查:', { state, hasUrl, urls, errorMessage })
+
+        if (state === 'success') {
+          consecutiveFailures = 0
+          let finalImageUrl = ''
+          const generatedUrl = hasUrl ? urls[0] : ''
+          if (generatedUrl) {
+            const isR2Url = generatedUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
+            if (isR2Url) {
+              finalImageUrl = generatedUrl
+            } else {
+              try {
+                const uploadResponse = await fetch('/api/download-and-upload', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ url: generatedUrl, taskId, fileName: `nanoBanana_${taskId}.png` })
+                })
+                if (uploadResponse.ok) {
+                  const uploadData = await uploadResponse.json()
+                  if (uploadData.success && uploadData.publicUrl) {
+                    finalImageUrl = uploadData.publicUrl
+                  } else {
+                    finalImageUrl = generatedUrl
+                  }
+                } else {
+                  finalImageUrl = generatedUrl
+                }
+              } catch {
+                finalImageUrl = generatedUrl
+              }
+            }
+          }
+          const completedResult = {
+            id: resultId,
+            original_url: mode === 'text-to-image' ? '' : (fileUrl || ''),
+            generated_url: finalImageUrl,
+            prompt: mode === 'template-mode' && selectedTemplate ? selectedTemplate.prompt : prompt,
+            timestamp: Date.now()
+          }
+          setCurrentResult(completedResult)
+          if (finalImageUrl && finalImageUrl.trim() !== '') {
+            try {
+              const isR2Url = finalImageUrl.startsWith('https://pub-d00e7b41917848d1a8403c984cb62880.r2.dev/')
+              if (isR2Url) {
+                const shareResponse = await handleShare(completedResult)
+                if (shareResponse) setAutoShareUrl(shareResponse)
+              }
+            } catch {}
+          }
+          setTimeout(() => setIsGenerating(false), 2000)
+          return
+        }
+
+        if (state === 'fail') {
+          consecutiveFailures++
+          console.error('[pollNanoBananaProgress] 生成失败:', errorMessage)
+          setGenerationError(errorMessage || '生成に失敗しました')
+          setCurrentResult(null)
+          setIsGenerating(false)
+          return
+        }
+
+        // 继续轮询（waiting/queuing/generating）
+        pollIntervalRef.current = setTimeout(loop, 2000)
+      } catch (e) {
+        errorCount++
+        consecutiveFailures++
+        if (errorCount >= 3 || consecutiveFailures >= 5) {
+          setCurrentResult(null)
+          stopWithReason('MAX_FAILURES', 'ネットワーク状態が不安定です。少し待ってから「再試行」してください。')
+          return
+        }
+        pollIntervalRef.current = setTimeout(loop, 3000)
+      }
+    }
+    loop()
+  }
   const pollFluxProgress = async (taskId: string, resultId: string) => {
     console.log('[pollFluxProgress] 启动, taskId:', taskId, 'resultId:', resultId)
     const startTime = Date.now()
@@ -1492,24 +1664,52 @@ useEffect(() => {
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-    if (!file.type.startsWith('image/')) {
-      alert(isEnglish ? 'Please select an image file' : '画像ファイルを選択してください')
-        return
+    const files = event.target.files
+    if (!files) return
+    
+    // nano-banana-edit 支持多张图片
+    if (selectedModel === 'nano-banana-edit' && files.length > 1) {
+      // 验证每个文件
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith('image/')) {
+          alert(isEnglish ? 'Please select image files only' : '画像ファイルのみを選択してください')
+          return
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          alert(isEnglish ? 'Each image must be under 10MB' : '各画像は10MB以下である必要があります')
+          return
+        }
       }
-      if (file.size > 10 * 1024 * 1024) {
-      alert(isEnglish ? 'Image size cannot exceed 10MB' : '画像サイズは10MBを超えることはできません')
-        return
+      handleMultipleImageSelect(files)
+    } else {
+      // 单张图片处理
+      const file = files[0]
+      if (file) {
+        if (!file.type.startsWith('image/')) {
+          alert(isEnglish ? 'Please select an image file' : '画像ファイルを選択してください')
+          return
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          alert(isEnglish ? 'Image size cannot exceed 10MB' : '画像サイズは10MBを超えることはできません')
+          return
+        }
+        handleImageSelect(file)
       }
-      handleImageSelect(file)
     }
   }
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault()
-    const file = event.dataTransfer.files[0]
-    if (file) handleImageSelect(file)
+    const files = event.dataTransfer.files
+    if (files.length === 0) return
+    
+    // nano-banana-edit 支持多张图片拖拽
+    if (selectedModel === 'nano-banana-edit' && files.length > 1) {
+      handleMultipleImageSelect(files)
+    } else {
+      const file = files[0]
+      if (file) handleImageSelect(file)
+    }
   }
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -1519,7 +1719,7 @@ useEffect(() => {
   // 移动端布局组件
   const MobileLayout = () => {
     const [isSizePickerOpen, setIsSizePickerOpen] = useState(false)
-    const isUploadDisabled = mode === 'text-to-image'
+    const isUploadDisabled = mode === 'text-to-image' || selectedModel === 'nano-banana'
     return (
       <div className="min-h-screen bg-[var(--bg)] flex flex-col">
         {/* 中间结果展示区 - 限高自适应，避免小屏溢出 */}
@@ -1539,6 +1739,8 @@ useEffect(() => {
                 >
                   <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
                   <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+                  <option value="nano-banana">{isEnglish ? 'Nano Banana' : 'Nano Banana'}</option>
+                  <option value="nano-banana-edit">{isEnglish ? 'Nano Banana Edit' : 'Nano Banana Edit'}</option>
                 </select>
               </div>
             </div>
@@ -1764,12 +1966,17 @@ useEffect(() => {
               className="hidden"
               accept="image/*"
               onChange={handleFileChange}
+              multiple={selectedModel === 'nano-banana-edit'}
             />
             <button
               onClick={() => { if (!isUploadDisabled) fileInputRef.current?.click() }}
               disabled={isUploadDisabled}
               aria-disabled={isUploadDisabled}
-              title={isUploadDisabled ? (isEnglish ? 'Text-to-Image mode: upload disabled' : '文→図モードではアップロード不可') : undefined}
+              title={isUploadDisabled ? (
+                selectedModel === 'nano-banana' ? 
+                (isEnglish ? 'Nano Banana: Pure text-to-image, no upload needed' : 'Nano Banana: 純粋テキスト生成、アップロード不要') :
+                (isEnglish ? 'Text-to-Image mode: upload disabled' : '文→図モードではアップロード不可')
+              ) : undefined}
               className={`btn-primary p-3 rounded-full ${isUploadDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
             >
               <PhotoIcon className="w-6 h-6" />
@@ -1890,6 +2097,8 @@ useEffect(() => {
             >
               <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
               <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+              <option value="nano-banana">{isEnglish ? 'Nano Banana' : 'Nano Banana'}</option>
+              <option value="nano-banana-edit">{isEnglish ? 'Nano Banana Edit' : 'Nano Banana Edit'}</option>
             </select>
           </div>
           <div className="p-2 border border-border rounded-lg">
@@ -1990,6 +2199,8 @@ useEffect(() => {
                 >
                   <option value="gpt4o-image">{isEnglish ? 'GPT-4o Image' : 'GPT-4o Image'}</option>
                   <option value="flux-kontext-pro">{isEnglish ? 'Flux Kontext Pro' : 'Flux Kontext Pro'}</option>
+                  <option value="nano-banana">{isEnglish ? 'Nano Banana' : 'Nano Banana'}</option>
+                  <option value="nano-banana-edit">{isEnglish ? 'Nano Banana Edit' : 'Nano Banana Edit'}</option>
                 </select>
                 <button
                   onClick={() => {
@@ -2114,7 +2325,8 @@ useEffect(() => {
               </div>
             )}
 
-            {mode !== 'text-to-image' && (
+            {/* 图片上传区域 - 根据模型动态显示 */}
+            {mode !== 'text-to-image' && selectedModel !== 'nano-banana' && (
               <div
                 className={`border-2 border-dashed border-border rounded-[28px] p-8 text-center hover:border-brand cursor-pointer bg-surface/50 backdrop-blur-lg hover:bg-surface/70 transform hover:scale-105 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-1000 delay-900 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -2129,10 +2341,46 @@ useEffect(() => {
                   className="hidden"
                   accept="image/*"
                   onChange={handleFileChange}
+                  multiple={selectedModel === 'nano-banana-edit'}
                   aria-label="画像ファイルを選択"
                 />
 
-                {imagePreview ? (
+                {/* 多图片预览（nano-banana-edit） */}
+                {selectedModel === 'nano-banana-edit' && multipleImagePreviews.length > 0 ? (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-center">
+                      {isEnglish ? `${multipleImagePreviews.length}/5 Images Selected` : `${multipleImagePreviews.length}/5枚選択中`}
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {multipleImagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <Image
+                            src={preview}
+                            alt={`Preview ${index + 1}`}
+                            width={150}
+                            height={150}
+                            className="w-full h-24 object-cover rounded-lg border border-border"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              const newPreviews = multipleImagePreviews.filter((_, i) => i !== index)
+                              const newUrls = multipleFileUrls.filter((_, i) => i !== index)
+                              setMultipleImagePreviews(newPreviews)
+                              setMultipleFileUrls(newUrls)
+                            }}
+                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-xs text-green-600 text-center">
+                      {isEnglish ? 'Ready to edit with Nano Banana!' : 'Nano Bananaで編集準備完了！'}
+                    </p>
+                  </div>
+                ) : imagePreview ? (
                   <div className="space-y-6">
                     <Image
                       src={imagePreview}
@@ -2434,10 +2682,25 @@ useEffect(() => {
                         onDragOver={handleDragOver}
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        <div className="text-6xl mb-4 animate-bounce-slow">📸✨</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">{isEnglish ? '📱 Upload a cute photo!' : '📱 可愛い写真をアップロードしよう！'}</h3>
+                        <div className="text-6xl mb-4 animate-bounce-slow">
+                          {selectedModel === 'nano-banana' ? '🎨✨' : 
+                           selectedModel === 'nano-banana-edit' ? '🖼️✨' : '📸✨'}
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2 font-cute">
+                          {selectedModel === 'nano-banana' ? 
+                            (isEnglish ? '🎨 Pure Text-to-Image!' : '🎨 純粋なテキスト生成！') :
+                            selectedModel === 'nano-banana-edit' ?
+                            (isEnglish ? '🖼️ Upload 1-5 images!' : '🖼️ 1-5枚の画像をアップ！') :
+                            (isEnglish ? '📱 Upload a cute photo!' : '📱 可愛い写真をアップロードしよう！')
+                          }
+                        </h3>
                         <p className="text-gray-600 mb-4 font-cute">
-                          {isEnglish ? 'Let\'s transform your photo into anime style!' : 'あなたの写真を、可愛いアニメ風に変身させましょう！'}
+                          {selectedModel === 'nano-banana' ? 
+                            (isEnglish ? 'No image needed - just describe what you want!' : '画像不要 - 欲しいものを説明するだけ！') :
+                            selectedModel === 'nano-banana-edit' ?
+                            (isEnglish ? 'Select multiple images to edit with AI magic!' : '複数の画像を選んでAIマジックで編集！') :
+                            (isEnglish ? 'Let\'s transform your photo into anime style!' : 'あなたの写真を、可愛いアニメ風に変身させましょう！')
+                          }
                         </p>
                         
                         <div className="bg-surface rounded-2xl p-4 mx-8 mb-4 border border-border"

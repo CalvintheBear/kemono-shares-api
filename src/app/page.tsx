@@ -12,11 +12,11 @@ import Image from 'next/image'
 
 // ホームページSEOメタデータ
 export const metadata = {
-  title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext で写真をアニメ風に即変換 - 2kawaii",
-  description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で数秒でアニメ風に変換。ジブリ風・VTuber・chibiなど20+スタイル対応。",
+  title: "Nanobanana AI画像生成 無料 | 写真をアニメ風に変換 - 2kawaii",
+  description: "Nanobanana AI画像生成 サイト 無料 登録不要。Nanobanana Editモデルで写真を数秒でアニメ風に変換。高品質・商用利用可・20+スタイル対応。",
   openGraph: {
-    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、プロンプト自動生成で写真を数秒でアニメ風に即変換。ジブリ風・VTuber・chibi対応。",
+    title: "Nanobanana AI画像生成 無料 | 写真をアニメ風に変換 - 2kawaii",
+    description: "Nanobanana AI画像生成 サイト 無料 登録不要。Nanobanana Editモデルで写真を数秒でアニメ風に即変換。高品質・商用利用可。",
     url: "https://2kawaii.com",
     siteName: "2kawaii AI画像生成",
     images: [
@@ -32,8 +32,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI画像生成 無料 登録不要 | GPT-4o & Flux Kontext - 2kawaii",
-    description: "ai画像生成 サイト 無料 登録不要。GPT-4o Image と Flux Kontext に対応、数秒でアニメ風に変換。",
+    title: "Nanobanana AI画像生成 無料 | 写真をアニメ風に変換 - 2kawaii",
+    description: "Nanobanana AI画像生成 サイト 無料 登録不要。Nanobanana Editモデルで数秒でアニメ風に変換。",
     images: ["https://fury-template-1363880159.cos.ap-guangzhou.myqcloud.com/twitter-homepage.jpg"],
   },
   alternates: {
@@ -61,8 +61,8 @@ export const metadata = {
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: '2kawaii 画像生成（GPT-4o / Flux Kontext 対応）',
-  description: 'GPT-4o Image と Flux Kontext に対応。プロンプト自動生成により写真をアニメ風に即変換できる無料AIツール',
+  name: '2kawaii Nanobanana AI画像生成',
+  description: 'Nanobanana Editモデルに対応。プロンプト自動生成により写真をアニメ風に即変換できる無料AIツール',
   url: 'https://2kawaii.com',
   applicationCategory: 'MultimediaApplication',
   operatingSystem: 'Web',
@@ -73,10 +73,10 @@ const structuredData = {
     availability: 'https://schema.org/InStock',
   },
   featureList: [
-    'AI画像生成 無料 登録不要',
+    'Nanobanana AI画像生成 無料 登録不要',
     'プロンプト自動生成',
     '写真をアニメ風に即変換',
-    'ジブリ風・chibi・VTuber対応',
+    'Nanobanana Editモデル対応',
     '数秒で高速生成',
     '商用利用可能'
   ],
@@ -137,7 +137,7 @@ export default function Home() {
       <section className="py-12 lg:py-20 px-3 sm:px-4 lg:px-6 bg-[var(--bg)] animate-fade-in">
         <div className="max-w-7xl mx-auto px-2">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-[var(--text)] mb-8 lg:mb-12 animate-fade-in-up">
-            数秒で仕上がるAI画像変換（3ステップ）
+            Nanobanana AI画像変換（3ステップ）数秒で仕上がる
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.2s'}}>
@@ -152,8 +152,8 @@ export default function Home() {
                   title="AI画像変換 モデル選択と画像アップロードガイド"
                 />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. モデル選択と画像アップロード</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">お好みのAIモデルを選択し、JPEG/PNG形式の写真をアップロードしてください</p>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">1-2. Nanobananaモデル選択と画像アップロード</h3>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">Nanobanana Editモデルを選択し、JPEG/PNG形式の写真をアップロードしてください</p>
             </div>
             <div className="text-center card p-6 sm:p-8 lg:p-10 animate-scale-in animate-fade-in-up h-full flex flex-col" style={{animationDelay: '0.4s'}}>
               <div className="w-40 sm:w-48 lg:w-56 h-40 sm:h-48 lg:h-56 mx-auto mb-6">
@@ -183,7 +183,7 @@ export default function Home() {
                 />
               </div>
               <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text)] mb-4 lg:mb-6">5. 開始して最終画像取得</h3>
-              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">「開始」ボタンをクリックしてAI変換を開始！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
+              <p className="text-[var(--text-muted)] text-sm sm:text-base lg:text-lg leading-relaxed">「開始」ボタンをクリックしてNanobanana AI変換を開始！高品質なアニメ画像をダウンロードしてSNSにシェアできます</p>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function Home() {
                     <td className="py-4 px-4 text-sm sm:text-base">❌ 不要</td>
                     <td className="py-4 px-4 text-sm sm:text-base">✅ 可能</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐ 超簡単</td>
-                    <td className="py-4 px-4 text-sm sm:text-base">⚡ 数秒（Flux Kontext）</td>
+                    <td className="py-4 px-4 text-sm sm:text-base">⚡ 数秒（Nanobanana）</td>
                     <td className="py-4 px-4 text-sm sm:text-base">⭐⭐⭐⭐</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-surface-hover transition-colors">
